@@ -6,9 +6,26 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
-  </div>
+<ion-content padding class="fondoDegradado" style="text-align: center;">
+  <!--Se define la fuente de donde cogeremos la imagen de Classpip -->
+  <img src="../../assets/icon/Captura.PNG"  id="imagenClasspip">
+
+
+  <!--Se define el input del nombre de usuario y se aplica la relacion ngModel para
+  pasar el valor de nombre a la funcion Autentificar-->
+  <ion-item class="ContenedorInput" >
+    <ion-label fixed>Username</ion-label>
+    <ion-input type="text" value="" name="nombre" placeholder="nombre" requiered [(ngModel)]="nombre"></ion-input>
+  </ion-item>
+
+  <!--Se define el input de la contraseña del usuario y se aplica la relacion ngModel para
+  pasar la contraseña a la funcion Autentificar-->
+  <ion-item class="ContenedorInput" >
+      <ion-label fixed>Password</ion-label>
+      <ion-input type="password" name="apellido" placeholder="apellido" requiered [(ngModel)]="apellido"></ion-input>
+  </ion-item>
+
+  <!--Se define el boton de autentificar el usuario y se accede a la funcion Autentificar-->
+  <button (click)="Autentificar();" id="botonAutentificar" ion-button  round  >INICIAR SESIÓN
+  </button>
 </ion-content>
