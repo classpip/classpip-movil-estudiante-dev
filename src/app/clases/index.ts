@@ -26,4 +26,6 @@ export * from './EquipoJuegoDeColeccion';
 export * from './Album';
 export * from './AlbumEquipo';
 export * from './clasesParaTablasJuegoColeccion/AlbumDelAlumno';
+export * from './MiAlumnoAMostrarJuegoDePuntos';
+export * from './MiEquipoAMostrarJuegoDePuntos';
 

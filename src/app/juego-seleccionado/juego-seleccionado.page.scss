@@ -1,0 +1,44 @@
+ //Se definen los valores estéticos del botón Información
+ .Informacion{
+    background-color: rgb(218, 0, 0);
+    color: rgb(231, 159, 159);
+    font-size: 75%;
+    font-style: bold;
+    height: 150%;
+    max-height: 100px;
+    margin-top:-15%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0px 3px 6px 0px rgba(223, 44, 44, 0.966);
+  }
+  //Se definen los valores estéticos del botón MisPuntos
+  .MisPuntos{
+    background-color: rgb(145, 208, 245) ;
+    color: rgb(145, 208, 245);
+    font-size: 75%;
+    font-style: bold;
+    height: 150%;
+    max-height: 100px;
+    margin-top:-15%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0px 3px 6px 0px rgb(145, 208, 245);
+  }
+  .IntercambiarCromo{
+    background-color: rgb(145, 208, 245) ;
+    color: rgb(18, 0, 177);
+    font-size: 75%;
+    font-style: bold;
+    height: 150%;
+    max-height: 100px;
+    // margin-top:-15%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0px 3px 6px 0px rgb(145, 208, 245);
+  }

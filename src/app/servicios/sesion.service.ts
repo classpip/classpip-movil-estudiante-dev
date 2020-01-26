@@ -32,6 +32,7 @@ export class SesionService {
   rankingEquiposJuegoDePuntos: any;
 
   alumno: Alumno;
+  alumnoJuegoDeColeccion: Alumno;
   inscripcionAlumno: any;
   inscripcionEquipo: any;
   listaGrupos: any;
@@ -39,6 +40,7 @@ export class SesionService {
 
   punto: Punto;
   insignia: Insignia;
+  cromosSinRepetidos: any[];
 
   // listaEquiposGrupo: any;
 
@@ -48,6 +50,12 @@ export class SesionService {
   }
   public  DameProfesor(): Profesor {
     return this.profesor;
+  }
+  public TomaAlumnoJuegoDeColeccion(alumno: Alumno) {
+    this.alumnoJuegoDeColeccion = alumno;
+  }
+  public  DameAlumnoJuegoDeColeccion(): Alumno {
+    return this.alumnoJuegoDeColeccion;
   }
 
   public TomaGrupo(grupo: Grupo) {
@@ -113,6 +121,14 @@ export class SesionService {
 
   public DameCromos(): Cromo[] {
     return this.cromos;
+  }
+
+  public TomaCromosSinRepetidos(MisCromos: any[]) {
+    this.cromosSinRepetidos = MisCromos;
+  }
+
+  public DameCromosSinRepetidos(): any[] {
+    return this.cromosSinRepetidos;
   }
 
   public TomaCromo( cromo: Cromo) {

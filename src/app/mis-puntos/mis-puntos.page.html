@@ -1,0 +1,22 @@
+<ion-header class="MyAppCabecera">
+  <ion-toolbar>
+    <ion-title>Mis Puntos</ion-title>
+
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="fondoDegradado">
+  <div *ngIf="MiHistorialPuntos[0];else Aviso_no_puntos">
+    <ion-list *ngFor="let punto of MiHistorialPuntos">
+      <h2 style ="text-align: center">{{punto.Nombre}} :</h2>
+      <p style ="text-align: center" id="p"> {{punto.Puntos}} </p>
+    </ion-list>
+  </div>
+  <ng-template #Aviso_no_puntos >
+    <label class = "AvisoNoJuegosActivo" >
+      Aún no tienes puntos en este juego</label>
+</ng-template>
+</ion-content>

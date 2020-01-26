@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>MiPerfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <ion-row *ngFor="let Imagen of MiImagenAlumno;let i = index">
+            <img [src]="MiImagenAlumno[i]" >
+  </ion-row>
+  <!--ion-row>
+    <ion-button (click)="selectImage()">
+      Pick Image to Crop
+    </ion-button>
+  </ion-row-->
+  <button ion-button color="primary" (click)="accessGallery()">Open Gallery</button>
+  <img [src]="base64Image" *ngIf="base64Image" /> 
+  <ion-row > <p style="text-align: center;">{{Alumno.Nombre}} {{Alumno.PrimerApellido}} {{Alumno.SegundoApellido}} </p></ion-row >
+
+</ion-content>

@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mis Grupos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--div *ngFor="let elem of listaGruposYAlumnos;let i = index">
+    <ion-row>Grupo: {{elem.Grupo}}</ion-row>
+    <div *ngFor="let alum of listaGruposYAlumnos[i].Alumnos">
+      <ion-row> {{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}</ion-row>
+    </div>
+  </!div-->
+  <div class = "list" style="background-color: rgb(231, 159, 159); padding-bottom: 5%; padding-top:2%; border-top-right-radius: 20px;border-top-left-radius: 20px;border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.801)   ">
+    ALUMNOS:
+    <div class = "item item-divider" *ngFor="let elem of listaGruposYAlumnos;let i = index;"> <p><b>{{elem.Grupo}}</b></p>
+      <div class = "item" *ngFor="let alum of listaGruposYAlumnos[i].Alumnos" >{{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}</div>
+    </div>
+    
+  </div>
+  <p></p>
+  <div class = "list" style="background-color: rgb(145, 208, 245); padding-bottom: 5%; padding-top:2%; border-top-right-radius: 20px;border-top-left-radius: 20px;border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.801)   ">
+    EQUIPOS:
+    <div class = "item item-divider" *ngFor="let elem of listaGruposYEquipos;let i = index;"> <p><b>{{elem.Grupo}}</b></p>
+      <div class = "item" *ngFor="let equipo of listaGruposYEquipos[i].Equipo" >{{equipo.Nombre}}</div>
+    </div>
+    
+  </div>
+  <!--accordion *ngFor="let elem of listaGruposYAlumnos;let i = index;" class="list accordion-list">
+      <ion-item tappable [ngClass]="{'section-active': elem.open, 'section': !elem.open}" class="accordion-item">
+        <ion-icon slot="start" name="arrow-forward" *ngIf="!elem.open"></ion-icon>
+        <ion-icon slot="start" name="arrow-down" *ngIf="elem.open"></ion-icon>
+        <ion-label>{{elem.Grupo}}</ion-label>
+      </ion-item>
+      <div *ngFor="let alum of listaGruposYAlumnos[i].Alumnos;" class="accordion-item-content"> 
+        {{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}
+      </div>
+  </accordion-->
+
+</ion-content>

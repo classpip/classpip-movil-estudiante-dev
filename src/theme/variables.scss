@@ -3,8 +3,10 @@
 
 /** Ionic CSS Variables **/
 :root {
+
+  --app-background: linear-gradient(to bottom, color(ion-color-primary) 0%, color(ion-color-light-tint) 100%);
   /** primary **/
-  --ion-color-primary: #3880ff;
+  --ion-color-primary: #32addd;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -65,7 +67,7 @@
   --ion-color-medium-contrast: #ffffff;
   --ion-color-medium-contrast-rgb: 255, 255, 255;
   --ion-color-medium-shade: #86888f;
-  --ion-color-medium-tint: #a2a4ab;
+  --ion-color-medium-tint: #90a0d8;
 
   /** light **/
   --ion-color-light: #f4f5f8;

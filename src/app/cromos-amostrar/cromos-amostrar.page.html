@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Mis Cromos</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngFor="let elem of listaCromosSinRepetidos;let i = index">
+    <img [src]="MisImagenesCromo[i]" >
+    <ion-card-content>
+      <ion-card-title>
+        {{elem.cromo.Nombre}}
+      </ion-card-title>
+      <p>
+        Repeticiones: x{{elem.rep}}
+      </p>
+    </ion-card-content>
+  </ion-card>
+  <ion-card class="MeFalta" *ngFor="let elem of CromosQueNoTengo;let i = index">
+    <img [src]="ImagenesCromosQueNoTengo[i]" >
+    <ion-card-content>
+      <ion-card-title>
+        {{elem.cromo.Nombre}}
+      </ion-card-title>
+      <p>
+        Repeticiones: x{{elem.rep}}
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  
+</ion-content>

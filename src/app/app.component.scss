@@ -1,0 +1,11 @@
+.fondoDegradado{
+    background: linear-gradient(to bottom, color(ion-color-primary) 0%, color(ion-color-light-tint) 100%);;
+  }
+
+  //Se define los parámetros de la Cabecera de la Aplicación
+  .MyAppCabecera{
+    background-color: rgb(34, 130, 226);
+    display: inline-flex;
+    width: 100%;
+    text-align: center;
+  }

@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>PuntosMiEquipo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--ion-item>Mi Equipo: {{MiEquipo.Nombre}}</ion-item-->
+  <div *ngIf="NuestroHistorialPuntos[0];else Aviso_no_puntos">
+    <ion-list *ngFor="let punto of NuestroHistorialPuntos">
+      <h2 style ="text-align: center">{{punto.Nombre}} :</h2>
+      <p style ="text-align: center" id="p"> {{punto.Puntos}} </p>
+    </ion-list>
+  </div>
+  <ng-template #Aviso_no_puntos >
+    <label class = "AvisoNoJuegosActivo" >
+      Aún no tienes puntos en este juego</label>
+</ng-template>
+</ion-content>
