@@ -37,3 +37,19 @@
     background-color: rgb(235, 235, 228) !important;
     box-shadow: 0px 3px 6px 0px  rgb(126, 138, 141) !important;
   }
+  ion-toolbar {
+    --ion-background-color:rgb(0, 68, 107);
+  }
+
+  .card {
+    --ion-background-color:rgb(0, 68, 107);
+  }
+  .ClasspipCabeceraimg{
+    position:relative;
+    width:30px;
+    height:30px;
+    margin-left: 20%;
+    margin-right: -25%;
+    margin-top: -12%;
+    margin-bottom: 3%;
+}

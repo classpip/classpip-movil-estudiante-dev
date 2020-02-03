@@ -53,11 +53,9 @@ export class HomePage {
       this.peticionesAPI.DameAlumno(this.nombre, this.apellido).subscribe(
         (res) => {
           if (res[0] !== undefined) {
-            this.alumno = res[0]; // Si es diferente de null, el profesor existe y lo meto dentro de profesor
-            // Envio el profesor a la sesión
+            this.alumno = res[0];
             this.sesion.TomaAlumno(this.alumno);
             console.log('bien logado');
-            // this.navCtrl.navigateForward('/inici');
             setTimeout(() => {
               this.route.navigateByUrl('/inici');
             }, 1500);

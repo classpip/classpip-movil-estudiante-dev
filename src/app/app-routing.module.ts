@@ -12,6 +12,8 @@ const routes: Routes = [
   { path: 'mis-puntos', loadChildren: './mis-puntos/mis-puntos.module#MisPuntosPageModule' },
   { path: 'puntos-mi-equipo', loadChildren: './puntos-mi-equipo/puntos-mi-equipo.module#PuntosMiEquipoPageModule' },
   { path: 'intercambiar-cromos', loadChildren: './intercambiar-cromos/intercambiar-cromos.module#IntercambiarCromosPageModule' },
+  { path: 'informacion', loadChildren: './informacion/informacion.module#InformacionPageModule' },
+  { path: 'juegos-inactivos', loadChildren: './juegos-inactivos/juegos-inactivos.module#JuegosInactivosPageModule' },
 ];
 
 @NgModule({

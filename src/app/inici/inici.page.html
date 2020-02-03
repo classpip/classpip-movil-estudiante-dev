@@ -1,41 +1,34 @@
 <ion-header>
-  <ion-toolbar >
-    <ion-buttons slot="start">
+  <ion-toolbar>
+    <ion-title style="color: floralwhite; margin-top: 7%; margin-right: 10%;">Mis Juegos Activos</ion-title>
+    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
+    <ion-buttons slot="start" style="color: floralwhite;">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Mis Juegos</ion-title>
-  </ion-toolbar >
+    </ion-buttons>    
+  </ion-toolbar>
 </ion-header>
 
-<ion-content>
-    <ion-list class="ion-padding">
+<ion-content background-color="secondary">
 
         <!--Se define la cabecera de los Juegos Activos-->
-        <ion-item class="CabeceraActivos">Juegos Activos
+        <!--ion-item class="CabeceraActivos">Juegos Activos
                 <ion-icon name="logo-game-controller-a" item-start ></ion-icon>
-        </ion-item>
+        </ion-item-->
     
               <!--Se define el contenido de la tabla de Juegos Activos-->
-              <ion-list>
-                  <div style="margin-top:3%" *ngIf="JuegosActivos;else Aviso_no_juegos_activos">
+              <ion-list *ngIf="JuegosActivos[0];else Aviso_no_juegos_activos">
                     <!--Si no tiene valor JuegosActivos,
                     entonces aparecerá la alerta de Aviso_no_Juegos_Activos-->
-                    <div *ngIf="JuegosActivos[0];else Aviso_no_juegos_activos">
-                        <ion-list *ngFor="let juego of JuegosActivos" (click) = JuegoSeleccionado(juego) >
-                          <h2>{{juego.Tipo}}</h2>
-                          <p id="p"> {{juego.Modo}} </p>
+                        <ion-list class="container" *ngFor="let juego of JuegosActivos" (click) = JuegoSeleccionado(juego) >
+                          <h2 style="text-align: center;">{{juego.Tipo}}</h2>
+                          <p style="text-align: center;" id="p"> {{juego.Modo}} </p>
                         </ion-list>
-                      </div>
-                  </div>
-    
-              <ng-template #Aviso_no_juegos_activos >
-                        <label class = "AvisoNoJuegosActivo" >
-                          No hay juegos activos</label>
-              </ng-template>
+
     
               </ion-list>
-    
-        </ion-list>
-
+              <ng-template #Aviso_no_juegos_activos >
+                <label class = "AvisoNoJuegosActivo" >
+                  <b>No tienes juegos activos</b></label>
+        </ng-template>
 
 </ion-content>

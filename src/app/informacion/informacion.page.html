@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;" >Informacion</ion-title>
+    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
+    <ion-buttons slot="start" style="color: floralwhite;">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-content class="contenedorInformacion">
+
+    <div padding>
+        <ion-segment [(ngModel)]="Tipo">
+          <ion-segment-button value="Puntos" >
+            Puntos
+          </ion-segment-button>
+          <ion-segment-button value="Niveles">
+            Niveles
+          </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <!--Segun el tipo de Asignación que se haya seleccionado, se mostrará un párrafo u otro-->
+    <div style = "margin-top: -10%;"[ngSwitch]="Tipo">
+
+        <!--Al poner <b> permitimos que las palabras que esten dentro se visualicen en negrita-->
+        <p class="InformacionPantalla" *ngSwitchCase="'Puntos'">A continuación se muestran <b>los puntos</b> disponibles:</p>
+
+        <p class="InformacionPantalla" *ngSwitchCase="'Niveles'">A continuación se muestran <b>los niveles</b> disponibles:</p>
+
+    </div>
+</ion-content>
+
+
+<!--Definimos que se debe de visualizar al hacer click en Puntos o en Niveles-->
+<div [ngSwitch]="Tipo">
+
+    <ion-list style="margin-top: -120%;" *ngSwitchCase="'Puntos'" >
+
+        <!--Si puntosDelJuego tiene algun valor, entonces me debe enseñar el acordeon
+        sino, deberá saltar el Aviso_no_puntos-->
+        <ion-list *ngIf="TodosLosPuntos;else Aviso_no_puntos" >
+
+           <!--Medinate title, se le enviará punto.Nombre y será el titulo que aparecerá
+           en el acordeon generado-->
+            <ion-list class="item-detail-container" *ngFor="let punto of TodosLosPuntos">
+              <h2 style="color: rgb(0, 0, 0) ; font-style: bold; text-align: center;">{{punto.Nombre}}</h2>
+              <p style="color:  rgb(0, 68, 107); font-style: oblique; font-size:4.5vw; text-align: center;">{{punto.Descripcion}}</p>
+
+            </ion-list>
+
+        </ion-list>
+
+        <ng-template #Aviso_no_puntos >
+            <label > No hay puntos disponibles</label>
+        </ng-template>
+
+    </ion-list>
+
+    <ion-list style="margin-top: -120%;" *ngSwitchCase="'Niveles'">
+
+          <!--Si nivelesDelJuego tiene algun valor, entonces me debe enseñar la lista
+          sino, deberá saltar el Aviso_no_niveles-->
+          <ion-list padding *ngIf="TodosLosNiveles;else Aviso_no_niveles"  >
+
+            <!--Se definen los niveles que se van a mostrar en distintos items-->
+            <ion-list class="item-detail-container" *ngFor="let nivel of TodosLosNiveles; let i = index" >
+                <h2 style="color: rgb(0, 0, 0) ; font-style: bold; text-align: center;">{{nivel.Nombre}}</h2>
+                <p style="color:  rgb(0, 68, 107); font-style: oblique; font-size:4.5vw; text-align: center;" >{{nivel.PrivilegiosDelNivel}}</p>
+                <p style="color:  rgb(0, 68, 107); font-style: oblique; font-size:4.5vw; text-align: center;" >Puntos a alcanzar: {{nivel.PuntosAlcanzar}}</p>
+            </ion-list>
+
+          </ion-list>
+
+    </ion-list>
+
+    <ng-template #Aviso_no_niveles >
+        <label > No hay niveles disponibles</label>
+    </ng-template>
+  </div>
+
+
+</ion-content>

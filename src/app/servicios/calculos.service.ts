@@ -11,6 +11,8 @@ import { Grupo, Equipo, Juego, Alumno, Nivel, TablaAlumnoJuegoDePuntos, TablaHis
 import { Observable } from 'rxjs';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { stringify } from 'querystring';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 @Injectable({
   providedIn: 'root'
@@ -147,7 +149,7 @@ export class CalculosService {
   }
 
   public DameAlumnosJuegoPuntos(juegoId: number) {
-    const InformacionAlumno: MiAlumnoAMostrarJuegoDePuntos [] = [];
+    let InformacionAlumno: MiAlumnoAMostrarJuegoDePuntos [] = [];
     this.peticionesAPI.DameAlumnosJuegoDePuntos(juegoId).subscribe(
       listaAlumnos => {
         console.log('este es el numero de alumnos en este juego' + listaAlumnos.length);
@@ -166,17 +168,46 @@ export class CalculosService {
             });
           InformacionAlumno.push(MiAlumno);
         }
-
+        // tslint:disable-next-line:only-arrow-functions
+        InformacionAlumno = InformacionAlumno.sort(function(obj1, obj2) {
+          return obj2.PuntosTotalesAlumno - obj1.PuntosTotalesAlumno;
+          });
     });
     return InformacionAlumno;
   }
 
-  public AsignaCromo(cromo: Cromo, alumnoSeleccionado: any, MiAlumno: Alumno) {
+  public AsignaCromo(cromo: Cromo, alumnoSeleccionado: any, MiAlumno: Alumno, juegoSeleccionado: Juego) {
+    const OK: any[] = [];
     this.peticionesAPI.DameAlumnoAsignacion(alumnoSeleccionado).subscribe(
       EsteAlumno => {
-        console.log('HOLAA!');
         console.log(EsteAlumno);
+        console.log(juegoSeleccionado);
+        this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, EsteAlumno[0].id).subscribe(
+          EsteAlumnoJuegoColeccion => {
+            console.log(EsteAlumnoJuegoColeccion);
+            console.log(cromo);
+            this.peticionesAPI.AsignarCromoAlumno(new Album (EsteAlumnoJuegoColeccion[0].id, cromo.id)).subscribe(
+              resul => {
+                OK.push(resul);
+                console.log(resul);
+                console.log('Ya he asignado el cromo');
+              }
+            );
+          });
+        this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, MiAlumno.id).subscribe(
+          OtroAlumnoJuegoColeccion => {
+            this.peticionesAPI.DameAlbumAlumno(cromo.id, OtroAlumnoJuegoColeccion[0].id).subscribe(
+              MiAlbum => {
+                this.peticionesAPI.BorrarAlbumAlumno(MiAlbum[0].id).subscribe(
+                  resultado => {
+                    console.log('He borrado el cromo??');
+                    console.log(resultado);
+                  });
+              });
+          });
       });
+
+    return OK;
   }
 
   public DameEquiposJuegoPuntos(juegoId: number) {
@@ -306,30 +337,39 @@ export class CalculosService {
     return listaGruposYEquipos;
   }
 
-  public DameHistorialMisPuntos(juegoId: number, alumnoId: number) {
-    const HistorialPuntos: any [] = [];
-    this.peticionesAPI.DameInscripcionAlumnoJuegoDePuntos(alumnoId, juegoId).subscribe(
-      MiAlumnoJuegoDePuntos => {
-        this.peticionesAPI.DamePuntosJuegoDePuntos(juegoId).subscribe(
-          TipoDePuntos => {
+  public DameHistorialMisPuntos(juegoId: number, alumnoId: number): any {
+    // const HistorialPuntos: any [] = [];
+    const Observables = new Observable ( obs => {
+      const EsteAlumnoJDP: any [] = [];
+      const HistorialPuntos: any[] = [];
+      this.peticionesAPI.DameInscripcionAlumnoJuegoDePuntos(alumnoId, juegoId).subscribe(
+        MiAlumnoJuegoDePuntos => {
+          EsteAlumnoJDP.push(MiAlumnoJuegoDePuntos[0].PuntosTotalesAlumno);
+          this.peticionesAPI.DamePuntosJuegoDePuntos(juegoId).subscribe(
+            TipoDePuntos => {
             // tslint:disable-next-line:prefer-for-of
-            for (let i = 0; i < TipoDePuntos.length; i++) {
-              this.peticionesAPI.DameHistorialDeUnPunto(MiAlumnoJuegoDePuntos[0].id, TipoDePuntos[i].id).subscribe(
-                HistorialDeUnPunto => {
-                  console.log(MiAlumnoJuegoDePuntos);
-                  console.log(HistorialDeUnPunto);
-                  this.puntos = 0;
+              for (let i = 0; i < TipoDePuntos.length; i++) {
+                this.peticionesAPI.DameHistorialDeUnPunto(MiAlumnoJuegoDePuntos[0].id, TipoDePuntos[i].id).subscribe(
+                  HistorialDeUnPunto => {
+                    console.log(MiAlumnoJuegoDePuntos);
+                    console.log(HistorialDeUnPunto);
+                    this.puntos = 0;
                   // tslint:disable-next-line:prefer-for-of
-                  for (let j = 0; j < HistorialDeUnPunto.length; j++) {
-                    this.puntos = this.puntos + HistorialDeUnPunto[j].ValorPunto;
-                    console.log('acumulo punto' + this.puntos);
-                  }
-                  HistorialPuntos.push({Nombre: TipoDePuntos[i].Nombre, Puntos: this.puntos});
+                    for (let j = 0; j < HistorialDeUnPunto.length; j++) {
+                      this.puntos = this.puntos + HistorialDeUnPunto[j].ValorPunto;
+                      console.log('acumulo punto' + this.puntos);
+                    }
+                    HistorialPuntos.push({Nombre: TipoDePuntos[i].Nombre, Puntos: this.puntos});
                 });
             }
-          });
-      });
-    return HistorialPuntos;
+          }
+          );
+      }
+      );
+      const MisObservables = { AlumnoJDP : EsteAlumnoJDP, Historial: HistorialPuntos };
+      obs.next (MisObservables);
+    });
+    return Observables;
   }
 
   public DameHistorialPuntosMiEquipo(alumnoId: number, juegoDePuntosId: number) {

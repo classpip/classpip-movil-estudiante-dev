@@ -59,14 +59,17 @@ export class PeticionesAPIService {
     console.log('Entro a mostrar a ' + nombre + ' ' + apellido);
     return this.http.get<Profesor>(this.APIUrlProfesores + '?filter[where][Nombre]=' + nombre + '&filter[where][Apellido]=' + apellido);
   }
+
   public DameAlumno(nombre: string, apellido: string): Observable<Alumno> {
     console.log('Entro a mostrar a ' + nombre + ' ' + apellido);
-    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Nombre]=' + nombre + '&filter[where][PrimerApellido]=' + apellido);
+    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Nombre]=' + nombre
+    + '&filter[where][PrimerApellido]=' + apellido);
   }
 
-  public DameAlumnoAsignacion(nombre: string): Observable<Alumno> {
-    console.log('Entro a mostrar a ' + nombre);
-    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Nombre][PrimerApellido][SegundoApellido]=' + nombre);
+  public DameAlumnoAsignacion(nombre: string[]): Observable<Alumno> {
+    console.log('Entro a mostrar a ' + nombre[0] + nombre[1]);
+    // tslint:disable-next-line:max-line-length
+    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Nombre]=' + nombre[0] + '&filter[where][PrimerApellido]=' + nombre[1]);
   }
 
   public DameGrupo(grupoId: number): Observable<Grupo> {
@@ -526,6 +529,16 @@ export class PeticionesAPIService {
   public AsignarCromoAlumno(album: Album) {
     return this.http.post<Album>(this.APIRUrlAlbum, album);
   }
+
+  public DameAlbumAlumno(cromoId: number, alumnoJuegoDeColeccionId: number): Observable<Album> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.get<Album>(this.APIRUrlAlbum + '?filter[where][cromoId]=' + cromoId + '&filter[where][alumnoJuegoDeColeccionId]=' + alumnoJuegoDeColeccionId);
+  }
+
+  public BorrarAlbumAlumno(AlbumId: number) {
+    return this.http.delete<Album>(this.APIRUrlAlbum + '/' + AlbumId);
+  }
+
 
    // ASIGNAMOS UN NUEVO CROMO PARA EL ÁLBUM DEL EQUIPO
    public AsignarCromoEquipo(album: AlbumEquipo) {

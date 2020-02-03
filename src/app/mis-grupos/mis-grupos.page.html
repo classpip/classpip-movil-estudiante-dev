@@ -1,9 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;">Mis Grupos</ion-title>
+    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
+    <ion-buttons slot="start" style="color: floralwhite;">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Mis Grupos</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -15,17 +16,17 @@
     </div>
   </!div-->
   <div class = "list" style="background-color: rgb(231, 159, 159); padding-bottom: 5%; padding-top:2%; border-top-right-radius: 20px;border-top-left-radius: 20px;border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.801)   ">
-    ALUMNOS:
+    <p style="font-size:5.5vw; text-align: center;"><b>ALUMNOS:</b></p>
     <div class = "item item-divider" *ngFor="let elem of listaGruposYAlumnos;let i = index;"> <p><b>{{elem.Grupo}}</b></p>
-      <div class = "item" *ngFor="let alum of listaGruposYAlumnos[i].Alumnos" >{{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}</div>
+      <div class = "item" *ngFor="let alum of listaGruposYAlumnos[i].Alumnos" >-{{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}</div>
     </div>
     
   </div>
   <p></p>
   <div class = "list" style="background-color: rgb(145, 208, 245); padding-bottom: 5%; padding-top:2%; border-top-right-radius: 20px;border-top-left-radius: 20px;border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.801)   ">
-    EQUIPOS:
+    <p style="font-size:5.5vw; text-align: center;"><b>EQUIPOS:</b></p>
     <div class = "item item-divider" *ngFor="let elem of listaGruposYEquipos;let i = index;"> <p><b>{{elem.Grupo}}</b></p>
-      <div class = "item" *ngFor="let equipo of listaGruposYEquipos[i].Equipo" >{{equipo.Nombre}}</div>
+      <div class = "item" *ngFor="let equipo of listaGruposYEquipos[i].Equipo" >-{{equipo.Nombre}}</div>
     </div>
     
   </div>

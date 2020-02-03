@@ -1,8 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Ionic Blank
+    <ion-title class="titulo">
+      Classpip Alumno
     </ion-title>
+    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
   </ion-toolbar>
 </ion-header>
 
@@ -14,18 +15,18 @@
   <!--Se define el input del nombre de usuario y se aplica la relacion ngModel para
   pasar el valor de nombre a la funcion Autentificar-->
   <ion-item class="ContenedorInput" >
-    <ion-label fixed>Username</ion-label>
+    <ion-label style="color: rgb(0, 68, 107);" fixed><b>Username</b></ion-label>
     <ion-input type="text" value="" name="nombre" placeholder="nombre" requiered [(ngModel)]="nombre"></ion-input>
   </ion-item>
 
   <!--Se define el input de la contraseña del usuario y se aplica la relacion ngModel para
   pasar la contraseña a la funcion Autentificar-->
   <ion-item class="ContenedorInput" >
-      <ion-label fixed>Password</ion-label>
+      <ion-label style="color: rgb(0, 68, 107);"fixed><b>Password</b></ion-label>
       <ion-input type="password" name="apellido" placeholder="apellido" requiered [(ngModel)]="apellido"></ion-input>
   </ion-item>
 
   <!--Se define el boton de autentificar el usuario y se accede a la funcion Autentificar-->
-  <button (click)="Autentificar();" id="botonAutentificar" ion-button  round  >INICIAR SESIÓN
+  <button (click)="Autentificar();" class="IniciarSesion" ion-button  round  >INICIAR SESIÓN
   </button>
 </ion-content>

@@ -5,14 +5,12 @@ import { PeticionesAPIService} from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import { Juego, Equipo } from '../clases/index';
 import { Router } from '@angular/router';
-import { JuegoSeleccionadoPage } from '../juego-seleccionado/juego-seleccionado.page';
-
 @Component({
-  selector: 'app-inici',
-  templateUrl: './inici.page.html',
-  styleUrls: ['./inici.page.scss'],
+  selector: 'app-juegos-inactivos',
+  templateUrl: './juegos-inactivos.page.html',
+  styleUrls: ['./juegos-inactivos.page.scss'],
 })
-export class IniciPage implements OnInit {
+export class JuegosInactivosPage implements OnInit {
 
   id: number;
   JuegosActivos: Juego[] = [];
@@ -28,29 +26,18 @@ export class IniciPage implements OnInit {
 
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
-    console.log('Este es el id del alumno que se ha logado: ' + this.id);
     this.calculos.DameJuegosAlumno(this.id)
     .subscribe ( listas => {
-            this.JuegosActivos = listas.activos;
+            this.JuegosInactivos = listas.inactivos;
             console.log('Muestro los Juegos pero luego me da que el length es 0??????');
-            console.log(this.JuegosActivos);
-            console.log(this.JuegosActivos.length);
+            console.log(this.JuegosInactivos);
+            console.log(this.JuegosInactivos.length);
             // Si la lista aun esta vacia la dejo como indefinida para que me
             // salga el mensaje de que aun no hay juegos
 
     });
-    console.log ('Ya he traido los juegos');
-  }
+    console.log ('Ya he traido los juegos Inactivos');
 
-  JuegoSeleccionado(juego: Juego) {
-    this.sesion.TomaJuego(juego);
-    if (juego.Tipo === 'Juego De Puntos' && juego.Modo === 'Individual') {
-      this.navCtrl.navigateForward('/mis-puntos');
-    } else {
-      this.navCtrl.navigateForward('/juego-seleccionado');
-    }
-    // this.navCtrl.push (JuegoSeleccionadoPage,{juego:juego});
   }
-
 
 }

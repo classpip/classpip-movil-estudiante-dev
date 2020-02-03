@@ -6,6 +6,8 @@ import { Http, ResponseContentType} from '@angular/http';
 import { PeticionesAPIService} from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {  Juego, Equipo, Alumno, Cromo} from '../clases/index';
+import { Router } from '@angular/router';
+import { Variable } from '@angular/compiler/src/render3/r3_ast';
 @Component({
   selector: 'app-intercambiar-cromos',
   templateUrl: './intercambiar-cromos.page.html',
@@ -14,22 +16,27 @@ import {  Juego, Equipo, Alumno, Cromo} from '../clases/index';
 export class IntercambiarCromosPage implements OnInit {
 
   cromoSeleccionado: any;
-  alumnoSelecciondo: any;
+  alumnoSelecciondo: any[];
   juegoSeleccionado: Juego;
   MisAlumnosJuegoColeccion: Alumno[] = [];
   MisCromosSinRepetidos: any[];
   imagenCromo: string;
-  public cromo: Cromo;
+  public cromo: any;
   public alumno: any;
   studentsSelectedArray: Array<any> = new Array<any>();
   MiAlumno: Alumno;
-
+  OK: any[];
+  i: number;
+  final: number;
   constructor(
     private sesion: SesionService,
     public navCtrl: NavController,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService,
     private http: HttpClient, private https: Http,
+    public loadingController: LoadingController,
+    public alertController: AlertController,
+    private route: Router,
   ) { }
 
   ngOnInit() {
@@ -43,6 +50,18 @@ export class IntercambiarCromosPage implements OnInit {
             Cromos => {
               console.log(Cromos);
               this.MisCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(Cromos);
+              this.i = 0;
+              // VAMOS A QUITAR DE LOS ALUMNOS A MOSTRAR, EL PROPIO ALUMNO QUE SE HA LOGADO
+              this.MisAlumnosJuegoColeccion.forEach(alum => {
+              if (alum.id === this.MiAlumno.id) {
+                this.final = this.i;
+                console.log(this.final);
+              }
+              this.i++;
+              console.log(this.i);
+              });
+              this.MisAlumnosJuegoColeccion.splice(this.final, 1);
+              console.log(this.MisAlumnosJuegoColeccion);
         });
     });
     console.log(this.MisCromosSinRepetidos);
@@ -53,7 +72,9 @@ export class IntercambiarCromosPage implements OnInit {
     this.DameImagenCromo();
     console.log(this.cromo);
   }
-  ionChangeAlumno() {
+  onChange(value) {
+    console.log(value);
+    this.alumnoSelecciondo = value.split(' ');
     console.log(this.alumnoSelecciondo);
   }
 
@@ -81,8 +102,81 @@ export class IntercambiarCromosPage implements OnInit {
     }
   }
 
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Asignando Cromo',
+      duration: 1500
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+
+    console.log('Loading dismissed!');
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'HECHO!',
+      // subHeader: 'Subtitle',
+      message: 'Se ha asignado el cromo correctamente',
+      buttons: ['OK']
+    });
+    setTimeout(() => {
+      this.route.navigateByUrl('/juego-seleccionado');
+    }, 1500);
+
+    await alert.present();
+  }
+
+  async presentAlert2() {
+    const alert = await this.alertController.create({
+      header: 'ERROR!',
+      // subHeader: 'Subtitle',
+      message: 'Primero selecciona el alumno',
+      buttons: ['OK']
+    });
+    setTimeout(() => {
+    }, 1500);
+
+    await alert.present();
+  }
+  async presentAlert3() {
+    const alert = await this.alertController.create({
+      header: 'ERROR!',
+      // subHeader: 'Subtitle',
+      message: 'Primero selecciona el cromo',
+      buttons: ['OK']
+    });
+    setTimeout(() => {
+    }, 1500);
+
+    await alert.present();
+  }
+
   AsignarCromo() {
-    this.calculos.AsignaCromo(this.cromo, this.alumnoSelecciondo, this.MiAlumno);
+    console.log(this.alumnoSelecciondo);
+    this.presentLoading();
+    if (this.cromoSeleccionado === undefined) {
+      setTimeout(() => {
+        this.presentAlert3();
+      }, 1500);
+
+    }
+    if (this.alumnoSelecciondo === undefined) {
+      setTimeout(() => {
+        this.presentAlert2();
+      }, 1500);
+    }
+
+    if (this.alumnoSelecciondo !== undefined && this.cromoSeleccionado !== undefined) {
+      this.OK = this.calculos.AsignaCromo(this.cromo, this.alumnoSelecciondo, this.MiAlumno, this.juegoSeleccionado);
+      console.log(this.OK);
+      console.log('TODO BIEN');
+      setTimeout(() => {
+        this.presentAlert();
+      }, 1500);
+    }
+
   }
 
 }

@@ -1,7 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>JuegoSeleccionado</ion-title>
-    <ion-buttons slot="start">
+    <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;">Mi Juego</ion-title>
+    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
+    <ion-buttons slot="start" style="color: floralwhite;">
         <ion-back-button></ion-back-button>
       </ion-buttons>
   </ion-toolbar>
@@ -10,7 +11,7 @@
   </ion-navbar-->
 </ion-header>
 
-<ion-content class="fondoDegradado">
+<ion-content padding>
   <!--CONTENIDO DE CONTENEDOR DONDE EXPLICAMOS INFORMACIÓN DE LA PANTALLA-->
     <ion-row>
         <ion-col col-12>
@@ -26,26 +27,12 @@
     <div *ngIf="juegoSeleccionado.Modo === 'Individual'">
 
       <ion-grid>
-        <ion-row>
-          <ion-col col-6 >
-              <ion-item class="Informacion"> Información
-                  <ion-icon style="margin-right: 2%;" name="information" item-left ></ion-icon>
-              </ion-item>
-          </ion-col>
-
-          <ion-col col-6>
-              <ion-item class="MisPuntos" (click) = VerMisPuntos();>Mis Puntos
-                  <ion-icon style=" margin-right: 2%;" name="more" item-left ></ion-icon>
-            </ion-item>
-          </ion-col>
-
-      </ion-row>
-        <!--Se define la cabecera de la tabla que recoge los alumnos del juego-->
-        <ion-row>
-          <ion-col col-1 style="margin-left:2%">
+        <!--Se define la cabecera de la tabla del ranking del juego de Puntos-->
+        <ion-row class="cabeceraTabla">
+          <ion-col col-1 style="margin-left: -7%">
             <p ><b>Nombre</b></p>
           </ion-col>
-          <ion-col col-2 style="margin-left: 3%">
+          <ion-col col-2 style="margin-left: -5%">
             <p ><b>Apellido</b></p>
           </ion-col>
           <ion-col col-3 style="margin-left:-5%">
@@ -53,19 +40,18 @@
           </ion-col>
         </ion-row>
 
-        <!--Se define el contenido de la tabla que recoge los alumnos del juego-->
-        <ion-row *ngFor="let item of MisAlumnosAMostrar">
+        <!--Se define el contenido de la tabla , es decir los nombbres y los puntos-->
+        <ion-row class="casillas" *ngFor="let item of MisAlumnosAMostrar">
           <ion-col col-1>
-            <p >{{item.Nombre}}</p>
+            <p ><b>{{item.Nombre}}</b></p>
           </ion-col>
-          <ion-col col-2 style="margin-left: 3%">
-            <p >{{item.PrimerApellido}} {{item.SegundoApellido}}</p>
+          <ion-col col-2>
+            <p ><b>{{item.PrimerApellido}}</b></p>
           </ion-col>
-          <ion-col col-3 style="margin-left:-8%">
-            <p>{{item.PuntosTotalesAlumno}}</p>
+          <ion-col col-3 style="margin-left:5%">
+            <p><b>{{item.PuntosTotalesAlumno}}</b></p>
           </ion-col>
-       </ion-row>
-
+        </ion-row>
       </ion-grid>
     </div>
     <div *ngIf="juegoSeleccionado.Modo !== 'Individual'">
@@ -73,7 +59,7 @@
       <ion-grid>
         <ion-row>
           <ion-col col-6 >
-              <ion-item class="Informacion"> Información
+              <ion-item class="Informacion" (click) = VerInformacion();> Información
                   <ion-icon style="margin-right: 2%;" name="information" item-left ></ion-icon>
               </ion-item>
           </ion-col>
@@ -86,22 +72,22 @@
 
       </ion-row>
         <!--Se define la cabecera de la tabla que recoge los alumnos del juego-->
-        <ion-row>
-          <ion-col col-1 style="margin-left:2%">
+        <ion-row class="cabeceraTabla">
+          <ion-col col-1 style="margin-left:-7%">
             <p ><b>Equipo</b></p>
           </ion-col>
-          <ion-col col-2 style="margin-left: 6%">
+          <ion-col col-2 style="margin-left: 10%">
             <p ><b>Puntos</b></p>
           </ion-col>
         </ion-row>
 
         <!--Se define el contenido de la tabla que recoge los alumnos del juego-->
-        <ion-row *ngFor="let item of MisEquiposJuegoPuntosAMostrar">
-          <ion-col col-1 style="margin-left:2%">
-            <p >{{item.Nombre}}</p>
+        <ion-row class="casillas" *ngFor="let item of MisEquiposJuegoPuntosAMostrar">
+          <ion-col col-1>
+            <p ><b>{{item.Nombre}}</b></p>
           </ion-col>
-          <ion-col col-2 style="margin-left: 6%">
-            <p >{{item.PuntosTotalesEquipo}}</p>
+          <ion-col col-2 style="margin-left: 13%">
+            <p ><b>{{item.PuntosTotalesEquipo}}</b></p>
           </ion-col>
        </ion-row>
 
@@ -113,33 +99,34 @@
     <!--Para el caso de Juego Individual-->
     <div *ngIf="juegoSeleccionado.Modo === 'Individual'">
     <!--Mediante el ion-searchbar permitimos filtrar los alumnos y buscar el deseado-->
-    <ion-item class="IntercambiarCromo" style = "text-align: center" (click) = IrIntercambiarCromos();>Intercambiar Cromos
-      <ion-icon name="albums" item-left ></ion-icon>
+    <ion-item class="IntercambiarCromo" (click) = IrIntercambiarCromos(); style="text-align: center;">
+      <b>Intercambiar Cromos</b>
+      <ion-icon style="color:  rgb(255, 255, 255);" name="albums" item-left ></ion-icon>
     </ion-item>
       <ion-grid>
           <!--Se define la cabecera de la tabla que recoge los alumnos del juego-->
-        <ion-row>
-          <ion-col col-3 style="margin-left:1%">
-            <p >Nombre</p>
-          </ion-col>
-          <ion-col col-6 style="margin-left:1%" >
-            <p >Apellidos</p>
-          </ion-col>
+        <ion-row class="cabeceraTabla">
           <ion-col col-3 style="margin-left:-7%">
+            <p ><b>Nombre</b></p>
+          </ion-col>
+          <ion-col col-6 style="margin-left:-5%" >
+            <p ><b>Apellidos</b></p>
+          </ion-col>
+          <ion-col col-3 style="margin-left:-5%">
             <p>Álbum</p>
           </ion-col>
         </ion-row>
 
           <!--Se define el contenido de la tabla que recoge los alumnos del juego-->
-        <ion-row *ngFor="let item of MisAlumnosJuegoColeccion">
-          <ion-col col-3 style="margin-left:1%">
-            <p >{{item.Nombre}}</p>
+        <ion-row class="casillas" *ngFor="let item of MisAlumnosJuegoColeccion">
+          <ion-col col-3>
+            <p ><b>{{item.Nombre}}</b></p>
           </ion-col>
-          <ion-col col-7 style="margin-left: 3%">
-            <p >{{item.PrimerApellido}} {{item.SegundoApellido}}</p>
+          <ion-col col-7>
+            <p ><b>{{item.PrimerApellido}} {{item.SegundoApellido}}</b></p>
           </ion-col>
-          <ion-col col-2 style="margin-top:6%;margin-left: -4%">
-            <ion-icon color="primary" name="albums" (click)="VerCromosAlumno(item);"></ion-icon>
+          <ion-col col-2 style="margin-top:6%;margin-left: 5%">
+            <ion-icon style="color: rgb(0, 68, 107);" name="albums" (click)="VerCromosAlumno(item);"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -148,22 +135,22 @@
       <!--Mediante el ion-searchbar permitimos filtrar los alumnos y buscar el deseado-->
         <ion-grid>
             <!--Se define la cabecera de la tabla que recoge los alumnos del juego-->
-            <ion-row>
-              <ion-col col-1 style="margin-left:2%">
+            <ion-row class="cabeceraTabla">
+              <ion-col col-1 style="margin-left:-7%">
                 <p ><b>Equipo</b></p>
               </ion-col>
-              <ion-col col-2 style="margin-left: 6%">
+              <ion-col col-2 style="margin-left: 10%">
                 <p ><b>Álbum</b></p>
               </ion-col>
             </ion-row>
   
             <!--Se define el contenido de la tabla que recoge los alumnos del juego-->
-          <ion-row *ngFor="let item of MisEquiposJuegoColecciones">
+          <ion-row class="casillas" *ngFor="let item of MisEquiposJuegoColecciones">
             <ion-col col-1 style="margin-left:2%">
-              <p >{{item.Nombre}}</p>
+              <p ><b>{{item.Nombre}}</b></p>
             </ion-col>
-            <ion-col col-2 style="margin-top:6%;margin-left: 6%">
-              <ion-icon color="primary" name="albums" (click)="VerCromosEquipo(item);"></ion-icon>
+            <ion-col col-2 style="margin-top:6%;margin-left: 13%">
+              <ion-icon style="color: rgb(0, 68, 107);" name="albums" (click)="VerCromosEquipo(item);"></ion-icon>
             </ion-col>
           </ion-row>
         </ion-grid>

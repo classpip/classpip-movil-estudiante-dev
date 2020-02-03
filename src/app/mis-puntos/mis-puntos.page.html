@@ -1,22 +1,43 @@
 <ion-header class="MyAppCabecera">
   <ion-toolbar>
-    <ion-title>Mis Puntos</ion-title>
-
-    <ion-buttons slot="start">
+    <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;">Mis Puntos</ion-title>
+    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
+    <ion-buttons slot="start" style="color: floralwhite;">
       <ion-back-button></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="fondoDegradado">
-  <div *ngIf="MiHistorialPuntos[0];else Aviso_no_puntos">
-    <ion-list *ngFor="let punto of MiHistorialPuntos">
-      <h2 style ="text-align: center">{{punto.Nombre}} :</h2>
-      <p style ="text-align: center" id="p"> {{punto.Puntos}} </p>
+<ion-content>
+
+  <ion-row style="text-align: center;">
+    <ion-col col-6 >
+        <ion-item class="BotonIzquierda" (click) = VerInformacion();> Información
+            <ion-icon style="margin-right: 2%;" name="information" item-left ></ion-icon>
+        </ion-item>
+    </ion-col>
+
+    <ion-col col-6>
+        <ion-item class="BotonDerecha" (click) = VerRanking();>Ver Ranking
+            <ion-icon style=" margin-right: 2%;" name="more" item-left ></ion-icon>
+      </ion-item>
+    </ion-col>
+
+</ion-row>
+  <ion-list>
+    <h2 class= "total"><b>TOTAL: {{MiAlumnoJDP}}</b></h2>
+    <p class="nivel"><b>NIVEL ALCANZADO: {{NombreNivel}}</b></p>
+  </ion-list>
+  <!--ion-item class="total"><b>TOTAL</b>: {{MiAlumnoJDP}}</!--ion-item>
+  <ion-item class="nivel">NIVEL ALCANZADO: {{NombreNivel}}</ion-item-->
+  <ion-list *ngIf="MiHistorialPuntos[0];else Aviso_no_puntos">
+    <ion-list class="item-detail-container" *ngFor="let punto of MiHistorialPuntos">
+      <h2 style ="color: rgb(0, 0, 0) ; font-style: bold;text-align: center">{{punto.Nombre}} :</h2>
+      <p style ="color:  rgb(0, 68, 107); font-style: oblique; font-size:5.5vw;text-align: center"> {{punto.Puntos}} </p>
     </ion-list>
-  </div>
+  </ion-list>
   <ng-template #Aviso_no_puntos >
     <label class = "AvisoNoJuegosActivo" >
       Aún no tienes puntos en este juego</label>
-</ng-template>
+  </ng-template>
 </ion-content>

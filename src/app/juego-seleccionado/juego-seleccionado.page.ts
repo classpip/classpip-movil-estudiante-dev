@@ -41,7 +41,7 @@ export class JuegoSeleccionadoPage implements OnInit {
       if ( this.juegoSeleccionado.Modo === 'Individual') {
         this.MisAlumnosAMostrar = this.calculos.DameAlumnosJuegoPuntos(this.juegoSeleccionado.id);
         console.log('ya he traido los alumnos con los puntos');
-        this.OrdenarPorPuntos();
+        this.MisAlumnosAMostrar = this.OrdenarPorPuntos();
         console.log(this.MisAlumnosAMostrar);
       } else {
         this.MisEquiposJuegoPuntosAMostrar = this.calculos.DameEquiposJuegoPuntos(this.juegoSeleccionado.id);
@@ -82,6 +82,10 @@ export class JuegoSeleccionadoPage implements OnInit {
 
   VerPuntosMiEquipo() {
     this.navCtrl.navigateForward('/puntos-mi-equipo');
+  }
+
+  VerInformacion() {
+    this.navCtrl.navigateForward('/informacion');
   }
 
   IrIntercambiarCromos() {

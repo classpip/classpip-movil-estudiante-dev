@@ -50,4 +50,8 @@ export class AppComponent {
   GoJuegosActivos() {
     this.route.navigateByUrl('inici');
   }
+
+  GoJuegosInactivos() {
+    this.route.navigateByUrl('juegos-inactivos');
+  }
 }
