@@ -14,6 +14,13 @@ The software architecture is composed by two mobile applications for performing 
 
 This repository contains the mobile application for students.
 
+## Git and GitHub
+
+You need to install Git and have an account in GitHub:
+ 
+https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+ 
+https://github.com/
 
 ## Global dependencies
 
