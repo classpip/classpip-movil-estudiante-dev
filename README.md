@@ -43,6 +43,13 @@ After cloning this repository you must install the local dependencies:
 npm install
 ```
 
+## Running
+
+Start the server:
+
+```
+ionic serve --lab
+```
 ## License
 
 Classpip is released under the [Apache2 License](https://github.com/classpip/classpip-mobile/blob/master/LICENSE).
