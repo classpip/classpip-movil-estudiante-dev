@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="140.02193mm"
+   height="21.289179mm"
+   viewBox="0 0 140.02193 21.289179"
+   version="1.1"
+   id="svg7712"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="next-btn-theme2.svg">
+  <defs
+     id="defs7706">
+    <linearGradient
+       gradientTransform="translate(93.552747,-128.16449)"
+       inkscape:collect="always"
+       xlink:href="#linearGradient4753"
+       id="linearGradient4755"
+       x1="-61.510139"
+       y1="251.29544"
+       x2="78.511787"
+       y2="251.29544"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4753">
+      <stop
+         style="stop-color:#1c467d;stop-opacity:1"
+         offset="0"
+         id="stop4749" />
+      <stop
+         style="stop-color:#d7896c;stop-opacity:0.95686275"
+         offset="1"
+         id="stop4751" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="49.612048"
+     inkscape:cy="41.099266"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7709">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-32.042606,-112.48637)">
+    <rect
+       style="opacity:1;fill:url(#linearGradient4755);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.93011856;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect921-3-8-2-5-6"
+       width="140.02193"
+       height="21.289179"
+       x="32.042606"
+       y="112.48637"
+       ry="10.644589" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444444px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#ffffff;fill-opacity:0;stroke:none;stroke-width:0.26458332;"
+       x="99.133377"
+       y="123.00323"
+       id="text819"><tspan
+         sodipodi:role="line"
+         id="tspan817"
+         x="99.133377"
+         y="123.00323"
+         style="stroke-width:0.26458332;-inkscape-font-specification:'sans-serif, Bold';font-family:sans-serif;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:5.64444444px;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;fill:#ffffff;fill-opacity:0;">Empecemos!</tspan></text>
+  </g>
+</svg>

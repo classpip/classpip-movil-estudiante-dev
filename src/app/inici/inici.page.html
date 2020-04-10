@@ -1,34 +1,75 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title style="color: floralwhite; margin-top: 7%; margin-right: 10%;">Mis Juegos Activos</ion-title>
-    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
-    <ion-buttons slot="start" style="color: floralwhite;">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>    
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-menu-button class="menu-btn"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mis Juegos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content background-color="secondary">
+<ion-content class="juegos-content">
 
-        <!--Se define la cabecera de los Juegos Activos-->
-        <!--ion-item class="CabeceraActivos">Juegos Activos
-                <ion-icon name="logo-game-controller-a" item-start ></ion-icon>
-        </ion-item-->
-    
-              <!--Se define el contenido de la tabla de Juegos Activos-->
-              <ion-list *ngIf="JuegosActivos[0];else Aviso_no_juegos_activos">
-                    <!--Si no tiene valor JuegosActivos,
-                    entonces aparecerá la alerta de Aviso_no_Juegos_Activos-->
-                        <ion-list class="container" *ngFor="let juego of JuegosActivos" (click) = JuegoSeleccionado(juego) >
-                          <h2 style="text-align: center;">{{juego.Tipo}}</h2>
-                          <p style="text-align: center;" id="p"> {{juego.Modo}} </p>
-                        </ion-list>
+  <!--Se define la cabecera de los Juegos Activos-->
+  <!--ion-item class="CabeceraActivos">Juegos Activos
+          <ion-icon name="logo-game-controller-a" item-start ></ion-icon>
+  </ion-item-->
 
-    
-              </ion-list>
-              <ng-template #Aviso_no_juegos_activos >
-                <label class = "AvisoNoJuegosActivo" >
-                  <b>No tienes juegos activos</b></label>
-        </ng-template>
+  <!--Se define el contenido de la tabla de Juegos Activos-->
+  <!-- <ion-list *ngIf="JuegosActivos[0];else Aviso_no_juegos_activos"> -->
+  <!--Si no tiene valor JuegosActivos,
+              entonces aparecerá la alerta de Aviso_no_Juegos_Activos-->
+  <!-- <ion-list class="container" *ngFor="let juego of JuegosActivos" (click) = JuegoSeleccionado(juego) >
+                    <h2 style="text-align: center;">{{juego.Tipo}}</h2>
+                    <p style="text-align: center;" id="p"> {{juego.Modo}} </p>
+                  </ion-list>
+        </ion-list>
+        <ng-template #Aviso_no_juegos_activos >
+          <label class = "AvisoNoJuegosActivo" >
+            <b>No tienes juegos activos</b></label>
+  </ng-template> -->
+
+  <div>
+    <ion-row style="height: 25px"></ion-row>
+    <img height= "40px" src="../../assets/home/Active-games-banner.svg">
+
+    <ion-slides [options]="sliderConfig">
+      <ion-slide *ngFor="let juego of JuegosActivos">
+        <div>
+          <ion-card class="juegos-card-bg">
+            <ion-card-header>
+              <ion-card-title class="card-title"> {{ juego.Tipo }} </ion-card-title>
+              <ion-card-subtitle class="card-stitle">{{ juego.Modo }}</ion-card-subtitle>
+              <ion-card-content>        
+                <img class = "card-img" src="../../assets/img/gameson.svg">
+                <ion-row style="height: 10px"></ion-row>
+                <ion-button expand="full" (click)=JuegoSeleccionado(juego) shape="round">Ver más</ion-button>
+              </ion-card-content>
+            </ion-card-header>
+          </ion-card>
+        </div>
+      </ion-slide>
+    </ion-slides>
+  </div>
+
+  <div>
+    <img height= "40px" src="../../assets/home/inactive-games-banner.svg">
+
+    <ion-slides [options]="sliderConfig">
+      <ion-slide *ngFor="let juego of JuegosInactivos">
+        <div>
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title> {{ juego.Tipo }} </ion-card-title>
+              <ion-card-subtitle>{{ juego.Modo }}</ion-card-subtitle>
+              <ion-card-content>
+                <img src="../../assets/img/gamesoff.svg">
+                <ion-button class="card-btn" (click)=JuegoSeleccionado(juego) expand="full" shape="round">Ver más</ion-button>
+              </ion-card-content>
+            </ion-card-header>
+          </ion-card>
+        </div>
+      </ion-slide>
+    </ion-slides>
+  </div>
 
 </ion-content>

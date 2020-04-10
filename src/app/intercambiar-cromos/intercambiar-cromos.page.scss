@@ -1,19 +1,6 @@
-ion-toolbar {
-    --ion-background-color:rgb(0, 68, 107);
-  }
-  .ClasspipCabeceraimg{
-    position:relative;
-    width:30px;
-    height:30px;
-    margin-left: 2%;
-    margin-right: -25%;
-    margin-top: -10%;
-    margin-bottom: 3%;
-}
 
 .selectcromo {
     color: rgb(0, 68, 107);
-    margin-left: 25%;
     height: 40px;
     max-height: 40px;
     width: 140px;
@@ -27,7 +14,6 @@ ion-toolbar {
 
 .selectcomp {
     color: rgba(223, 44, 44, 0.966);
-    margin-left: 25%;
     height: 40px;
     max-height: 40px;
     width: 140px;
@@ -38,19 +24,3 @@ ion-toolbar {
     border-bottom-right-radius: 10px;
     box-shadow: 0px 6px 9px 0px rgba(223, 44, 44, 0.966);
 }
-
-.IntercambiarCromo{
-    --ion-background-color:rgb(0, 68, 107) ;
-    color:  rgb(255, 255, 255);
-    text-align: center;
-    height: 150%;
-    max-height: 150px;
-    width:100%;
-    max-width: 150px;
-    // margin-top:-15%;
-    margin-left: 23%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }

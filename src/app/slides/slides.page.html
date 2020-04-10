@@ -1,0 +1,17 @@
+<ion-content class ="slider-content">
+
+    <ion-slides class="slider-bullets" pager="true">
+
+      <ion-slide class="slider-slide" *ngFor="let slide of slides">
+        <div>
+          <img [src]="slide.img">
+        </div>
+        <div>
+          <h3 [innerHTML]="slide.text"></h3>
+        </div>
+      </ion-slide>
+    </ion-slides>
+    <ion-button (click)="nextpage()" class="slider-btn" shape="round">
+      ENTENDIDO
+    </ion-button>
+</ion-content>

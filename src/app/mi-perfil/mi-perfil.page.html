@@ -1,24 +1,52 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;">Mi Perfil</ion-title>
-    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
-    <ion-buttons slot="start" style="color: floralwhite;">
+<!-- <ion-header>
+  <ion-toolbar color="primary">
+    <ion-title style="color: rgb(255, 255, 255); font-size: 15px;">Mi Perfil</ion-title>
+    <ion-buttons slot="start" class="menu-btn">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
-<ion-content >
+<!-- <ion-content>
   <ion-row *ngFor="let Imagen of MiImagenAlumno;let i = index">
-            <img [src]="MiImagenAlumno[i]" >
-  </ion-row>
-  <!--ion-row>
+    <img [src]="MiImagenAlumno[i]">
+  </ion-row> -->
+<!--ion-row>
     <ion-button (click)="selectImage()">
       Pick Image to Crop
     </ion-button>
   </ion-row-->
-  <button ion-button color="primary" (click)="accessGallery()">Open Gallery</button>
-  <img [src]="base64Image" *ngIf="base64Image" /> 
-   <p style="text-align: center; color: rgb(0, 68, 107);font-size:5.5vw;"><b>{{Alumno.Nombre}} {{Alumno.PrimerApellido}} {{Alumno.SegundoApellido}}</b> </p>
+<!--   <button ion-button color="primary" (click)="accessGallery()">Open Gallery</button>
+  <img [src]="base64Image" *ngIf="base64Image" />
+  <p style="text-align: center; color: rgb(0, 68, 107);font-size:5.5vw;"><b>{{Alumno.Nombre}} {{Alumno.PrimerApellido}}
+      {{Alumno.SegundoApellido}}</b> </p>
 
+</ion-content> -->
+
+<ion-content>
+  <div class="perfil-header">
+    <h2>Mi Perfil</h2>
+    <!-- <div class="spacer">
+      <div class="puntos">
+        <ion-badge color="primary"> 0 </ion-badge>
+        <p>Puntos</p>
+      </div>
+
+      <div class="puntos">
+        <ion-badge color="primary">100</ion-badge>
+        <p>Cromos</p>
+      </div>
+    </div> -->
+  </div>
+  <div class="perfil-pic">
+    <div class="border-out">
+      <div class="border-in">
+        <div class="img-box">
+          <img src="../../assets/img/usuario.svg">
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="text-align: center; color: rgb(0, 0, 0);font-size:15px;"><b>{{Alumno.Nombre}} {{Alumno.PrimerApellido}}
+    <br> {{Alumno.SegundoApellido}}</b> </p>
 </ion-content>

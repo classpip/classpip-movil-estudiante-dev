@@ -24,3 +24,407 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+/* AQUÍ VAN TODOS LOS ESTILOS QUE ENGLOBAN LA APLICACIÓN. PONEMOS A DISPOSICIÓN DEL 
+USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
+
+
+/* ------------------------ESTILO 2---------------------------- */
+/* +++++++++++++++++++++++ 2.1 SLIDER ++++++++++++++++++++++++++*/
+
+.slider-content {
+  --overflow: hidden;
+  text-align: center;
+  .slider-slide {
+    display: block;
+    padding-top: 40px;
+  }
+  .slider-slide img{
+    position:relative;
+    margin-top: -60px;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 60px;
+    color: #17447eff;
+  }
+  .slider-bullets {
+    --bullet-background: #DC8B6BF7;
+    --bullet-background-active: #1A457DFF;
+  }
+  .slider-btn {
+    margin-top: 40px;
+    width: 180px;
+    --background: linear-gradient(to right, #000066 -50%, #ff9999 100%);
+  }
+}
+
+/* ++++++++++++++++++++++++ 2.2 LOG IN +++++++++++++++++++++++++++*/
+
+.login-content {
+  --overflow: hidden;
+  --background: linear-gradient(to top right, #000066 -20%, #ff9999 100%);
+  text-align: center;
+
+  .login-logo {
+    position: absolute;
+    display: block;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    margin-bottom: 25px;
+    .logo {
+      content: url('../src/assets/Login/login-logo-theme2.svg');
+    }
+  }
+
+  .login-credentials {
+    position: absolute;
+    display: block;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    color: #ffffff;
+    opacity: 0.9;
+    ion-item {
+      --border-radius: 20px;
+      --border-width: 2px;
+      --background: rgba(255, 255, 255, 0);
+      --border-color: rgb(255, 255, 255);
+    ion-input {
+        color: #ffffff;
+    }
+    ion-label {
+        color: #ffffff;
+    }
+    }
+  
+    .user-input-logo {
+      content: url('../src/assets/Login/login-usericon-theme2.svg');
+    }
+    .pass-input-logo {
+      content: url('../src/assets/Login/login-lockicon-theme2.svg');
+    }
+  }
+  
+  .login-btn {
+    margin-top: 40px;
+    width: 180px;
+    --border-radius: 20px;
+      --border-width: 2px;
+      --border-style: solid;
+      --background: #ffffff00;
+      --border-color: rgb(255, 255, 255);
+  }
+}
+
+/* ++++++++++++++++++++++++ 2.3 JUEGOS +++++++++++++++++++++++++++*/
+
+.juegos-header {
+  text-align: justify;
+  background: #8b6f73bf;
+    .header-toolbar {
+      --background: #354f7bff;
+      color: white;
+    }
+    .menu-btn {
+      color: white;
+    }
+}
+
+.menu-title{
+  h2 {
+    margin-top: 52px;
+    font-size: 24px;
+    color: white;
+  }
+  .menu-btn{
+  color: white !important;
+  margin-top: -90px;
+  }
+}
+
+.juegos-content {
+  --background: #fffafaff;
+  text-align: center;
+}
+
+.juegos-card-bg {
+  margin-top: 20px;
+  max-height: fit-content;
+  text-align: center;
+  background: linear-gradient(to top right, #68b2ffff -50%, #ff9999 100%);
+  .card-title {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color:white;
+  }
+  .card-stitle {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+  }
+  ion-card{
+    display: flex;
+    flex-direction: column;
+    width: 80% !important;
+    margin: 10 !important;
+  }
+}
+
+ion-tab-bar, ion-tab-button{
+  background-color: #f0926afb;
+}
+ ion-tab-bar, ion-icon{
+   color: white;
+}
+
+ .juegos-banner {
+  border-style: ridge;
+  text-align: center;
+  border-radius: 10px;
+}
+
+ /* ++++++++++++++++++++++++ 2.4 PERFIL +++++++++++++++++++++++++++*/
+
+ .perfil-header {
+  background: linear-gradient(to top, #000066 -50%, #ff9999 100%);
+  height: 200px;
+  padding-top: 1px;
+  h2 {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+.perfil-pic {
+  display: flex;
+  justify-content: center;
+  margin-top: -76px;
+  .border-in {
+    border: 4px solid white;
+    border-radius: 50%;
+    width: fit-content;
+    background-color: white;
+  }
+  .border-out {
+    border: 4px solid #ff9999;
+    border-radius: 50%;
+    width: fit-content;
+  }
+  .img-box {
+    height: 130px;
+    width: 130px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+}
+
+ /* ++++++++++++++++++++++++ 2.5 PUNTOS +++++++++++++++++++++++++++*/
+
+ .puntos-content{
+  --overflow: hidden;
+  text-align: center;
+  
+  h3 {
+    color: #000066;
+    font-size: 15px;
+  }
+  
+  .puntos-info {
+    position: absolute;
+    bottom: 0;
+    height: 70px;
+    width: 100%;
+    padding-top: 20px;
+    background: linear-gradient(to top, #000066 -50%, #ff9999 100%);
+    transition: all 1s;
+    border-radius: 85% 85% 0 0 / 30%;
+  
+    &.active {
+      height: calc(100% - 100px);
+    }
+  
+    .toggle-text {
+      color: white;
+      font-size: 15px;
+    }
+  
+    .expansion-panel {
+      margin-top: 5%;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 80%;
+    }
+  }
+ }
+ .puntos-list-bg {
+  background: transparent;
+  ion-item {
+    --background: transparent;
+    h2 {
+      font-size: 16px;
+    }
+  }
+}
+
+ /* ++++++++++++++++++++++++ 2.6 MENU-LATERAL +++++++++++++++++++++++++++*/
+
+ .sidemenu-content {
+  --background: linear-gradient(to top, #000066 -50%, #ff9999 100%);
+
+  .user-image {
+    display: flex;
+    justify-content: center;
+    margin-top: 120px;
+    h2 {
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+      .border {
+        border: 4px solid white;
+        border-radius: 50%;
+        width: fit-content;
+        background-color: white;
+        .img-box {
+          height: 100px;
+          width: 100px;
+          border-radius: 50%;
+          overflow: hidden;
+        }
+      }
+  }
+  
+  .sidemenu-items {
+    --background: transparent;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+  }
+}
+
+ /* ++++++++++++++++++++++++ 2.7 JUEGO SELECCIONADO +++++++++++++++++++++++++++*/
+
+.juegoseleccionado-content {
+  --background: #fffafaff;
+  text-align: center;
+  .cabecera-tabla {
+    background-color: #ff9999 ;
+    margin-top:5%;
+    height:40%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding-inline-start: 7%;
+    p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #000066;
+    }
+  }
+  .casillas-tabla{
+    background-color:#ff999949;
+    border-style: solid;
+    border-width: 0.5px;
+    border-color: #ff9999;
+    p {
+      font-size: 14px;
+      color: #504d4d;
+    }
+  }
+}
+
+.intercambiar-btn {
+  --background: #354f7bff;
+  margin-top: 5%;
+}
+
+/* ++++++++++++++++++++++++ 2.8 CAMBIAR CROMOS +++++++++++++++++++++++++++*/
+
+.intercambiarcromos-content {
+  text-align: center;
+}
+
+
+/* ------------------------ESTILO 4---------------------------- */
+
+/* .slider-bullets {
+  --bullet-background: grey;
+  --bullet-background-active: #8890B2;
+} 
+
+h3 {
+  color: #17447eff;
+} 
+*/
+
+/* .login-content {
+  --overflow: hidden;
+  --background: url('../src/assets/Login/login-bg-theme4.svg') no-repeat center center / cover;
+  text-align: center;
+} 
+
+.login-logo {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  margin-bottom: 25px;
+  .logo {
+    content: url('../src/assets/Login/login-logo-theme4.svg');
+  }
+}
+
+.login-credentials {
+  position: absolute;
+  display: block;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 65%;
+  color: #000000;
+  opacity: 0.9;
+  ion-item {
+    --border-radius: 2px;
+    --border-width: 1px;
+    --background: rgba(255, 255, 255, 0);
+    --border-color: rgb(0, 0, 0);
+  ion-input {
+      color: rgb(88, 80, 80);
+  }
+  ion-label {
+      color: rgb(88, 80, 80);
+  }
+  }
+
+  .user-input-logo {
+    content: url('../src/assets/Login/login-usericon-theme4.svg');
+  }
+  .pass-input-logo {
+    content: url('../src/assets/Login/login-lockicon-theme4.svg');
+  }
+}
+
+.login-btn {
+  margin-top: 40px;
+  width: 180px;
+  color: black;
+  font-weight: bold;
+  --border-radius: 20px;
+  --border-width: 2px;
+  --border-style: solid;
+  --background: #4fde87ae;
+  --background-hover: #7eec96;
+  --border-color: white;
+} */

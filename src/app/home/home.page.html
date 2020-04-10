@@ -1,32 +1,25 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title class="titulo">
-      Classpip Alumno
-    </ion-title>
-    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
-  </ion-toolbar>
-</ion-header>
 
-<ion-content padding class="fondoDegradado" style="text-align: center;">
-  <!--Se define la fuente de donde cogeremos la imagen de Classpip -->
-  <img src="../../assets/icon/Captura.PNG"  id="imagenClasspip">
+<ion-content padding class="login-content">
+  <div>
 
+    <div class="login-logo">
+      <img class="logo" width="150" height="150">
+    </div>
 
-  <!--Se define el input del nombre de usuario y se aplica la relacion ngModel para
-  pasar el valor de nombre a la funcion Autentificar-->
-  <ion-item class="ContenedorInput" >
-    <ion-label style="color: rgb(0, 68, 107);" fixed><b>Username</b></ion-label>
-    <ion-input type="text" value="" name="nombre" placeholder="nombre" requiered [(ngModel)]="nombre"></ion-input>
-  </ion-item>
+    <div class="login-credentials">
+      <ion-item lines="none">
+        <ion-input type="text" value="" name="User" placeholder="User" requiered [(ngModel)]="nombre"></ion-input>
+        <img class="user-input-logo" width="21" height="21" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
 
-  <!--Se define el input de la contraseña del usuario y se aplica la relacion ngModel para
-  pasar la contraseña a la funcion Autentificar-->
-  <ion-item class="ContenedorInput" >
-      <ion-label style="color: rgb(0, 68, 107);"fixed><b>Password</b></ion-label>
-      <ion-input type="password" name="apellido" placeholder="apellido" requiered [(ngModel)]="apellido"></ion-input>
-  </ion-item>
-
-  <!--Se define el boton de autentificar el usuario y se accede a la funcion Autentificar-->
-  <button (click)="Autentificar();" class="IniciarSesion" ion-button  round  >INICIAR SESIÓN
-  </button>
+      <ion-item lines="none">
+        <ion-input type="password" name="password" placeholder="Password" requiered [(ngModel)]="apellido"></ion-input>
+        <img class="pass-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+      <ion-button (click)="Autentificar();" class="login-btn">Log In
+      </ion-button>
+    </div>
+    
+  </div>
 </ion-content>

@@ -1,44 +1,91 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;">Mis Grupos</ion-title>
-    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
-    <ion-buttons slot="start" style="color: floralwhite;">
-      <ion-menu-button></ion-menu-button>
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-menu-button class="menu-btn"></ion-menu-button>
     </ion-buttons>
+    <ion-title>Mis Grupos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <!--div *ngFor="let elem of listaGruposYAlumnos;let i = index">
-    <ion-row>Grupo: {{elem.Grupo}}</ion-row>
-    <div *ngFor="let alum of listaGruposYAlumnos[i].Alumnos">
-      <ion-row> {{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}</ion-row>
-    </div>
-  </!div-->
-  <div class = "list" style="background-color: rgb(231, 159, 159); padding-bottom: 5%; padding-top:2%; border-top-right-radius: 20px;border-top-left-radius: 20px;border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.801)   ">
-    <p style="font-size:5.5vw; text-align: center;"><b>ALUMNOS:</b></p>
-    <div class = "item item-divider" *ngFor="let elem of listaGruposYAlumnos;let i = index;"> <p><b>{{elem.Grupo}}</b></p>
-      <div class = "item" *ngFor="let alum of listaGruposYAlumnos[i].Alumnos" >-{{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}</div>
-    </div>
-    
+
+  <div padding>
+    <ion-segment [(ngModel)]="Tipo">
+      <ion-segment-button value="Alumnos">
+        <ion-icon style="color: rgb(15, 15, 146);" name="person"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="Equipos">
+        <ion-icon style="color: rgb(15, 15, 146);" name="people"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
   </div>
-  <p></p>
-  <div class = "list" style="background-color: rgb(145, 208, 245); padding-bottom: 5%; padding-top:2%; border-top-right-radius: 20px;border-top-left-radius: 20px;border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.801)   ">
-    <p style="font-size:5.5vw; text-align: center;"><b>EQUIPOS:</b></p>
-    <div class = "item item-divider" *ngFor="let elem of listaGruposYEquipos;let i = index;"> <p><b>{{elem.Grupo}}</b></p>
-      <div class = "item" *ngFor="let equipo of listaGruposYEquipos[i].Equipo" >-{{equipo.Nombre}}</div>
+
+  <div [ngSwitch]="Tipo">
+
+    <div *ngFor="let elem of listaGruposYAlumnos;let i = index">
+      <ion-row style="height: 5px"></ion-row>
+      <ng-container *ngSwitchCase="'Alumnos'">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <b>{{elem.Grupo}}</b>
+          </mat-expansion-panel-header>
+          <ion-card *ngFor="let alum of listaGruposYAlumnos[i].Alumnos">
+            <ion-item lines="none">
+              <ion-avatar slot="start">
+                <img src="../../assets/img/usuario.svg">
+              </ion-avatar>
+              <ion-label>
+                <h2> {{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}} </h2>
+                <p>-Frase alumno-</p>
+              </ion-label>
+            </ion-item>
+          </ion-card>
+        </mat-expansion-panel>
+      </ng-container>
     </div>
-    
+
+    <div *ngFor="let elem of listaGruposYEquipos;let i = index;">
+      <ion-row style="height: 5px"></ion-row>
+      <ng-container *ngSwitchCase="'Equipos'">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <b>{{elem.Grupo}}</b>
+          </mat-expansion-panel-header>
+          <ion-card *ngFor="let equipo of listaGruposYEquipos[i].Equipo">
+            <ion-item lines="none">
+              <ion-avatar slot="start">
+                <img src="../../assets/img/usuario.svg">
+              </ion-avatar>
+              <ion-label>
+                <h2> {{equipo.Nombre}} </h2>
+              </ion-label>
+            </ion-item>
+          </ion-card>
+        </mat-expansion-panel>
+      </ng-container>
+    </div>
+
   </div>
-  <!--accordion *ngFor="let elem of listaGruposYAlumnos;let i = index;" class="list accordion-list">
-      <ion-item tappable [ngClass]="{'section-active': elem.open, 'section': !elem.open}" class="accordion-item">
-        <ion-icon slot="start" name="arrow-forward" *ngIf="!elem.open"></ion-icon>
-        <ion-icon slot="start" name="arrow-down" *ngIf="elem.open"></ion-icon>
-        <ion-label>{{elem.Grupo}}</ion-label>
-      </ion-item>
-      <div *ngFor="let alum of listaGruposYAlumnos[i].Alumnos;" class="accordion-item-content"> 
-        {{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}}
-      </div>
-  </accordion-->
+
+  <!-- 
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        This is the expansion 1 title
+      </mat-expansion-panel-header>
+  
+      <ion-card>
+        <ion-item lines="none">
+          <ion-avatar slot="start">
+            <img src="../../assets/img/usuario.svg">
+          </ion-avatar>
+          <ion-label>
+            <h2> HOLA </h2>
+            <p>-Frase alumno-</p>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+  
+    </mat-expansion-panel> -->
+
 
 </ion-content>

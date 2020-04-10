@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { SesionService} from '../servicios/sesion.service';
-import { NavController, LoadingController, AlertController } from '@ionic/angular';
+import { NavController, LoadingController, AlertController} from '@ionic/angular';
 import { PeticionesAPIService} from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {  Juego, Equipo, Alumno, MiAlumnoAMostrarJuegoDePuntos, Grupo, MiEquipoAMostrarJuegoDePuntos} from '../clases/index';
-
+import { IonContent } from '@ionic/angular';
 @Component({
   selector: 'app-juego-seleccionado',
   templateUrl: './juego-seleccionado.page.html',
@@ -12,12 +12,16 @@ import {  Juego, Equipo, Alumno, MiAlumnoAMostrarJuegoDePuntos, Grupo, MiEquipoA
 })
 export class JuegoSeleccionadoPage implements OnInit {
 
+  @ViewChild(IonContent) content: IonContent;
   juegoSeleccionado: Juego;
   MisAlumnosAMostrar: MiAlumnoAMostrarJuegoDePuntos[] = [];
   MisEquiposJuegoPuntosAMostrar: MiEquipoAMostrarJuegoDePuntos[] = [];
   MisAlumnosJuegoColeccion: Alumno[] = [];
   MisEquiposJuegoColecciones: Equipo[] = [];
+  MiAlumno: Alumno;
+  NuestroHistorialPuntos: any [] = [];
   Grupo: Grupo;
+  muestralo: boolean = false;
 
   constructor(
     private sesion: SesionService,
@@ -28,6 +32,8 @@ export class JuegoSeleccionadoPage implements OnInit {
 
   ngOnInit() {
     this.juegoSeleccionado = this.sesion.DameJuego();
+    this.MiAlumno = this.sesion.DameAlumno();
+    this.NuestroHistorialPuntos = this.calculos.DameHistorialPuntosMiEquipo(this.MiAlumno.id, this.juegoSeleccionado.id);
     console.log(this.juegoSeleccionado);
     this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe(
       MiGrupo => {
@@ -36,6 +42,7 @@ export class JuegoSeleccionadoPage implements OnInit {
         console.log('NO ENTRA AQUI???');
       }
     );
+
     console.log( 'Este es el grupo' + this.Grupo );
     if ( this.juegoSeleccionado.Tipo === 'Juego De Puntos' ) {
       if ( this.juegoSeleccionado.Modo === 'Individual') {
@@ -80,10 +87,6 @@ export class JuegoSeleccionadoPage implements OnInit {
     this.navCtrl.navigateForward('/mis-puntos');
   }
 
-  VerPuntosMiEquipo() {
-    this.navCtrl.navigateForward('/puntos-mi-equipo');
-  }
-
   VerInformacion() {
     this.navCtrl.navigateForward('/informacion');
   }
@@ -98,5 +101,10 @@ export class JuegoSeleccionadoPage implements OnInit {
       return obj2.PuntosTotalesAlumno - obj1.PuntosTotalesAlumno;
     });
     return this.MisAlumnosAMostrar;
+  }
+
+  VerRanking() {
+    this.muestralo = true;
+    this.content.scrollToBottom(1500);
   }
 }
