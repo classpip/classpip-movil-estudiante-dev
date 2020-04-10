@@ -4,7 +4,6 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
-import { HomePage } from '../app/home/home.page';
 import { Alumno } from '../app/clases/Alumno';
 import { SesionService } from '../app/servicios/sesion.service';
 @Component({
@@ -15,6 +14,7 @@ import { SesionService } from '../app/servicios/sesion.service';
 export class AppComponent {
 
   MiAlumno: Alumno;
+  navigate : any;
   constructor(
     private sesion: SesionService,
     private route: Router,
@@ -35,23 +35,24 @@ export class AppComponent {
     });
   }
 
-  GoHome() {
+  
+  GoOut() {
     this.route.navigateByUrl('/home');
   }
 
   GoMiPerfil() {
-    this.route.navigateByUrl('mi-perfil');
+    this.route.navigateByUrl('tabs/mi-perfil');
   }
 
-  GoGrupos() {
-    this.route.navigateByUrl('mis-grupos');
+  GoMisGrupos() {
+    this.route.navigateByUrl('tabs/mis-grupos');
   }
 
-  GoJuegosActivos() {
-    this.route.navigateByUrl('inici');
+  GoMisJuegos() {
+    this.route.navigateByUrl('tabs/inici');
   }
-
-  GoJuegosInactivos() {
+  
+/*   GoJuegosInactivos() {
     this.route.navigateByUrl('juegos-inactivos');
-  }
+  } */
 }

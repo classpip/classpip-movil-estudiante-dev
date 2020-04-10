@@ -1,29 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule } from '@angular/core';
 import { NavController, LoadingController, AlertController } from '@ionic/angular';
-import { PeticionesAPIService} from '../servicios/index';
+import { PeticionesAPIService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
-import {  Juego, Equipo, Alumno, AlumnoJuegoDePuntos, Nivel, TablaEquipoJuegoDePuntos} from '../clases/index';
-import { SesionService} from '../servicios/sesion.service';
+import { Juego, Equipo, Alumno, AlumnoJuegoDePuntos, Nivel, TablaEquipoJuegoDePuntos, Punto } from '../clases/index';
+import { SesionService } from '../servicios/sesion.service';
+
+
 @Component({
   selector: 'app-mis-puntos',
   templateUrl: './mis-puntos.page.html',
   styleUrls: ['./mis-puntos.page.scss'],
 })
+
 export class MisPuntosPage implements OnInit {
+  
+  infoView: boolean = false;
   juegoSeleccionado: Juego;
   MiAlumno: Alumno;
-  MiHistorialPuntos: any [] = [];
+  MiHistorialPuntos: any[] = [];
   EsteAlumnoJuegoDePuntos: any[] = [];
   NivelesDelJuego: Nivel[] = [];
   MiNivel: Nivel;
   NombreNivel: string;
   MiAlumnoJDP: number;
+  TodosLosPuntos: Punto[] = [];
+
   constructor(
     private sesion: SesionService,
     public navCtrl: NavController,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService,
   ) { }
+
+  toggleInfoView () {
+    this.infoView = !this.infoView;
+  }
 
   ngOnInit() {
     this.juegoSeleccionado = this.sesion.DameJuego();
@@ -40,13 +51,10 @@ export class MisPuntosPage implements OnInit {
           AlumnoJDP => {
             this.MiAlumnoJDP = AlumnoJDP[0].PuntosTotalesAlumno;
             console.log(this.MiAlumnoJDP);
-            this.peticionesAPI.DameNivelesJuegoDePuntos(this.juegoSeleccionado.id).subscribe(
-              Niveles => {
-                this.NivelesDelJuego = Niveles;
-                this.MiNivel = this.NivelesDelJuego.filter (nivel => nivel.id === AlumnoJDP[0].nivelId)[0];
-                console.log(this.MiNivel.Nombre);
-                this.NombreNivel = this.MiNivel.Nombre;
-                console.log(this.NombreNivel);
+            this.peticionesAPI.DamePuntosJuegoDePuntos(this.juegoSeleccionado.id).subscribe(
+              puntos => {
+                this.TodosLosPuntos = puntos;
+                console.log(this.TodosLosPuntos);
               }
             );
           });
@@ -56,10 +64,6 @@ export class MisPuntosPage implements OnInit {
 
   VerRanking() {
     this.navCtrl.navigateForward('/juego-seleccionado');
-  }
-
-  VerInformacion() {
-    this.navCtrl.navigateForward('/informacion');
   }
 
 }

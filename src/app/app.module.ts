@@ -14,6 +14,7 @@ import { IniciPageModule } from './inici/inici.module';
 
 import { Camera } from '@ionic-native/Camera/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +22,7 @@ import { File } from '@ionic-native/file/ngx';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule
     , HttpModule
   , HttpClientModule
-, IniciPageModule],
+, IniciPageModule, BrowserAnimationsModule],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
     StatusBar,

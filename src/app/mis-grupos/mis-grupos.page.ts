@@ -15,6 +15,7 @@ export class MisGruposPage implements OnInit {
   Alumno: Alumno;
   listaGruposYAlumnos: any [];
   listaGruposYEquipos: any [];
+  Tipo: string;
   constructor(
     private peticionesAPI: PeticionesAPIService,
     private sesion: SesionService,
@@ -34,5 +35,7 @@ export class MisGruposPage implements OnInit {
         // Necesito una nueva clase para añadir el id del grupo y asi diferenciarlos a la hora de mostrarlos por grupo
       });
   }
-
+  ionViewWillEnter (){
+    this.Tipo = "Alumnos";
+  }
 }

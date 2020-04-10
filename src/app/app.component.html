@@ -1,46 +1,36 @@
 <ion-app>
-  <ion-menu side="start" menuId="first" contentId="content1" color="--ion-color-tertiary-tint">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;">Menú</ion-title>
-        <img class = "ClasspipCabeceraimg" src="../assets/icon/classpip1.png">
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <!--div *ngFor="let Alumno of MiAlumno"-->
-        <img src="../assets/icon/UsuarioAlumno.jpg" class="img">
-          <ion-label style="text-align: center; font-size: 120%; color:rgb(255, 255, 255)"></ion-label>
-        
-        <!--Se define los botones que se visualizarán en el desplegable lateral del usuario-->
-        <ion-menu-toggle auto-hide="true">
-          <ion-item menuClose ion-item (click)="GoMiPerfil();"><b>Mi Perfil</b>
-            <ion-icon item-left class="icon" name="person"></ion-icon>
-            <ion-icon item-right class="flecha" style="margin-left: 47%;" name="arrow-forward"  ></ion-icon>
-          </ion-item>
-        
-          <ion-item style="margin-top: 8%" menuClose ion-item (click)="GoGrupos();"><b>Mis grupos</b>
-            <ion-icon item-left class="icon" name="people"></ion-icon>
-            <ion-icon item-right class="flecha" style="margin-left: 35%;"name="arrow-forward"  ></ion-icon>
-          </ion-item>
-        
-          <ion-item menuClose ion-item (click)="GoJuegosActivos();"><b>Mis Juegos Activos</b>
-            <b><ion-icon item-left class="icon" name="logo-game-controller-a"></ion-icon></b>
-            <ion-icon item-right class="flecha" style="margin-left: 5%;"name="arrow-forward"  ></ion-icon>
-          </ion-item>
-    
-          <ion-item menuClose ion-item (click)="GoJuegosInactivos();"><b>Mis Juegos Inactivos</b>
-              <ion-icon item-left class="icon" name="logo-game-controller-a"></ion-icon>
-              <ion-icon item-right class="flecha" style="margin-left: 5%;" name="arrow-forward"  ></ion-icon>
-          </ion-item>
+  <ion-menu side="start" menuId="first" contentId="content1">
+    <ion-content class="sidemenu-content">
 
-          <ion-item menuClose ion-item (click)="GoHome();" ><b>Cerrar Sesión</b>
-              <ion-icon item-left class="icon" name="log-out"></ion-icon>
-              <ion-icon item-right class="flecha" style="margin-left: 26%;" name="arrow-forward"  ></ion-icon>
-          </ion-item>
-        </ion-menu-toggle>
-        <!--/div-->
+      <div class="user-image">
+        <div class="border">
+          <div class="img-box">
+            <img src="../../assets/img/usuario.svg">
+          </div>
+        </div>
+      </div>
+
+      <ion-row style="height: 40px"></ion-row>
+
+      <ion-menu-toggle auto-hide="true">
+        <ion-item lines="none" class="sidemenu-items" (click)="GoMisJuegos();" routerDirection="forward">
+          <ion-icon name="logo-game-controller-b" slot="start"></ion-icon>
+          Mis Juegos
+        </ion-item>
+        <ion-item lines="none" class="sidemenu-items" (click)="GoMisGrupos();" routerDirection="forward">
+          <ion-icon name="people" slot="start"></ion-icon>
+          Mis Grupos
+        </ion-item>
+        <ion-item lines="none" class="sidemenu-items" (click)="GoMiPerfil();" routerDirection="forward">
+          <ion-icon name="person" slot="start"></ion-icon>
+          Mi Perfil
+        </ion-item>
+        <ion-item lines="none" class="sidemenu-items" (click)="GoOut();" routerDirection="forward">
+          <ion-icon name="log-out" slot="start"></ion-icon>
+          Cerrar Sesión
+        </ion-item>
+      </ion-menu-toggle>
     </ion-content>
   </ion-menu>
-<ion-router-outlet id="content1"></ion-router-outlet>
-
+  <ion-router-outlet id="content1"></ion-router-outlet>
 </ion-app>

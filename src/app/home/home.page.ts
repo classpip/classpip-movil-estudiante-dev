@@ -3,6 +3,7 @@ import { NavController, LoadingController, AlertController } from '@ionic/angula
 // import { HttpClient } from '@angular/common/http';
 import { Alumno } from '../clases';
 import { IniciPage } from '../inici/inici.page';
+import { TabsPage } from '../tabs/tabs.page';
 import { SesionService} from '../servicios/sesion.service';
 import { PeticionesAPIService} from '../servicios/index';
 import { Router } from '@angular/router';
@@ -57,7 +58,7 @@ export class HomePage {
             this.sesion.TomaAlumno(this.alumno);
             console.log('bien logado');
             setTimeout(() => {
-              this.route.navigateByUrl('/inici');
+              this.route.navigateByUrl('/tabs/inici');
             }, 1500);
           } else {
             // Aqui habría que mostrar alguna alerta al usuario

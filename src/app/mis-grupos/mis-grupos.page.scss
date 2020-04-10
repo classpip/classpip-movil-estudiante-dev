@@ -1,12 +1,27 @@
-ion-toolbar {
-    --ion-background-color:rgb(0, 68, 107);
+
+.separador-grupos {
+  font-size: 15px;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: center;
+}
+
+div[scrollx=true], div[scrolly=true] {
+  position: relative;
+  overflow: hidden;
+
+  ::-webkit-scrollbar {
+    display: none;
   }
-  .ClasspipCabeceraimg{
-    position:relative;
-    width:30px;
-    height:30px;
-    margin-left: 10%;
-    margin-right: -20%;
-    margin-top: -10%;
-    margin-bottom: 3%;
+}
+
+div[scrollx=true] {
+  overflow-x: auto;
+}
+
+div[scrolly=true] {
+  overflow-y: auto;
+}
+#myFixZone {
+  height: 200px;
 }

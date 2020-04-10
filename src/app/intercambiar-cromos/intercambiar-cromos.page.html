@@ -1,54 +1,55 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title style="color: floralwhite;margin-top: 7%; margin-right: 10%;text-align: center;" >Asignar Cromos</ion-title>
-    <img class = "ClasspipCabeceraimg" src="../../assets/icon/classpip1.png">
-    <ion-buttons slot="start" style="color: floralwhite;">
-      <ion-back-button></ion-back-button>
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
     </ion-buttons>
+    <ion-title>Cambiar Cromos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="intercambiarcromos-content">
 
-    <!--Al poner <b> permitimos que las palabras que esten dentro se visualicen en negrita-->
-    <p>Selecciona <b>el cromo</b> a intercambiar:</p>
+  <!--Al poner <b> permitimos que las palabras que esten dentro se visualicen en negrita-->
+  <p>Selecciona <b>el cromo</b> a intercambiar:</p>
 
-    <!--Se define un desplegable que muestra los cromos disponibles y su correspondiente
+  <!--Se define un desplegable que muestra los cromos disponibles y su correspondiente
     aspecto físico-->
-              <!--Se define el desplegable de cromos que recibe los cromos desde cromosColeccion-->
-        <select class="selectcromo" [(ngModel)]=cromoSeleccionado (ngModelChange)="ionChange($event)"  name="cromo">
-            <option *ngFor="let cromo of MisCromosSinRepetidos">
-                <b>{{cromo.cromo.Nombre}}</b>
-            </option>
-        </select>
+  <!--Se define el desplegable de cromos que recibe los cromos desde cromosColeccion-->
+  <select class="selectcromo" [(ngModel)]=cromoSeleccionado (ngModelChange)="ionChange($event)" name="cromo">
+    <option *ngFor="let cromo of MisCromosSinRepetidos">
+      <b>{{cromo.cromo.Nombre}}</b>
+    </option>
+  </select>
 
 
-        <!--Se define la estética del cromo según el nivel del propio cromo-->
-        <ion-item style="margin-top: 5%;" *ngIf="cromo" >
-            <ion-card name="cromo">
+  <!--Se define la estética del cromo según el nivel del propio cromo-->
+  <ion-item *ngIf="cromo">
+    <ion-card name="cromo">
 
-            <img [src]="imagenCromo" >
-            <ion-card-content>
-              <ion-card-title>
-                {{cromo.Nombre}}
-              </ion-card-title>
-              <p>
-                {{cromo.Nivel}}
-              </p>
-            </ion-card-content>
-          </ion-card>
+      <img [src]="imagenCromo">
+      <ion-card-content>
+        <ion-card-title>
+          {{cromo.Nombre}}
+        </ion-card-title>
+        <p>
+          {{cromo.Nivel}}
+        </p>
+      </ion-card-content>
+    </ion-card>
 
-        </ion-item>
+  </ion-item>
 
-        <p class="InformacionPantalla">Selecciona <b>el compañero</b> con quién intercambiar el cromo:</p>
+  <p class="InformacionPantalla">Selecciona <b>el compañero</b> con quién intercambiar el cromo:</p>
 
-        <select class="selectcomp"[(ngModel)]=alumnoSeleccionado (ngModelChange)="onChange($event)" name="alumno">
-          <option *ngFor="let alumno of MisAlumnosJuegoColeccion">
-              {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
-          </option>
-      </select>
-      <ion-item class="IntercambiarCromo" style = "margin-top: 10%;" (click) = AsignarCromo();>Intercambiar Cromo
-        <ion-icon style="color:  rgb(255, 255, 255);" name="albums" item-left ></ion-icon>
-      </ion-item>
+  <select class="selectcomp" [(ngModel)]=alumnoSeleccionado (ngModelChange)="onChange($event)" name="alumno">
+    <option *ngFor="let alumno of MisAlumnosJuegoColeccion">
+      {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
+    </option>
+  </select>
+
+  <ion-button (click)=AsignarCromo() class="intercambiar-btn" shape="round">
+    Intercambiar Cromos
+    <ion-icon style="color:  rgb(255, 255, 255);" name="albums" item-left></ion-icon>
+  </ion-button>
 
 </ion-content>

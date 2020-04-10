@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { PeticionesAPIService} from '../servicios/index';
 import { SesionService} from '../servicios/sesion.service';
 import { CalculosService } from '../servicios/calculos.service';
-import { Alumno } from '../clases/index';
+import { Juego, Equipo, Alumno, MiAlumnoAMostrarJuegoDePuntos, Grupo, MiEquipoAMostrarJuegoDePuntos } from '../clases/index';
 import { File } from '@ionic-native/file/ngx';
 import { ActionSheetController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/Camera/ngx';
+
 @Component({
   selector: 'app-mi-perfil',
   templateUrl: './mi-perfil.page.html',
@@ -16,6 +17,8 @@ export class MiPerfilPage implements OnInit {
   base64Image: any;
   Alumno: Alumno;
   MiImagenAlumno: string[] = [];
+  MisAlumnosAMostrar: MiAlumnoAMostrarJuegoDePuntos[] = [];
+
   constructor(
     private peticionesAPI: PeticionesAPIService,
     private sesion: SesionService,
@@ -31,6 +34,7 @@ export class MiPerfilPage implements OnInit {
     this.MiImagenAlumno = this.calculos.VisualizarImagenAlumno(this.Alumno.ImagenPerfil);
     console.log('Ya tengo la imagen del Alumno');
     console.log(this.MiImagenAlumno);
+    
   }
 
   accessGallery() {

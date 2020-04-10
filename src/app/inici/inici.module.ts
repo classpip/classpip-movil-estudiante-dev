@@ -10,10 +10,9 @@ import { IniciPage } from './inici.page';
 const routes: Routes = [
   {
     path: '',
-    component: IniciPage
+    component: IniciPage,
   }
 ];
-
 @NgModule({
   imports: [
     CommonModule,
