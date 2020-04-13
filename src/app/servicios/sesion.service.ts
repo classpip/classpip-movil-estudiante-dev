@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Profesor, Grupo, Juego, Equipo, Alumno, Coleccion, Cromo, Punto, Insignia } from '../clases';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
+import { ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SesionService {
 
+  alumno: Alumno;
+  alumnoObservable = new ReplaySubject (1);
   profesor: Profesor;
   grupo: Grupo;
   juego: Juego;
@@ -31,7 +34,7 @@ export class SesionService {
   listaEquiposOrdenadaPorPuntos: any;
   rankingEquiposJuegoDePuntos: any;
 
-  alumno: Alumno;
+
   alumnoJuegoDeColeccion: Alumno;
   inscripcionAlumno: any;
   inscripcionEquipo: any;
@@ -51,6 +54,18 @@ export class SesionService {
   public  DameProfesor(): Profesor {
     return this.profesor;
   }
+
+
+
+  // public TomaProfesor(profesor: Profesor) {
+  //   this.profesor.next(profesor);
+  // }
+
+
+  // public  DameProfesor(): any {
+  //   return this.profesor;
+  // }
+
   public TomaAlumnoJuegoDeColeccion(alumno: Alumno) {
     this.alumnoJuegoDeColeccion = alumno;
   }
@@ -261,12 +276,26 @@ export class SesionService {
     this.equiposDelJuego = equipos;
   }
 
-  public TomaAlumno(alumno: Alumno) {
-    this.alumno = alumno;
-  }
+  // public TomaAlumno(alumno: Alumno) {
+  //   this.alumno = alumno;
+  // }
   public DameAlumno(): Alumno {
     return this.alumno;
   }
+  public EnviameAlumno(): any {
+    return this.alumnoObservable;
+  }
+
+  public TomaAlumno(alumno: Alumno) {
+    this.alumno = alumno;
+    this.alumnoObservable.next(alumno);
+  }
+
+
+  // public  DameProfesor(): any {
+  //   return this.profesor;
+  // }
+
 
   public TomaInscripcionAlumno(inscripcionAlumno: any) {
     this.inscripcionAlumno = inscripcionAlumno;
