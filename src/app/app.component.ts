@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -6,6 +6,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
 import { Alumno } from '../app/clases/Alumno';
 import { SesionService } from '../app/servicios/sesion.service';
+
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -31,11 +33,11 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      this.MiAlumno = this.sesion.DameAlumno();
+      this.sesion.EnviameAlumno().subscribe ((alumno) => this.MiAlumno = alumno
+      );
     });
   }
 
-  
   GoOut() {
     this.route.navigateByUrl('/home');
   }
@@ -45,6 +47,9 @@ export class AppComponent {
   }
 
   GoMisGrupos() {
+    this.MiAlumno = this.sesion.DameAlumno();
+    console.log ('Estamos');
+    console.log (this.MiAlumno);
     this.route.navigateByUrl('tabs/mis-grupos');
   }
 
