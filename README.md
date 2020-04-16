@@ -35,8 +35,8 @@ node -v
 Install also ionic and cordova:
 
 ```
-npm install -g ionic@~4.6.0
-npm install -g cordova@~8.1.2
+npm install -g ionic@4.6.0
+npm install -g cordova@8.1.2
 ```
 Check that you have the correct versions:
 
