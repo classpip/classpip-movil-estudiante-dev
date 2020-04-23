@@ -3,14 +3,21 @@
     <ion-buttons slot="start">
       <ion-back-button class="menu-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title>Puntos</ion-title>
+    <ion-title *ngIf="juegoSeleccionado.Tipo !== 'Juego De Cuestionario'">Puntos</ion-title>
+    <ion-title *ngIf="juegoSeleccionado.Tipo === 'Juego De Cuestionario'">Notas</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="juegoseleccionado-content" [scrollEvents]="true">
 
   <!--CONTENIDO DE CONTENEDOR DONDE EXPLICAMOS INFORMACIÓN DE LA PANTALLA-->
-  <p>Has seleccionado un <b>{{juegoSeleccionado.Tipo}}</b> de tipo <b>{{juegoSeleccionado.Modo}}</b> </p>
+  <div *ngIf="juegoSeleccionado.Tipo !== 'Juego De Cuestionario'">
+    <p>Has seleccionado un <b>{{juegoSeleccionado.Tipo}}</b> de tipo <b>{{juegoSeleccionado.Modo}}</b> </p>
+  </div>
+  <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Cuestionario'">
+    <p>Juego de cuesitonario: <b>{{juegoSeleccionado.NombreJuego}}</b></p>
+  </div>
+
 
 
   <!--SE HACE DISTINCIÓN ENTRE TIPO DE JUEGO DE PUNTOS Y DE COLECCIONES-->
@@ -169,5 +176,35 @@
     </div>
   </div>
 
+  <!--Para el caso de un juego de Cuestionario-->
+  <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Cuestionario'">
+    <ion-grid>
+      <!--Se define la cabecera de la tabla del ranking del juego de Puntos-->
+      <ion-row class="cabecera-tabla">
+        <ion-col col-1 style="margin-left: -10%">
+          <p><b>Nombre</b></p>
+        </ion-col>
+        <ion-col col-2 style="margin-left: -7%">
+          <p><b>Apellido</b></p>
+        </ion-col>
+        <ion-col col-3 style="margin-right: -3%">
+          <p><b>Nota</b></p>
+        </ion-col>
+      </ion-row>
+
+      <!--Se define el contenido de la tabla , es decir los nombbres y los puntos-->
+      <ion-row class="casillas-tabla" *ngFor="let item of MisAlumnosDelJuegoDeCuestionario">
+        <ion-col col-1>
+          <p><b>{{item.Nombre}}</b></p>
+        </ion-col>
+        <ion-col col-2>
+          <p><b>{{item.PrimerApellido}}</b></p>
+        </ion-col>
+        <ion-col col-3 style="margin-left:5%">
+          <p><b>{{item.Nota}}</b></p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 
 </ion-content>

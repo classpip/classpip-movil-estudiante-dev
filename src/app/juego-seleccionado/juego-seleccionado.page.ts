@@ -5,6 +5,7 @@ import { PeticionesAPIService} from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {  Juego, Equipo, Alumno, MiAlumnoAMostrarJuegoDePuntos, Grupo, MiEquipoAMostrarJuegoDePuntos} from '../clases/index';
 import { IonContent } from '@ionic/angular';
+import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 @Component({
   selector: 'app-juego-seleccionado',
   templateUrl: './juego-seleccionado.page.html',
@@ -12,7 +13,7 @@ import { IonContent } from '@ionic/angular';
 })
 export class JuegoSeleccionadoPage implements OnInit {
 
-  @ViewChild(IonContent) content: IonContent;
+  @ViewChild(IonContent, {static: true}) content: IonContent;
   juegoSeleccionado: Juego;
   MisAlumnosAMostrar: MiAlumnoAMostrarJuegoDePuntos[] = [];
   MisEquiposJuegoPuntosAMostrar: MiEquipoAMostrarJuegoDePuntos[] = [];
@@ -22,6 +23,10 @@ export class JuegoSeleccionadoPage implements OnInit {
   NuestroHistorialPuntos: any [] = [];
   Grupo: Grupo;
   muestralo: boolean = false;
+
+  //Datos juego de cuestionario
+  MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[] = [];
+
 
   constructor(
     private sesion: SesionService,
@@ -55,7 +60,7 @@ export class JuegoSeleccionadoPage implements OnInit {
         console.log('ya he traido los equipos');
         console.log(this.MisEquiposJuegoPuntosAMostrar);
       }
-    } else {
+    } else if (this.juegoSeleccionado.Tipo === 'Juego De Colección'){
       if ( this.juegoSeleccionado.Modo === 'Individual') {
         this.MisAlumnosJuegoColeccion = this.calculos.DameAlumnosJuegoDeColecciones(this.juegoSeleccionado.id);
         console.log('Estos son los alumnos del Juego de Col');
@@ -68,6 +73,16 @@ export class JuegoSeleccionadoPage implements OnInit {
             console.log(this.MisEquiposJuegoColecciones);
           });
       }
+    } else if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
+      this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameAlumnosJuegoDeCuestionario(this.juegoSeleccionado.id);
+      this.MisAlumnosDelJuegoDeCuestionario = this.MisAlumnosDelJuegoDeCuestionario.sort((obj1, obj2) => {
+        if (obj1.Nota < obj2.Nota){
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      console.log(this.MisAlumnosDelJuegoDeCuestionario);
     }
   }
 
