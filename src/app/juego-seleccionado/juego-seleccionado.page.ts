@@ -25,7 +25,10 @@ export class JuegoSeleccionadoPage implements OnInit {
   muestralo: boolean = false;
 
   //Datos juego de cuestionario
-  MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[] = [];
+  MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[];
+  //Orden conlumnas de la tabla
+  displayedColumnsAlumnos: string[] = ['nombreAlumno', 'primerApellido', 'nota'];
+  dataSourceAlumno
 
 
   constructor(
@@ -76,13 +79,8 @@ export class JuegoSeleccionadoPage implements OnInit {
     } else if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
       this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameAlumnosJuegoDeCuestionario(this.juegoSeleccionado.id);
       this.MisAlumnosDelJuegoDeCuestionario = this.MisAlumnosDelJuegoDeCuestionario.sort((obj1, obj2) => {
-        if (obj1.Nota < obj2.Nota){
-          return 1;
-        } else {
-          return -1;
-        }
+        return obj1.Nota - obj2.Nota
       });
-      console.log(this.MisAlumnosDelJuegoDeCuestionario);
     }
   }
 
