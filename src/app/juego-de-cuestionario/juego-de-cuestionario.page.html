@@ -1,9 +1,57 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
     <ion-title>{{juegoSeleccionado.NombreJuego}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+    <!-- <ion-stepper #stepper (selectIndexChange)="selectChange($event)">
+      <ion-step>
+        <h2>Step1</h2>
+        <button ion-button small ionicStepperNext>Next</button>
+      </ion-step>
+      <ion-step>
+        <h2>Step2</h2>
+        <button ion-button small ionicStepperPrevious>Previous</button>
+      </ion-step>
+    </ion-stepper> -->
+    <mat-horizontal-stepper #stepper style="width:100%;">
+
+      <!-- PRIMER PASO -->
+      <mat-step>
+        <p>¿Estas seguro de que deseas empezar el cuestionario? Si es que si, presiona en "Empezar"</p>
+        <div >
+          <button mat-button matStepperNext>Empezar</button>
+        </div>
+
+      </mat-step>
+
+      <!-- SEGUNDO PASO -->
+      <mat-step>
+        <div class="btnCambiarStep">
+
+          <!-- <p><b>Descripcion: </b>{{cuestionario.Descripcion}}</p> -->
+          <button  mat-button style="margin: 5px" matStepperPrevious>
+             Atrás</button>
+          <button  mat-button style="margin: 5px" matStepperNext>
+             Siguiente
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step>
+        <div style="margin: 5px;">
+          <p>Cuestionario creado correctamente.</p>
+          <p> Haga click en "Finalizar" para guardar los cambios.</p>
+        </div>
+        <div class="btnCambiarStep">
+          <button mat-raised-button style="margin: 5px" matStepperPrevious> Atrás</button>
+          <button mat-raised-button style="margin: 5px" > Finalizar</button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
 
 </ion-content>

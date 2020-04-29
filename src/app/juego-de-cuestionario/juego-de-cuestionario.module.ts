@@ -6,6 +6,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { JuegoDeCuestionarioPage } from './juego-de-cuestionario.page';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule, MatRadioModule } from '@angular/material';
 
 const routes: Routes = [
   {
@@ -16,6 +19,9 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    MatStepperModule,
+    MatFormFieldModule,
+    MatInputModule,
     CommonModule,
     FormsModule,
     IonicModule,
