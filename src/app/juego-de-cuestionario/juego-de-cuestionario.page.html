@@ -24,7 +24,7 @@
       <mat-step>
         <p>¿Estas seguro de que deseas empezar el cuestionario? Si es que si, presiona en "Empezar"</p>
         <div >
-          <button mat-button matStepperNext>Empezar</button>
+          <button class = "button-empezar" matStepperNext>Empezar</button>
         </div>
 
       </mat-step>
@@ -32,24 +32,36 @@
       <!-- SEGUNDO PASO -->
       <mat-step>
         <div class="btnCambiarStep">
-
-          <!-- <p><b>Descripcion: </b>{{cuestionario.Descripcion}}</p> -->
-          <button  mat-button style="margin: 5px" matStepperPrevious>
-             Atrás</button>
-          <button  mat-button style="margin: 5px" matStepperNext>
-             Siguiente
-          </button>
+          <p><b>Descripcion: </b>{{descripcion}}</p>
+          <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
+          <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
+          <button class = "siguiente" style="margin: 5px" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
         </div>
       </mat-step>
 
+      <!-- RESPONDEMOS A PREGUNTAS -->
+      <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
+        <p>{{pregunta.Pregunta}}</p>
+        <div>
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group">
+              <mat-radio-button class="radio-button" *ngFor="let respuesta of respuestasPosibles" [value]="respuesta">
+                <p style="color: black;">{{respuesta}}</p>
+              </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <button class = "anterior" (click) = "cambioRespuestasAnterior(i)" mat-button style="margin: 5px" matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+        <button class = "siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button style="margin: 5px" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+      </mat-step>
+
+      <!-- FINALIZACION DEL CUESTIONARIO -->
       <mat-step>
         <div style="margin: 5px;">
           <p>Cuestionario creado correctamente.</p>
           <p> Haga click en "Finalizar" para guardar los cambios.</p>
         </div>
         <div class="btnCambiarStep">
-          <button mat-raised-button style="margin: 5px" matStepperPrevious> Atrás</button>
-          <button mat-raised-button style="margin: 5px" > Finalizar</button>
+          <button class = "anterior" mat-raised-button style="margin: 5px" matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+          <button class = "button-empezar" mat-raised-button style="margin: 5px" > Finalizar</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>

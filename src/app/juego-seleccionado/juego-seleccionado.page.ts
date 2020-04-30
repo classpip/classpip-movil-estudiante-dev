@@ -26,9 +26,6 @@ export class JuegoSeleccionadoPage implements OnInit {
 
   //Datos juego de cuestionario
   MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[];
-  //Orden conlumnas de la tabla
-  displayedColumnsAlumnos: string[] = ['nombreAlumno', 'primerApellido', 'nota'];
-  dataSourceAlumno
 
 
   constructor(
