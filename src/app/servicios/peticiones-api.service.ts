@@ -649,4 +649,9 @@ export class PeticionesAPIService {
   public DamePreguntasCuestionario(cuestionarioId: number): Observable<Pregunta[]> {
     return this.http.get<Pregunta[]>(this.APIUrlCuestionario + '/' + cuestionarioId + '/Preguntas');
   }
+
+  public PonerNotaAlumnoJuegoDeCuestionario( alumnoJuegoDeCuestionario: AlumnoJuegoDeCuestionario, alumnoJuegoDeCuestionarioId: number): Observable<AlumnoJuegoDeCuestionario> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<AlumnoJuegoDeCuestionario>(this.APIUrlAlumnoJuegoDeCuestionario + '/' + alumnoJuegoDeCuestionarioId, alumnoJuegoDeCuestionario);
+  }
 }

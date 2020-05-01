@@ -43,7 +43,7 @@
       <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
         <p>{{pregunta.Pregunta}}</p>
         <div>
-          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group">
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
               <mat-radio-button class="radio-button" *ngFor="let respuesta of respuestasPosibles" [value]="respuesta">
                 <p style="color: black;">{{respuesta}}</p>
               </mat-radio-button>
@@ -61,7 +61,7 @@
         </div>
         <div class="btnCambiarStep">
           <button class = "anterior" mat-raised-button style="margin: 5px" matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
-          <button class = "button-empezar" mat-raised-button style="margin: 5px" > Finalizar</button>
+          <button (click) = "ponerNota()" class = "button-empezar" mat-raised-button style="margin: 5px" > Finalizar</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>
