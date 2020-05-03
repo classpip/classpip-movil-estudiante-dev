@@ -8,17 +8,7 @@
 </ion-header>
 
 <ion-content>
-    <!-- <ion-stepper #stepper (selectIndexChange)="selectChange($event)">
-      <ion-step>
-        <h2>Step1</h2>
-        <button ion-button small ionicStepperNext>Next</button>
-      </ion-step>
-      <ion-step>
-        <h2>Step2</h2>
-        <button ion-button small ionicStepperPrevious>Previous</button>
-      </ion-step>
-    </ion-stepper> -->
-    <mat-horizontal-stepper #stepper style="width:100%;">
+    <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="NotaInicial === '0'">
 
       <!-- PRIMER PASO -->
       <mat-step>
@@ -35,7 +25,7 @@
           <p><b>Descripcion: </b>{{descripcion}}</p>
           <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
           <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
-          <button class = "siguiente" style="margin: 5px" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+          <button class = "siguiente" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
         </div>
       </mat-step>
 
@@ -49,8 +39,8 @@
               </mat-radio-button>
           </mat-radio-group>
         </div>
-        <button class = "anterior" (click) = "cambioRespuestasAnterior(i)" mat-button style="margin: 5px" matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
-        <button class = "siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button style="margin: 5px" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+        <button class = "anterior" (click) = "cambioRespuestasAnterior(i)" mat-button matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+        <button class = "siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
       </mat-step>
 
       <!-- FINALIZACION DEL CUESTIONARIO -->
@@ -61,9 +51,26 @@
         </div>
         <div class="btnCambiarStep">
           <button class = "anterior" mat-raised-button style="margin: 5px" matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
-          <button (click) = "ponerNota()" class = "button-empezar" mat-raised-button style="margin: 5px" > Finalizar</button>
+          <button (click) = "ponerNota()" class = "button-empezar" mat-raised-button matStepperNext > Finalizar</button>
         </div>
       </mat-step>
+
+      <!-- VEMOS LA NOTA OBTENIDA DEL CUESTIONARIO -->
+      <mat-step >
+        <p>Nota: <b>{{Nota}}</b></p>
+        <div>
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
+              <mat-radio-button class="radio-button" *ngFor="let feedback of feedbacks, let i = index" [value]="feedback" disabled> 
+                <p  style="color: black;">{{i+1}}. {{feedback}}</p>
+              </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <button (click) = "GoMisJuegos()" class = "button-empezar">Cerrar</button>
+      </mat-step>
     </mat-horizontal-stepper>
+
+    <div *ngIf="NotaInicial !== '0'">
+      <p>Ya has realizado este examen. Podras volver a consultar tu puntuacion cuando el profesor lo finalice</p>
+    </div>
 
 </ion-content>

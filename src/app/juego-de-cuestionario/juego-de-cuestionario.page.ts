@@ -6,6 +6,7 @@ import { Juego } from '../clases';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-juego-de-cuestionario',
@@ -26,10 +27,14 @@ export class JuegoDeCuestionarioPage implements OnInit {
   RespuestaEscogida: string;
   RespuestasAlumno: string[] = [];
   Nota: number = 0;
+  NotaInicial: string = '';
+  feedbacks: string[] = [];
+  ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2]
 
   constructor(
     private sesion: SesionService,
     public navCtrl: NavController,
+    private route: Router,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService,
   ) { }
@@ -42,6 +47,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
     .subscribe (res => {
       this.alumnoJuegoDeCuestionario = res;
+      this.NotaInicial = res[0].Nota.toString();
+      console.log(this.NotaInicial);
     });
     this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
     .subscribe(res => {
@@ -51,11 +58,18 @@ export class JuegoDeCuestionarioPage implements OnInit {
     });
     this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
     .subscribe(res=>{
-      this.PreguntasCuestionario = res;
-      this.respuestasPosibles.push(res[0].RespuestaCorrecta);
+      if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
+        this.PreguntasCuestionario = this.desordenPreguntas(res)
+      } else {
+        this.PreguntasCuestionario = res;
+      }
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta1);
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta2);
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta3);
+      this.respuestasPosibles.splice(this.ordenRespuestaCorrecta[0], 0, res[0].RespuestaCorrecta);
+      if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
+        this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
+      }
       console.log(this.PreguntasCuestionario);
     });
 
@@ -70,14 +84,16 @@ export class JuegoDeCuestionarioPage implements OnInit {
     }
     
     console.log(this.RespuestasAlumno);
-    console.log(this.RespuestasAlumno[i+1]);
     if ((i+1) != this.PreguntasCuestionario.length){
       this.respuestasPosibles = [];
       i = i + 1;
-      this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaCorrecta);
       this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta1);
       this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta2);
       this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta3);
+      this.respuestasPosibles.splice(this.ordenRespuestaCorrecta[i], 0, this.PreguntasCuestionario[i].RespuestaCorrecta);
+    }
+    if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
+      this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
     }
   }
 
@@ -85,29 +101,69 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.RespuestaEscogida = this.RespuestasAlumno[i-1];
     this.respuestasPosibles = [];
     i = i - 1;
-    this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaCorrecta);
     this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta1);
     this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta2);
     this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta3);
+    this.respuestasPosibles.splice(this.ordenRespuestaCorrecta[i], 0, this.PreguntasCuestionario[i].RespuestaCorrecta);
+    if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
+      this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
+    }
+
   }
-  guardamosRespuestas(respuesta: string) {
-    this.RespuestasAlumno.push(this.RespuestaEscogida);
+
+  desordenPreguntas(datos: Pregunta[]): Pregunta[] {
+    var currentIndex = datos.length, temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = datos[currentIndex];
+      datos[currentIndex] = datos[randomIndex];
+      datos[randomIndex] = temporaryValue;
+    }
+    return datos
+  }
+
+  desordenRespuestas(datos: string[]): string[] {
+    var currentIndex = datos.length, temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = datos[currentIndex];
+      datos[currentIndex] = datos[randomIndex];
+      datos[randomIndex] = temporaryValue;
+    }
+    return datos
   }
 
   ponerNota() {
     for(var i = 0; i < this.PreguntasCuestionario.length; i++) {
       if (this.RespuestasAlumno[i] === this.PreguntasCuestionario[i].RespuestaCorrecta){
         this.Nota = this.Nota + this.puntuacionCorrecta;
+        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
       } else {
         this.Nota = this.Nota - this.puntuacionIncorrecta;
+        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+
       }
     }
+    if (this.Nota < 0) {
+      this.Nota = 0.1;
+    }
     console.log(this.Nota);
+    console.log(this.feedbacks);
     
     this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario (this.alumnoId, this.juegoSeleccionado.id,
       this.Nota), this.alumnoJuegoDeCuestionario[0].id)
       .subscribe(res => {
         console.log(res);
       });
+  }
+
+  GoMisJuegos() {
+    this.route.navigateByUrl('tabs/inici');
   }
 }
