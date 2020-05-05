@@ -27,9 +27,19 @@ export class JuegoDeCuestionarioPage implements OnInit {
   RespuestaEscogida: string;
   RespuestasAlumno: string[] = [];
   Nota: number = 0;
+  puntuacionMaxima: number = 0;
   NotaInicial: string = '';
   feedbacks: string[] = [];
-  ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2]
+  ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2];
+
+  //Caso de un cuestionario con preguntas mezcladas 
+  nuevaOrdenacion: number[]= [];
+  PreguntasCuestionarioOrdenadas: Pregunta[];
+
+  //Caso de un cuestionario con respuestas mezcladas tambien
+  todasRespuestas: string[] = [];
+  mezclaRespuestas: string[] = [];
+  numeroDeRespuestas: number = 0;
 
   constructor(
     private sesion: SesionService,
@@ -58,10 +68,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
     });
     this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
     .subscribe(res=>{
-      if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
-        this.PreguntasCuestionario = this.desordenPreguntas(res)
+      if (this.juegoSeleccionado.Presentacion !== 'Mismo orden para todos') {
+        console.log(res);
+        this.ordenarRespuestas(res)
       } else {
         this.PreguntasCuestionario = res;
+        console.log('---------')
       }
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta1);
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta2);
@@ -69,22 +81,63 @@ export class JuegoDeCuestionarioPage implements OnInit {
       this.respuestasPosibles.splice(this.ordenRespuestaCorrecta[0], 0, res[0].RespuestaCorrecta);
       if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
         this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
-      }
-      console.log(this.PreguntasCuestionario);
-    });
+        this.todasRespuestas = this.respuestasPosibles;
+        console.log(this.todasRespuestas);
+        console.log(this.PreguntasCuestionario[1].RespuestaCorrecta);
 
+        var i = 1;
+        while (i < this.PreguntasCuestionario.length) {
+          this.mezclaRespuestas.push(res[i].RespuestaIncorrecta1);
+          this.mezclaRespuestas.push(res[i].RespuestaIncorrecta2);
+          this.mezclaRespuestas.push(res[i].RespuestaIncorrecta3);
+          this.mezclaRespuestas.push(res[i].RespuestaCorrecta);
+          this.mezclaRespuestas = this.desordenRespuestas(this.mezclaRespuestas);
+
+          this.todasRespuestas = this.todasRespuestas.concat(this.mezclaRespuestas);
+
+          i++;
+          this.mezclaRespuestas = [];
+          console.log('HOLA');
+          console.log(this.mezclaRespuestas);
+          console.log(this.todasRespuestas);
+        }
+      }
+    });
+  }
+
+  ordenarRespuestas(preguntas: Pregunta[]) {
+    console.log('POR LO MENOS ENTRA');
+    this.PreguntasCuestionarioOrdenadas = preguntas;
+    this.PreguntasCuestionario = this.desordenPreguntas(this.PreguntasCuestionarioOrdenadas);
+
+        if (this.PreguntasCuestionarioOrdenadas[0] !== this.PreguntasCuestionario[0]){
+          console.log('no entro nunca');
+          for (var i = 0; i < this.PreguntasCuestionarioOrdenadas.length; i++) {
+            for (var j = 0; j < this.PreguntasCuestionario.length; j++) {
+              if (this.PreguntasCuestionarioOrdenadas[i] === this.PreguntasCuestionario[j]) {
+                this.nuevaOrdenacion.splice(this.nuevaOrdenacion[i], 0, this.ordenRespuestaCorrecta[j]);
+              }
+            }
+          }
+          console.log(this.nuevaOrdenacion);
+          console.log(this.ordenRespuestaCorrecta);
+          this.ordenRespuestaCorrecta = this.nuevaOrdenacion;
+          
+        }        
   }
 
   cambioRespuestasSiguiente(i: number) {
     this.RespuestasAlumno.splice(i, 1, this.RespuestaEscogida);
     if (this.RespuestasAlumno[i+1] !== undefined) {
       this.RespuestaEscogida = this.RespuestasAlumno[i+1];
+    } else if ((i+1) !== this.PreguntasCuestionario.length){
+      this.RespuestaEscogida = '';
     } else {
       this.RespuestaEscogida = this.RespuestasAlumno[i];
     }
     
     console.log(this.RespuestasAlumno);
-    if ((i+1) != this.PreguntasCuestionario.length){
+    if ((i+1) !== this.PreguntasCuestionario.length && this.juegoSeleccionado.Presentacion !== 'Preguntas y respuestas desordenadas'){
       this.respuestasPosibles = [];
       i = i + 1;
       this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta1);
@@ -92,8 +145,14 @@ export class JuegoDeCuestionarioPage implements OnInit {
       this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta3);
       this.respuestasPosibles.splice(this.ordenRespuestaCorrecta[i], 0, this.PreguntasCuestionario[i].RespuestaCorrecta);
     }
-    if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
-      this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
+
+    if ((i+1) !== this.PreguntasCuestionario.length && this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
+      this.numeroDeRespuestas = this.numeroDeRespuestas + 4;
+      this.respuestasPosibles = [];
+      for (var i = this.numeroDeRespuestas; i < (this.numeroDeRespuestas + 4); i++){
+        this.respuestasPosibles.push(this.todasRespuestas[i])
+      }
+      
     }
   }
 
@@ -105,8 +164,13 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta2);
     this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta3);
     this.respuestasPosibles.splice(this.ordenRespuestaCorrecta[i], 0, this.PreguntasCuestionario[i].RespuestaCorrecta);
+
     if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
-      this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
+      this.numeroDeRespuestas = this.numeroDeRespuestas - 4;
+      this.respuestasPosibles = [];
+      for (var i = this.numeroDeRespuestas; i < (this.numeroDeRespuestas + 4); i++){
+        this.respuestasPosibles.push(this.todasRespuestas[i])
+      }
     }
 
   }
@@ -140,10 +204,15 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   ponerNota() {
+    this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
+    
     for(var i = 0; i < this.PreguntasCuestionario.length; i++) {
       if (this.RespuestasAlumno[i] === this.PreguntasCuestionario[i].RespuestaCorrecta){
         this.Nota = this.Nota + this.puntuacionCorrecta;
         this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+      } else if (this.RespuestasAlumno[i] === "") {
+        this.Nota = this.Nota;
+        this.feedbacks.push('NO CONTESTADA');
       } else {
         this.Nota = this.Nota - this.puntuacionIncorrecta;
         this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
