@@ -1,7 +1,10 @@
 <ion-header class="juegos-header">
   <ion-toolbar class="header-toolbar">
     <ion-buttons slot="start">
-      <ion-back-button class="menu-btn"></ion-back-button>
+      <ion-back-button *ngIf="!empezado" class="menu-btn"></ion-back-button>
+      <ion-button *ngIf = "empezado" style ="font-size: 17.5px;" (click)="popup()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>{{juegoSeleccionado.NombreJuego}}</ion-title>
   </ion-toolbar>
@@ -12,9 +15,9 @@
 
       <!-- PRIMER PASO -->
       <mat-step>
-        <p style="margin-top: 250px; text-align: justify;">¿Estas seguro de que deseas empezar el cuestionario? Si es que si, presiona en "Empezar"</p>
+        <p style="margin-top: 250px; text-align: justify;">¿Estas seguro de que deseas empezar el cuestionario? Si es que sí, presiona en "Empezar"</p>
         <div style="margin-top: auto;">
-          <button class = "button-empezar" matStepperNext>Empezar</button>
+          <button (click) = "empezamos()" class = "button-empezar" matStepperNext>Empezar</button>
         </div>
 
       </mat-step>
@@ -45,8 +48,8 @@
 
       <!-- FINALIZACION DEL CUESTIONARIO -->
       <mat-step>
-        <div style="margin: 5px;">
-          <p>Cuestionario creado correctamente.</p>
+        <div style="margin-top: 200px;">
+          <p>Cuestionario realizado correctamente.</p>
           <p> Haga click en "Finalizar" para guardar los cambios.</p>
         </div>
         <div class="btnCambiarStep">
@@ -70,8 +73,11 @@
       </mat-step>
     </mat-horizontal-stepper>
 
-    <div *ngIf="NotaInicial !== '0'">
-      <p>Ya has realizado este examen. Podras volver a consultar tu puntuacion cuando el profesor lo finalice</p>
-    </div>
-
+    <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="NotaInicial !== '0'">
+      <mat-step>
+        <div style="margin-top: 250px; text-align: justify;">
+          <p style="font-size: 18px;">Ya has realizado este examen previamente. Y la puntuacion obtenida es de: <b>{{NotaInicial}}</b></p>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
 </ion-content>

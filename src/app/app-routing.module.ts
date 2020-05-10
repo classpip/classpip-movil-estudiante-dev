@@ -15,7 +15,8 @@ const routes: Routes = [
   { path: 'juegos-inactivos', loadChildren: './juegos-inactivos/juegos-inactivos.module#JuegosInactivosPageModule' },
   { path: 'slides', loadChildren: './slides/slides.module#SlidesPageModule' },
   { path: 'tabs', loadChildren: './tabs/tabs.module#TabsPageModule' },
-  { path: 'mis-colecciones', loadChildren: './mis-colecciones/mis-colecciones.module#MisColeccionesPageModule' },  { path: 'juego-de-cuestionario', loadChildren: './juego-de-cuestionario/juego-de-cuestionario.module#JuegoDeCuestionarioPageModule' },
+  { path: 'mis-colecciones', loadChildren: './mis-colecciones/mis-colecciones.module#MisColeccionesPageModule' },
+  { path: 'juego-de-cuestionario', loadChildren: './juego-de-cuestionario/juego-de-cuestionario.module#JuegoDeCuestionarioPageModule' },
 
 
 ];

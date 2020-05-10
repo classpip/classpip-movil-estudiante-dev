@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SesionService, PeticionesAPIService } from '../servicios';
-import { NavController } from '@ionic/angular';
+import { NavController, NavParams, AlertController, Platform } from '@ionic/angular';
 import { CalculosService } from '../servicios/calculos.service';
 import { Juego } from '../clases';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-juego-de-cuestionario',
@@ -14,6 +15,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./juego-de-cuestionario.page.scss'],
 })
 export class JuegoDeCuestionarioPage implements OnInit {
+
+  empezado: boolean = false;
 
   alumnoId: number;
   alumnoJuegoDeCuestionario: AlumnoJuegoDeCuestionario;
@@ -47,6 +50,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
     private route: Router,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService,
+    private alertCtrl: AlertController,
+    private platform: Platform
   ) { }
 
   ngOnInit() {
@@ -232,7 +237,76 @@ export class JuegoDeCuestionarioPage implements OnInit {
       });
   }
 
+  async popup() {
+    const confirm = await this.alertCtrl.create({
+      header: '¿Seguro que quieres salir?',
+      message: 'Si sales sacaras un 0',
+      buttons: [
+        {
+          text: 'SI',
+          handler: () => {
+            this.Nota = 0.1;
+              this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario (this.alumnoId, this.juegoSeleccionado.id,
+              this.Nota), this.alumnoJuegoDeCuestionario[0].id)
+              .subscribe(res => {
+                console.log(res);
+              });
+            this.route.navigateByUrl('tabs/inici');
+          }
+        },{
+          text: 'NO',
+          role: 'cancel',
+          handler: () => {
+            console.log('NO');
+          }
+        }
+      ]
+    });
+    await confirm.present();
+  }
+  /* async ionViewWillLeave() {
+    this.ionViewCanLeave();
+    if(!this.confirmedExit) {
+      const confirm = await this.alertCtrl.create({
+        header: '¿Seguro que quieres salir?',
+        message: 'Si sales sacaras un 0',
+        buttons: [
+          {
+            text: 'SI',
+            role: 'cancel',
+            handler: () => {
+              console.log('SI');
+            }
+          },{
+            text: 'NO',
+            handler: () => {
+              console.log('NO');
+            }
+          }
+        ]
+      });
+      await confirm.present();
+
+      return false;
+    }
+  }
+
+  ionViewCanLeave(): boolean {
+    if (!this.confirmedExit) {
+      return false;
+    } else {
+      return true;
+    }
+  } */
+
+  empezamos() {
+    this.empezado = true;
+  }
   GoMisJuegos() {
+    this.route.navigateByUrl('tabs/inici');
+  }
+
+  public exitPage() {
     this.route.navigateByUrl('tabs/inici');
   }
 }
