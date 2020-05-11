@@ -9,8 +9,8 @@
           </div>
         </div>
       </div>
-<p *ngIf = "MiAlumno !== undefined">{{MiAlumno.Nombre}} </p>
-      <ion-row style="height: 40px"></ion-row>
+      <p *ngIf = "MiAlumno !== undefined"> {{MiAlumno.Nombre}} {{MiAlumno.PrimerApellido}} <br> {{MiAlumno.SegundoApellido}} </p>
+      <ion-row style="height: 20px"></ion-row>
 
       <ion-menu-toggle auto-hide="true">
         <ion-item lines="none" class="sidemenu-items" (click)="GoMisJuegos();" routerDirection="forward">

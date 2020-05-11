@@ -1,0 +1,46 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Competición F1</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="juegocompliga-content" #content>
+  <div *ngIf="infomialumno !== undefined" class="info-alumno">
+    <img class="logo-liga" src="../../assets/img/f1icon.svg" width="100px">
+    <h2> Hola {{infomialumno.nombre}} {{infomialumno.primerApellido}} , actualmente vas</h2>
+    <h3> {{ infomialumno.posicion }}o</h3>
+    <h2> en la competición de Fórmula Uno </h2>
+  </div>
+  <div>
+    <ion-card>
+      <ion-card-header>
+        Bar Chart
+      </ion-card-header>
+      <ion-card-content>
+        <canvas #barChart></canvas>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-button (click)="InformacionJornadas();">Mi Historial</ion-button>
+  <ion-button *ngIf="!hideMe" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
+  <ion-button *ngIf="hideMe" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
+
+  <div *ngIf="hideMe">
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let alumno of rankingIndividualFormulaUno">
+        <mat-expansion-panel-header class="right-aligned-header">
+          <mat-panel-title>
+            <b> {{alumno.nombre}} {{alumno.primerApellido}}</b>
+          </mat-panel-title>
+          <mat-panel-description>
+            <b>{{alumno.puntos}} Puntos</b>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</ion-content>

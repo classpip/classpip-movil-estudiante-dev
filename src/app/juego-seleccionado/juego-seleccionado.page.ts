@@ -12,7 +12,6 @@ import { IonContent } from '@ionic/angular';
 })
 export class JuegoSeleccionadoPage implements OnInit {
 
-  @ViewChild(IonContent) content: IonContent;
   juegoSeleccionado: Juego;
   MisAlumnosAMostrar: MiAlumnoAMostrarJuegoDePuntos[] = [];
   MisEquiposJuegoPuntosAMostrar: MiEquipoAMostrarJuegoDePuntos[] = [];
@@ -22,6 +21,7 @@ export class JuegoSeleccionadoPage implements OnInit {
   NuestroHistorialPuntos: any [] = [];
   Grupo: Grupo;
   muestralo: boolean = false;
+
 
   constructor(
     private sesion: SesionService,
@@ -105,6 +105,5 @@ export class JuegoSeleccionadoPage implements OnInit {
 
   VerRanking() {
     this.muestralo = true;
-    this.content.scrollToBottom(1500);
   }
 }
