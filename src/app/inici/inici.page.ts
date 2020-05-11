@@ -45,12 +45,15 @@ export class IniciPage implements OnInit {
 
   JuegoSeleccionado(juego: Juego) {
     this.sesion.TomaJuego(juego);
-    if (juego.Tipo === 'Juego De Puntos' && juego.Modo === 'Individual') {
-      this.navCtrl.navigateForward('/mis-puntos');
+    if (juego.Tipo === 'Juego De Puntos') {
+      this.navCtrl.navigateForward('/juego-puntos');
+    } else if (juego.Tipo === 'Juego De Competición Liga') {
+      this.navCtrl.navigateForward('/juego-competicion-liga');
+    } else if (juego.Tipo === 'Juego De Competición Fórmula Uno') {
+      this.navCtrl.navigateForward('/juego-competicion-f1');
     } else {
-      this.navCtrl.navigateForward('/juego-seleccionado');
+      this.navCtrl.navigateForward('/juego-colleccion');
     }
-    // this.navCtrl.push (JuegoSeleccionadoPage,{juego:juego});
   }
 
   sliderConfig = {

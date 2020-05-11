@@ -28,4 +28,16 @@ export * from './AlbumEquipo';
 export * from './clasesParaTablasJuegoColeccion/AlbumDelAlumno';
 export * from './MiAlumnoAMostrarJuegoDePuntos';
 export * from './MiEquipoAMostrarJuegoDePuntos';
-
+export * from './AlumnoJuegoDeCompeticionLiga' ;
+export * from './EquipoJuegoDeCompeticionLiga' ;
+export * from './AlumnoJuegoDeCompeticionFormulaUno';
+export * from './EquipoJuegoDeCompeticionFormulaUno';
+export * from './Jornada';
+export * from './EnfrentamientoLiga';
+export * from './clasesParaTablasJuegoDeCompeticionLiga/InformacionPartidosLiga';
+export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaJornadas';
+export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaPuntosFormulaUno';
+export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaEquipoJuegoDeCompeticion';
+export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaAlumnoJuegoDeCompeticion';
+export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaPuntosFormulaUno';
+export * from './clasesParaTablasJuegoDeCompeticionFormulaUno/TablaClasificacionJornada';

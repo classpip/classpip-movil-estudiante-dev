@@ -1,0 +1,61 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Jornadas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="infojornadas-content">
+
+  <mat-accordion style="align-items: center;  width: 30%;" *ngIf="numeroTotalJornadas!==0;else Aviso_no_jornadas">
+    <mat-expansion-panel *ngFor="let jornada of JornadasCompeticion; let i=index"
+      (click)="ObtenerEnfrentamientosDeCadaJornada(jornada)">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon *ngIf="JornadaFinalizada(JornadasCompeticion[i]) === true" mat-list-icon><i
+              class="material-icons green">check_circle_outline</i></mat-icon>
+          <mat-icon *ngIf="JornadaFinalizada(JornadasCompeticion[i]) === false" mat-list-icon><i
+              class="material-icons red">history</i></mat-icon>
+          &nbsp;&nbsp;&nbsp;
+          <b>Jornada {{i + 1}} </b>
+        </mat-panel-title>
+        <mat-panel-description>
+          <b>{{jornada.Fecha | date: 'dd-MM-yyyy'}}</b>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Liga'">
+        <ion-slides [options]="sliderConfig">
+          <ion-slide *ngFor="let enfrentamiento of EnfrentamientosJornadaSeleccionada">
+            <div>
+              <ion-card class="enfrentamiento-card">
+                <ion-card-header>
+                  <ion-card-title class="card-title"> Enfrentamiento </ion-card-title>
+                  <ion-card-content>
+
+                    <h1>{{enfrentamiento.nombreJugadorUno}} </h1>
+                    <img class="versus-icon" width="80px" src="../../assets/img/versus2.svg">
+                    <h1>{{enfrentamiento.nombreJugadorDos}} </h1>
+
+                  </ion-card-content>
+                </ion-card-header>
+                <h3><b>Ganador</b>: <br> {{enfrentamiento.nombreGanador}} </h3>
+              </ion-card>
+            </div>
+          </ion-slide>
+        </ion-slides>
+      </div>
+      <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Fórmula Uno'">
+        <ion-card *ngFor = "let participante of TablaClasificacionJornadaSeleccionada">
+          <ion-card-header>
+            <p>{{participante.posicion}} - {{participante.participante}} tiene {{participante.puntos}} puntos</p>
+          </ion-card-header>
+        </ion-card>
+      </div>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</ion-content>

@@ -1,0 +1,79 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Competición Liga</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="juegocompliga-content" #content>
+  <div *ngIf="infomialumno !== undefined" class="info-alumno">
+    <img class="logo-liga" src="../../assets/img/ligaicon.svg" width="100px">
+    <h2> Hola {{infomialumno.nombre}}, actualmente vas</h2>
+    <h3> {{ infomialumno.posicion }}o</h3>
+    <h2> en la competición de Liga </h2>
+
+    <ion-list class="puntos-list-bg">
+      <ion-item>
+        <h2>Has Jugado:</h2>
+        <h2 slot="end"> {{infomialumno.partidosJugados}} partidos</h2>
+      </ion-item>
+      <ion-item>
+        <h2>Has Ganado:</h2>
+        <h2 slot="end"> {{infomialumno.partidosGanados}} partidos</h2>
+      </ion-item>
+      <ion-item>
+        <h2>Has Empatado:</h2>
+        <h2 slot="end"> {{infomialumno.partidosEmpatados}} partidos </h2>
+      </ion-item>
+      <ion-item>
+        <h2>Y has perdido:</h2>
+        <h2 slot="end"> {{infomialumno.partidosPerdidos}} partidos </h2>
+      </ion-item>
+      <p>De un total de <b>{{infomialumno.partidosTotales}}</b> partidos. </p>
+    </ion-list>
+  </div>
+
+  <ion-button (click)="InformacionJornadas();">Jornadas</ion-button>
+
+  <ion-button *ngIf="!hideMe" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
+  <ion-button *ngIf="hideMe" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
+  <!-- <ion-button (click)="Autentificar();" class="login-btn">Muestrame a mis compañeros</ion-button>
+ -->
+  <div *ngIf="hideMe">
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let alumno of rankingAlumnoJuegoDeCompeticion">
+        <mat-expansion-panel-header class="right-aligned-header">
+          <mat-panel-title>
+            <b>{{ alumno.posicion }} - {{alumno.nombre}} {{alumno.primerApellido}}</b>
+          </mat-panel-title>
+          <mat-panel-description>
+            <b>{{alumno.puntos}} Puntos</b>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <ion-list class="puntos-list-bg">
+          <p>Actualmente va <b>{{ alumno.posicion }}</b>o por que:</p>
+          <ion-item>
+            <h2>Ha Jugado:</h2>
+            <h2 slot="end"> {{alumno.partidosJugados}} partidos</h2>
+          </ion-item>
+          <ion-item>
+            <h2>Ha Ganado:</h2>
+            <h2 slot="end"> {{alumno.partidosGanados}} partidos</h2>
+          </ion-item>
+          <ion-item>
+            <h2>Ha Empatado:</h2>
+            <h2 slot="end"> {{alumno.partidosEmpatados}} partidos </h2>
+          </ion-item>
+          <ion-item>
+            <h2>Y perdido:</h2>
+            <h2 slot="end"> {{alumno.partidosPerdidos}} partidos </h2>
+          </ion-item>
+          <p>De un total de <b>{{alumno.partidosTotales}}</b> partidos. </p>
+        </ion-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</ion-content>
