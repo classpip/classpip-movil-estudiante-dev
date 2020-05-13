@@ -47,10 +47,8 @@ export class IniciPage implements OnInit {
     this.sesion.TomaJuego(juego);
     if (juego.Tipo === 'Juego De Puntos' && juego.Modo === 'Individual') {
       this.navCtrl.navigateForward('/mis-puntos');
-    } else if (juego.Tipo === 'Juego De Cuestionario' && juego.JuegoActivo){
+    } else if (juego.Tipo === 'Juego De Cuestionario'){
       this.navCtrl.navigateForward('/juego-de-cuestionario')
-    } else {
-      this.navCtrl.navigateForward('/juego-seleccionado');
     }
     // this.navCtrl.push (JuegoSeleccionadoPage,{juego:juego});
   }

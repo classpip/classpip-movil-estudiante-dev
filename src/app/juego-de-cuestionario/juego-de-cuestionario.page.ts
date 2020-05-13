@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { SesionService, PeticionesAPIService } from '../servicios';
-import { NavController, NavParams, AlertController, Platform } from '@ionic/angular';
+import { NavController, AlertController, Platform } from '@ionic/angular';
 import { CalculosService } from '../servicios/calculos.service';
 import { Juego } from '../clases';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
+import { RespuestaAlumnoJuegoDeCuestionario } from '../clases/RespuestaAlumnoJuegoDeCuestionario';
 
 @Component({
   selector: 'app-juego-de-cuestionario',
@@ -33,6 +34,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   puntuacionMaxima: number = 0;
   NotaInicial: string = '';
   feedbacks: string[] = [];
+
+  //Con este array establecemos la posicion donde estara colocada la respuesta correcta en cada una de las preguntas
   ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2];
 
   //Caso de un cuestionario con preguntas mezcladas 
@@ -43,6 +46,10 @@ export class JuegoDeCuestionarioPage implements OnInit {
   todasRespuestas: string[] = [];
   mezclaRespuestas: string[] = [];
   numeroDeRespuestas: number = 0;
+
+  //Datos juego de cuestionario finalizado
+  MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[];
+  reorden: AlumnoJuegoDeCuestionario[];
 
   constructor(
     private sesion: SesionService,
@@ -59,26 +66,25 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
+    //Obtenemos la inscripcion del alumno al juego de cuestionario
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
     .subscribe (res => {
       this.alumnoJuegoDeCuestionario = res;
       this.NotaInicial = res[0].Nota.toString();
-      console.log(this.NotaInicial);
     });
+    //Obtenemos el cuestionario a realizar
     this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
     .subscribe(res => {
       this.cuestionario = res;
-      console.log(this.cuestionario)
       this.descripcion = res.Descripcion;
     });
+    //Obtenemos las preguntas del cuestionario y ordenamos preguntas/respuestas en funcion a lo establecido en el cuestionario
     this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
-    .subscribe(res=>{
+    .subscribe(res => {
       if (this.juegoSeleccionado.Presentacion !== 'Mismo orden para todos') {
-        console.log(res);
         this.ordenarRespuestas(res)
       } else {
         this.PreguntasCuestionario = res;
-        console.log('---------')
       }
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta1);
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta2);
@@ -87,8 +93,6 @@ export class JuegoDeCuestionarioPage implements OnInit {
       if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
         this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
         this.todasRespuestas = this.respuestasPosibles;
-        console.log(this.todasRespuestas);
-        console.log(this.PreguntasCuestionario[1].RespuestaCorrecta);
 
         var i = 1;
         while (i < this.PreguntasCuestionario.length) {
@@ -102,21 +106,20 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
           i++;
           this.mezclaRespuestas = [];
-          console.log('HOLA');
-          console.log(this.mezclaRespuestas);
-          console.log(this.todasRespuestas);
         }
       }
     });
+    if (this.juegoSeleccionado.JuegoTerminado) {
+      this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameListaAlumnosJuegoCuestionarioOrdenada(this.juegoSeleccionado.id);
+    }
   }
 
+  //Esta funcion coge el array en el cual se asigna la posicion de las respuestas correctas y lo
+  //reordena en funcion al nuevo orden de las preguntas (ya el primer paso de la funcion es desordenar las preguntas) 
   ordenarRespuestas(preguntas: Pregunta[]) {
-    console.log('POR LO MENOS ENTRA');
     this.PreguntasCuestionarioOrdenadas = preguntas;
     this.PreguntasCuestionario = this.desordenPreguntas(this.PreguntasCuestionarioOrdenadas);
-
-        if (this.PreguntasCuestionarioOrdenadas[0] !== this.PreguntasCuestionario[0]){
-          console.log('no entro nunca');
+        if (this.PreguntasCuestionarioOrdenadas !== this.PreguntasCuestionario ){
           for (var i = 0; i < this.PreguntasCuestionarioOrdenadas.length; i++) {
             for (var j = 0; j < this.PreguntasCuestionario.length; j++) {
               if (this.PreguntasCuestionarioOrdenadas[i] === this.PreguntasCuestionario[j]) {
@@ -124,13 +127,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
               }
             }
           }
-          console.log(this.nuevaOrdenacion);
-          console.log(this.ordenRespuestaCorrecta);
           this.ordenRespuestaCorrecta = this.nuevaOrdenacion;
           
         }        
   }
 
+  //Funcion para establecer las respuestas posibles de la siguiente pregunta que aparezca en el cuestinario
   cambioRespuestasSiguiente(i: number) {
     this.RespuestasAlumno.splice(i, 1, this.RespuestaEscogida);
     if (this.RespuestasAlumno[i+1] !== undefined) {
@@ -140,8 +142,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     } else {
       this.RespuestaEscogida = this.RespuestasAlumno[i];
     }
-    
-    console.log(this.RespuestasAlumno);
+
     if ((i+1) !== this.PreguntasCuestionario.length && this.juegoSeleccionado.Presentacion !== 'Preguntas y respuestas desordenadas'){
       this.respuestasPosibles = [];
       i = i + 1;
@@ -161,6 +162,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     }
   }
 
+  //Cargamos las respuestas posibles de la pregunta anterior
   cambioRespuestasAnterior(i: number) {
     this.RespuestaEscogida = this.RespuestasAlumno[i-1];
     this.respuestasPosibles = [];
@@ -180,6 +182,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   }
 
+  //Desordenador de preguntas
   desordenPreguntas(datos: Pregunta[]): Pregunta[] {
     var currentIndex = datos.length, temporaryValue, randomIndex;
 
@@ -194,6 +197,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     return datos
   }
 
+  //Desordenador de respuestas
   desordenRespuestas(datos: string[]): string[] {
     var currentIndex = datos.length, temporaryValue, randomIndex;
 
@@ -208,9 +212,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
     return datos
   }
 
+  //Funcion para establecer la nota y guardar respuestas
   ponerNota() {
     this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
     
+    //Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
+    //si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
     for(var i = 0; i < this.PreguntasCuestionario.length; i++) {
       if (this.RespuestasAlumno[i] === this.PreguntasCuestionario[i].RespuestaCorrecta){
         this.Nota = this.Nota + this.puntuacionCorrecta;
@@ -227,16 +234,28 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.Nota < 0) {
       this.Nota = 0.1;
     }
-    console.log(this.Nota);
-    console.log(this.feedbacks);
     
     this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario (this.alumnoId, this.juegoSeleccionado.id,
       this.Nota), this.alumnoJuegoDeCuestionario[0].id)
       .subscribe(res => {
         console.log(res);
       });
+
+    //Aqui guardamos las respuestas del alumno
+    for(var i = 0; i < this.PreguntasCuestionario.length; i++) {
+      if (this.RespuestasAlumno[i] === "") {
+        this.RespuestasAlumno[i] = "NO CONTESTADA";
+      }
+      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaAlumnoJuegoDeCuestionario(this.PreguntasCuestionario[i].id, this.alumnoJuegoDeCuestionario[0].id,
+        this.RespuestasAlumno[i]))
+        .subscribe(res => {
+          console.log(res);
+        });
+    }
   }
 
+  //En el caso de que el alumno le de al boton de salir despues de haber empezado el cuestionario
+  //se activa esta funcion y en el caso de que acepte salir del cuestionario, se le pondrá un 0 en el examen
   async popup() {
     const confirm = await this.alertCtrl.create({
       header: '¿Seguro que quieres salir?',
@@ -257,55 +276,25 @@ export class JuegoDeCuestionarioPage implements OnInit {
           text: 'NO',
           role: 'cancel',
           handler: () => {
-            console.log('NO');
+            console.log('NO, ME QUEDO');
           }
         }
       ]
     });
     await confirm.present();
   }
-  /* async ionViewWillLeave() {
-    this.ionViewCanLeave();
-    if(!this.confirmedExit) {
-      const confirm = await this.alertCtrl.create({
-        header: '¿Seguro que quieres salir?',
-        message: 'Si sales sacaras un 0',
-        buttons: [
-          {
-            text: 'SI',
-            role: 'cancel',
-            handler: () => {
-              console.log('SI');
-            }
-          },{
-            text: 'NO',
-            handler: () => {
-              console.log('NO');
-            }
-          }
-        ]
-      });
-      await confirm.present();
 
-      return false;
-    }
-  }
-
-  ionViewCanLeave(): boolean {
-    if (!this.confirmedExit) {
-      return false;
-    } else {
-      return true;
-    }
-  } */
-
+  //Flag para ver si hemos empezado el cuestionario
   empezamos() {
     this.empezado = true;
   }
+
+  //Volvemos a la pagina de inicio
   GoMisJuegos() {
     this.route.navigateByUrl('tabs/inici');
   }
 
+  //Exit page
   public exitPage() {
     this.route.navigateByUrl('tabs/inici');
   }

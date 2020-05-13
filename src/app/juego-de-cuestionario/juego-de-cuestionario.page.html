@@ -10,7 +10,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf = "juegoSeleccionado.JuegoActivo">
     <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="NotaInicial === '0'">
 
       <!-- PRIMER PASO -->
@@ -63,12 +63,18 @@
         <p style="font-size: 25px;">NOTA: <b>{{Nota}}</b></p>
         <p style="margin-top: -30px;">(Nota sobre {{puntuacionMaxima}})</p>
         <div>
+          <p>Feedback de las respuestas:</p>
+        </div>
+        <div *ngFor="let feedback of feedbacks, let i = index">
+          <p><b>{{i+1}}. </b>{{feedback}}</p>
+        </div>
+        <!-- <div>
           <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
               <mat-radio-button class="radio-button" *ngFor="let feedback of feedbacks, let i = index" [value]="feedback" disabled> 
                 <p  style="color: black;">{{i+1}}. {{feedback}}</p>
               </mat-radio-button>
           </mat-radio-group>
-        </div>
+        </div> -->
         <button (click) = "GoMisJuegos()" class = "button-empezar">Cerrar</button>
       </mat-step>
     </mat-horizontal-stepper>
@@ -80,4 +86,40 @@
         </div>
       </mat-step>
     </mat-horizontal-stepper>
+</ion-content>
+
+<ion-content *ngIf = "!juegoSeleccionado.JuegoActivo" class="juegoseleccionado-content"  [scrollEvents]="true">
+  <div>
+    <p>Las notas del juego de cuestionario son: </p>
+  </div>
+  <!--Para el caso de un juego de Cuestionario-->
+  <div>
+    <ion-grid>
+      <!--Se define la cabecera de la tabla del ranking del juego de Puntos-->
+      <ion-row class="cabecera-tabla">
+        <ion-col col-1 style="margin-left: -10%">
+          <p><b>Nombre</b></p>
+        </ion-col>
+        <ion-col col-2 style="margin-left: -7%">
+          <p><b>Apellido</b></p>
+        </ion-col>
+        <ion-col col-3 style="margin-right: -3%">
+          <p><b>Nota</b></p>
+        </ion-col>
+      </ion-row>
+
+      <!--Se define el contenido de la tabla , es decir los nombbres y los puntos-->
+      <ion-row class="casillas-tabla" *ngFor="let item of MisAlumnosDelJuegoDeCuestionario">
+        <ion-col col-1>
+          <p><b>{{item.Nombre}}</b></p>
+        </ion-col>
+        <ion-col col-2>
+          <p><b>{{item.PrimerApellido}}</b></p>
+        </ion-col>
+        <ion-col col-3 style="margin-left:5%">
+          <p><b>{{item.Nota}}</b></p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

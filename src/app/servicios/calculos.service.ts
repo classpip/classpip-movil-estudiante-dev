@@ -14,6 +14,7 @@ import { stringify } from 'querystring';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
+import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 
 @Injectable({
   providedIn: 'root'
@@ -211,6 +212,32 @@ export class CalculosService {
         InformacionAlumno = InformacionAlumno.sort((a,b) => {
           return b.Nota - a.Nota;
         });
+    });
+    return InformacionAlumno;
+  }
+
+  public DameListaAlumnosJuegoCuestionarioOrdenada(juegoDeCuestionarioId: number): MiAlumnoAMostrarJuegoDeCuestionario[] {
+    let InformacionAlumno: MiAlumnoAMostrarJuegoDeCuestionario[] = [];
+    let Inscripciones: AlumnoJuegoDeCuestionario[] = [];
+    this.peticionesAPI.ListaInscripcionesAlumnosJuegoDeCuestionario(juegoDeCuestionarioId).subscribe(res => {
+      Inscripciones = res;
+      Inscripciones = Inscripciones.sort(function(a, b) {
+        return b.Nota - a.Nota;
+      });
+      for (let i = 0; i < (Inscripciones.length); i++) {
+        const MiAlumno = new MiAlumnoAMostrarJuegoDeCuestionario();
+        MiAlumno.Nota = Inscripciones[i].Nota;
+        MiAlumno.alumnoId = Inscripciones[i].alumnoId;
+        MiAlumno.id = Inscripciones[i].id;
+        MiAlumno.juegoDeCuestionarioId = Inscripciones[i].juegoDeCuestionarioId;
+        this.peticionesAPI.DameAlumnoConId (MiAlumno.alumnoId)
+        .subscribe (res => {
+          MiAlumno.Nombre = res.Nombre;
+          MiAlumno.PrimerApellido = res.PrimerApellido;
+          MiAlumno.ImagenPerfil = res.ImagenPerfil;
+        });
+        InformacionAlumno.push(MiAlumno)
+      }
     });
     return InformacionAlumno;
   }
