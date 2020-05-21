@@ -119,17 +119,18 @@ export class JuegoDeCuestionarioPage implements OnInit {
   ordenarRespuestas(preguntas: Pregunta[]) {
     this.PreguntasCuestionarioOrdenadas = preguntas;
     this.PreguntasCuestionario = this.desordenPreguntas(this.PreguntasCuestionarioOrdenadas);
-        if (this.PreguntasCuestionarioOrdenadas !== this.PreguntasCuestionario ){
-          for (var i = 0; i < this.PreguntasCuestionarioOrdenadas.length; i++) {
-            for (var j = 0; j < this.PreguntasCuestionario.length; j++) {
-              if (this.PreguntasCuestionarioOrdenadas[i] === this.PreguntasCuestionario[j]) {
-                this.nuevaOrdenacion.splice(this.nuevaOrdenacion[i], 0, this.ordenRespuestaCorrecta[j]);
-              }
-            }
+    
+    if (this.PreguntasCuestionarioOrdenadas !== this.PreguntasCuestionario ){
+      for (var i = 0; i < this.PreguntasCuestionarioOrdenadas.length; i++) {
+        for (var j = 0; j < this.PreguntasCuestionario.length; j++) {
+          if (this.PreguntasCuestionarioOrdenadas[i] === this.PreguntasCuestionario[j]) {
+            this.nuevaOrdenacion.splice(this.nuevaOrdenacion[i], 0, this.ordenRespuestaCorrecta[j]);
           }
-          this.ordenRespuestaCorrecta = this.nuevaOrdenacion;
-          
-        }        
+        }
+      }
+      this.ordenRespuestaCorrecta = this.nuevaOrdenacion;
+      
+    }        
   }
 
   //Funcion para establecer las respuestas posibles de la siguiente pregunta que aparezca en el cuestinario
