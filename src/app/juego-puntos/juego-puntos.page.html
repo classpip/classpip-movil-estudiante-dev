@@ -1,0 +1,171 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Puntos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="puntos-content" #content>
+  <!-- Si el juego es individual creamos un div con la información-->
+  <div *ngIf="juegoSeleccionado.Modo === 'Individual'" id="alumno-ranking" scrollY="true" class="info-alumno">
+    <img class="logo-liga" src="../../assets/img/puntosicon.svg" width="100px">
+    <h2> Hola {{MiAlumno.Nombre}}, actualmente tienes</h2>
+    <h3> {{ MiAlumnoJDP }} pts</h3>
+    <h2> en este juego de puntos </h2>
+    <ion-list class="puntos-list-bg">
+      <p>Se clasifican según:</p>
+      <ion-item *ngFor="let punto of MiHistorialPuntos; let i = index">
+        <h2>{{punto.Nombre}} :</h2>
+        <h2 slot="end"> {{punto.Puntos}} pts.</h2>
+      </ion-item>
+      <ion-item>
+        <h2><b>TOTAL : </b></h2>
+        <h2 slot="end"> {{MiAlumnoJDP}} Puntos</h2>
+      </ion-item>
+    </ion-list>
+
+    <ion-button class="ranking-btn" *ngIf="!hideMe" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
+    <ion-button *ngIf="hideMe" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
+
+    <div *ngIf="hideMe" class="ranking">
+      <ion-card *ngFor="let alum of rankingJuegoDePuntos">
+        <ion-item lines="none">
+          <ion-avatar slot="start">
+            <img src="../../assets/img/usuario.svg">
+          </ion-avatar>
+          <ion-label>
+            <h2> <b>{{alum.posicion}} - {{alum.nombre}} {{alum.primerApellido}}</b> </h2>
+            <p> Puntos: {{alum.puntos}} , Nivel: {{alum.nivel}} </p>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </div>
+  </div>
+  <!-- Si el juego es por equipos creamos un div con la información-->
+  <div *ngIf="juegoSeleccionado.Modo !== 'Individual'" class="info-equipo">
+    <img class="logo-liga" src="../../assets/img/puntosicon.svg" width="100px">
+    <h2> Hola {{MiAlumno.Nombre}}, formas parte del equipo</h2>
+    <h3> </h3>
+    <h2> en este juego de puntos </h2>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let equipo of rankingEquiposJuegoDePuntos" class="equipo-panel">
+        <mat-expansion-panel-header class="equipo-info" (click)="AlumnosDelEquipo(equipo)">
+          <ion-item lines="none" class="equipo-span">
+            <ion-avatar slot="start">
+              <img src="../../assets/img/equipo.svg">
+            </ion-avatar>
+            <ion-label>
+              <h2> <b>{{equipo.nombre}}</b> </h2>
+            </ion-label>
+          </ion-item>
+        </mat-expansion-panel-header>
+        <div class="alumnos-grupo">
+          <div class="alumno-image" *ngFor="let alumno of alumnosEquipo">
+            <div *ngIf="alumno.id !== MiAlumno.id" class="border">
+              <div class="img-box">
+                <img src="../../assets/img/usuario.svg">
+              </div>
+            </div>
+            <div *ngIf="alumno.id === MiAlumno.id" class="border-conectado">
+              <div class="img-box">
+                <img src="../../assets/img/usuario.svg">
+              </div>
+            </div>
+            <p>{{alumno.Nombre}} <br> {{alumno.PrimerApellido}} </p>
+          </div>
+        </div>
+        <h2> <b>Posición:</b> {{equipo.posicion}} </h2>
+        <h2> <b>Nivel:</b> {{equipo.nivel}} </h2>
+        <div class="toggle-text" tappable (click)="AccederEquipo(equipo)">
+          <span *ngIf="!infoPuntosView">Muestra los puntos de {{equipo.nombre}}</span>
+          <span *ngIf="infoPuntosView">Ocultar puntos</span>
+          <br>
+          <ion-icon name="arrow-round-up" *ngIf="!infoPuntosView"></ion-icon>
+          <ion-icon name="arrow-round-down" *ngIf="infoPuntosView"></ion-icon>
+        </div>
+        <div *ngIf="infoPuntosView">
+        <ion-grid>
+          <!--Se define la cabecera de la tabla que recoge los alumnos del juego-->
+          <ion-row class="cabecera-tabla">
+            <ion-col col-1>
+              <p><b>Punto</b></p>
+            </ion-col>
+            <ion-col col-2>
+              <p><b>Valor</b></p>
+            </ion-col>
+          </ion-row>
+  
+          <!--Se define el contenido de la tabla que recoge los alumnos del juego-->
+          <ion-row class="casillas-tabla" *ngFor="let punto of historial">
+            <ion-col col-1>
+              <p><b>{{punto.nombre}}</b></p>
+            </ion-col>
+            <ion-col col-2>
+              <p><b>{{punto.valorPunto}}</b></p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <ion-row style="height: 100px"></ion-row>
+  </div>
+
+  <div class="puntos-info" [ngClass]="{'active': infoView}" id="informacion">
+
+    <div class="toggle-text" tappable (click)="toggleInfoView()">
+      <span *ngIf="!infoView">Tengo dudas</span>
+      <span *ngIf="infoView">Ocultar información</span>
+      <br>
+      <ion-icon name="arrow-round-up" *ngIf="!infoView"></ion-icon>
+      <ion-icon name="arrow-round-down" *ngIf="infoView"></ion-icon>
+    </div>
+
+    <div padding>
+      <ion-segment [(ngModel)]="Tipo" class = "info-segment">
+        <ion-segment-button class = "btn-segment" value="Puntos">
+          Puntos
+        </ion-segment-button>
+        <ion-segment-button class = "btn-segment" value="Niveles">
+          Niveles
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <div [ngSwitch]="Tipo">
+      <div style="width: 80%; margin: auto;">
+        <p>Aquí tienes información sobre los niveles y la asignación de puntos 
+        en este juego de puntos</p>
+      </div>
+      
+      <ng-container *ngSwitchCase="'Puntos'">
+        <div class="infopuntos">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let punto of TodosLosPuntos; let i=index">
+              <mat-expansion-panel-header>
+                <b>{{punto.Nombre}}</b>
+              </mat-expansion-panel-header>
+              <p> {{TodosLosPuntos[i].Descripcion}} </p>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Niveles'">
+        <div class="infopuntos">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let nivel of nivelesDelJuego">
+              <mat-expansion-panel-header>
+                <b>{{nivel.Nombre}}</b>
+              </mat-expansion-panel-header>
+              <p> {{nivel.PrivilegiosDelNivel}} </p>
+              <p> <b>Necesitas:</b> {{nivel.PuntosAlcanzar}} pts</p>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+</ion-content>

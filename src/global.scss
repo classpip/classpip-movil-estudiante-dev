@@ -136,47 +136,66 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
     }
 }
 
-.menu-title{
-  h2 {
-    margin-top: 52px;
-    font-size: 24px;
-    color: white;
-  }
-  .menu-btn{
-  color: white !important;
-  margin-top: -90px;
-  }
-}
-
 .juegos-content {
-  --background: #fffafaff;
+  --background: white;
   text-align: center;
+  .juegos-card-bg {
+    margin-top: 20px;
+    max-height: fit-content;
+    text-align: center;
+    background: linear-gradient(to top right, #354f7bff -30%, #ff9999 100%);
+    width: 177px !important;
+    height: 275px !important;
+    margin-bottom: 15%;
+    h2 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 17px;
+      font-weight: bold;
+      color:#354f7bff;
+      margin-bottom: auto;
+    }
+    h3 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      margin-top: auto;
+    }
+    p {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      color: white;
+      margin-top: auto;
+    }
+    .info-juego {
+      height: 30%;
+    }
+    .logo-btn {
+      height: 60%;
+      .card-img {
+        width: 50%;
+        margin: auto;
+      }
+      .card-btn {
+        --border-radius: 20px;
+        --border-width: 1px;
+        --border-style: solid;
+        --background: #ffffff75;
+        display: block;
+        width: 60%;
+        contain: content;
+        margin: auto;
+        margin-top: 10%;
+      }
+    }
+    ion-card{
+      display: flex;
+      flex-direction: column;
+      margin: 10 !important;
+    }
+  }
 }
 
-.juegos-card-bg {
-  margin-top: 20px;
-  max-height: fit-content;
-  text-align: center;
-  background: linear-gradient(to top right, #68b2ffff -50%, #ff9999 100%);
-  .card-title {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    color:white;
-  }
-  .card-stitle {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
-    font-weight: bold;
-    color: white;
-  }
-  ion-card{
-    display: flex;
-    flex-direction: column;
-    width: 80% !important;
-    margin: 10 !important;
-  }
-}
 
 ion-tab-bar, ion-tab-button{
   background-color: #f0926afb;
@@ -231,16 +250,118 @@ ion-tab-bar, ion-tab-button{
  /* ++++++++++++++++++++++++ 2.5 PUNTOS +++++++++++++++++++++++++++*/
 
  .puntos-content{
-  --overflow: hidden;
   text-align: center;
-  
-  h3 {
-    color: #000066;
-    font-size: 15px;
+  #alumno-ranking {
+    overflow: auto;
   }
   
+  .info-alumno{
+    .logo-liga {
+      margin-top: 10%;
+    }
+    h2 {
+      font-size: 15px;
+      color: #354f7bff;
+    }
+    h3 {
+      font-size: 44px;
+      background: darkseagreen;
+      color: white;
+    }
+    .puntos-list-bg {
+      background: transparent;
+      ion-item {
+        --background: transparent;
+        h2 {
+          font-size: 15px;
+          color: black;
+        }
+      }
+    }
+    .ranking-btn{
+      margin-bottom: 90px;
+    }
+    .ranking{
+      margin-bottom: 100px;
+    }
+  }
+
+  .info-equipo{
+    .logo-liga {
+      margin-top: 10%;
+    }
+    h2 {
+      font-size: 15px;
+      color: #354f7bff;
+    }
+    h3 {
+      font-size: 44px;
+      background: darkseagreen;
+      color: white;
+    }
+    .equipo-panel {
+      margin-bottom: 10px;
+      .alumnos-grupo {
+        display: flex;
+        margin: auto;
+        .alumno-image {
+          margin: auto;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          .border {
+            border: 3px solid lightpink;
+            border-radius: 50%;
+            width: fit-content;
+            background-color: bisque;
+            .img-box {
+              height: 50px;
+              width: 50px;
+              border-radius: 50%;
+              overflow: hidden;
+            }
+          }
+          .border-conectado {
+              border: 3px solid rgb(64, 98, 155);
+              border-radius: 50%;
+              width: fit-content;
+              background-color: lightblue;
+            .img-box {
+              height: 50px;
+              width: 50px;
+              border-radius: 50%;
+              overflow: hidden;
+            }
+          }
+        }
+      }
+
+      .equipo-info{
+        height: 60px;
+      }
+      .equipo-span{
+        margin-top: auto;
+      }
+      .cabecera-tabla {
+          background: #17447eff;
+          color: white;
+          border-top-right-radius: 17px;
+          border-top-left-radius: 17px;
+      }
+      .casillas-tabla {
+          color: #17447eff;
+          border-left: thin solid;
+          border-right: thin solid;
+          border-bottom: thin solid;
+          border-left-color: #17447eff;
+          border-right-color: #17447eff;
+          border-bottom-color: #17447eff;
+      }
+    }
+  }
+
   .puntos-info {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     height: 70px;
     width: 100%;
@@ -248,6 +369,9 @@ ion-tab-bar, ion-tab-button{
     background: linear-gradient(to top, #000066 -50%, #ff9999 100%);
     transition: all 1s;
     border-radius: 85% 85% 0 0 / 30%;
+    p {
+      color:white;
+    }
   
     &.active {
       height: calc(100% - 100px);
@@ -257,31 +381,42 @@ ion-tab-bar, ion-tab-button{
       color: white;
       font-size: 15px;
     }
+
+    .info-segment{
+      margin: auto;
+      width: 70%;
+      .btn-segment{
+        color: white;
+      }
+    }
   
-    .expansion-panel {
+    .infopuntos {
       margin-top: 5%;
       display: block;
       margin-left: auto;
       margin-right: auto;
       width: 80%;
+      p{
+        color: black;
+        font-size: 12px;
+      }
     }
+  } 
+  #informacion{
+    overflow: hidden;
   }
  }
- .puntos-list-bg {
-  background: transparent;
-  ion-item {
-    --background: transparent;
-    h2 {
-      font-size: 16px;
-    }
-  }
-}
 
  /* ++++++++++++++++++++++++ 2.6 MENU-LATERAL +++++++++++++++++++++++++++*/
 
  .sidemenu-content {
   --background: linear-gradient(to top, #000066 -50%, #ff9999 100%);
-
+  text-align: center;
+  p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    font-weight: bold;
+  }
   .user-image {
     display: flex;
     justify-content: center;
@@ -314,40 +449,153 @@ ion-tab-bar, ion-tab-button{
   }
 }
 
- /* ++++++++++++++++++++++++ 2.7 JUEGO SELECCIONADO +++++++++++++++++++++++++++*/
-
-.juegoseleccionado-content {
+ /* ++++++++++++++++++++++++ 2.7 JUEGO COLECCION +++++++++++++++++++++++++++*/
+ .juegocoleccion-content {
   --background: #fffafaff;
   text-align: center;
-  .cabecera-tabla {
-    background-color: #ff9999 ;
-    margin-top:5%;
-    height:40%;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    padding-inline-start: 7%;
-    p {
-      font-size: 13px;
-      line-height: 1.5;
-      color: #000066;
+  /* entire container, keeps perspective */
+    .logo-liga {
+      margin-top: 10%;
+    }
+    h2 {
+      font-size: 15px;
+      color: #354f7bff;
+      
+    }
+    .card-cromo {
+      width: 200px;
+      height: 230px;
+      background: mediumspringgreen;
+      border-radius: 10px;
+      img {
+        width: 100%;
+        height: 60%;
+      }
+    }
+    .card-cromo-reves {
+      width: 200px;
+      height: 230px;
+      background-color: mediumspringgreen;
+      border-radius: 10px;
+    }
+    .MeFalta-bg {
+      width: 200px;
+      height: 230px;
+      background: lightgrey;
+      border-radius: 10px;
+      img {
+        width: 100%;
+        height: 60%;
+        opacity: 0.3;
+      }
+    }
+    .falta-cromo-reves {
+      width: 200px;
+      height: 230px;
+      background-color: lightgrey;
+      border-radius: 10px;
+    }
+    .cofre-icono {
+      margin-top: 10%;
+      width: 70px;
+      margin: auto;
+      margin-bottom: 30%;
+      margin-top: 10%;
+    }
+    .boton-ranking {
+      margin-bottom: 10%;
+    }
+    .ranking-acordeon {
+      width: 90%;
+      margin: auto;
+      margin-bottom: 3%;
+      border-radius: 5px;
+    }
+    // para mostrar los alumnos de cada grupo
+    .alumnos-grupo {
+      display: flex;
+      margin: auto;
+      .alumno-image {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .border {
+          border: 3px solid lightpink;
+          border-radius: 50%;
+          width: fit-content;
+          background-color: bisque;
+          .img-box {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+          }
+        }
+        .border-conectado {
+            border: 3px solid rgb(64, 98, 155);
+            border-radius: 50%;
+            width: fit-content;
+            background-color: lightblue;
+          .img-box {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+    .equipo-span{
+      margin-top: auto;
+    }
+    .coleccion-equipo {
+      margin-bottom: 15%;
+      h2 {
+        font-size: 15px;
+        color: #354f7bff;
+      }
     }
   }
-  .casillas-tabla{
-    background-color:#ff999949;
-    border-style: solid;
-    border-width: 0.5px;
-    border-color: #ff9999;
-    p {
-      font-size: 14px;
-      color: #504d4d;
-    }
-  }
-}
 
-.intercambiar-btn {
-  --background: #354f7bff;
-  margin-top: 5%;
-}
+  .flip-card-container {
+    width: 200px;
+    height: 230px;
+    margin-top: 15%;
+    margin-bottom: 15%;
+  }
+
+  /* Esta és la parte css del efecto flip para los cromos */
+  .flip-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 1.5s;
+    transform-style: preserve-3d;
+  }
+  .flip-card-container:hover .flip-card {
+    transform: rotateY(180deg);
+  }
+  /* Position the front and back side */
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .flip-card-front {
+    background-color: transparent;
+    color: #fff;
+  }
+  .flip-card-back {
+    background-color: transparent;
+    color: #fff;
+    transform: rotateY(180deg);
+  }
 
 /* ++++++++++++++++++++++++ 2.8 CAMBIAR CROMOS +++++++++++++++++++++++++++*/
 
@@ -355,6 +603,64 @@ ion-tab-bar, ion-tab-button{
   text-align: center;
 }
 
+/* +++++++++++++++++++++++++ 2.9 JUEGO COMPELIGA +++++++++++++++++++++++++ */
+
+.juegocompliga-content {
+  --background: #fffafaff;
+  text-align: center;
+
+  .info-alumno{
+    .logo-liga {
+      margin-top: 10%;
+    }
+    h2 {
+      font-size: 15px;
+    }
+    h3 {
+      font-size: 44px;
+      background: darkseagreen;
+      color: white;
+    }
+  }
+
+  .right-aligned-header > .mat-content {
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .mat-content > mat-panel-title, .mat-content > mat-panel-description {
+  flex: 0 0 auto;
+  }
+}
+
+/* +++++++++++++++++++++++++ 2.10 INFOR JORNADAS +++++++++++++++++++++++++ */
+.infojornadas-content {
+  text-align: center;
+  .enfrentamiento-card {
+    margin-top: 10px;
+    max-height: fit-content;
+    text-align: center;  
+    background: linear-gradient(to top right, rgb(121, 108, 240) -50%, #4bf045 100%);
+    .card-title {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 15px;
+    }
+    .versus-icon {
+      width: 70px;
+      display: unset;
+    }
+    h1 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      color: white;
+    }
+    h3 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      color: black;
+    }
+  }
+}
 
 /* ------------------------ESTILO 4---------------------------- */
 
@@ -428,3 +734,4 @@ h3 {
   --background-hover: #7eec96;
   --border-color: white;
 } */
+

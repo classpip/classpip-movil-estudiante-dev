@@ -13,7 +13,7 @@ import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJ
 })
 export class JuegoSeleccionadoPage implements OnInit {
 
-  @ViewChild(IonContent, {static: true}) content: IonContent;
+
   juegoSeleccionado: Juego;
   MisAlumnosAMostrar: MiAlumnoAMostrarJuegoDePuntos[] = [];
   MisEquiposJuegoPuntosAMostrar: MiEquipoAMostrarJuegoDePuntos[] = [];
@@ -23,6 +23,7 @@ export class JuegoSeleccionadoPage implements OnInit {
   NuestroHistorialPuntos: any [] = [];
   Grupo: Grupo;
   muestralo: boolean = false;
+
 
   constructor(
     private sesion: SesionService,
@@ -106,6 +107,5 @@ export class JuegoSeleccionadoPage implements OnInit {
 
   VerRanking() {
     this.muestralo = true;
-    this.content.scrollToBottom(1500);
   }
 }
