@@ -10,10 +10,19 @@ export class Juego {
   NumeroParticipantesPuntuan: number;
   Puntos: number[];
   NombreJuego: string;
+  PuntuacionCorrecta: number;
+  PuntuacionIncorrecta: number;
+  Presentacion: string;
+  JuegoTerminado: boolean;
+  profesorId: number;
+  cuestionarioId: number;
+
+  
 
   constructor(Tipo?: string, Modo?: string, coleccionId?: number, JuegoActivo?: boolean,
     NumeroTotalJornadas?: number, TipoJuegoCompeticion?: string, NumeroParticipantesPuntuan?: number,
-    Puntos?: number[], NombreJuego?: string) {
+    Puntos?: number[], NombreJuego?: string, PuntuacionCorrecta?: number, PuntuacionIncorrecta?: number, 
+    Presentacion?: string, JuegoTermiando?: boolean, profesorId?: number, cuestionarioId?: number) {
 
     this.Tipo = Tipo;
     this.Modo = Modo;
@@ -24,6 +33,13 @@ export class Juego {
     this.NumeroParticipantesPuntuan = NumeroParticipantesPuntuan;
     this.Puntos = Puntos;
     this.NombreJuego = NombreJuego;
+    this.PuntuacionCorrecta = PuntuacionCorrecta;
+    this.PuntuacionIncorrecta = PuntuacionIncorrecta;
+    this.Presentacion = Presentacion;
+    this.JuegoTerminado = JuegoTermiando;
+    this.profesorId = profesorId;
+    this.cuestionarioId = cuestionarioId;
+
     
   }
 }

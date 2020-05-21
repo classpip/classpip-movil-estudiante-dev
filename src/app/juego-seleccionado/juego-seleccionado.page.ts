@@ -5,12 +5,14 @@ import { PeticionesAPIService} from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {  Juego, Equipo, Alumno, MiAlumnoAMostrarJuegoDePuntos, Grupo, MiEquipoAMostrarJuegoDePuntos} from '../clases/index';
 import { IonContent } from '@ionic/angular';
+import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 @Component({
   selector: 'app-juego-seleccionado',
   templateUrl: './juego-seleccionado.page.html',
   styleUrls: ['./juego-seleccionado.page.scss'],
 })
 export class JuegoSeleccionadoPage implements OnInit {
+
 
   juegoSeleccionado: Juego;
   MisAlumnosAMostrar: MiAlumnoAMostrarJuegoDePuntos[] = [];
@@ -55,7 +57,7 @@ export class JuegoSeleccionadoPage implements OnInit {
         console.log('ya he traido los equipos');
         console.log(this.MisEquiposJuegoPuntosAMostrar);
       }
-    } else {
+    } else if (this.juegoSeleccionado.Tipo === 'Juego De Colección'){
       if ( this.juegoSeleccionado.Modo === 'Individual') {
         this.MisAlumnosJuegoColeccion = this.calculos.DameAlumnosJuegoDeColecciones(this.juegoSeleccionado.id);
         console.log('Estos son los alumnos del Juego de Col');
@@ -68,7 +70,7 @@ export class JuegoSeleccionadoPage implements OnInit {
             console.log(this.MisEquiposJuegoColecciones);
           });
       }
-    }
+    } 
   }
 
   // Se llama a la funcion al clicar sobre el sobre del equipo
