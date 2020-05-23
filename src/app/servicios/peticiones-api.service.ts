@@ -691,7 +691,7 @@ export class PeticionesAPIService {
   //OBTENEMOS ALUMNO EN CONCRETO
   public DameAlumnoConId (alumnoId: number): Observable<Alumno> {
     return this.http.get<Alumno>(this.APIUrlAlumnos + '/' + alumnoId);
-
+  }
   ////////////////////////////////////////////////////////////////////////////////////////
     
   public DameJuegoDeCompeticionLigaAlumno(alumnoId: number): Observable<Juego[]> {

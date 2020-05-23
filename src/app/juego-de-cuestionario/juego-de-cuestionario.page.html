@@ -6,7 +6,8 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{juegoSeleccionado.NombreJuego}}</ion-title>
+    <ion-title *ngIf = "juegoSeleccionado.JuegoActivo">{{juegoSeleccionado.NombreJuego}}</ion-title>
+    <ion-title *ngIf = "!juegoSeleccionado.JuegoActivo">Notas {{juegoSeleccionado.NombreJuego}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -89,14 +90,11 @@
 </ion-content>
 
 <ion-content *ngIf = "!juegoSeleccionado.JuegoActivo" class="juegoseleccionado-content"  [scrollEvents]="true">
-  <div>
-    <p>Las notas del juego de cuestionario son: </p>
-  </div>
   <!--Para el caso de un juego de Cuestionario-->
-  <div>
-    <ion-grid>
+  <!-- <div>
+    <ion-grid> -->
       <!--Se define la cabecera de la tabla del ranking del juego de Puntos-->
-      <ion-row class="cabecera-tabla">
+      <!-- <ion-row class="cabecera-tabla">
         <ion-col col-1 style="margin-left: -10%">
           <p><b>Nombre</b></p>
         </ion-col>
@@ -106,10 +104,10 @@
         <ion-col col-3 style="margin-right: -3%">
           <p><b>Nota</b></p>
         </ion-col>
-      </ion-row>
+      </ion-row> -->
 
       <!--Se define el contenido de la tabla , es decir los nombbres y los puntos-->
-      <ion-row class="casillas-tabla" *ngFor="let item of MisAlumnosDelJuegoDeCuestionario">
+      <!-- <ion-row class="casillas-tabla" *ngFor="let item of MisAlumnosDelJuegoDeCuestionario">
         <ion-col col-1>
           <p><b>{{item.Nombre}}</b></p>
         </ion-col>
@@ -121,5 +119,18 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+  </div> -->
+  <div class="ranking">
+    <ion-card *ngFor="let alum of MisAlumnosDelJuegoDeCuestionario">
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <img src="../../assets/img/usuario.svg">
+        </ion-avatar>
+        <ion-label>
+          <h2> <b>{{alum.Nombre}} {{alum.PrimerApellido}}</b> </h2>
+          <p> Puntos: {{alum.Nota}}</p>
+        </ion-label>
+      </ion-item>
+    </ion-card>
   </div>
 </ion-content>
