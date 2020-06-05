@@ -232,7 +232,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
       }
     }
-    if (this.Nota < 0) {
+    if (this.Nota <= 0) {
       this.Nota = 0.1;
     }
     

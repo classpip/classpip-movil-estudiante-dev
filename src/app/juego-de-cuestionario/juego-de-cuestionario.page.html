@@ -18,18 +18,19 @@
       <mat-step>
         <p style="margin-top: 250px; text-align: justify;">¿Estas seguro de que deseas empezar el cuestionario? Si es que sí, presiona en "Empezar"</p>
         <div style="margin-top: auto;">
-          <button (click) = "empezamos()" class = "button-empezar" matStepperNext>Empezar</button>
+          <!-- En el caso de que no funcione en el movil, añadimos: ion-float-right y ion-float-right donde toque -->
+          <button (click) = "empezamos()" class = "ion-float-right button-empezar" matStepperNext>Empezar</button>
         </div>
 
       </mat-step>
 
       <!-- SEGUNDO PASO -->
       <mat-step>
-        <div style="margin-top: 200px;">
+        <div style="margin-top: 195px;">
           <p><b>Descripcion: </b>{{descripcion}}</p>
           <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
           <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
-          <button class = "siguiente" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+          <button class = "ion-float-right siguiente" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
         </div>
       </mat-step>
 
@@ -43,19 +44,19 @@
               </mat-radio-button>
           </mat-radio-group>
         </div>
-        <button *ngIf = "i !== 0" class = "anterior" (click) = "cambioRespuestasAnterior(i)" mat-button matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
-        <button ion-button class = "siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+        <button *ngIf = "i !== 0" class = "ion-float-left anterior" (click) = "cambioRespuestasAnterior(i)" mat-button matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+        <button ion-button class = "ion-float-right siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
       </mat-step>
 
       <!-- FINALIZACION DEL CUESTIONARIO -->
       <mat-step>
-        <div style="margin-top: 200px;">
+        <div style="margin-top: 235px;">
           <p>Cuestionario realizado correctamente.</p>
           <p> Haga click en "Finalizar" para guardar los cambios.</p>
         </div>
         <div class="btnCambiarStep">
-          <button class = "anterior" mat-raised-button style="margin: 5px" matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
-          <button (click) = "ponerNota()" class = "button-empezar" mat-raised-button matStepperNext > Finalizar</button>
+          <button class = "ion-float-left anterior" mat-raised-button  matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+          <button (click) = "ponerNota()" class = "ion-float-right button-empezar" mat-raised-button matStepperNext> Finalizar</button>
         </div>
       </mat-step>
 
@@ -69,14 +70,7 @@
         <div *ngFor="let feedback of feedbacks, let i = index">
           <p><b>{{i+1}}. </b>{{feedback}}</p>
         </div>
-        <!-- <div>
-          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
-              <mat-radio-button class="radio-button" *ngFor="let feedback of feedbacks, let i = index" [value]="feedback" disabled> 
-                <p  style="color: black;">{{i+1}}. {{feedback}}</p>
-              </mat-radio-button>
-          </mat-radio-group>
-        </div> -->
-        <button (click) = "GoMisJuegos()" class = "button-empezar">Cerrar</button>
+        <button (click) = "GoMisJuegos()" class = "ion-float-right button-empezar">Cerrar</button>
       </mat-step>
     </mat-horizontal-stepper>
 
@@ -90,36 +84,6 @@
 </ion-content>
 
 <ion-content *ngIf = "!juegoSeleccionado.JuegoActivo" class="juegoseleccionado-content"  [scrollEvents]="true">
-  <!--Para el caso de un juego de Cuestionario-->
-  <!-- <div>
-    <ion-grid> -->
-      <!--Se define la cabecera de la tabla del ranking del juego de Puntos-->
-      <!-- <ion-row class="cabecera-tabla">
-        <ion-col col-1 style="margin-left: -10%">
-          <p><b>Nombre</b></p>
-        </ion-col>
-        <ion-col col-2 style="margin-left: -7%">
-          <p><b>Apellido</b></p>
-        </ion-col>
-        <ion-col col-3 style="margin-right: -3%">
-          <p><b>Nota</b></p>
-        </ion-col>
-      </ion-row> -->
-
-      <!--Se define el contenido de la tabla , es decir los nombbres y los puntos-->
-      <!-- <ion-row class="casillas-tabla" *ngFor="let item of MisAlumnosDelJuegoDeCuestionario">
-        <ion-col col-1>
-          <p><b>{{item.Nombre}}</b></p>
-        </ion-col>
-        <ion-col col-2>
-          <p><b>{{item.PrimerApellido}}</b></p>
-        </ion-col>
-        <ion-col col-3 style="margin-left:5%">
-          <p><b>{{item.Nota}}</b></p>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div> -->
   <div class="ranking">
     <ion-card *ngFor="let alum of MisAlumnosDelJuegoDeCuestionario">
       <ion-item lines="none">
