@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="172.31433mm"
+   height="168.03802mm"
+   viewBox="0 0 172.31433 168.03802"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="cuestionariosicon.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="609.33434"
+     inkscape:cy="87.97883"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(51.610988,-52.114331)">
+    <circle
+       style="opacity:0.68900003;fill:#cce04b;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.4000001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="path856"
+       cx="59.856827"
+       cy="169.62201"
+       r="0" />
+    <ellipse
+       style="opacity:0.68900003;fill:#cce04b;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.4000001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="path837"
+       cx="34.546181"
+       cy="136.13335"
+       rx="84.457169"
+       ry="82.319016" />
+    <g
+       id="g974"
+       transform="matrix(1.6253019,0,0,1.5732186,-17.46348,85.790351)">
+      <path
+         id="path906"
+         d="m 57,5 v 46 a 2.006,2.006 0 0 1 -2,2 H 51 V 9 A 2.006,2.006 0 0 0 49,7 H 34 A 2.015,2.015 0 0 1 32,5 2.006,2.006 0 0 0 30,3 h 25 a 2.006,2.006 0 0 1 2,2 z"
+         inkscape:connector-curvature="0"
+         style="fill:#ffde55" />
+      <path
+         id="path908"
+         d="m 51,53 v 2 a 2.006,2.006 0 0 1 -2,2 H 45 V 13 A 2.006,2.006 0 0 0 43,11 H 36 V 9 A 2.006,2.006 0 0 0 34,7 h 15 a 2.006,2.006 0 0 1 2,2 z"
+         inkscape:connector-curvature="0"
+         style="fill:#ffc477" />
+      <path
+         id="path910"
+         d="m 45,57 v 2 a 2.006,2.006 0 0 1 -2,2 H 9 A 2.006,2.006 0 0 1 7,59 V 13 a 2.006,2.006 0 0 1 2,-2 h 7 v 2 a 2.006,2.006 0 0 0 2,2 h 16 a 2.006,2.006 0 0 0 2,-2 v -2 h 7 a 2.006,2.006 0 0 1 2,2 z M 21,43 v -8 h -8 v 8 z m 0,-14 v -8 h -8 v 8 z"
+         inkscape:connector-curvature="0"
+         style="fill:#46f8ff" />
+      <path
+         id="path912"
+         d="m 36,11 v 2 a 2.006,2.006 0 0 1 -2,2 H 18 A 2.006,2.006 0 0 1 16,13 V 9 a 2.015,2.015 0 0 1 2,-2 2.015,2.015 0 0 0 2,-2 2.006,2.006 0 0 1 2,-2 h 8 a 2.006,2.006 0 0 1 2,2 2.015,2.015 0 0 0 2,2 2.006,2.006 0 0 1 2,2 z"
+         inkscape:connector-curvature="0"
+         style="fill:#ff7956" />
+      <path
+         id="path914"
+         d="m 13,35 h 8 v 8 h -8 z"
+         inkscape:connector-curvature="0"
+         style="fill:#ff3051" />
+      <path
+         id="path916"
+         d="m 13,21 h 8 v 8 h -8 z"
+         inkscape:connector-curvature="0"
+         style="fill:#57a4ff" />
+      <path
+         id="path918"
+         d="M 55,2 H 41 v 2 h 14 a 1,1 0 0 1 1,1 v 46 a 1,1 0 0 1 -1,1 H 52 V 9 A 3,3 0 0 0 49,6 H 39 v 2 h 10 a 1,1 0 0 1 1,1 v 46 a 1,1 0 0 1 -1,1 H 46 V 13 A 3,3 0 0 0 43,10 H 37 V 9 A 3,3 0 0 0 34,6 1,1 0 0 1 33,5 3,3 0 0 0 30,2 h -8 a 3,3 0 0 0 -3,3 1,1 0 0 1 -1,1 3,3 0 0 0 -3,3 v 1 H 9 a 3,3 0 0 0 -3,3 v 46 a 3,3 0 0 0 3,3 h 34 a 3,3 0 0 0 3,-3 v -1 h 3 a 3,3 0 0 0 3,-3 v -1 h 3 a 3,3 0 0 0 3,-3 V 5 A 3,3 0 0 0 55,2 Z M 17,9 a 1,1 0 0 1 1,-1 3,3 0 0 0 3,-3 1,1 0 0 1 1,-1 h 8 a 1,1 0 0 1 1,1 3,3 0 0 0 3,3 1,1 0 0 1 1,1 v 4 a 1,1 0 0 1 -1,1 H 18 a 1,1 0 0 1 -1,-1 z m 27,50 a 1,1 0 0 1 -1,1 H 9 A 1,1 0 0 1 8,59 V 13 a 1,1 0 0 1 1,-1 h 6 v 1 a 3,3 0 0 0 3,3 h 16 a 3,3 0 0 0 3,-3 v -1 h 6 a 1,1 0 0 1 1,1 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path920"
+         d="m 23,6 h 6 v 2 h -6 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path922"
+         d="m 13,30 h 8 a 1,1 0 0 0 1,-1 v -8 a 1,1 0 0 0 -1,-1 h -8 a 1,1 0 0 0 -1,1 v 8 a 1,1 0 0 0 1,1 z m 1,-8 h 6 v 6 h -6 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path924"
+         d="m 13,44 h 8 a 1,1 0 0 0 1,-1 v -8 a 1,1 0 0 0 -1,-1 h -8 a 1,1 0 0 0 -1,1 v 8 a 1,1 0 0 0 1,1 z m 1,-8 h 6 v 6 h -6 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path926"
+         d="m 12,48 h 28 v 2 H 12 Z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path928"
+         d="m 12,54 h 28 v 2 H 12 Z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path930"
+         d="m 26,21 h 4 v 2 h -4 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path932"
+         d="m 32,21 h 8 v 2 h -8 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path934"
+         d="m 26,27 h 4 v 2 h -4 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path936"
+         d="m 32,27 h 8 v 2 h -8 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path938"
+         d="m 26,35 h 4 v 2 h -4 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path940"
+         d="m 32,35 h 8 v 2 h -8 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path942"
+         d="m 26,41 h 4 v 2 h -4 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path944"
+         d="m 32,41 h 8 v 2 h -8 z"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>
