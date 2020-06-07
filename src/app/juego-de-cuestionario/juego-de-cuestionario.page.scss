@@ -18,9 +18,12 @@
     font-size: 18px;
     padding: 20px;
     border-radius: 20px;
-    position: absolute;
+    /* Si no funciona al desplegar en el movil, lo hacemos asi
+    margin-top: 300px; */
+    /* position: absolute;
     bottom: 35px;
-    right: 25px;
+    right: 25px; */
+    margin-top: 175px; 
 }
 
 .siguiente {
@@ -29,9 +32,10 @@
     font-size: 24px;
     padding: 20px;
     border-radius: 50px;
-    position: absolute;
+    /* position: absolute;
     bottom: 35px;
-    right: 25px;
+    right: 25px; */
+    margin-top: 175px; 
 }
 
 .anterior {
@@ -40,7 +44,8 @@
     font-size: 24px;
     padding: 20px;
     border-radius: 50px;
-    position: absolute;
+    /* position: absolute;
     bottom: 35px;
-    left: 25px;
+    left: 25px; */
+    margin-top: 175px; 
 }
