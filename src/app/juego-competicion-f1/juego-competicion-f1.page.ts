@@ -9,7 +9,7 @@ import {
   TablaPuntosFormulaUno
 } from '../clases/index';
 
-import { Chart } from "chart.js";
+import { Chart } from 'chart.js';
 
 // Servicio
 import { PeticionesAPIService } from '../servicios/index';
