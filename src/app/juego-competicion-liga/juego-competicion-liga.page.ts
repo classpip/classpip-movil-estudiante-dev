@@ -17,6 +17,7 @@ export class JuegoCompeticionLigaPage implements OnInit {
 
   juegoSeleccionado: Juego;
   MiAlumno: Alumno;
+  MiEquipo: Equipo;
   MiAlumnoJuegoCompLiga: AlumnoJuegoDeCompeticionLiga;
   alumnosDelJuego: Alumno[];
   equiposDelJuego: Equipo[];
@@ -25,6 +26,8 @@ export class JuegoCompeticionLigaPage implements OnInit {
   rankingAlumnoJuegoDeCompeticion: TablaAlumnoJuegoDeCompeticion[] = [];
   rankingEquiposJuegoDeCompeticion: TablaEquipoJuegoDeCompeticion[] = [];
   infomialumno: TablaAlumnoJuegoDeCompeticion;
+
+  alumnosEquipo: Alumno[];
 
   jornadas: Jornada[];
   JornadasCompeticion: TablaJornadas[] = [];
@@ -104,6 +107,7 @@ export class JuegoCompeticionLigaPage implements OnInit {
     });
   }
 
+  
   EquiposDelJuego() {
     console.log ('Vamos a por los equipos');
     console.log('Id juegoSeleccionado: ' + this.juegoSeleccionado.id);
@@ -113,7 +117,40 @@ export class JuegoCompeticionLigaPage implements OnInit {
       console.log (equiposJuego);
       this.equiposDelJuego = equiposJuego;
       this.RecuperarInscripcionesEquiposJuego();
+      this.DameEquipoAlumnoConectado();
     });
+  }
+
+  AlumnosDelEquipo(equipo: Equipo) {
+    console.log(equipo);
+
+    this.peticionesAPI.DameAlumnosEquipo(equipo.id)
+      .subscribe(res => {
+        if (res[0] !== undefined) {
+          this.alumnosEquipo = res;
+          console.log(res);
+        } else {
+          console.log('No hay alumnos en este equipo');
+          this.alumnosEquipo = undefined;
+        }
+      });
+  }
+
+  DameEquipoAlumnoConectado() {
+    console.log('voy a por el equipo del alumno');
+    for (let i = 0; i < this.equiposDelJuego.length; i++) {
+      this.peticionesAPI.DameAlumnosEquipo(this.equiposDelJuego[i].id)
+        .subscribe(res => {
+          console.log('miro en: ' + this.equiposDelJuego[i]);
+          for (let j = 0; j < res.length; j++)
+            if (res[j].id === this.MiAlumno.id) {
+              console.log(res);
+              this.MiEquipo = this.equiposDelJuego[i];
+              console.log('tu equipo');
+              console.log(this.MiEquipo);
+            }
+        });
+    }
   }
 
   RecuperarInscripcionesAlumnoJuego() {

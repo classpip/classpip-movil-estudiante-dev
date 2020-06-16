@@ -91,10 +91,13 @@ export class CalculosService {
 
   public DameJuegosAlumno(AlumnoId: number): any {
     const Observables = new Observable(obs => {
+      console.log('ya estoy dentro de dame juegos alumno');
       const JuegosActivos: Juego[] = [];
       const JuegosInactivos: Juego[] = [];
+      console.log('voy a por los juegos de puntos del alumno');
       this.peticionesAPI.DameJuegoDePuntosAlumno(AlumnoId).subscribe(
         lista => {
+          console.log('ya tengo los juegos de puntos del alumno');
           for (let i = 0; i < (lista.length); i++) {
             if (lista[i].JuegoActivo === true) {
               JuegosActivos.push(lista[i]);
@@ -102,96 +105,125 @@ export class CalculosService {
               JuegosInactivos.push(lista[i]);
             }
           }
-          console.log('yasta la lista Jueg. Puntos');
-        }
-      );
-      this.peticionesAPI.DameJuegoDeColeccionesAlumno(AlumnoId).subscribe(
-        lista => {
-          for (let i = 0; i < (lista.length); i++) {
-            if (lista[i].JuegoActivo === true) {
-              JuegosActivos.push(lista[i]);
-            } else {
-              JuegosInactivos.push(lista[i]);
-            }
-          }
-          console.log('yasta la lista Jueg.Colecciones');
-        }
-      );
-      this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId).subscribe(
-        lista => {
-          for (let i = 0; i < (lista.length); i++) {
-            if (lista[i].JuegoActivo === true) {
-              JuegosActivos.push(lista[i]);
-            } else {
-              JuegosInactivos.push(lista[i]);
-            }
-          }
-          console.log('yasta la lista Jueg. Puntos');
-        }
-      );
-      this.peticionesAPI.DameJuegoDeCompeticionLigaAlumno(AlumnoId).subscribe(
-        lista => {
-          for (let i = 0; i < (lista.length); i++) {
-            if (lista[i].JuegoActivo === true) {
-              JuegosActivos.push(lista[i]);
-            } else {
-              JuegosInactivos.push(lista[i]);
-            }
-          }
-          console.log('yasta la lista Jueg. Puntos');
-        }
-      );
-      this.peticionesAPI.DameEquiposDelAlumno(AlumnoId).subscribe(
-        lista => {
-          this.equipos = lista;
-          console.log('yasta la lista de equipos');
-          console.log(this.equipos);
-          for (let i = 0; i < (this.equipos.length); i++) {
-            this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id).subscribe(
-              listaJP => {
-                for (let f = 0; f < (listaJP.length); f++) {
-                  if (listaJP[f].JuegoActivo === true) {
-                    JuegosActivos.push(listaJP[f]);
-                  } else {
-                    JuegosInactivos.push(listaJP[f]);
-                  }
+          console.log('voy a por los juegos de colecciones del alumno');
+          this.peticionesAPI.DameJuegoDeColeccionesAlumno(AlumnoId).subscribe(
+            lista => {
+              for (let i = 0; i < (lista.length); i++) {
+                if (lista[i].JuegoActivo === true) {
+                  JuegosActivos.push(lista[i]);
+                } else {
+                  JuegosInactivos.push(lista[i]);
                 }
               }
-            );
-            this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).subscribe(
-              listaJC => {
-                for (let j = 0; j < (listaJC.length); j++) {
-                  if (listaJC[j].JuegoActivo === true) {
-                    JuegosActivos.push(listaJC[j]);
-                  } else {
-                    JuegosInactivos.push(listaJC[j]);
+              console.log('yasta la lista Jueg.Colecciones');
+              console.log('voy a por los juegos de F1 del alumno');
+              this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId).subscribe(
+                lista => {
+                  for (let i = 0; i < (lista.length); i++) {
+                    if (lista[i].JuegoActivo === true) {
+                      JuegosActivos.push(lista[i]);
+                    } else {
+                      JuegosInactivos.push(lista[i]);
+                    }
                   }
-                }
-              }
-            );
-          }
-        }
-      );
-      this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).subscribe(
-        lista => {
-          for (let i = 0; i < (lista.length); i++) {
-            if (lista[i].JuegoActivo === true) {
-              lista[i].Tipo = "Juego De Cuestionario";
-              JuegosActivos.push(lista[i]);
-            } else if (lista[i].JuegoTerminado === true){
-              lista[i].Tipo = "Juego De Cuestionario";
-              JuegosInactivos.push(lista[i]);
-            }
-          }
-        }
-      )
-      console.log('He acabado la funcion');
-      const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
-      obs.next(MisObservables);
-    });
+                  console.log('yasta la lista de juegos de F1');
+                  console.log('voy a por los juegos de liga del alumno');
+                  this.peticionesAPI.DameJuegoDeCompeticionLigaAlumno(AlumnoId).subscribe(
+                    lista => {
+                      for (let i = 0; i < (lista.length); i++) {
+                        if (lista[i].JuegoActivo === true) {
+                          JuegosActivos.push(lista[i]);
+                        } else {
+                          JuegosInactivos.push(lista[i]);
+                        }
+                      }
+                      console.log('ya tengo los juegos de liga');
+                          console.log('vamos a por los equipos');
+                          this.peticionesAPI.DameEquiposDelAlumno(AlumnoId).subscribe(
+                            lista => {
+                              this.equipos = lista;
+                              console.log('yasta la lista de equipos');
+                              console.log(this.equipos);
+                              let cont = 0;
+                              for (let i = 0; i < (this.equipos.length); i++) {
+                                console.log('voy a por los juegos de puntos del euqioi ' + this.equipos[i].id);
+                                this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id).subscribe(
+                                  lista => {
+                                    console.log('ya tengo los juegos de puntos del equipo ');
+                                    console.log(lista);
+                                    for (let j = 0; j < (lista.length); j++) {
+                                      if (lista[j].JuegoActivo === true) {
+                                        JuegosActivos.push(lista[j]);
+                                      } else {
+                                        JuegosInactivos.push(lista[j]);
+                                      }
+                                    }
+                                    console.log('voy a por los juegos de coleccion del euqioi ' + this.equipos[i].id);
+                                    this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).subscribe(
+                                      lista => {
+                                        console.log('ya tengo los juegos de coleccion del equipo ');
+                                        console.log(lista);
+                                        for (let j = 0; j < (lista.length); j++) {
+                                          if (lista[j].JuegoActivo === true) {
+                                            JuegosActivos.push(lista[j]);
+                                          } else {
+                                            JuegosInactivos.push(lista[j]);
+                                          }
+                                        }
+                                        console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
+                                        this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id).subscribe(
+                                          lista => {
+                                            console.log('ya tengo los juegos de F1 del equipo');
+                                            console.log(lista);
+                                            for (let j = 0; j < (lista.length); j++) {
+                                              if (lista[j].JuegoActivo === true) {
+                                                JuegosActivos.push(lista[j]);
+                                              } else {
+                                                JuegosInactivos.push(lista[j]);
+                                              }
+                                            }
+                                            console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
+                                            this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).subscribe(
+                                              lista => {
+                                                console.log('ya tengo los juegos de F1 del equipo');
+                                                console.log(lista);
+                                                for (let j = 0; j < (lista.length); j++) {
+                                                  if (lista[j].JuegoActivo === true) {
+                                                    JuegosActivos.push(lista[j]);
+                                                  } else {
+                                                    JuegosInactivos.push(lista[j]);
+                                                  }
+                                                }
+                                                this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).subscribe(
+                                                lista => {
+                                                  for (let i = 0; i < (lista.length); i++) {
+                                                    if (lista[i].JuegoActivo === true) {
+                                                      lista[i].Tipo = "Juego De Cuestionario";
+                                                      JuegosActivos.push(lista[i]);
+                                                    } else if (lista[i].JuegoTerminado === true){
+                                                      lista[i].Tipo = "Juego De Cuestionario";
+                                                      JuegosInactivos.push(lista[i]);
+                                                    }
+                                                  }
+                                                // vemos si hemos acabado de recogar los juegos de todos los equipos
+                                                cont = cont + 1;
+                                                if (cont == this.equipos.length) {
+                                                  const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
+                                                  obs.next(MisObservables);
+                                                }
+                                              });
+                                          });
+                                      });
+                                  });
+                              }
+                            });
+                        });
+                    });
+                });
+            });
+        });
     return Observables;
   }
-
   public DameAlumnosJuegoPuntos(juegoId: number) {
     let InformacionAlumno: MiAlumnoAMostrarJuegoDePuntos[] = [];
     this.peticionesAPI.DameAlumnosJuegoDePuntos(juegoId).subscribe(
@@ -342,12 +374,12 @@ export class CalculosService {
   }
 
 
-  public VisualizarLosCromos(listaCromos: any[]) {
+  public VisualizarLosCromosDelante(listaCromos: any[]) {
     const imagenesCromo: string[] = [];
     console.log(listaCromos.length);
     for (let i = 0; i < (listaCromos.length); i++) {
-      if (listaCromos[i].cromo.Imagen !== undefined) {
-        this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + listaCromos[i].cromo.Imagen,
+      if (listaCromos[i].cromo.ImagenDelante !== undefined) {
+        this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + listaCromos[i].cromo.ImagenDelante,
           { responseType: ResponseContentType.Blob }).subscribe(
             response => {
               const blob = new Blob([response.blob()], { type: 'image/jpg' });
@@ -362,6 +394,30 @@ export class CalculosService {
       }
     }
     console.log('he acabado el for');
+    console.log(listaCromos);
+    return imagenesCromo;
+  }
+  public VisualizarLosCromosDetras(listaCromos: any[]) {
+    const imagenesCromo: string[] = [];
+    console.log(listaCromos.length);
+    for (let i = 0; i < (listaCromos.length); i++) {
+      if (listaCromos[i].cromo.ImagenDetras !== undefined) {
+        this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + listaCromos[i].cromo.ImagenDetras,
+          { responseType: ResponseContentType.Blob }).subscribe(
+            response => {
+              const blob = new Blob([response.blob()], { type: 'image/jpg' });
+              const reader = new FileReader();
+              reader.addEventListener('load', () => {
+                imagenesCromo[i] = reader.result.toString();
+              }, false);
+              if (blob) {
+                reader.readAsDataURL(blob);
+              }
+            });
+      }
+    }
+    console.log('he acabado el for');
+    console.log(listaCromos);
     return imagenesCromo;
   }
 
@@ -550,11 +606,11 @@ export class CalculosService {
       }
 
       if (nivel !== undefined) {
-        rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
+        rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.id, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
           listaAlumnosOrdenadaPorPuntos[i].PuntosTotalesAlumno, nivel.Nombre);
 
       } else {
-        rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
+        rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.id, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
           listaAlumnosOrdenadaPorPuntos[i].PuntosTotalesAlumno);
       }
     }
@@ -657,11 +713,11 @@ export class CalculosService {
 
             if (nivel !== undefined) {
               // tslint:disable-next-line:max-line-length
-              rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
+              rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.id, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
                 puntos, nivel.Nombre);
             } else {
               // tslint:disable-next-line:max-line-length
-              rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
+              rankingJuegoDePuntos[i] = new TablaAlumnoJuegoDePuntos(i + 1, alumno.id, alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido,
                 puntos);
             }
 
@@ -1095,8 +1151,8 @@ export class CalculosService {
   }
 
 
-  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any,): 
-  any {
+  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
+    any {
     const historialObservable = new Observable(obs => {
 
       let historial = [];
@@ -1123,6 +1179,33 @@ export class CalculosService {
     return historialObservable;
   }
 
+  public PreparaHistorialAlumno(alumnoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
+    any {
+    const historialObservable = new Observable(obs => {
+
+      let historial = [];
+
+      this.peticionesAPI.DameHistorialPuntosAlumno(alumnoJuegoDePuntos.id)
+        .subscribe(his => {
+
+          if (his[0] !== null) {
+            for (let i = 0; i < his.length; i++) {
+              console.log('voy ' + i);
+              const punto = tiposPuntosDelJuego.filter(res => res.id === his[i].puntoId)[0];
+
+              historial[i] = new TablaHistorialPuntosAlumno(punto.Nombre,
+                punto.Descripcion, his[i].ValorPunto, his[i].fecha,
+                his[i].alumnoJuegoDePuntosId, his[i].id, his[i].puntoId);
+            }
+          } else {
+            historial = undefined;
+          }
+          historial = historial.filter(res => res.nombre !== '');
+          obs.next(historial);
+        });
+    });
+    return historialObservable;
+  }
 
   public Prueba(profesorId): any {
     const gruposObservable = new Observable(obs => {

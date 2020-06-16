@@ -86,8 +86,8 @@ export class IntercambiarCromosPage implements OnInit {
         this.cromo = this.MisCromosSinRepetidos[i].cromo;
       }
     }
-    if (this.cromo.Imagen !== undefined) {
-      this.https.get( 'http://localhost:3000/api/imagenes/ImagenCromo/download/' + this.cromo.Imagen,
+    if (this.cromo.ImagenDelante !== undefined) {
+      this.https.get( 'http://localhost:3000/api/imagenes/ImagenCromo/download/' + this.cromo.ImagenDelante,
       { responseType: ResponseContentType.Blob }).subscribe(
           response => {
               const blob = new Blob([response.blob()], { type: 'image/jpg'});
@@ -140,6 +140,7 @@ export class IntercambiarCromosPage implements OnInit {
 
     await alert.present();
   }
+  
   async presentAlert3() {
     const alert = await this.alertController.create({
       header: 'ERROR!',
