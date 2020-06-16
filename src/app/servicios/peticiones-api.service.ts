@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ResponseContentType, Http} from '@angular/http';
-
 import {
   Profesor, Grupo, Alumno, Matricula, Juego, Punto, Nivel, AlumnoJuegoDePuntos,
   Equipo, AsignacionEquipo, AsignacionPuntosJuego, EquipoJuegoDePuntos, Coleccion,
@@ -10,6 +9,10 @@ import {
   Album, AlbumEquipo, Insignia, AlumnoJuegoDeCompeticionLiga, EquipoJuegoDeCompeticionLiga, Jornada, EnfrentamientoLiga,
   AlumnoJuegoDeCompeticionFormulaUno, EquipoJuegoDeCompeticionFormulaUno
 } from '../clases';
+import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
+import { Cuestionario } from '../clases/Cuestionario';
+import { Pregunta } from '../clases/Pregunta';
+import { RespuestaAlumnoJuegoDeCuestionario } from '../clases/RespuestaAlumnoJuegoDeCuestionario';
 
 @Injectable({
   providedIn: 'root'
@@ -17,53 +20,59 @@ import {
 
 export class PeticionesAPIService {
 
-  // private host = 'http://localhost';
-  // private host = 'http://147.83.118.92';
-  private host = 'http://192.168.1.143';
-  
-  private APIUrlProfesores = this.host + ':3000/api/Profesores';
-  private APIUrlAlumnos = this.host + ':3000/api/Alumnos';
-  private APIUrlGrupos = this.host + ':3000/api/Grupos';
-  private APIUrlMatriculas = this.host + ':3000/api/Matriculas';
-  private APIRUrlJuegoDePuntos = this.host + ':3000/api/JuegosDePuntos';
-  private APIUrlLogoEquipo = this.host + ':3000/api/imagenes/LogosEquipos/download/';
-  private APIUrlEquipos = this.host + ':3000/api/Equipos';
-  private APIUrlLogosEquipos = this.host + ':3000/api/imagenes/LogosEquipos';
-  private APIUrlPuntosJuego = this.host + ':3000/api/AsignacionPuntosJuego';
-  private APIUrlImagenNivel = this.host + ':3000/api/imagenes/imagenNivel';
-  private APIURLImagenInsignia = this.host + ':3000/api/imagenes/ImagenInsignia';
+  //private base = 'http://localhost:';
+  //private base = 'http://147.83.118.92:';
+  private base = 'http://192.168.1.35:'; 
 
-  private APIUrlAlumnoJuegoDePuntos = this.host + ':3000/api/AlumnoJuegosDePuntos';
-  private APIUrlEquipoJuegoDePuntos = this.host + ':3000/api/EquiposJuegosDePuntos';
+  private APIUrlProfesores = this.base + '3000/api/Profesores';
+  private APIUrlAlumnos = this.base +  '3000/api/Alumnos';
+  private APIUrlGrupos = this.base + '3000/api/Grupos';
+  private APIUrlMatriculas = this.base + '3000/api/Matriculas';
+  private APIRUrlJuegoDePuntos = this.base + '3000/api/JuegosDePuntos';
+  private APIUrlLogoEquipo = this.base + '3000/api/imagenes/LogosEquipos/download/';
+  private APIUrlEquipos = this.base + '3000/api/Equipos';
+  private APIUrlLogosEquipos = this.base + '3000/api/imagenes/LogosEquipos';
+  private APIUrlPuntosJuego = this.base + '3000/api/AsignacionPuntosJuego';
+  private APIUrlImagenNivel = this.base + '3000/api/imagenes/imagenNivel';
+  private APIURLImagenInsignia = this.base + '3000/api/imagenes/ImagenInsignia';
 
-  private APIUrlAlumnoJuegoDeColeccion = this.host + ':3000/api/AlumnosJuegoDeColeccion';
-  private APIUrlEquipoJuegoDeColeccion = this.host + ':3000/api/EquiposJuegoDeColeccion';
+  private APIUrlAlumnoJuegoDePuntos = this.base + '3000/api/AlumnoJuegosDePuntos';
+  private APIUrlEquipoJuegoDePuntos = this.base + '3000/api/EquiposJuegosDePuntos';
 
-  private APIRUrlJuegoDeCompeticionLiga = this.host + ':3000/api/JuegoDeCompeticionLiga';
-  private APIUrlAlumnoJuegoDeCompeticionLiga = this.host + ':3000/api/AlumnosJuegoDeCompeticionLiga';
-  private APIUrlJornadasJuegoDeCompeticionLiga = this.host + ':3000/api/JornadasDeCompeticionLiga';
-  private APIUrlJuegoDeCompeticionLiga = this.host + ':3000/api/JuegosDeCompeticionLiga';
-  private APIUrlEquipoJuegoDeCompeticionLiga = this.host + ':3000/api/EquiposJuegoDeCompeticionLiga';
+  private APIUrlAlumnoJuegoDeColeccion = this.base + '3000/api/AlumnosJuegoDeColeccion';
+  private APIUrlEquipoJuegoDeColeccion = this.base + '3000/api/EquiposJuegoDeColeccion';
 
-  private APIUrlJuegoDeCompeticionFormulaUno = this.host + ':3000/api/JuegosDecompeticionFormulaUno';
-  private APIUrlAlumnoJuegoDeCompeticionFormulaUno = this.host + ':3000/api/AlumnosJuegoDeCompeticionFormulaUno';
-  private APIUrlEquipoJuegoDeCompeticionFormulaUno = this.host + ':3000/api/EquiposJuegoDeCompeticionFormulaUno';
-  private APIUrlJornadasJuegoDeCompeticionFormulaUno = this.host + ':3000/api/JornadasDeCompeticionFormulaUno';
+  private APIRUrlJuegoDeCompeticionLiga = this.base + '3000/api/JuegoDeCompeticionLiga';
+  private APIUrlAlumnoJuegoDeCompeticionLiga = this.base + '3000/api/AlumnosJuegoDeCompeticionLiga';
+  private APIUrlJornadasJuegoDeCompeticionLiga = this.base + '3000/api/JornadasDeCompeticionLiga';
+  private APIUrlJuegoDeCompeticionLiga = this.base + '3000/api/JuegosDeCompeticionLiga';
+  private APIUrlEquipoJuegoDeCompeticionLiga = this.base + '3000/api/EquiposJuegoDeCompeticionLiga';
 
-  private APIUrlColecciones = this.host + ':3000/api/Colecciones';
-  private APIUrlImagenColeccion = this.host + ':3000/api/imagenes/ImagenColeccion';
-  private APIUrlImagenCromo = this.host + ':3000/api/imagenes/ImagenCromo';
-  private APIUrlHistorialPuntosAlumno = this.host + ':3000/api/HistorialesPuntosAlumno';
+  private APIUrlJuegoDeCompeticionFormulaUno = this.base + '3000/api/JuegosDecompeticionFormulaUno';
+  private APIUrlAlumnoJuegoDeCompeticionFormulaUno = this.base + '3000/api/AlumnosJuegoDeCompeticionFormulaUno';
+  private APIUrlEquipoJuegoDeCompeticionFormulaUno = this.base + '3000/api/EquiposJuegoDeCompeticionFormulaUno';
+  private APIUrlJornadasJuegoDeCompeticionFormulaUno = this.base + '3000/api/JornadasDeCompeticionFormulaUno';
 
-
-  private APIUrlEquiposJuegoDePuntos = this.host + ':3000/api/EquiposJuegosDePuntos';
-  private APIUrlHistorialPuntosEquipo = this.host + ':3000/api/HistorialesPuntosEquipo';
+  private APIUrlColecciones = this.base + '3000/api/Colecciones';
+  private APIUrlImagenColeccion = this.base + '3000/api/imagenes/ImagenColeccion';
+  private APIUrlImagenCromo = this.base + '3000/api/imagenes/ImagenCromo';
+  private APIUrlHistorialPuntosAlumno = this.base + '3000/api/HistorialesPuntosAlumno';
 
 
-  private APIRUrlJuegoDeColeccion = this.host + ':3000/api/JuegosDeColeccion';
-  private APIRUrlColecciones = this.host + ':3000/api/Colecciones';
-  private APIRUrlAlbum = this.host + ':3000/api/Albumes';
-  private APIRUrlAlbumEquipo = this.host + ':3000/api/albumsEquipo';
+  private APIUrlEquiposJuegoDePuntos = this.base + '3000/api/EquiposJuegosDePuntos';
+  private APIUrlHistorialPuntosEquipo = this.base + '3000/api/HistorialesPuntosEquipo';
+
+
+  private APIRUrlJuegoDeColeccion = this.base + '3000/api/JuegosDeColeccion';
+  private APIRUrlColecciones = this.base + '3000/api/Colecciones';
+  private APIRUrlAlbum = this.base + '3000/api/Albumes';
+  private APIRUrlAlbumEquipo = this.base + '3000/api/albumsEquipo';
+
+  private APIUrlJuegoDeCuestionario = this.base + '3000/api/JuegosDeCuestionario';
+  private APIUrlAlumnoJuegoDeCuestionario = this.base + '3000/api/AlumnosJuegoDeCuestionario';
+  private APIUrlRespuestaAlumnoJuegoDeCuestionario= this.base + '3000/api/RespuestasAlumnoJuegoDeCuestionario';
+  private APIUrlCuestionario = this.base + '3000/api/Cuestionarios';
+
 
 
   constructor(
@@ -640,7 +649,62 @@ export class PeticionesAPIService {
     return this.http.get<any>(this.APIURLImagenInsignia + '/download/' + ImagenInsignia);
   }
 
+  // PETICIONES JUEGO DE CUESTIONARIO
+/*   public DameJuegoDeCuestionario(grupoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlGrupos + '/' + grupoId + '/JuegosDeCuestionario');
+  } */
+  // Devuelve los juegos de puntos del Alumno
+  public DameJuegoDeCuestionarioAlumno(alumnoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegosDeCuestionario');
+  }
 
+  ///////////////////JUEGO DE CUESTIONARIO//////////////////////////////
+
+
+  // OBTENEMOS LOS ALUMNOS QUE FORMAN PARTE DEL JUEGO DE CUESTIONARIO
+  public DameAlumnosJuegoDeCuestionario(juegoDeCuestionarioId: number): Observable<Alumno[]> {
+    return this.http.get<Alumno[]>(this.APIUrlJuegoDeCuestionario + '/' + juegoDeCuestionarioId + '/alumnos');
+  }
+
+  // OBTENEMOS LA INSCRIPCIÓN ESPECÍFICA DE UN ALUMNO CONCRETO EN UN JUEGO DE CUESTIONARIO.
+  public DameInscripcionAlumnoJuegoDeCuestionario(alumnoId: number, juegoDeCuestionarioId: number): Observable<AlumnoJuegoDeCuestionario> {
+    return this.http.get<AlumnoJuegoDeCuestionario>(this.APIUrlAlumnoJuegoDeCuestionario + '?filter[where][alumnoId]=' + alumnoId
+    + '&filter[where][juegoDeCuestionarioId]=' + juegoDeCuestionarioId);
+  }
+
+  //OBTENEMOS DATOS DEL CUESTIONARIO SELECCIONADO
+  public DameCuestionario(cuestionarioId: number):Observable<Cuestionario> {
+    return this.http.get<Cuestionario>(this.APIUrlCuestionario+ '/' + cuestionarioId);
+  }
+
+  //OBTENEMOS LAS PREGUNTAS DEL CUESTIONARIO SELECCIONADO
+  public DamePreguntasCuestionario(cuestionarioId: number): Observable<Pregunta[]> {
+    return this.http.get<Pregunta[]>(this.APIUrlCuestionario + '/' + cuestionarioId + '/Preguntas');
+  }
+
+  //ESTABLECE LA NOTA OBTENIDA POR EL ALUMNO EN EL CUESTIONARIO
+  public PonerNotaAlumnoJuegoDeCuestionario(alumnoJuegoDeCuestionario: AlumnoJuegoDeCuestionario, alumnoJuegoDeCuestionarioId: number): Observable<AlumnoJuegoDeCuestionario> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<AlumnoJuegoDeCuestionario>(this.APIUrlAlumnoJuegoDeCuestionario + '/' + alumnoJuegoDeCuestionarioId, alumnoJuegoDeCuestionario);
+  }
+
+  //GUARDAMOS LAS RESPUESTAS DE LOS ALUMNOS DEL CUESTIONARIO QUE HAYAN REALIZADO
+  public GuardarRespuestaAlumnoJuegoDeCuestionario(respuestaAlumnoJuegoDeCuestionario: RespuestaAlumnoJuegoDeCuestionario):Observable<RespuestaAlumnoJuegoDeCuestionario> {
+    return this.http.post<RespuestaAlumnoJuegoDeCuestionario>(this.APIUrlRespuestaAlumnoJuegoDeCuestionario , respuestaAlumnoJuegoDeCuestionario);
+  }
+
+  //OBTENEMOS LISTA INSCRIPCCIONES DEL CUESTINARIO
+  public ListaInscripcionesAlumnosJuegoDeCuestionario(juegoDeCuestionarioId: number): Observable<AlumnoJuegoDeCuestionario[]> {
+    return this.http.get<AlumnoJuegoDeCuestionario[]>(this.APIUrlAlumnoJuegoDeCuestionario + '?filter[where][juegoDeCuestionarioId]=' + juegoDeCuestionarioId);
+  }
+
+  //OBTENEMOS ALUMNO EN CONCRETO
+  public DameAlumnoConId (alumnoId: number): Observable<Alumno> {
+    return this.http.get<Alumno>(this.APIUrlAlumnos + '/' + alumnoId);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+    
   public DameJuegoDeCompeticionLigaAlumno(alumnoId: number): Observable<Juego[]> {
     return this.http.get<Juego[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegosDeCompeticionLiga');
   }
@@ -682,6 +746,7 @@ export class PeticionesAPIService {
     console.log('Voy a por los alumnos');
     return this.http.get<Alumno[]>(this.APIUrlJuegoDeCompeticionFormulaUno + '/' + juegoDeCompeticionFormulaUnoId + '/alumnos');
   }
+  // tslint:disable-next-line:max-line-length
   public DameInscripcionesAlumnoJuegoDeCompeticionFormulaUno(juegoDeCompeticionFormulaUnoId: number): Observable<AlumnoJuegoDeCompeticionFormulaUno[]> {
     return this.http.get<AlumnoJuegoDeCompeticionFormulaUno[]>(this.APIUrlAlumnoJuegoDeCompeticionFormulaUno
       + '?filter[where][JuegoDeCompeticionFormulaUnoId]=' + juegoDeCompeticionFormulaUnoId);
@@ -691,6 +756,7 @@ export class PeticionesAPIService {
     console.log('Voy a por los equipos');
     return this.http.get<Equipo[]>(this.APIUrlJuegoDeCompeticionFormulaUno + '/' + juegoDeCompeticionLigaId + '/equipos');
   }
+  // tslint:disable-next-line:max-line-length
   public DameInscripcionesEquipoJuegoDeCompeticionFormulaUno(juegoDeCompeticionFormulaUnoId: number): Observable<EquipoJuegoDeCompeticionFormulaUno[]> {
     return this.http.get<EquipoJuegoDeCompeticionFormulaUno[]>(this.APIUrlEquipoJuegoDeCompeticionFormulaUno
       + '?filter[where][JuegoDeCompeticionFormulaUnoId]=' + juegoDeCompeticionFormulaUnoId);

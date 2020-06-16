@@ -1,0 +1,51 @@
+:host ::ng-deep .mat-horizontal-stepper-header-container{
+    display: none;
+}
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+  
+.radio-button {
+    margin: 5px;
+    color: black;
+}
+
+.button-empezar {
+    background-color: rgb(7, 214, 93);
+    color: white;
+    font-size: 18px;
+    padding: 20px;
+    border-radius: 20px;
+    /* Si no funciona al desplegar en el movil, lo hacemos asi
+    margin-top: 300px; */
+    /* position: absolute;
+    bottom: 35px;
+    right: 25px; */
+    margin-top: 175px; 
+}
+
+.siguiente {
+    background-color: rgb(7, 150, 216);
+    color: white;
+    font-size: 24px;
+    padding: 20px;
+    border-radius: 50px;
+    /* position: absolute;
+    bottom: 35px;
+    right: 25px; */
+    margin-top: 175px; 
+}
+
+.anterior {
+    background-color: rgb(7, 150, 216);
+    color: white;
+    font-size: 24px;
+    padding: 20px;
+    border-radius: 50px;
+    /* position: absolute;
+    bottom: 35px;
+    left: 25px; */
+    margin-top: 175px; 
+}
