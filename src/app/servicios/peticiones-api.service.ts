@@ -17,50 +17,53 @@ import {
 
 export class PeticionesAPIService {
 
+  // private host = 'http://localhost';
+  // private host = 'http://147.83.118.92';
+  private host = 'http://192.168.1.143';
+  
+  private APIUrlProfesores = this.host + ':3000/api/Profesores';
+  private APIUrlAlumnos = this.host + ':3000/api/Alumnos';
+  private APIUrlGrupos = this.host + ':3000/api/Grupos';
+  private APIUrlMatriculas = this.host + ':3000/api/Matriculas';
+  private APIRUrlJuegoDePuntos = this.host + ':3000/api/JuegosDePuntos';
+  private APIUrlLogoEquipo = this.host + ':3000/api/imagenes/LogosEquipos/download/';
+  private APIUrlEquipos = this.host + ':3000/api/Equipos';
+  private APIUrlLogosEquipos = this.host + ':3000/api/imagenes/LogosEquipos';
+  private APIUrlPuntosJuego = this.host + ':3000/api/AsignacionPuntosJuego';
+  private APIUrlImagenNivel = this.host + ':3000/api/imagenes/imagenNivel';
+  private APIURLImagenInsignia = this.host + ':3000/api/imagenes/ImagenInsignia';
 
-  private APIUrlProfesores = 'http://localhost:3000/api/Profesores';
-  private APIUrlAlumnos = 'http://localhost:3000/api/Alumnos';
-  private APIUrlGrupos = 'http://localhost:3000/api/Grupos';
-  private APIUrlMatriculas = 'http://localhost:3000/api/Matriculas';
-  private APIRUrlJuegoDePuntos = 'http://localhost:3000/api/JuegosDePuntos';
-  private APIUrlLogoEquipo = 'http://localhost:3000/api/imagenes/LogosEquipos/download/';
-  private APIUrlEquipos = 'http://localhost:3000/api/Equipos';
-  private APIUrlLogosEquipos = 'http://localhost:3000/api/imagenes/LogosEquipos';
-  private APIUrlPuntosJuego = 'http://localhost:3000/api/AsignacionPuntosJuego';
-  private APIUrlImagenNivel = 'http://localhost:3000/api/imagenes/imagenNivel';
-  private APIURLImagenInsignia = 'http://localhost:3000/api/imagenes/ImagenInsignia';
+  private APIUrlAlumnoJuegoDePuntos = this.host + ':3000/api/AlumnoJuegosDePuntos';
+  private APIUrlEquipoJuegoDePuntos = this.host + ':3000/api/EquiposJuegosDePuntos';
 
-  private APIUrlAlumnoJuegoDePuntos = 'http://localhost:3000/api/AlumnoJuegosDePuntos';
-  private APIUrlEquipoJuegoDePuntos = 'http://localhost:3000/api/EquiposJuegosDePuntos';
+  private APIUrlAlumnoJuegoDeColeccion = this.host + ':3000/api/AlumnosJuegoDeColeccion';
+  private APIUrlEquipoJuegoDeColeccion = this.host + ':3000/api/EquiposJuegoDeColeccion';
 
-  private APIUrlAlumnoJuegoDeColeccion = 'http://localhost:3000/api/AlumnosJuegoDeColeccion';
-  private APIUrlEquipoJuegoDeColeccion = 'http://localhost:3000/api/EquiposJuegoDeColeccion';
+  private APIRUrlJuegoDeCompeticionLiga = this.host + ':3000/api/JuegoDeCompeticionLiga';
+  private APIUrlAlumnoJuegoDeCompeticionLiga = this.host + ':3000/api/AlumnosJuegoDeCompeticionLiga';
+  private APIUrlJornadasJuegoDeCompeticionLiga = this.host + ':3000/api/JornadasDeCompeticionLiga';
+  private APIUrlJuegoDeCompeticionLiga = this.host + ':3000/api/JuegosDeCompeticionLiga';
+  private APIUrlEquipoJuegoDeCompeticionLiga = this.host + ':3000/api/EquiposJuegoDeCompeticionLiga';
 
-  private APIRUrlJuegoDeCompeticionLiga = 'http://localhost:3000/api/JuegoDeCompeticionLiga';
-  private APIUrlAlumnoJuegoDeCompeticionLiga = 'http://localhost:3000/api/AlumnosJuegoDeCompeticionLiga';
-  private APIUrlJornadasJuegoDeCompeticionLiga = 'http://localhost:3000/api/JornadasDeCompeticionLiga';
-  private APIUrlJuegoDeCompeticionLiga = 'http://localhost:3000/api/JuegosDeCompeticionLiga';
-  private APIUrlEquipoJuegoDeCompeticionLiga = 'http://localhost:3000/api/EquiposJuegoDeCompeticionLiga';
+  private APIUrlJuegoDeCompeticionFormulaUno = this.host + ':3000/api/JuegosDecompeticionFormulaUno';
+  private APIUrlAlumnoJuegoDeCompeticionFormulaUno = this.host + ':3000/api/AlumnosJuegoDeCompeticionFormulaUno';
+  private APIUrlEquipoJuegoDeCompeticionFormulaUno = this.host + ':3000/api/EquiposJuegoDeCompeticionFormulaUno';
+  private APIUrlJornadasJuegoDeCompeticionFormulaUno = this.host + ':3000/api/JornadasDeCompeticionFormulaUno';
 
-  private APIUrlJuegoDeCompeticionFormulaUno = 'http://localhost:3000/api/JuegosDecompeticionFormulaUno';
-  private APIUrlAlumnoJuegoDeCompeticionFormulaUno = 'http://localhost:3000/api/AlumnosJuegoDeCompeticionFormulaUno';
-  private APIUrlEquipoJuegoDeCompeticionFormulaUno = 'http://localhost:3000/api/EquiposJuegoDeCompeticionFormulaUno';
-  private APIUrlJornadasJuegoDeCompeticionFormulaUno = 'http://localhost:3000/api/JornadasDeCompeticionFormulaUno';
-
-  private APIUrlColecciones = 'http://localhost:3000/api/Colecciones';
-  private APIUrlImagenColeccion = 'http://localhost:3000/api/imagenes/ImagenColeccion';
-  private APIUrlImagenCromo = 'http://localhost:3000/api/imagenes/ImagenCromo';
-  private APIUrlHistorialPuntosAlumno = 'http://localhost:3000/api/HistorialesPuntosAlumno';
+  private APIUrlColecciones = this.host + ':3000/api/Colecciones';
+  private APIUrlImagenColeccion = this.host + ':3000/api/imagenes/ImagenColeccion';
+  private APIUrlImagenCromo = this.host + ':3000/api/imagenes/ImagenCromo';
+  private APIUrlHistorialPuntosAlumno = this.host + ':3000/api/HistorialesPuntosAlumno';
 
 
-  private APIUrlEquiposJuegoDePuntos = 'http://localhost:3000/api/EquiposJuegosDePuntos';
-  private APIUrlHistorialPuntosEquipo = 'http://localhost:3000/api/HistorialesPuntosEquipo';
+  private APIUrlEquiposJuegoDePuntos = this.host + ':3000/api/EquiposJuegosDePuntos';
+  private APIUrlHistorialPuntosEquipo = this.host + ':3000/api/HistorialesPuntosEquipo';
 
 
-  private APIRUrlJuegoDeColeccion = 'http://localhost:3000/api/JuegosDeColeccion';
-  private APIRUrlColecciones = 'http://localhost:3000/api/Colecciones';
-  private APIRUrlAlbum = 'http://localhost:3000/api/Albumes';
-  private APIRUrlAlbumEquipo = 'http://localhost:3000/api/albumsEquipo';
+  private APIRUrlJuegoDeColeccion = this.host + ':3000/api/JuegosDeColeccion';
+  private APIRUrlColecciones = this.host + ':3000/api/Colecciones';
+  private APIRUrlAlbum = this.host + ':3000/api/Albumes';
+  private APIRUrlAlbumEquipo = this.host + ':3000/api/albumsEquipo';
 
 
   constructor(
@@ -141,7 +144,6 @@ export class PeticionesAPIService {
     return this.http.get<Juego[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegosDeCompeticionFormulaUno');
   }
 
-
   // Devuelve los equipos a los que pertenece un alumno
   public DameEquiposDelAlumno(alumnoId: number): Observable<Equipo[]> {
     return this.http.get<Equipo[]>(this.APIUrlAlumnos + '/' + alumnoId + '/equipos');
@@ -162,6 +164,13 @@ export class PeticionesAPIService {
     return this.http.get<Juego[]>(this.APIUrlGrupos + '/' + grupoId + '/juegoDeCompeticions');
   }
 
+  public DameJuegoDeCompeticionF1Equipo(equipoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionFormulaUno');
+  }
+
+  public DameJuegoDeCompeticionLigaEquipo(equipoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionLiga');
+  }
 
   // OBTENEMOS LOS PUNTOS QUE FORMAN PARTE DEL JUEGO DE PUNTOS
   public DamePuntosJuegoDePuntos(juegoDePuntosId: number): Observable<Punto[]> {
@@ -655,7 +664,6 @@ export class PeticionesAPIService {
   public DameJornadasDeCompeticionLiga(juegoDeCompeticionLigaId: number): Observable<Jornada[]> {
     return this.http.get<Jornada[]>(this.APIUrlJornadasJuegoDeCompeticionLiga + '?filter[where][JuegoDeCompeticionLigaId]='
       + juegoDeCompeticionLigaId);
-
     // return this.http.get<Jornada[]>(this.APIUrlJuegoDeCompeticionLiga + '/' + juegoDeCompeticionID + '/JornadasDeCompeticionLiga');
   }
 
@@ -703,4 +711,11 @@ export class PeticionesAPIService {
     return this.http.get<EquipoJuegoDeCompeticionLiga[]>(this.APIUrlEquipoJuegoDeCompeticionLiga
       + '?filter[where][JuegoDeCompeticionLigaId]=' + juegoDeCompeticionLigaId);
   }
+
+  /* Dame las imagenes de los cromos */
+  public DameImagenCromo(imagen: string): Observable<any> {
+    return this.httpImagenes.get(this.APIUrlImagenCromo +  '/download/' + imagen,
+      { responseType: ResponseContentType.Blob });
+  }
+
 }

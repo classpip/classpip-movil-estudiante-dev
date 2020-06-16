@@ -4,8 +4,8 @@ import { PeticionesAPIService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {
   Alumno, Equipo, Juego, Punto, Nivel, AlumnoJuegoDePuntos, EquipoJuegoDePuntos,
-  TablaAlumnoJuegoDePuntos, TablaEquipoJuegoDePuntos, TablaHistorialPuntosEquipo
-} from '../clases/index';
+  TablaAlumnoJuegoDePuntos, TablaEquipoJuegoDePuntos, TablaHistorialPuntosEquipo,
+  TablaHistorialPuntosAlumno } from '../clases/index';
 import { SesionService } from '../servicios/sesion.service';
 import { IonContent } from '@ionic/angular';
 
@@ -30,14 +30,16 @@ export class JuegoPuntosPage implements OnInit {
   nivelesDelJuego: Nivel[];
 
   alumnosDelJuego: Alumno[];
+  historialalumno: TablaHistorialPuntosAlumno[] = [];
   equiposDelJuego: Equipo[];
-  historial: TablaHistorialPuntosEquipo[] = [];
+  historialequipo: TablaHistorialPuntosEquipo[] = [];
 
   alumnosEquipo: Alumno[];
 
   // Recoge la inscripción de un alumno en el juego ordenada por puntos
   listaAlumnosOrdenadaPorPuntos: AlumnoJuegoDePuntos[];
   listaEquiposOrdenadaPorPuntos: EquipoJuegoDePuntos[];
+  alumnoJuegoDePuntos: AlumnoJuegoDePuntos;
   equipoJuegoDePuntos: EquipoJuegoDePuntos;
 
   // Muestra la posición del alumno, el nombre y los apellidos del alumno, los puntos y el nivel
@@ -63,7 +65,6 @@ export class JuegoPuntosPage implements OnInit {
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.MiAlumno = this.sesion.DameAlumno();
     console.log(this.MiAlumno);
-    console.log(this.MiEquipo)
     console.log(this.juegoSeleccionado.id);
     this.NivelesJuego();
     this.DamePuntosDelJuego();
@@ -87,6 +88,23 @@ export class JuegoPuntosPage implements OnInit {
     }
   }
 
+  DameEquipoAlumnoConectado() {
+    console.log('voy a por el equipo del alumno');
+    for ( let i = 0; i < this.equiposDelJuego.length; i++){
+      this.peticionesAPI.DameAlumnosEquipo(this.equiposDelJuego[i].id)
+      .subscribe(res => {
+        console.log('miro en: ' + this.equiposDelJuego[i]);
+        for (let j = 0; j < res.length; j++)
+          if (res[j].id === this.MiAlumno.id) {
+            console.log(res);
+            this.MiEquipo = this.equiposDelJuego[i];
+            console.log('tu equipo');
+            console.log(this.MiEquipo);
+          }
+      });
+    }
+  }
+
   // Recupera los alumnos que pertenecen al juego
   AlumnosDelJuego() {
     console.log('Vamos a pos los alumnos');
@@ -106,7 +124,9 @@ export class JuegoPuntosPage implements OnInit {
         console.log('ya tengo los equipos');
         this.equiposDelJuego = equiposJuego;
         this.RecuperarInscripcionesEquiposJuego();
+        this.DameEquipoAlumnoConectado();
       });
+
   }
 
   // Recupera los niveles de los que dispone el juego
@@ -163,6 +183,7 @@ RecuperarInscripcionesAlumnoJuego() {
         return obj2.PuntosTotalesAlumno - obj1.PuntosTotalesAlumno;
       });
       console.log('ya tengo las inscripciones');
+      console.log(this.listaAlumnosOrdenadaPorPuntos);
       // this.OrdenarPorPuntos();
       this.TablaClasificacionTotal();
     });
@@ -183,13 +204,14 @@ RecuperarInscripcionesEquiposJuego() {
       });
       console.log('ya tengo las inscripciones');
       this.TablaClasificacionTotal();
+      console.log(this.MiEquipo);
     });
 }
 
 // Alumnos de cada equipo
 AlumnosDelEquipo(equipo: Equipo) {
   console.log(equipo);
-  this.cierraOtrosAlbumes();
+  this.cierraHistorial();
 
   this.peticionesAPI.DameAlumnosEquipo(equipo.id)
     .subscribe(res => {
@@ -202,7 +224,6 @@ AlumnosDelEquipo(equipo: Equipo) {
       }
     });
 }
-
 
 // En función del modo, recorremos la lisa de Alumnos o de Equipos y vamos rellenando el rankingJuegoDePuntos
 // ESTO DEBERIA IR AL SERVICIO DE CALCULO, PERO DE MOMENTO NO LO HAGO PORQUE SE GENERAN DOS TABLAS
@@ -227,8 +248,8 @@ TablaClasificacionTotal() {
   }
 }
 
-AccederEquipo(equipo: TablaEquipoJuegoDePuntos) {
-  this.muestraPuntosEquipo();
+MuestrameInfoEquipoSeleccionado(equipo: TablaEquipoJuegoDePuntos) {
+  this.MuestraHistorial();
   const equipoSeleccionado = this.equiposDelJuego.filter(res => res.Nombre === equipo.nombre)[0];
 
 
@@ -252,8 +273,39 @@ MostrarHistorialSeleccionado() {
   // traigo el historial
   this.calculos.PreparaHistorialEquipo(this.equipoJuegoDePuntos, this.TodosLosPuntos).
     subscribe(res => {
-      this.historial = res;
-      console.log(this.historial);
+      this.historialequipo = res;
+      console.log(this.historialequipo);
+    });
+}
+
+
+AccederAlumno(alumno: TablaAlumnoJuegoDePuntos) {
+  this.MuestraHistorial();
+  const alumnoSeleccionado = this.alumnosDelJuego.filter(res => res.Nombre === alumno.nombre &&
+    res.PrimerApellido === alumno.primerApellido && res.SegundoApellido === alumno.segundoApellido)[0];
+
+  const posicion = this.rankingJuegoDePuntos.filter(res => res.nombre === alumno.nombre &&
+    res.primerApellido === alumno.primerApellido && res.segundoApellido === alumno.segundoApellido)[0].posicion;
+
+  // Informacion que se necesitara para ver la evolución del alumno
+  this.sesion.TomaDatosEvolucionAlumnoJuegoPuntos (
+    posicion,
+    this.TodosLosPuntos,
+    this.nivelesDelJuego,
+    alumnoSeleccionado,
+    this.listaAlumnosOrdenadaPorPuntos.filter(res => res.alumnoId === alumnoSeleccionado.id)[0],
+  );
+  this.HistorialTotal();
+}
+
+HistorialTotal() {
+  const res = this.sesion.DameDatosEvolucionAlumnoJuegoPuntos();
+  this.alumnoJuegoDePuntos = res.inscripcionAlumnoJuego;
+  // traigo el historial
+  this.calculos.PreparaHistorialAlumno(this.alumnoJuegoDePuntos, this.TodosLosPuntos).
+    subscribe(res => {
+      this.historialalumno = res;
+      console.log(this.historialalumno);
     });
 }
 
@@ -281,17 +333,18 @@ sliderConfig = {
   centeredSlides: true
 };
 
-// Muestra los puntos de cada equipo
-muestraPuntosEquipo() {
+// Muestra los puntos de cada alumno-equipo
+MuestraHistorial() {
   this.infoPuntosView = !this.infoPuntosView;
 }
 
 // Cerrar otros dialogos de puntos del equipo si estuvieran abiertos
-cierraOtrosAlbumes() {
+cierraHistorial() {
   if (this.infoPuntosView == true) {
     this.infoPuntosView = false;
   }
 }
+
 ionViewWillEnter (){
   this.Tipo = "Puntos";
 }

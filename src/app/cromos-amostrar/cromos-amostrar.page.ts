@@ -41,11 +41,11 @@ export class CromosAMostrarPage implements OnInit {
               this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
               console.log(this.listaCromosSinRepetidos);
               this.sesion.TomaCromosSinRepetidos(this.listaCromosSinRepetidos);
-              this.MisImagenesCromo = this.calculos.VisualizarLosCromos(this.listaCromosSinRepetidos);
+              this.MisImagenesCromo = this.calculos.VisualizarLosCromosDelante(this.listaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromos => {
                   this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-                  this.ImagenesCromosQueNoTengo = this.calculos.VisualizarLosCromos(this.CromosQueNoTengo);
+                  this.ImagenesCromosQueNoTengo = this.calculos.VisualizarLosCromosDelante(this.CromosQueNoTengo);
                 });
               console.log('Cromos que no tengo:');
               console.log(this.CromosQueNoTengo);
@@ -67,11 +67,11 @@ export class CromosAMostrarPage implements OnInit {
               this.MisCromos = Cromos;
               this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
               console.log(this.listaCromosSinRepetidos);
-              this.MisImagenesCromo = this.calculos.VisualizarLosCromos(this.listaCromosSinRepetidos);
+              this.MisImagenesCromo = this.calculos.VisualizarLosCromosDelante(this.listaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromos => {
                   this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-                  this.ImagenesCromosQueNoTengo = this.calculos.VisualizarLosCromos(this.CromosQueNoTengo);
+                  this.ImagenesCromosQueNoTengo = this.calculos.VisualizarLosCromosDelante(this.CromosQueNoTengo);
                 });
             });
         });

@@ -27,11 +27,13 @@ export class JuegoColleccionPage implements OnInit {
   MiEquipo: Equipo;
   alumnosMiEquipo: Alumno[];
   Grupo: Grupo;
-  AlumnoMisImagenesCromo: string[] = [];
+  AlumnoMisImagenesCromoDelante: string[] = [];
+  AlumnoMisImagenesCromoDetras: string[] = [];
   AlumnoMisCromos: Cromo[] = [];
   AlumnolistaCromosSinRepetidos: any[];
   AlumnoCromosQueNoTengo: any[] = [];
-  AlumnoImagenesCromosQueNoTengo: string[] = [];
+  AlumnoImagenesCromosQueNoTengoDelante: string[] = [];
+  AlumnoImagenesCromosQueNoTengoDetras: string[] = [];
 
   //Cromos
   Miequipo: Equipo;
@@ -40,8 +42,11 @@ export class JuegoColleccionPage implements OnInit {
   MisImagenesCromo: string[] = [];
   MisCromos: Cromo[] = [];
   listaCromosSinRepetidos: any[];
-  CromosQueNoTengo: any[] = [];
-  ImagenesCromosQueNoTengo: string[] = [];
+  CromosQueNoTengo: any[];
+  CromosQueNoTengoDelante: any[] = [];
+  CromosQueNoTengoDetras: any[] = [];
+  ImagenesCromosQueNoTengoDelante: string[] = [];
+  ImagenesCromosQueNoTengoDetras: string[] = [];
 
   //Mostrar ranking
   public hideMe: boolean = false;
@@ -115,18 +120,22 @@ export class JuegoColleccionPage implements OnInit {
               this.AlumnolistaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.AlumnoMisCromos);
               console.log(this.AlumnolistaCromosSinRepetidos);
               this.sesion.TomaCromosSinRepetidos(this.AlumnolistaCromosSinRepetidos);
-              this.AlumnoMisImagenesCromo = this.calculos.VisualizarLosCromos(this.AlumnolistaCromosSinRepetidos);
+              this.AlumnoMisImagenesCromoDelante = this.calculos.VisualizarLosCromosDelante(this.AlumnolistaCromosSinRepetidos);
+              this.AlumnoMisImagenesCromoDetras = this.calculos.VisualizarLosCromosDetras(this.AlumnolistaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromosAlumno => {
                   this.AlumnoCromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.AlumnoMisCromos, TodosLosCromosAlumno);
-                  this.AlumnoImagenesCromosQueNoTengo = this.calculos.VisualizarLosCromos(this.AlumnoCromosQueNoTengo);
+                  this.AlumnoImagenesCromosQueNoTengoDelante = this.calculos.VisualizarLosCromosDelante(this.AlumnoCromosQueNoTengo);
+                  this.AlumnoImagenesCromosQueNoTengoDetras = this.calculos.VisualizarLosCromosDetras(this.AlumnoCromosQueNoTengo);
                 });
               console.log('Cromos de tu alumno conectado:');
               console.log(this.AlumnoCromosQueNoTengo);
             });
         });
       // this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
+      console.log('cromos de mi alumno');
       console.log(this.AlumnoMisCromos);
+      console.log('y si lista de cromos sin repetidos');
       console.log(this.AlumnolistaCromosSinRepetidos);
       // this.listaCromosSinRepetidos.sort((a, b) => a.cromo.Nombre.localeCompare(b.cromo.Nombre));
 
@@ -149,14 +158,14 @@ export class JuegoColleccionPage implements OnInit {
               this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
               console.log(this.listaCromosSinRepetidos);
               this.sesion.TomaCromosSinRepetidos(this.listaCromosSinRepetidos);
-              this.MisImagenesCromo = this.calculos.VisualizarLosCromos(this.listaCromosSinRepetidos);
+              this.MisImagenesCromo = this.calculos.VisualizarLosCromosDelante(this.listaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromos => {
                   this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-                  this.ImagenesCromosQueNoTengo = this.calculos.VisualizarLosCromos(this.CromosQueNoTengo);
+                  this.ImagenesCromosQueNoTengoDelante = this.calculos.VisualizarLosCromosDelante(this.CromosQueNoTengo);
                 });
               console.log('Cromos que no tengo:');
-              console.log(this.CromosQueNoTengo);
+              console.log(this.CromosQueNoTengoDelante);
             });
         });
       // this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
@@ -178,11 +187,11 @@ export class JuegoColleccionPage implements OnInit {
               this.MisCromos = Cromos;
               this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
               console.log(this.listaCromosSinRepetidos);
-              this.MisImagenesCromo = this.calculos.VisualizarLosCromos(this.listaCromosSinRepetidos);
+              this.MisImagenesCromo = this.calculos.VisualizarLosCromosDelante(this.listaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromos => {
                   this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-                  this.ImagenesCromosQueNoTengo = this.calculos.VisualizarLosCromos(this.CromosQueNoTengo);
+                  this.ImagenesCromosQueNoTengoDelante = this.calculos.VisualizarLosCromosDelante(this.CromosQueNoTengo);
                 });
             });
         });
@@ -190,6 +199,11 @@ export class JuegoColleccionPage implements OnInit {
     }
   }
 
+  // intercambiar Cromo
+  intercambiarCromo() {
+    this.navCtrl.navigateForward('intercambiar-cromos')
+  }
+  
   // Alumnos de cada equipo
   AlumnosDelEquipo(equipo: Equipo) {
     console.log(equipo);
@@ -204,25 +218,6 @@ export class JuegoColleccionPage implements OnInit {
           this.alumnosEquipo = undefined;
         }
       });
-  }
- 
-  // Equipo del jugador conectado
-  DameEquipoAlumno() {
-    for (let i = 0; i < this.MisEquiposJuegoColecciones.length; i++) {
-      console.log(this.MisEquiposJuegoColecciones[i]);
-      this.peticionesAPI.DameAlumnosEquipo(this.MisEquiposJuegoColecciones[i].id)
-        .subscribe(res => {
-          this.alumnosMiEquipo = res;
-          console.log(res);
-        });
-      for (let j = 0; j < this.alumnosMiEquipo.length; j++) {
-        if (this.alumnosMiEquipo[j].id === this.MiAlumno.id) {
-          this.MiEquipo = this.MisEquiposJuegoColecciones[i];
-          console.log('Este es tu equipo');
-          console.log(this.MiEquipo);
-        }
-      }
-    }
   }
 
   // Mostrar Ranking y scroll up/down de la pantalla
@@ -258,6 +253,8 @@ export class JuegoColleccionPage implements OnInit {
       this.infoView = false;
     }
   }
+  
+  /* Nuevo método para obtener las imagenes */
   
 }
 
