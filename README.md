@@ -81,6 +81,8 @@ Puedes iniciar la app para trabajar con ella desde el navegador haciendo
 ```
 ionic serve --lab
 ```
+Recuerda que para que funcione la app debes poner en marcha también Services y Server.
+ 
 ## Instalación en tu dispositivo movil
 
 PENDIENTE
