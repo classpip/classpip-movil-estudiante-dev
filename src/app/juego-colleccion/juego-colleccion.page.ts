@@ -8,6 +8,8 @@ import {
   MiEquipoAMostrarJuegoDePuntos, Cromo
 } from '../clases/index';
 
+import * as URL from '../URLs/urls';
+
 @Component({
   selector: 'app-juego-colleccion',
   templateUrl: './juego-colleccion.page.html',
@@ -109,27 +111,28 @@ export class JuegoColleccionPage implements OnInit {
   // Aquí trabajaremos el tema cromos
   DameLosCromosDeMiAlumno() {
     this.sesion.TomaAlumnoJuegoDeColeccion(this.MiAlumno);
-    if (this.juegoSeleccionado.Modo === 'Individual') {
       this.Mialumno = this.sesion.DameAlumnoJuegoDeColeccion();
+      console.log('vamos a por los cromos de: ' + this.Mialumno);
       this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, this.Mialumno.id).subscribe(
         InscripcionAlumno => {
           this.peticionesAPI.DameCromosAlumno(InscripcionAlumno[0].id).subscribe(
             CromosAlumno => {
+              console.log('aquí están los cromos: ');
               console.log(CromosAlumno);
               this.AlumnoMisCromos = CromosAlumno;
               this.AlumnolistaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.AlumnoMisCromos);
               console.log(this.AlumnolistaCromosSinRepetidos);
               this.sesion.TomaCromosSinRepetidos(this.AlumnolistaCromosSinRepetidos);
-              this.AlumnoMisImagenesCromoDelante = this.calculos.VisualizarLosCromosDelante(this.AlumnolistaCromosSinRepetidos);
-              this.AlumnoMisImagenesCromoDetras = this.calculos.VisualizarLosCromosDetras(this.AlumnolistaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromosAlumno => {
+                  console.log('aqui estan todos los cromos');
+                  console.log(TodosLosCromosAlumno);
                   this.AlumnoCromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.AlumnoMisCromos, TodosLosCromosAlumno);
-                  this.AlumnoImagenesCromosQueNoTengoDelante = this.calculos.VisualizarLosCromosDelante(this.AlumnoCromosQueNoTengo);
-                  this.AlumnoImagenesCromosQueNoTengoDetras = this.calculos.VisualizarLosCromosDetras(this.AlumnoCromosQueNoTengo);
+                  console.log('A tu alumno le fantan: ' + this.AlumnoCromosQueNoTengo);
+                  console.log(this.AlumnoCromosQueNoTengo);
+                  this.DameAlumnoImagenesCromoFaltan();
                 });
-              console.log('Cromos de tu alumno conectado:');
-              console.log(this.AlumnoCromosQueNoTengo);
+              this.DameAlumnoImagenesCromos();
             });
         });
       // this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
@@ -140,7 +143,6 @@ export class JuegoColleccionPage implements OnInit {
       // this.listaCromosSinRepetidos.sort((a, b) => a.cromo.Nombre.localeCompare(b.cromo.Nombre));
 
       // this.MisImagenesCromo = this.calculos.VisualizarCromosDelAlumno(this.MisCromos);
-    }
   }
 
   // Obtenemos los cromos de los demás en el ranking
@@ -158,14 +160,15 @@ export class JuegoColleccionPage implements OnInit {
               this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
               console.log(this.listaCromosSinRepetidos);
               this.sesion.TomaCromosSinRepetidos(this.listaCromosSinRepetidos);
-              this.MisImagenesCromo = this.calculos.VisualizarLosCromosDelante(this.listaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromos => {
+                  console.log('aqui estan todos los cromos');
+                  console.log(TodosLosCromos);
                   this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-                  this.ImagenesCromosQueNoTengoDelante = this.calculos.VisualizarLosCromosDelante(this.CromosQueNoTengo);
                 });
               console.log('Cromos que no tengo:');
               console.log(this.CromosQueNoTengoDelante);
+              this.DameImagenesCromos();
             });
         });
       // this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
@@ -187,15 +190,49 @@ export class JuegoColleccionPage implements OnInit {
               this.MisCromos = Cromos;
               this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
               console.log(this.listaCromosSinRepetidos);
-              this.MisImagenesCromo = this.calculos.VisualizarLosCromosDelante(this.listaCromosSinRepetidos);
               this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
                 TodosLosCromos => {
                   this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-                  this.ImagenesCromosQueNoTengoDelante = this.calculos.VisualizarLosCromosDelante(this.CromosQueNoTengo);
                 });
+              this.DameImagenesCromos();
             });
         });
       console.log(this.MisImagenesCromo);
+    }
+  }
+
+  DameAlumnoImagenesCromos() {
+    console.log('voy a por las imagenes de cada cromo');
+    for (let i = 0; i < this.AlumnolistaCromosSinRepetidos.length; i++){
+      const elem = this.AlumnolistaCromosSinRepetidos[i];
+      console.log('quiero la imagen de este: ' + elem)
+      if(elem.cromo.ImagenDelante !== undefined) {
+        this.AlumnoMisImagenesCromoDelante[i] = URL.ImagenesCromo + elem.cromo.ImagenDelante;
+      }
+      if(elem.cromo.ImagenDetras !== undefined) {
+        this.AlumnoMisImagenesCromoDetras[i] = URL.ImagenesCromo + elem.cromo.ImagenDetras;
+      }
+    }
+  }
+  DameAlumnoImagenesCromoFaltan(){
+    console.log('voy a por las imagenes de los que no tienes');
+    for(let j = 0; j < this.AlumnoCromosQueNoTengo.length; j++) {
+      const elem = this.AlumnoCromosQueNoTengo[j];
+      console.log('quiero la imagen de este: ' + elem)
+      if(elem.cromo.ImagenDelante !== undefined) {
+        this.AlumnoImagenesCromosQueNoTengoDelante[j] = URL.ImagenesCromo + elem.cromo.ImagenDelante;
+      }
+    }
+  }
+
+  DameImagenesCromos() {
+    console.log('voy a por las imagenes de cada cromo');
+    for (let i = 0; i < this.listaCromosSinRepetidos.length; i++){
+      const elem = this.listaCromosSinRepetidos[i];
+      console.log('quiero la imagen de este: ' + elem)
+      if(elem.cromo.ImagenDelante !== undefined) {
+        this.MisImagenesCromo[i] = URL.ImagenesCromo + elem.cromo.ImagenDelante
+      }
     }
   }
 
