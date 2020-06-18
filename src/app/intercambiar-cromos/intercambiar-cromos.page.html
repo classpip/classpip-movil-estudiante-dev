@@ -9,8 +9,8 @@
 
 <ion-content class="intercambiarcromos-content">
 
-  <!--Al poner <b> permitimos que las palabras que esten dentro se visualicen en negrita-->
-  <p>Selecciona <b>el cromo</b> a intercambiar:</p>
+  <img class="logo-liga" src="../../assets/img/intercambio.svg" width="100px">
+  <h2> Hola {{MiAlumno.Nombre}}, aquí podrás intercambiar <br> cromos con tus compañeros</h2>
 
   <!--Se define un desplegable que muestra los cromos disponibles y su correspondiente
     aspecto físico-->
@@ -21,11 +21,9 @@
     </option>
   </select>
 
-
   <!--Se define la estética del cromo según el nivel del propio cromo-->
   <ion-item *ngIf="cromo">
     <ion-card name="cromo">
-
       <img [src]="imagenCromo">
       <ion-card-content>
         <ion-card-title>

@@ -29,6 +29,15 @@
 USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
 
 
+/* GENERICO */
+.ranking-btn {
+  margin-bottom: 10%;
+  --margin-bottom: 90px;
+  --border-radius: 20px;
+  --background: cadetblue;
+  text-transform: none;
+}
+
 /* ------------------------ESTILO 2---------------------------- */
 /* +++++++++++++++++++++++ 2.1 SLIDER ++++++++++++++++++++++++++*/
 
@@ -254,9 +263,76 @@ ion-tab-bar, ion-tab-button{
   #alumno-ranking {
     overflow: auto;
   }
-  
+
+  .ranking-acordeon {
+    background: aquamarine;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 3%;
+    .span{
+      display: flex;
+      align-items: center;
+    }
+    .mat-expansion-panel-header.mat-expanded {
+      background: cadetblue;
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      h2{
+        color: white;
+        font-size: 17px;
+      }
+      .avatar {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+        border: 2px solid;
+        border-color: greenyellow;
+      }
+    }
+    .mat-expansion-panel-content {
+      background: rgba(47, 79, 79, 0.4);
+      display: flex;
+      .mat-expansion-panel-body {
+        margin-top: 15px;
+      }
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 20px;
+      border: 2px solid;
+      border-color: white;
+    }
+  }
+  .puntos-list-bg {
+    background: transparent;
+    ion-item {
+      --background: transparent;
+      h2 {
+        font-size: 15px;
+        color: black;
+      }
+    }
+  }
+  .nivel-puntos {
+    display: flex;
+    justify-content: space-between;
+    h1 {
+      font-size: 15px;
+      margin: auto;
+      margin-bottom: -10px;
+      color: #354f7b;
+    }
+    p {
+      border: 3px solid;
+      border-color: #354f7b;
+      border-radius: 10px;
+      background: #354f7b;
+      color: white;
+    }
+  }
   .info-alumno{
-    .logo-liga {
+    .logo {
       margin-top: 10%;
     }
     h2 {
@@ -267,27 +343,11 @@ ion-tab-bar, ion-tab-button{
       font-size: 44px;
       background: darkseagreen;
       color: white;
-    }
-    .puntos-list-bg {
-      background: transparent;
-      ion-item {
-        --background: transparent;
-        h2 {
-          font-size: 15px;
-          color: black;
-        }
-      }
-    }
-    .ranking-btn{
-      margin-bottom: 90px;
-    }
-    .ranking{
-      margin-bottom: 100px;
     }
   }
 
   .info-equipo{
-    .logo-liga {
+    .logo {
       margin-top: 10%;
     }
     h2 {
@@ -299,67 +359,71 @@ ion-tab-bar, ion-tab-button{
       background: darkseagreen;
       color: white;
     }
-    .equipo-panel {
-      margin-bottom: 10px;
-      .alumnos-grupo {
-        display: flex;
+    .alumnos-grupo {
+      display: flex;
+      margin: auto;
+      .alumno-image {
         margin: auto;
-        .alumno-image {
-          margin: auto;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          .border {
-            border: 3px solid lightpink;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .border {
+          border: 3px solid lightpink;
+          border-radius: 50%;
+          width: fit-content;
+          background-color: bisque;
+          .img-box {
+            height: 50px;
+            width: 50px;
             border-radius: 50%;
-            width: fit-content;
-            background-color: bisque;
-            .img-box {
-              height: 50px;
-              width: 50px;
-              border-radius: 50%;
-              overflow: hidden;
-            }
+            overflow: hidden;
           }
-          .border-conectado {
-              border: 3px solid rgb(64, 98, 155);
-              border-radius: 50%;
-              width: fit-content;
-              background-color: lightblue;
-            .img-box {
-              height: 50px;
-              width: 50px;
-              border-radius: 50%;
-              overflow: hidden;
-            }
+        }
+        p {
+          color: #354f7b;
+          font-weight: bold;
+        }
+        .muestra-puntos-equ{
+          p{
+            color: white;
+          }
+        }
+        .border-conectado {
+          border: 3px solid rgb(64, 98, 155);
+          border-radius: 50%;
+          width: fit-content;
+          background-color: lightblue;
+          .img-box {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
           }
         }
       }
-
-      .equipo-info{
-        height: 60px;
-      }
-      .equipo-span{
-        margin-top: auto;
-      }
-      .cabecera-tabla {
-          background: #17447eff;
-          color: white;
-          border-top-right-radius: 17px;
-          border-top-left-radius: 17px;
-      }
-      .casillas-tabla {
-          color: #17447eff;
-          border-left: thin solid;
-          border-right: thin solid;
-          border-bottom: thin solid;
-          border-left-color: #17447eff;
-          border-right-color: #17447eff;
-          border-bottom-color: #17447eff;
-      }
     }
   }
-
+  .tabla-puntos {
+    .cabecera-tabla {
+      background: #17447eff;
+      color: white;
+      border-top-right-radius: 17px;
+      border-top-left-radius: 17px;
+    }
+    .casillas-tabla {
+        color: #17447eff;
+        border-left: thin solid;
+        border-right: thin solid;
+        border-bottom: thin solid;
+        border-left-color: #17447eff;
+        border-right-color: #17447eff;
+        border-bottom-color: #17447eff;
+        h1 {
+          margin: auto;
+          font-size: 15px;
+        }
+      }
+  }
   .puntos-info {
     position: fixed;
     bottom: 0;
@@ -400,11 +464,20 @@ ion-tab-bar, ion-tab-button{
         color: black;
         font-size: 12px;
       }
+      h1{
+        color: white;
+        font-size: 14px;
+      }
+      img {
+        width: 100px;
+        margin-top: 20px;
+      }
     }
-  } 
+  }
   #informacion{
     overflow: hidden;
   }
+
  }
 
  /* ++++++++++++++++++++++++ 2.6 MENU-LATERAL +++++++++++++++++++++++++++*/
@@ -458,9 +531,9 @@ ion-tab-bar, ion-tab-button{
       margin-top: 10%;
     }
     h2 {
-      font-size: 15px;
+      font-size: 14px;
       color: #354f7bff;
-      
+      margin-top: -8px;
     }
     .card-cromo {
       width: 200px;
@@ -469,7 +542,10 @@ ion-tab-bar, ion-tab-button{
       border-radius: 10px;
       img {
         width: 100%;
-        height: 60%;
+        height: 75%;
+      }
+      p {
+        font-size: 12px;
       }
     }
     .card-cromo-reves {
@@ -477,6 +553,10 @@ ion-tab-bar, ion-tab-button{
       height: 230px;
       background-color: mediumspringgreen;
       border-radius: 10px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
     .MeFalta-bg {
       width: 200px;
@@ -485,8 +565,11 @@ ion-tab-bar, ion-tab-button{
       border-radius: 10px;
       img {
         width: 100%;
-        height: 60%;
+        height: 75%;
         opacity: 0.3;
+      }
+      p {
+        font-size: 12px;
       }
     }
     .falta-cromo-reves {
@@ -502,14 +585,57 @@ ion-tab-bar, ion-tab-button{
       margin-bottom: 30%;
       margin-top: 10%;
     }
-    .boton-ranking {
-      margin-bottom: 10%;
+    #box {
+      width: 90%;
+      position: relative;
+      margin: auto;
     }
     .ranking-acordeon {
-      width: 90%;
+      background: aquamarine;
       margin: auto;
       margin-bottom: 3%;
-      border-radius: 5px;
+      width: 100%;
+      .span{
+        display: flex;
+        align-items: center;
+      }
+      .mat-expansion-panel-header.mat-expanded {
+        background: cadetblue;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        h2{
+          color: white;
+          font-size: 17px;
+        }
+        .avatar {
+          width: 50px;
+          height: 50px;
+          margin-right: 10px;
+          border: 2px solid;
+          border-color: greenyellow;
+        }
+      }
+      .mat-expansion-panel-content {
+        background: rgba(47, 79, 79, 0.4);
+        display: flex;
+        .mat-expansion-panel-body {
+          margin-top: 15px;
+        }
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        margin-right: 20px;
+        border: 2px solid;
+        border-color: white;
+      }
+    }
+    .opciones-ranking {
+      display: flex;
+    }
+    .ranking-alumno-btn {
+      width: 200px;
+      text-transform: initial;
     }
     // para mostrar los alumnos de cada grupo
     .alumnos-grupo {
@@ -532,6 +658,10 @@ ion-tab-bar, ion-tab-button{
             overflow: hidden;
           }
         }
+        p {
+          color: #354f7b;
+          font-weight: bold;
+        }
         .border-conectado {
             border: 3px solid rgb(64, 98, 155);
             border-radius: 50%;
@@ -545,9 +675,6 @@ ion-tab-bar, ion-tab-button{
           }
         }
       }
-    }
-    .equipo-span{
-      margin-top: auto;
     }
     .coleccion-equipo {
       margin-bottom: 15%;
@@ -595,6 +722,20 @@ ion-tab-bar, ion-tab-button{
     background-color: transparent;
     color: #fff;
     transform: rotateY(180deg);
+    width: 100%;
+    height: 100%;
+    .card-content-md {
+      padding-left: unset;
+      padding-right: unset;
+      -webkit-padding-start: unset; 
+      padding-inline-start: unset; 
+      -webkit-padding-end: unset; 
+      padding-inline-end: unset; 
+      padding-left: 0px;
+      padding-right: 0px;
+      padding-top: 0px; 
+      padding-bottom: 0px; 
+    }
   }
 
 /* ++++++++++++++++++++++++ 2.8 CAMBIAR CROMOS +++++++++++++++++++++++++++*/
@@ -621,44 +762,377 @@ ion-tab-bar, ion-tab-button{
       background: darkseagreen;
       color: white;
     }
+    .puntos-list-bg {
+      background: transparent;
+      ion-item {
+        --background: transparent;
+        h2 {
+          font-size: 15px;
+          color: black;
+        }
+      }
+    }
   }
-
-  .right-aligned-header > .mat-content {
-    justify-content: space-between;
-    align-items: center;
+  .info-equipo{
+    .logo {
+      margin-top: 10%;
+    }
+    h2 {
+      font-size: 15px;
+      color: #354f7bff;
+    }
+    h3 {
+      font-size: 44px;
+      background: darkseagreen;
+      color: white;
+    }
+    .alumnos-grupo {
+      display: flex;
+      margin: auto;
+      .alumno-image {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .border {
+          border: 3px solid lightpink;
+          border-radius: 50%;
+          width: fit-content;
+          background-color: bisque;
+          .img-box {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+          }
+        }
+        p {
+          color: #354f7b;
+          font-weight: bold;
+        }
+        .muestra-puntos-equ{
+          p{
+            color: white;
+          }
+        }
+        .border-conectado {
+          border: 3px solid rgb(64, 98, 155);
+          border-radius: 50%;
+          width: fit-content;
+          background-color: lightblue;
+          .img-box {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+          }
+        }
+      }
+    }
   }
-  
-  .mat-content > mat-panel-title, .mat-content > mat-panel-description {
-  flex: 0 0 auto;
+  .ranking-acordeon {
+    background: aquamarine;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 3%;
+    .span{
+      display: flex;
+      align-items: center;
+      h2 {
+        font-size: 15px;
+        color: #354f7bff;
+      }
+    }
+    .mat-expansion-panel-header.mat-expanded {
+      background: cadetblue;
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      h2{
+        color: white;
+        font-size: 17px;
+      }
+      .avatar {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+        border: 2px solid;
+        border-color: greenyellow;
+      }
+    }
+    .mat-expansion-panel-content {
+      background: rgba(47, 79, 79, 0.4);
+      display: flex;
+      .mat-expansion-panel-body {
+        margin-top: 15px;
+      }
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 20px;
+      border: 2px solid;
+      border-color: white;
+    }
+  }
+  .puntos-list-bg-acordeon{
+    background: white;
+    border-radius: 25px;
+    color: #354f7bff;
+    h2 {
+      font-size: 15px;
+      color: black;
+    }
   }
 }
 
+/* +++++++++++++++++++++++++++++++ JUEGO  F 1 +++++++++++++++++++++++++++++*/
+.juegocompf1-content {
+  --background: #fffafaff;
+  text-align: center;
+  .info-alumno{
+    .logo {
+      margin-top: 10%;
+    }
+    h2 {
+      font-size: 15px;
+    }
+    h3 {
+      font-size: 44px;
+      background: darkseagreen;
+      color: white;
+    }
+  }
+  .info-equipo{
+    .logo {
+      margin-top: 10%;
+    }
+    h2 {
+      font-size: 15px;
+      color: #354f7bff;
+    }
+    h3 {
+      font-size: 44px;
+      background: darkseagreen;
+      color: white;
+    }
+    .alumnos-grupo {
+      display: flex;
+      margin: auto;
+      .alumno-image {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .border {
+          border: 3px solid lightpink;
+          border-radius: 50%;
+          width: fit-content;
+          background-color: bisque;
+          .img-box {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+          }
+        }
+        p {
+          color: #354f7b;
+          font-weight: bold;
+        }
+        .muestra-puntos-equ{
+          p{
+            color: white;
+          }
+        }
+        .border-conectado {
+          border: 3px solid rgb(64, 98, 155);
+          border-radius: 50%;
+          width: fit-content;
+          background-color: lightblue;
+          .img-box {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+  .ranking-acordeon {
+    background: aquamarine;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 3%;
+    .span{
+      display: flex;
+      align-items: center;
+      h2 {
+        font-size: 15px;
+        color: #354f7bff;
+      }
+    }
+    .mat-expansion-panel-header.mat-expanded {
+      background: cadetblue;
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      h2{
+        color: white;
+        font-size: 17px;
+      }
+      .avatar {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+        border: 2px solid;
+        border-color: greenyellow;
+      }
+    }
+    .mat-expansion-panel-content {
+      background: rgba(47, 79, 79, 0.4);
+      display: flex;
+      .mat-expansion-panel-body {
+        margin-top: 15px;
+      }
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 20px;
+      border: 2px solid;
+      border-color: white;
+    }
+  }
+  .nivel-puntos {
+    display: flex;
+    justify-content: space-between;
+    h1 {
+      font-size: 15px;
+      margin: auto;
+      margin-bottom: -10px;
+      color: #354f7b;
+    }
+    p {
+      border: 3px solid;
+      border-color: #354f7b;
+      border-radius: 10px;
+      background: #354f7b;
+      color: white;
+    }
+  }
+      // para mostrar los alumnos de cada grupo
+          
+}
 /* +++++++++++++++++++++++++ 2.10 INFOR JORNADAS +++++++++++++++++++++++++ */
 .infojornadas-content {
   text-align: center;
-  .enfrentamiento-card {
-    margin-top: 10px;
+  .logo-liga{
+    margin-top: 10%;
+  }
+  p {
+    color: #354f7b;
+    font-weight: bold;
+  }
+  .ranking-acordeon {
+    background: aquamarine;
+    width: 100%;
+    margin: auto;
+    margin-bottom: 3%;
+    .span{
+      display: flex;
+      align-items: center;
+      .icono-jornada {
+        width: 14%;
+        margin-right: 2%;
+      }
+      h2 {
+        font-size: 15px;
+        color: #354f7bff;
+      }
+    }
+    .mat-expansion-panel-header.mat-expanded {
+      background: cadetblue;
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      .icono-jornada {
+        width: 16%;
+        margin-right: 2%;
+      }
+      h2{
+        color: white;
+        font-size: 17px;
+      }
+    }
+    .mat-expansion-panel-content {
+      background: rgba(47, 79, 79, 0.4);
+      display: flex;
+      .mat-expansion-panel-body {
+        margin-top: 15px;
+      }
+    }
+  }
+  .enfrentamiento-card-mialumno {
+    border: solid;
+    border-width: 10px;
+    border-color: white;
     max-height: fit-content;
-    text-align: center;  
-    background: linear-gradient(to top right, rgb(121, 108, 240) -50%, #4bf045 100%);
+    text-align: center;
+    background: aquamarine;
+    width: 177px !important;
+    height: 275px !important;
+    margin-top: 0px;
     .card-title {
       font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
       font-size: 15px;
     }
     .versus-icon {
-      width: 70px;
+      width: 90px;
       display: unset;
+      margin-bottom: -15px;
+      margin-top: -10px;
     }
-    h1 {
-      font-family: Arial, Helvetica, sans-serif;
+    h2 {
       font-size: 16px;
-      color: white;
+      color: rgb(117, 134, 83);
     }
     h3 {
-      font-family: Arial, Helvetica, sans-serif;
       font-size: 14px;
       color: black;
     }
+    p{
+      color: rgba(59, 85, 129, 0.664);
+    }
+  }
+  .enfrentamiento-card {
+    max-height: fit-content;
+    text-align: center;
+    background: turquoise;
+    width: 177px !important;
+    height: 285px !important;
+    .card-title {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 15px;
+    }
+    .versus-icon {
+      width: 90px;
+      display: unset;
+      margin-bottom: -15px;
+      margin-top: -10px;
+    }
+    h2 {
+      font-size: 16px;
+      color: #354f7b;
+    }
+    h3 {
+      font-size: 14px;
+      color: black;
+    }
+    p{
+      color: black;
+    }
+  }
+  .marco-ganadores {
+    background: url('../src/assets/img/primerof1.svg');
   }
 }
 

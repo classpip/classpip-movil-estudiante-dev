@@ -3,7 +3,7 @@ import { NavController, LoadingController, AlertController } from '@ionic/angula
 import { PeticionesAPIService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {
-  Juego, Jornada, TablaJornadas, EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion,
+  Alumno, Juego, Jornada, TablaJornadas, EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion,
   TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionLiga, TablaClasificacionJornada
 } from '../clases/Index';
 import { SesionService } from '../servicios/sesion.service';
@@ -22,7 +22,7 @@ export class InformacionJornadasPage implements OnInit {
   JornadasCompeticion: TablaJornadas[] = [];
   listaAlumnosClasificacion: TablaAlumnoJuegoDeCompeticion[] = [];
   listaEquiposClasificacion: TablaEquipoJuegoDeCompeticion[] = [];
-
+  MiAlumno: Alumno;
 
   EnfrentamientosJornadaSeleccionada: EnfrentamientoLiga[] = [];
   botonResultadosDesactivado: boolean;
@@ -37,6 +37,7 @@ export class InformacionJornadasPage implements OnInit {
     participanteId: number[];
   };
   TablaClasificacionJornadaSeleccionada: TablaClasificacionJornada[];
+  GanadoresJornadaF1: TablaClasificacionJornada[];
 
   constructor(
     private sesion: SesionService,
@@ -46,6 +47,7 @@ export class InformacionJornadasPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.MiAlumno = this.sesion.DameAlumno();
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.numeroTotalJornadas = this.juegoSeleccionado.NumeroTotalJornadas;
     const datos = this.sesion.DameDatosJornadas();
@@ -58,6 +60,8 @@ export class InformacionJornadasPage implements OnInit {
     console.log('La lista de alumnos es: ');
     console.log(this.listaAlumnosClasificacion);
   }
+
+  
 
   // Para Competición Fórmula Uno:
   ObtenerEnfrentamientosDeCadaJornada(jornadaSeleccionada: TablaJornadas) {
@@ -96,6 +100,9 @@ export class InformacionJornadasPage implements OnInit {
     console.log('ParticipanteId:');
     console.log(this.datosClasificacionJornada.participanteId);
     this.TablaClasificacionJornadaSeleccionada = this.calculos.PrepararTablaRankingJornadaFormulaUno(this.datosClasificacionJornada);
+    this.GanadoresJornadaF1 = this.TablaClasificacionJornadaSeleccionada.slice(0, 3);
+    console.log('los ganadores: ');
+    console.log(this.GanadoresJornadaF1);
   }
 
   DameJornadasDelJuegoDeCompeticionF1() {

@@ -7,40 +7,93 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="juegocompliga-content" #content>
-  <div *ngIf="infomialumno !== undefined" class="info-alumno">
-    <img class="logo-liga" src="../../assets/img/f1icon.svg" width="100px">
-    <h2> Hola {{infomialumno.nombre}} {{infomialumno.primerApellido}} , actualmente vas</h2>
-    <h3> {{ infomialumno.posicion }}o</h3>
-    <h2> en la competición de Fórmula Uno </h2>
-  </div>
-  <div>
-    <ion-card>
-      <ion-card-header>
-        Bar Chart
-      </ion-card-header>
-      <ion-card-content>
-        <canvas #barChart></canvas>
-      </ion-card-content>
-    </ion-card>
-  </div>
+<ion-content class="juegocompf1-content" #content>
+  <div *ngIf="juegoSeleccionado.Modo === 'Individual'">
+    <div *ngIf="infomialumno !== undefined" class="info-alumno">
+      <img class="logo" src="../../assets/img/f1icon.svg" width="100px">
+      <h2> Hola {{infomialumno.nombre}} {{infomialumno.primerApellido}} , actualmente vas</h2>
+      <h3> {{ infomialumno.posicion }}o</h3>
+      <h2> en la competición de Fórmula Uno </h2>
+    </div>
+    <div>
+      <ion-card>
+        <ion-card-header>
+          Gráfico de progreso juego F1
+        </ion-card-header>
+        <ion-card-content>
+          <canvas #barChart></canvas>
+        </ion-card-content>
+      </ion-card>
+    </div>
 
-  <ion-button (click)="InformacionJornadas();">Mi Historial</ion-button>
-  <ion-button *ngIf="!hideMe" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
-  <ion-button *ngIf="hideMe" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
+    <ion-button class="ranking-btn" (click)="InformacionJornadas();">Jornadas</ion-button>
+    <ion-button class="ranking-btn" *ngIf="!hideMe" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
+    <ion-button class="ranking-btn" *ngIf="hideMe" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
 
-  <div *ngIf="hideMe">
+    <div *ngIf="hideMe">
+      <mat-accordion>
+        <div *ngFor="let alumno of rankingIndividualFormulaUno">
+          <mat-expansion-panel class="ranking-acordeon" *ngIf="alumno.id !== MiAlumno.id">
+            <mat-expansion-panel-header>
+              <div class="span">
+                <ion-avatar slot="start" class="avatar">
+                  <img src="../../assets/img/usuario.svg">
+                </ion-avatar>
+                <ion-label>
+                  <h2> <b>{{alumno.nombre}} {{alumno.primerApellido}}</b> </h2>
+                </ion-label>
+              </div>
+            </mat-expansion-panel-header>
+            <div class="nivel-puntos">
+              <div>
+                <h1>Posicion</h1> <br>
+                <p>{{alumno.posicion}}o</p>
+              </div>
+              <div>
+                <h1>Puntos</h1> <br>
+                <p>{{alumno.puntos}} pts.</p>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </div>
+
+      </mat-accordion>
+    </div>
+  </div>
+  <div *ngIf="juegoSeleccionado.Modo !== 'Individual'" class="info-equipo">
+    <img class="logo" src="../../assets/img/f1icon.svg" width="100px">
+    <h2> Hola {{MiAlumno.Nombre}}, formas parte del equipo</h2>
+    <h3 *ngIf="MiEquipo !== undefined"> {{MiEquipo.Nombre}} </h3>
+    <h2> en este juego de puntos </h2>
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let alumno of rankingIndividualFormulaUno">
-        <mat-expansion-panel-header class="right-aligned-header">
-          <mat-panel-title>
-            <b> {{alumno.nombre}} {{alumno.primerApellido}}</b>
-          </mat-panel-title>
-          <mat-panel-description>
-            <b>{{alumno.puntos}} Puntos</b>
-          </mat-panel-description>
+      <mat-expansion-panel class="ranking-acordeon" *ngFor="let equipo of rankingEquiposFormulaUno">
+        <mat-expansion-panel-header (click)="AlumnosDelEquipo(equipo)">
+          <div class="span">
+            <ion-avatar slot="start" class="avatar">
+              <img src="../../assets/img/equipo.svg">
+            </ion-avatar>
+            <ion-label>
+              <h2> <b>{{equipo.nombre}}</b> </h2>
+            </ion-label>
+          </div>
         </mat-expansion-panel-header>
+        <div class="alumnos-grupo">
+          <div class="alumno-image" *ngFor="let alumno of alumnosEquipo">
+            <div *ngIf="alumno.id !== MiAlumno.id" class="border">
+              <div class="img-box">
+                <img src="../../assets/img/usuario.svg">
+              </div>
+            </div>
+            <div *ngIf="alumno.id === MiAlumno.id" class="border-conectado">
+              <div class="img-box">
+                <img src="../../assets/img/usuario.svg">
+              </div>
+            </div>
+            <p>{{alumno.Nombre}} <br> {{alumno.PrimerApellido}} </p>
+          </div>
+        </div>
       </mat-expansion-panel>
     </mat-accordion>
+    <ion-button class="ranking-btn" (click)="InformacionJornadas();">Jornadas</ion-button>
   </div>
 </ion-content>

@@ -33,7 +33,7 @@ export class JuegoCompeticionF1Page implements OnInit {
   MiAlumno: Alumno;
   MiEquipo: Equipo;
 
-  alumnosDelEquipo: Alumno[];
+  alumnosEquipo: Alumno[];
 
   listaAlumnosOrdenadaPorPuntos: AlumnoJuegoDeCompeticionFormulaUno[];
   listaEquiposOrdenadaPorPuntos: EquipoJuegoDeCompeticionFormulaUno[];
@@ -60,7 +60,7 @@ export class JuegoCompeticionF1Page implements OnInit {
     private calculos: CalculosService,
   ) { }
 
- 
+
   @ViewChild('content', { static: false }) content: IonContent;
 
   ngOnInit() {
@@ -74,34 +74,46 @@ export class JuegoCompeticionF1Page implements OnInit {
       this.EquiposDelJuego();
     }
     this.DameJornadasDelJuegoDeCompeticionSeleccionado();
-
   }
 
-  ionViewDidEnter() {
-    this.datatochart();
-  }
-
-  datatochart(){
+  datatochart() {
     const labels: string[] = [];
     const datos: number[] = [];
-    for (let i=0; i<this.jornadas.length; i++){
-      labels.push("J" + (i+1));
-      datos.push(i);
+    for (let i = 0; i < this.jornadas.length; i++) {
+      labels.push("J" + (i + 1));
+      if (this.jornadas[i].GanadoresFormulaUno !== undefined) {
+        if (this.jornadas[i].GanadoresFormulaUno[0] === this.MiAlumno.id) {
+          datos.push(this.juegoSeleccionado.Puntos[0]);
+        }
+        else if (this.jornadas[i].GanadoresFormulaUno[1] === this.MiAlumno.id) {
+          datos.push(this.juegoSeleccionado.Puntos[1]);
+        }
+        else if (this.jornadas[i].GanadoresFormulaUno[2] === this.MiAlumno.id) {
+          datos.push(this.juegoSeleccionado.Puntos[2]);
+        }
+        else {
+          datos.push(0)
+        }
+      }
+      else {
+        datos.push(0);
+      }
+      console.log(datos);
     }
     this.createBarChart(labels, datos);
   }
 
   createBarChart(labels, datos) {
     this.bars = new Chart(this.barChart.nativeElement, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Puntos x Jornada',
+          label: 'Puntos por jornada',
           data: datos,
-          backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
-          borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
-          borderWidth: 1
+          backgroundColor: 'transparent', //same number of elements as number of dataset
+          borderColor: 'rgb(38, 194, 129)',//same number of elements as number of dataset
+          borderWidth: 2
         }]
       },
       options: {
@@ -148,7 +160,25 @@ export class JuegoCompeticionF1Page implements OnInit {
         console.log('ya tengo los equipos');
         this.equiposDelJuego = equiposJuego;
         this.RecuperarInscripcionesEquiposJuego();
+        this.DameEquipoAlumnoConectado();
       });
+  }
+
+  DameEquipoAlumnoConectado() {
+    console.log('voy a por el equipo del alumno');
+    for (let i = 0; i < this.equiposDelJuego.length; i++) {
+      this.peticionesAPI.DameAlumnosEquipo(this.equiposDelJuego[i].id)
+        .subscribe(res => {
+          console.log('miro en: ' + this.equiposDelJuego[i]);
+          for (let j = 0; j < res.length; j++)
+            if (res[j].id === this.MiAlumno.id) {
+              console.log(res);
+              this.MiEquipo = this.equiposDelJuego[i];
+              console.log('tu equipo');
+              console.log(this.MiEquipo);
+            }
+        });
+    }
   }
 
   RecuperarInscripcionesAlumnoJuego() {
@@ -180,6 +210,21 @@ export class JuegoCompeticionF1Page implements OnInit {
         });
         console.log('ya tengo las inscripciones');
         this.TablaClasificacionTotal();
+      });
+  }
+
+  AlumnosDelEquipo(equipo: Equipo) {
+    console.log(equipo);
+
+    this.peticionesAPI.DameAlumnosEquipo(equipo.id)
+      .subscribe(res => {
+        if (res[0] !== undefined) {
+          this.alumnosEquipo = res;
+          console.log(res);
+        } else {
+          console.log('No hay alumnos en este equipo');
+          this.alumnosEquipo = undefined;
+        }
       });
   }
 
@@ -242,5 +287,6 @@ export class JuegoCompeticionF1Page implements OnInit {
   scrollToTop() {
     this.content.scrollToTop();
   }
+
 
 }

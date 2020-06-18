@@ -15,10 +15,11 @@
 
 
 
-  <div *ngIf="JuegosActivos[0];else Aviso_no_juegos_activos">
+  <div>
     <ion-row style="height: 25px"></ion-row>
     <img height= "40px" src="../../assets/home/Active-games-banner.svg">
 
+    <div *ngIf="!JuegosActivos[0]"><p>No hay juegos activos</p></div>
     <ion-slides [options]="sliderConfig">
       <ion-slide *ngFor="let juego of JuegosActivos">
         <div>
@@ -40,15 +41,12 @@
         </div>
       </ion-slide>
     </ion-slides>
-    <ng-template #Aviso_no_juegos_activos>
-      <label class = "AvisoNoJuegosActivo">
-        <b>No tienes juegos activos</b></label>
-    </ng-template>
   </div>
 
   <div>
     <img height= "40px" src="../../assets/home/inactive-games-banner.svg">
 
+    <div *ngIf="!JuegosInactivos[0]"><p>No hay juegos inactivos</p></div>
     <ion-slides [options]="sliderConfig">
       <ion-slide *ngFor="let juego of JuegosInactivos">
         <div>

@@ -8,72 +8,115 @@
 </ion-header>
 
 <ion-content class="juegocompliga-content" #content>
-  <div *ngIf="infomialumno !== undefined" class="info-alumno">
-    <img class="logo-liga" src="../../assets/img/ligaicon.svg" width="100px">
-    <h2> Hola {{infomialumno.nombre}}, actualmente vas</h2>
-    <h3> {{ infomialumno.posicion }}o</h3>
-    <h2> en la competición de Liga </h2>
+  <div *ngIf="juegoSeleccionado.Modo === 'Individual'">
+    <div *ngIf="infomialumno !== undefined" class="info-alumno">
+      <img class="logo-liga" src="../../assets/img/ligaicon.svg" width="100px">
+      <h2> Hola {{infomialumno.nombre}}, actualmente vas</h2>
+      <h3> {{ infomialumno.posicion }}o</h3>
+      <h2> en la competición de Liga </h2>
 
-    <ion-list class="puntos-list-bg">
-      <ion-item>
-        <h2>Has Jugado:</h2>
-        <h2 slot="end"> {{infomialumno.partidosJugados}} partidos</h2>
-      </ion-item>
-      <ion-item>
-        <h2>Has Ganado:</h2>
-        <h2 slot="end"> {{infomialumno.partidosGanados}} partidos</h2>
-      </ion-item>
-      <ion-item>
-        <h2>Has Empatado:</h2>
-        <h2 slot="end"> {{infomialumno.partidosEmpatados}} partidos </h2>
-      </ion-item>
-      <ion-item>
-        <h2>Y has perdido:</h2>
-        <h2 slot="end"> {{infomialumno.partidosPerdidos}} partidos </h2>
-      </ion-item>
-      <p>De un total de <b>{{infomialumno.partidosTotales}}</b> partidos. </p>
-    </ion-list>
-  </div>
+      <ion-list class="puntos-list-bg">
+        <ion-item>
+          <h2>Has Jugado:</h2>
+          <h2 slot="end"> {{infomialumno.partidosJugados}} partidos</h2>
+        </ion-item>
+        <ion-item>
+          <h2>Has Ganado:</h2>
+          <h2 slot="end"> {{infomialumno.partidosGanados}} partidos</h2>
+        </ion-item>
+        <ion-item>
+          <h2>Has Empatado:</h2>
+          <h2 slot="end"> {{infomialumno.partidosEmpatados}} partidos </h2>
+        </ion-item>
+        <ion-item>
+          <h2>Y has perdido:</h2>
+          <h2 slot="end"> {{infomialumno.partidosPerdidos}} partidos </h2>
+        </ion-item>
+        <p>De un total de <b>{{infomialumno.partidosTotales}}</b> partidos. </p>
+      </ion-list>
+    </div>
 
-  <ion-button (click)="InformacionJornadas();">Jornadas</ion-button>
 
-  <ion-button *ngIf="!hideMe" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
-  <ion-button *ngIf="hideMe" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
-  <!-- <ion-button (click)="Autentificar();" class="login-btn">Muestrame a mis compañeros</ion-button>
+
+    <ion-button class="ranking-btn" (click)="InformacionJornadas();">Jornadas</ion-button>
+
+    <ion-button *ngIf="!hideMe" class="ranking-btn" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
+    <ion-button *ngIf="hideMe" class="ranking-btn" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
+    <!-- <ion-button (click)="Autentificar();" class="login-btn">Muestrame a mis compañeros</ion-button>
  -->
-  <div *ngIf="hideMe">
+    <div *ngIf="hideMe">
+      <mat-accordion>
+        <div *ngFor="let alumno of rankingAlumnoJuegoDeCompeticion">
+          <mat-expansion-panel class="ranking-acordeon" *ngIf="alumno.id !== MiAlumno.id">
+            <mat-expansion-panel-header>
+              <div class="span">
+                <ion-avatar slot="start" class="avatar">
+                  <img src="../../assets/img/usuario.svg">
+                </ion-avatar>
+                <ion-label>
+                  <h2> <b>{{alumno.nombre}} {{alumno.primerApellido}}</b> </h2>
+                </ion-label>
+              </div>
+            </mat-expansion-panel-header>
+            <ion-list class="puntos-list-bg-acordeon">
+              <p>Actualmente va <b>{{ alumno.posicion }}</b>o por que:</p>
+              <ion-item>
+                <h2>Ha Jugado:</h2>
+                <h2 slot="end"> {{alumno.partidosJugados}} partidos</h2>
+              </ion-item>
+              <ion-item>
+                <h2>Ha Ganado:</h2>
+                <h2 slot="end"> {{alumno.partidosGanados}} partidos</h2>
+              </ion-item>
+              <ion-item>
+                <h2>Ha Empatado:</h2>
+                <h2 slot="end"> {{alumno.partidosEmpatados}} partidos </h2>
+              </ion-item>
+              <ion-item>
+                <h2>Y perdido:</h2>
+                <h2 slot="end"> {{alumno.partidosPerdidos}} partidos </h2>
+              </ion-item>
+              <p>De un total de <b>{{alumno.partidosTotales}}</b> partidos. </p>
+            </ion-list>
+          </mat-expansion-panel>
+        </div>
+      </mat-accordion>
+    </div>
+  </div>
+  <div *ngIf="juegoSeleccionado.Modo !== 'Individual'" class="info-equipo">
+    <img class="logo" src="../../assets/img/ligaicon.svg" width="100px">
+    <h2> Hola {{MiAlumno.Nombre}}, formas parte del equipo</h2>
+    <h3 *ngIf="MiEquipo !== undefined"> {{MiEquipo.Nombre}} </h3>
+    <h2> en este juego de competición Liga </h2>
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let alumno of rankingAlumnoJuegoDeCompeticion">
-        <mat-expansion-panel-header class="right-aligned-header">
-          <mat-panel-title>
-            <b>{{ alumno.posicion }} - {{alumno.nombre}} {{alumno.primerApellido}}</b>
-          </mat-panel-title>
-          <mat-panel-description>
-            <b>{{alumno.puntos}} Puntos</b>
-          </mat-panel-description>
+      <mat-expansion-panel class="ranking-acordeon" *ngFor="let equipo of rankingEquiposJuegoDeCompeticion">
+        <mat-expansion-panel-header (click)="AlumnosDelEquipo(equipo)">
+          <div class="span">
+            <ion-avatar slot="start" class="avatar">
+              <img src="../../assets/img/equipo.svg">
+            </ion-avatar>
+            <ion-label>
+              <h2> <b>{{equipo.nombre}}</b> </h2>
+            </ion-label>
+          </div>
         </mat-expansion-panel-header>
-
-        <ion-list class="puntos-list-bg">
-          <p>Actualmente va <b>{{ alumno.posicion }}</b>o por que:</p>
-          <ion-item>
-            <h2>Ha Jugado:</h2>
-            <h2 slot="end"> {{alumno.partidosJugados}} partidos</h2>
-          </ion-item>
-          <ion-item>
-            <h2>Ha Ganado:</h2>
-            <h2 slot="end"> {{alumno.partidosGanados}} partidos</h2>
-          </ion-item>
-          <ion-item>
-            <h2>Ha Empatado:</h2>
-            <h2 slot="end"> {{alumno.partidosEmpatados}} partidos </h2>
-          </ion-item>
-          <ion-item>
-            <h2>Y perdido:</h2>
-            <h2 slot="end"> {{alumno.partidosPerdidos}} partidos </h2>
-          </ion-item>
-          <p>De un total de <b>{{alumno.partidosTotales}}</b> partidos. </p>
-        </ion-list>
+        <div class="alumnos-grupo">
+          <div class="alumno-image" *ngFor="let alumno of alumnosEquipo">
+            <div *ngIf="alumno.id !== MiAlumno.id" class="border">
+              <div class="img-box">
+                <img src="../../assets/img/usuario.svg">
+              </div>
+            </div>
+            <div *ngIf="alumno.id === MiAlumno.id" class="border-conectado">
+              <div class="img-box">
+                <img src="../../assets/img/usuario.svg">
+              </div>
+            </div>
+            <p>{{alumno.Nombre}} <br> {{alumno.PrimerApellido}} </p>
+          </div>
+        </div>
       </mat-expansion-panel>
     </mat-accordion>
+    <ion-button class="ranking-btn" (click)="InformacionJornadas();">Jornadas</ion-button>
   </div>
 </ion-content>

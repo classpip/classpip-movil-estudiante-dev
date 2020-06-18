@@ -20,10 +20,14 @@ import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestion
 
 export class PeticionesAPIService {
 
-
   //private base = 'http://localhost:';
+
   private base = 'http://147.83.118.92:';
   //private base = 'http://192.168.1.35:'; 
+
+  //private base = 'http://147.83.118.92:';
+  //private base = 'http://192.168.1.143:'; 
+
 
   private APIUrlProfesores = this.base + '3000/api/Profesores';
   private APIUrlAlumnos = this.base +  '3000/api/Alumnos';
@@ -73,6 +77,7 @@ export class PeticionesAPIService {
   private APIUrlAlumnoJuegoDeCuestionario = this.base + '3000/api/AlumnosJuegoDeCuestionario';
   private APIUrlCuestionario = this.base + '3000/api/Cuestionarios';
   private APIUrlRespuestasJuegoDeCuestionario = this.base + '3000/api/respuestasJuegoDeCuestionario';
+
 
 
 
@@ -162,7 +167,6 @@ export class PeticionesAPIService {
     return this.http.get<Juego[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegosDeCompeticionFormulaUno');
   }
 
-
   // Devuelve los equipos a los que pertenece un alumno
   public DameEquiposDelAlumno(alumnoId: number): Observable<Equipo[]> {
     return this.http.get<Equipo[]>(this.APIUrlAlumnos + '/' + alumnoId + '/equipos');
@@ -183,6 +187,13 @@ export class PeticionesAPIService {
     return this.http.get<Juego[]>(this.APIUrlGrupos + '/' + grupoId + '/juegoDeCompeticions');
   }
 
+  public DameJuegoDeCompeticionF1Equipo(equipoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionFormulaUno');
+  }
+
+  public DameJuegoDeCompeticionLigaEquipo(equipoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionLiga');
+  }
 
   // OBTENEMOS LOS PUNTOS QUE FORMAN PARTE DEL JUEGO DE PUNTOS
   public DamePuntosJuegoDePuntos(juegoDePuntosId: number): Observable<Punto[]> {
@@ -735,7 +746,6 @@ export class PeticionesAPIService {
   public DameJornadasDeCompeticionLiga(juegoDeCompeticionLigaId: number): Observable<Jornada[]> {
     return this.http.get<Jornada[]>(this.APIUrlJornadasJuegoDeCompeticionLiga + '?filter[where][JuegoDeCompeticionLigaId]='
       + juegoDeCompeticionLigaId);
-
     // return this.http.get<Jornada[]>(this.APIUrlJuegoDeCompeticionLiga + '/' + juegoDeCompeticionID + '/JornadasDeCompeticionLiga');
   }
 
@@ -785,4 +795,11 @@ export class PeticionesAPIService {
     return this.http.get<EquipoJuegoDeCompeticionLiga[]>(this.APIUrlEquipoJuegoDeCompeticionLiga
       + '?filter[where][JuegoDeCompeticionLigaId]=' + juegoDeCompeticionLigaId);
   }
+
+  /* Dame las imagenes de los cromos */
+  public DameImagenCromo(imagen: string): Observable<any> {
+    return this.httpImagenes.get(this.APIUrlImagenCromo +  '/download/' + imagen,
+      { responseType: ResponseContentType.Blob });
+  }
+
 }
