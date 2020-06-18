@@ -531,7 +531,7 @@ ion-tab-bar, ion-tab-button{
       margin-top: 10%;
     }
     h2 {
-      font-size: 15px;
+      font-size: 14px;
       color: #354f7bff;
       margin-top: -8px;
     }
@@ -543,6 +543,9 @@ ion-tab-bar, ion-tab-button{
       img {
         width: 100%;
         height: 75%;
+      }
+      p {
+        font-size: 12px;
       }
     }
     .card-cromo-reves {
@@ -564,6 +567,9 @@ ion-tab-bar, ion-tab-button{
         width: 100%;
         height: 75%;
         opacity: 0.3;
+      }
+      p {
+        font-size: 12px;
       }
     }
     .falta-cromo-reves {
@@ -718,6 +724,18 @@ ion-tab-bar, ion-tab-button{
     transform: rotateY(180deg);
     width: 100%;
     height: 100%;
+    .card-content-md {
+      padding-left: unset;
+      padding-right: unset;
+      -webkit-padding-start: unset; 
+      padding-inline-start: unset; 
+      -webkit-padding-end: unset; 
+      padding-inline-end: unset; 
+      padding-left: 0px;
+      padding-right: 0px;
+      padding-top: 0px; 
+      padding-bottom: 0px; 
+    }
   }
 
 /* ++++++++++++++++++++++++ 2.8 CAMBIAR CROMOS +++++++++++++++++++++++++++*/

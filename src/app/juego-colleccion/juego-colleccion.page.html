@@ -22,9 +22,9 @@
                 <div class="flip-card-front">
                   <ion-card class="card-cromo">
                     <img *ngIf="AlumnoMisImagenesCromoDelante[i]" [src]="AlumnoMisImagenesCromoDelante[i]">
-                    <ion-card-content class="LoTengo-bg">
-                      <h2><b>{{elem.cromo.Nombre}}</b></h2>
-                      <p> Repeticiones: x{{elem.rep}} </p>
+                    <ion-card-content>
+                      <h2>Nivel<b> {{elem.cromo.Nivel}}</b></h2>
+                      <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}}  </p>
                     </ion-card-content>
                   </ion-card>
                 </div>
@@ -46,8 +46,8 @@
                   <ion-card class="MeFalta-bg">
                     <img *ngIf="AlumnoImagenesCromosQueNoTengoDelante[i]" [src]="AlumnoImagenesCromosQueNoTengoDelante[i]">
                     <ion-card-content>
-                      <h2><b>{{elem.cromo.Nombre}}</b></h2>
-                      <p> Repeticiones: x{{elem.rep}} </p>
+                      <h2>Cromo nivel<b> {{elem.cromo.Nivel}}</b></h2>
+                      <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}}  </p>
                     </ion-card-content>
                   </ion-card>
                 </div>
@@ -108,8 +108,8 @@
                   <ion-card class="card-cromo" style="width: 190px;">
                     <img *ngIf="MisImagenesCromo[i]" [src]="MisImagenesCromo[i]">
                     <ion-card-content class="LoTengo-bg">
-                      <h2><b>{{elem.cromo.Nombre}}</b></h2>
-                      <p> Repeticiones: x{{elem.rep}} </p>
+                      <h2>Cromo nivel<b> {{elem.cromo.Nivel}}</b></h2>
+                      <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}} </p>
                     </ion-card-content>
                   </ion-card>
                 </ion-slide>
@@ -169,8 +169,8 @@
               <ion-card class="card-cromo">
                 <img *ngIf="MisImagenesCromo[i]" [src]="MisImagenesCromo[i]">
                 <ion-card-content class="LoTengo-bg">
-                  <h2><b>{{elem.cromo.Nombre}}</b></h2>
-                  <p> Repeticiones: x{{elem.rep}} </p>
+                  <h2>Cromo nivel<b> {{elem.cromo.Nivel}}</b></h2>
+                  <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}}  </p>
                 </ion-card-content>
               </ion-card>
             </ion-slide>
