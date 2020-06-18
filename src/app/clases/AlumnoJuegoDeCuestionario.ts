@@ -1,15 +1,15 @@
 export class AlumnoJuegoDeCuestionario {
-    
-  alumnoId: number;
-  juegoDeCuestionarioId: number;
-  id: number;
-  Nota: number;
 
-  constructor(alumnoId?: number, juegoDeCuestionarioId?: number, Nota?: number) {
+    Nota: number;
+    Contestado: boolean;
+    id: number;
+    alumnoId: number;
+    juegoDeCuestionarioId: number;
 
-    this.alumnoId = alumnoId;
-    this.juegoDeCuestionarioId = juegoDeCuestionarioId;
-    this.Nota = Nota;
-
-  }
+    constructor(Nota?: number, Contestado?: boolean, juegoDeCuestionarioId?: number, alumnoId?: number) {
+        this.Nota = Nota;
+        this.Contestado = Contestado;
+        this.alumnoId = alumnoId;
+        this.juegoDeCuestionarioId = juegoDeCuestionarioId;
+    }
 }

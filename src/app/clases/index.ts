@@ -40,3 +40,4 @@ export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaEquipoJuegoDeCompet
 export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaAlumnoJuegoDeCompeticion';
 export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaPuntosFormulaUno';
 export * from './clasesParaTablasJuegoDeCompeticionFormulaUno/TablaClasificacionJornada';
+export * from './RespuestaJuegoDeCuestionario';

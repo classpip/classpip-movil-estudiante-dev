@@ -4,8 +4,7 @@ import { NavController, LoadingController, AlertController } from '@ionic/angula
 import { Alumno } from '../clases';
 import { IniciPage } from '../inici/inici.page';
 import { TabsPage } from '../tabs/tabs.page';
-import { SesionService} from '../servicios/sesion.service';
-import { PeticionesAPIService} from '../servicios/index';
+import { PeticionesAPIService, SesionService} from '../servicios/index';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
@@ -16,6 +15,8 @@ export class HomePage {
   alumno: Alumno;
   nombre: string;
   apellido: string;
+
+
 
   constructor(
     // private http: HttpClient,
@@ -50,6 +51,10 @@ export class HomePage {
     }
 
     Autentificar() {
+
+      
+
+
       this.presentLoading();
       this.peticionesAPI.DameAlumno(this.nombre, this.apellido).subscribe(
         (res) => {

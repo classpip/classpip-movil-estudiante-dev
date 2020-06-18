@@ -7,6 +7,7 @@ import { Juego, Equipo } from '../clases/index';
 import { Router } from '@angular/router';
 import { JuegoSeleccionadoPage } from '../juego-seleccionado/juego-seleccionado.page';
 
+
 @Component({
   selector: 'app-inici',
   templateUrl: './inici.page.html',
@@ -19,12 +20,15 @@ export class IniciPage implements OnInit {
   JuegosActivos: Juego[] = [];
   JuegosInactivos: Juego[] = [];
 
+
+  imagenColeccion: string;
+
   constructor(
     private route: Router,
     public navCtrl: NavController,
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
-    private calculos: CalculosService,
+    private calculos: CalculosService
   ) { }
 
   ngOnInit() {
@@ -45,7 +49,6 @@ export class IniciPage implements OnInit {
 
   JuegoSeleccionado(juego: Juego) {
     this.sesion.TomaJuego(juego);
-    
     if (juego.Tipo === 'Juego De Puntos') {
       this.navCtrl.navigateForward('/juego-puntos');
     } else if (juego.Tipo === 'Juego De Competición Liga') {
@@ -59,9 +62,4 @@ export class IniciPage implements OnInit {
     }
   }
 
-  sliderConfig = {
-    slidesPerView: 1.6,
-    spaceBetween: 10,
-    centeredSlides: true
-  };
 }
