@@ -104,7 +104,7 @@
       },
       "cordova-plugin-ionic-keyboard": {},
 
-      "cordova-plugin-file-transfer": {}
+      "cordova-plugin-file-transfer": {},
 
       "cordova-plugin-whitelist": {},
       "cordova-plugin-advanced-http": {
