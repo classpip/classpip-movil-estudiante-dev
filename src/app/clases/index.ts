@@ -41,3 +41,4 @@ export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaAlumnoJuegoDeCompet
 export * from './clasesParaTablasJuegoDeCompeticionLiga/TablaPuntosFormulaUno';
 export * from './clasesParaTablasJuegoDeCompeticionFormulaUno/TablaClasificacionJornada';
 export * from './RespuestaJuegoDeCuestionario';
+export * from './ParaAlbum';

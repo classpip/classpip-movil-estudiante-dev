@@ -21,7 +21,7 @@ export class IniciPage implements OnInit {
   JuegosInactivos: Juego[] = [];
 
 
-  imagenColeccion: string;
+
 
   constructor(
     private route: Router,
@@ -44,8 +44,9 @@ export class IniciPage implements OnInit {
         // Si la lista aun esta vacia la dejo como indefinida para que me
         // salga el mensaje de que aun no hay juegos
       });
-    console.log('Ya he traido los juegos');
   }
+
+  
 
   JuegoSeleccionado(juego: Juego) {
     this.sesion.TomaJuego(juego);
