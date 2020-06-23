@@ -57,11 +57,10 @@ export class JuegoSeleccionadoPage implements OnInit {
         console.log('ya he traido los equipos');
         console.log(this.MisEquiposJuegoPuntosAMostrar);
       }
-    } else if (this.juegoSeleccionado.Tipo === 'Juego De Colección'){
+    } else if (this.juegoSeleccionado.Tipo === 'Juego De Colección') {
       if ( this.juegoSeleccionado.Modo === 'Individual') {
-        this.MisAlumnosJuegoColeccion = this.calculos.DameAlumnosJuegoDeColecciones(this.juegoSeleccionado.id);
-        console.log('Estos son los alumnos del Juego de Col');
-        console.log(this.MisAlumnosJuegoColeccion);
+        this.peticionesAPI.DameAlumnosJuegoDeColeccion(this.juegoSeleccionado.id)
+        .subscribe (alumnos => this.MisAlumnosJuegoColeccion = alumnos);
       } else {
         this.peticionesAPI.DameEquiposJuegoDeColeccion(this.juegoSeleccionado.id).subscribe(
           listaEquipos => {
@@ -70,7 +69,7 @@ export class JuegoSeleccionadoPage implements OnInit {
             console.log(this.MisEquiposJuegoColecciones);
           });
       }
-    } 
+    }
   }
 
   // Se llama a la funcion al clicar sobre el sobre del equipo

@@ -10,37 +10,20 @@
 <ion-content class="intercambiarcromos-content">
 
   <img class="logo-liga" src="../../assets/img/intercambio.svg" width="100px">
-  <h2> Hola {{MiAlumno.Nombre}}, aquí podrás intercambiar <br> cromos con tus compañeros</h2>
-
-  <!--Se define un desplegable que muestra los cromos disponibles y su correspondiente
-    aspecto físico-->
-  <!--Se define el desplegable de cromos que recibe los cromos desde cromosColeccion-->
-  <select class="selectcromo" [(ngModel)]=cromoSeleccionado (ngModelChange)="ionChange($event)" name="cromo">
-    <option *ngFor="let cromo of MisCromosSinRepetidos">
-      <b>{{cromo.cromo.Nombre}}</b>
-    </option>
-  </select>
-
+  
+  <br>
+  <p class="InformacionPantalla">¿A quién quieres regalarle el cromo?</p>
+  <br>
   <!--Se define la estética del cromo según el nivel del propio cromo-->
   <ion-item *ngIf="cromo">
     <ion-card name="cromo">
       <img [src]="imagenCromo">
-      <ion-card-content>
-        <ion-card-title>
-          {{cromo.Nombre}}
-        </ion-card-title>
-        <p>
-          {{cromo.Nivel}}
-        </p>
-      </ion-card-content>
     </ion-card>
 
   </ion-item>
 
-  <p class="InformacionPantalla">Selecciona <b>el compañero</b> con quién intercambiar el cromo:</p>
-
   <select class="selectcomp" [(ngModel)]=alumnoSeleccionado (ngModelChange)="onChange($event)" name="alumno">
-    <option *ngFor="let alumno of MisAlumnosJuegoColeccion">
+    <option *ngFor="let alumno of alumnosJuegoDeColeccion">
       {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
     </option>
   </select>

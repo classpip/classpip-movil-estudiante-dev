@@ -52,8 +52,6 @@ export class HomePage {
 
     Autentificar() {
 
-      
-
 
       this.presentLoading();
       this.peticionesAPI.DameAlumno(this.nombre, this.apellido).subscribe(

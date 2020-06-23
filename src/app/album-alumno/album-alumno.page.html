@@ -1,0 +1,43 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Tu album</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="juegocoleccion-content" #content>
+<ion-button *ngIf ="coleccion.DosCaras" class="card-btn" style="color: grey;" (click)="Voltear()">Dar la vuelta a todos los cromos</ion-button>
+    
+<div style = "width: 402px">
+  <span  *ngFor="let tengo of tengoCromo; let i = index">
+    <!-- Mostramos el album en 3 columnas -->
+    <span class="album3col">
+      <div  *ngIf = "!coleccion.DosCaras">
+        <img *ngIf="tengo"  [src]="imagenCromoDelante[i]" >
+        <img *ngIf="!tengo" style = "opacity: 0.5 !important;" [src]="imagenCromoDelante[i]" >
+      </div>
+   
+      <div  *ngIf = "coleccion.DosCaras  && !voltear"  >
+        <div class="flip-box">
+        <div class="flip-box-inner">
+          <div class="flip-box-front">
+              <img *ngIf="tengo" [src]="imagenCromoDelante[i]" >
+              <img *ngIf="!tengo" style = "opacity: 0.5 !important;" [src]="imagenCromoDelante[i]" >
+          </div>
+
+          <div class="flip-box-back">
+              <img  *ngIf="tengo" [src]="imagenCromoDetras[i]" >
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div *ngIf = "coleccion.DosCaras && voltear" style = "margin-top:-5px;" >
+        <img [src]="imagenCromoDetras[i]" >
+      </div>
+
+    </span>
+  </span> 
+  </div>
+</ion-content>
