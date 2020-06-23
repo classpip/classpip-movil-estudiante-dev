@@ -46,6 +46,8 @@ export class IniciPage implements OnInit {
       });
   }
 
+  
+
   JuegoSeleccionado(juego: Juego) {
     this.sesion.TomaJuego(juego);
     if (juego.Tipo === 'Juego De Puntos') {
