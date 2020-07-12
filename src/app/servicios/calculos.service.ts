@@ -138,30 +138,40 @@ export class CalculosService {
                         }
                       }
                       console.log('ya tengo los juegos de liga');
-                          console.log('vamos a por los equipos');
-                          this.peticionesAPI.DameEquiposDelAlumno(AlumnoId).subscribe(
+                      console.log('voy a por los juegos de cuestionario del alumno');
+                      this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).subscribe(
+                        lista => {
+                          for (let i = 0; i < (lista.length); i++) {
+                            if (lista[i].JuegoActivo === true) {
+                              JuegosActivos.push(lista[i]);
+                            } else {
+                              JuegosInactivos.push(lista[i]);
+                            }
+                          }
+                          console.log('ya tengo los juegos de cuestionario');
+                          console.log(lista);
+                          console.log('voy a por los juegos de cuestionario deavatar');
+                          this.peticionesAPI.DameJuegoDeAvatarAlumno(AlumnoId).subscribe(
                             lista => {
-                              this.equipos = lista;
-                              console.log('yasta la lista de equipos');
-                              console.log(this.equipos);
-                              let cont = 0;
-                              for (let i = 0; i < (this.equipos.length); i++) {
-                                console.log('voy a por los juegos de puntos del euqioi ' + this.equipos[i].id);
-                                this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id).subscribe(
-                                  lista => {
-                                    console.log('ya tengo los juegos de puntos del equipo ');
-                                    console.log(lista);
-                                    for (let j = 0; j < (lista.length); j++) {
-                                      if (lista[j].JuegoActivo === true) {
-                                        JuegosActivos.push(lista[j]);
-                                      } else {
-                                        JuegosInactivos.push(lista[j]);
-                                      }
-                                    }
-                                    console.log('voy a por los juegos de coleccion del euqioi ' + this.equipos[i].id);
-                                    this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).subscribe(
+                              for (let i = 0; i < (lista.length); i++) {
+                                if (lista[i].JuegoActivo === true) {
+                                  JuegosActivos.push(lista[i]);
+                                } else {
+                                  JuegosInactivos.push(lista[i]);
+                                }
+                              }
+                              console.log('vamos a por los equipos');
+                              this.peticionesAPI.DameEquiposDelAlumno(AlumnoId).subscribe(
+                                lista => {
+                                  this.equipos = lista;
+                                  console.log('yasta la lista de equipos');
+                                  console.log(this.equipos);
+                                  let cont = 0;
+                                  for (let i = 0; i < (this.equipos.length); i++) {
+                                    console.log('voy a por los juegos de puntos del euqioi ' + this.equipos[i].id);
+                                    this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id).subscribe(
                                       lista => {
-                                        console.log('ya tengo los juegos de coleccion del equipo ');
+                                        console.log('ya tengo los juegos de puntos del equipo ');
                                         console.log(lista);
                                         for (let j = 0; j < (lista.length); j++) {
                                           if (lista[j].JuegoActivo === true) {
@@ -170,10 +180,10 @@ export class CalculosService {
                                             JuegosInactivos.push(lista[j]);
                                           }
                                         }
-                                        console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
-                                        this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id).subscribe(
+                                        console.log('voy a por los juegos de coleccion del euqioi ' + this.equipos[i].id);
+                                        this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).subscribe(
                                           lista => {
-                                            console.log('ya tengo los juegos de F1 del equipo');
+                                            console.log('ya tengo los juegos de coleccion del equipo ');
                                             console.log(lista);
                                             for (let j = 0; j < (lista.length); j++) {
                                               if (lista[j].JuegoActivo === true) {
@@ -182,8 +192,8 @@ export class CalculosService {
                                                 JuegosInactivos.push(lista[j]);
                                               }
                                             }
-                                            console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
-                                            this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).subscribe(
+                                            console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
+                                            this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id).subscribe(
                                               lista => {
                                                 console.log('ya tengo los juegos de F1 del equipo');
                                                 console.log(lista);
@@ -194,35 +204,37 @@ export class CalculosService {
                                                     JuegosInactivos.push(lista[j]);
                                                   }
                                                 }
-                                                this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).subscribe(
-                                                lista => {
-                                                  for (let i = 0; i < (lista.length); i++) {
-                                                    if (lista[i].JuegoActivo === true) {
-                                                      lista[i].Tipo = "Juego De Cuestionario";
-                                                      JuegosActivos.push(lista[i]);
-                                                    } else if (lista[i].JuegoTerminado === true){
-                                                      lista[i].Tipo = "Juego De Cuestionario";
-                                                      JuegosInactivos.push(lista[i]);
+                                                console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
+                                                this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).subscribe(
+                                                  lista => {
+                                                    console.log('ya tengo los juegos de F1 del equipo');
+                                                    console.log(lista);
+                                                    for (let j = 0; j < (lista.length); j++) {
+                                                      if (lista[j].JuegoActivo === true) {
+                                                        JuegosActivos.push(lista[j]);
+                                                      } else {
+                                                        JuegosInactivos.push(lista[j]);
+                                                      }
                                                     }
-                                                  }
-                                                // vemos si hemos acabado de recogar los juegos de todos los equipos
-                                                cont = cont + 1;
-                                                if (cont == this.equipos.length) {
-                                                  const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
-                                                  obs.next(MisObservables);
-                                                }
+                                                    // vemos si hemos acabado de recogar los juegos de todos los equipos
+                                                    cont = cont + 1;
+                                                    if (cont == this.equipos.length) {
+                                                      const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
+                                                      obs.next(MisObservables);
+                                                    }
+                                                  });
                                               });
                                           });
                                       });
-                                  });
+                                  }
                                 });
-                              }
                             });
                         });
                     });
                 });
             });
         });
+    });
     return Observables;
   }
   public DameAlumnosJuegoPuntos(juegoId: number) {
@@ -257,12 +269,12 @@ export class CalculosService {
     let InformacionAlumno: MiAlumnoAMostrarJuegoDeCuestionario[] = [];
     this.peticionesAPI.DameAlumnosJuegoDeCuestionario(juegoId).subscribe(
       listaAlumnos => {
-        for ( let i = 0; i < (listaAlumnos.length); i++) {
+        for (let i = 0; i < (listaAlumnos.length); i++) {
           const MiAlumno = new MiAlumnoAMostrarJuegoDeCuestionario();
           MiAlumno.Nombre = listaAlumnos[i].Nombre;
           MiAlumno.PrimerApellido = listaAlumnos[i].PrimerApellido;
           MiAlumno.ImagenPerfil = listaAlumnos[i].ImagenPerfil;
-          this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario( listaAlumnos[i].id, juegoId).subscribe(
+          this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(listaAlumnos[i].id, juegoId).subscribe(
             Inscripcion => {
               MiAlumno.Nota = Inscripcion[0].Nota;
               MiAlumno.alumnoId = Inscripcion[0].alumnoId;
@@ -271,10 +283,10 @@ export class CalculosService {
             });
           InformacionAlumno.push(MiAlumno);
         }
-        InformacionAlumno = InformacionAlumno.sort((a,b) => {
+        InformacionAlumno = InformacionAlumno.sort((a, b) => {
           return b.Nota - a.Nota;
         });
-    });
+      });
     return InformacionAlumno;
   }
 
@@ -283,7 +295,7 @@ export class CalculosService {
     let Inscripciones: AlumnoJuegoDeCuestionario[] = [];
     this.peticionesAPI.ListaInscripcionesAlumnosJuegoDeCuestionario(juegoDeCuestionarioId).subscribe(res => {
       Inscripciones = res;
-      Inscripciones = Inscripciones.sort(function(a, b) {
+      Inscripciones = Inscripciones.sort(function (a, b) {
         return b.Nota - a.Nota;
       });
       for (let i = 0; i < (Inscripciones.length); i++) {
@@ -292,12 +304,12 @@ export class CalculosService {
         MiAlumno.alumnoId = Inscripciones[i].alumnoId;
         MiAlumno.id = Inscripciones[i].id;
         MiAlumno.juegoDeCuestionarioId = Inscripciones[i].juegoDeCuestionarioId;
-        this.peticionesAPI.DameAlumnoConId (MiAlumno.alumnoId)
-        .subscribe (res => {
-          MiAlumno.Nombre = res.Nombre;
-          MiAlumno.PrimerApellido = res.PrimerApellido;
-          MiAlumno.ImagenPerfil = res.ImagenPerfil;
-        });
+        this.peticionesAPI.DameAlumnoConId(MiAlumno.alumnoId)
+          .subscribe(res => {
+            MiAlumno.Nombre = res.Nombre;
+            MiAlumno.PrimerApellido = res.PrimerApellido;
+            MiAlumno.ImagenPerfil = res.ImagenPerfil;
+          });
         InformacionAlumno.push(MiAlumno)
       }
     });
@@ -1152,7 +1164,7 @@ export class CalculosService {
   }
 
 
-  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
+  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any,):
     any {
     const historialObservable = new Observable(obs => {
 
@@ -1180,7 +1192,7 @@ export class CalculosService {
     return historialObservable;
   }
 
-  public PreparaHistorialAlumno(alumnoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
+  public PreparaHistorialAlumno(alumnoJuegoDePuntos: any, tiposPuntosDelJuego: any,):
     any {
     const historialObservable = new Observable(obs => {
 

@@ -1,0 +1,47 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Avatares</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="juegoavatar-content">
+  <img class="logo" src="../../assets/img/avataricon.svg" width="100px">
+  <h2> Hola {{MiAlumno.Nombre}}, bienvenido al <br> al juego de avatares</h2>
+  <p> <b>Aquí podrás crear y personalizar tu avatar</b><br>
+    recuerda que has de trabajar duro <br> para completar tu obra</p>
+
+  <div>
+    <mat-expansion-panel class="privilegios-btn">
+      <mat-expansion-panel-header class="cabecera-privilegios">
+        <h2> Ver mis privilegios </h2>
+      </mat-expansion-panel-header>
+      <div *ngFor="let elem of criterios; let i = index">
+        <ion-card *ngIf="InfoMiAlumno.Privilegios[i] === true">
+          <ion-item lines="none" class="privilegio-activo">
+            <img class="icono-privilegio"  src="../../assets/img/check.svg">
+            <ion-label>
+              <h2> <b> {{elem.nombre}} </b></h2>
+              <p>{{elem.criterio}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-card>
+        <!-- si no tiene el privilegio -->
+        <ion-card *ngIf="InfoMiAlumno.Privilegios[i] === false">
+          <ion-item lines="none" class="privilegio-inactivo">
+            <img class="icono-privilegio" src="../../assets/img/timer.svg">
+            <ion-label>
+              <h2> <b> {{elem.nombre}} </b></h2>
+              <p>{{elem.criterio}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-card>
+      </div>
+
+    </mat-expansion-panel>
+  </div>
+  <ion-button (click)="AbreEditorAvatar();">Editar o crear avatar</ion-button>
+  <ion-row style="height: 120px"></ion-row>
+</ion-content>

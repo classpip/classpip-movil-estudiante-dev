@@ -1136,6 +1136,84 @@ ion-tab-bar, ion-tab-button{
   }
 }
 
+
+/* +++++++++++++++++++++++++ 2.11 JUEGO-AVATAR +++++++++++++++++++++++++++++ */
+.juegoavatar-content {
+  --background: #fffafaff;
+  text-align: center;
+  .logo {
+      margin-top: 10%;      }
+  h2 {
+      font-size: 15px;
+  }
+  p {
+      font-size: 13px;
+  }
+  .icono-privilegio {
+      width: 45px;
+      margin-right: 5%;
+  }
+  .privilegios-btn{
+      width: 90%;
+      margin: auto;
+      background: linear-gradient(to top right, #008b8b 2%, #dccfcf 100%);
+      .cabecera-privilegios {
+          background: #329a9a;
+          color: black;
+          border-bottom: 2px solid #cac9c9;
+          h2{
+           margin: auto;   
+          }
+      }
+      
+      .privilegio-activo {
+          --background: lightgreen;
+      }
+      .privilegio-inactivo {
+          --background: lightgrey;
+      }
+  }
+
+}
+/* +++++++++++++++++++++++++ 2.12 EDITOR-AVATAR +++++++++++++++++++++++++++++ */
+.editoravatar-content {
+  --background: #fffafaff;
+  text-align: center;
+  .logo {
+      margin-top: 10%;
+    }
+  p {
+      font-size: 13px;
+  }
+  .icono-familia {
+    width: 45px;
+    margin-right: 5%;
+  }
+  .complementos-segmento {
+    div {
+      display: -webkit-box;
+      margin-top: 0px;
+      margin-right: 10px;
+    }
+    img {
+      width: 60px;
+      height: 60px;
+    }
+  }
+  .elementos-complemento {
+    margin-top: 5px;
+    margin-right: 10px;
+    .elemento-card {
+      width: 100px;
+      height: 118.8px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
 /* ------------------------ESTILO 4---------------------------- */
 
 /* .slider-bullets {

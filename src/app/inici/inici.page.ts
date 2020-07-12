@@ -43,9 +43,8 @@ export class IniciPage implements OnInit {
     console.log('Ya he traido los juegos');
   }
 
-  JuegoSeleccionado(juego: Juego) {
+  JuegoSeleccionado(juego: any) {
     this.sesion.TomaJuego(juego);
-    
     if (juego.Tipo === 'Juego De Puntos') {
       this.navCtrl.navigateForward('/juego-puntos');
     } else if (juego.Tipo === 'Juego De Competición Liga') {
@@ -54,6 +53,9 @@ export class IniciPage implements OnInit {
       this.navCtrl.navigateForward('/juego-competicion-f1');
     } else if (juego.Tipo === 'Juego De Cuestionario') {
       this.navCtrl.navigateForward('/juego-de-cuestionario');
+    } else if (juego.Tipo === 'Juego De Avatar') {
+      this.sesion.TomaJuegoAvatar(juego);
+      this.navCtrl.navigateForward('/juego-avatar');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }
