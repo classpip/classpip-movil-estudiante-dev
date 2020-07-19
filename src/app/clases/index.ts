@@ -43,3 +43,5 @@ export * from './clasesParaTablasJuegoDeCompeticionFormulaUno/TablaClasificacion
 export * from './AlumnoJuegoDeAvatar';
 export * from './JuegoDeAvatar';
 export * from './FamiliaAvatares';
+export * from './RespuestaJuegoDeCuestionario';
+export * from './ParaAlbum';

@@ -9,174 +9,64 @@
 
 <ion-content class="juegocoleccion-content" #content>
 
-  <!-- Si las colecciones son individuales: -->
-  <div *ngIf="juegoSeleccionado.Modo === 'Individual'">
-    <div *ngIf="MiAlumno !== undefined">
-      <img class="logo-liga" src="../../assets/img/collectionicon.svg" width="100px">
-      <h2> Hola {{MiAlumno.Nombre}}, aquí tienes tu <br> colección de cromos:</h2>
-      <div class="info-alumno">
-        <ion-slides [options]="sliderConfig">
-          <ion-slide *ngFor="let elem of AlumnolistaCromosSinRepetidos;let i = index">
-            <div class="flip-card-container">
-              <div class="flip-card">
-                <div class="flip-card-front">
-                  <ion-card class="card-cromo">
-                    <img *ngIf="AlumnoMisImagenesCromoDelante[i]" [src]="AlumnoMisImagenesCromoDelante[i]">
-                    <ion-card-content>
-                      <h2>Nivel<b> {{elem.cromo.Nivel}}</b></h2>
-                      <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}}  </p>
-                    </ion-card-content>
-                  </ion-card>
+<div *ngIf="juegoSeleccionado.Modo === 'Individual' && coleccion !== undefined">
+  <div *ngIf="alumno !== undefined">
+     
+    <ion-button class="card-btn" style="color: grey;" (click)=MostrarAlbum()>Ver album</ion-button>
+ 
+    <div  *ngIf = "coleccion.DosCaras"  >
+      
+      <ion-slides>
+        <!-- Prinero muestro los cromos que tiene el alumno -->
+        <!-- Si hace click es que quiere regalar el cromo -->
+        <ion-slide (click) = "RegalarCromo(elem, i)" *ngFor="let elem of cromosSinRepetidos;let i = index">
+          
+            <div class="flip-box">
+              <div class="flip-box-inner">
+                <div class="flip-box-front">
+                  <img class = "cromoTengo" [src]="cromosQueTengoImagenDelante[i]"  >
                 </div>
-                <div class="flip-card-back">
-                  <ion-card class="card-cromo-reves">
-                    <ion-card-content>
-                      <img *ngIf="AlumnoMisImagenesCromoDetras[i]" [src]="AlumnoMisImagenesCromoDetras[i]">
-                    </ion-card-content>
-                  </ion-card>
+                <div class="flip-box-back">
+                  <img  class = "cromoTengo" [src]="cromosQueTengoImagenDetras[i]" >
                 </div>
               </div>
             </div>
-          </ion-slide>
-
-          <ion-slide *ngFor="let elem of AlumnoCromosQueNoTengo;let i = index">
-            <div class="flip-card-container">
-              <div class="flip-card">
-                <div class="flip-card-front">
-                  <ion-card class="MeFalta-bg">
-                    <img *ngIf="AlumnoImagenesCromosQueNoTengoDelante[i]" [src]="AlumnoImagenesCromosQueNoTengoDelante[i]">
-                    <ion-card-content>
-                      <h2>Cromo nivel<b> {{elem.cromo.Nivel}}</b></h2>
-                      <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}}  </p>
-                    </ion-card-content>
-                  </ion-card>
-                </div>
-                <div class="flip-card-back">
-                  <ion-card class="falta-cromo-reves">
-                    <ion-card-content>
-                      <img class="cofre-icono" src="../../assets/img/cromobloqueado.svg">
-                      <h2><b>Contenido Misterioso</b></h2>
-                      <p> Bloqueado </p>
-                    </ion-card-content>
-                  </ion-card>
-                </div>
+            
+         
+        </ion-slide>
+      
+        <!-- y ahora los que no tiene todavia -->
+        <ion-slide *ngFor="let elem of cromosQueNoTengo;let i = index">
+          <div class="flip-box">
+            <div class="flip-box-inner">
+              <div class="flip-box-front">
+                <img class = "cromoNoTengo" [src]="cromosQueNoTengoImagenDelante[i]" >
+              </div>
+              <div class="flip-box-back">
+                <!-- Mostrará la cara de delante pero al revés -->
               </div>
             </div>
-          </ion-slide>
-        </ion-slides>
-      </div>
+          </div>
+        </ion-slide>
+      </ion-slides>
     </div>
-    <!-- Botón para mostrar/ocultar ranking -->
-    <ion-button class="ranking-btn" *ngIf="!hideMe" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
-    <ion-button class="ranking-btn" *ngIf="hideMe" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
-    <!-- Si el botón está activo, se muestra un acordeón con los alumnos -->
-    <div *ngIf="hideMe">
-      <mat-accordion>
-        <div *ngFor="let alumno of MisAlumnosJuegoColeccion">
-          <mat-expansion-panel class="ranking-acordeon" *ngIf="alumno.id !== MiAlumno.id">
-            <mat-expansion-panel-header (click)="cierraOtrosAlbumes()">
-              <div class="span">
-                <ion-avatar slot="start" class="avatar">
-                  <img src="../../assets/img/usuario.svg">
-                </ion-avatar>
-                <ion-label>
-                  <h2> <b>{{alumno.Nombre}} {{alumno.PrimerApellido}}</b> </h2>
-                </ion-label>
-              </div>
-            </mat-expansion-panel-header>
 
-            <!-- Si queremos que se muestren los cromos de este alumno -->
-
-            <ion-button class="ranking-alumno-btn" (click)="DameCromosDelAlumno(alumno)" *ngIf="!infoView">
-              Mostrar cromos <br> de {{alumno.Nombre}}
-              <br>
-              <ion-icon name="eye"></ion-icon>
-            </ion-button>
-            <ion-button class="ranking-alumno-btn" *ngIf="infoView" (click)="toggleInfoView()">Ocultar Cromos <br>
-              <ion-icon name="eye-off" *ngIf="infoView"></ion-icon>
-            </ion-button>
-            <ion-button class="ranking-alumno-btn" (click)="intercambiarCromo()">Intercambiar cromo <br> con {{alumno.Nombre}} <br>
-              <ion-icon name="albums"></ion-icon>
-            </ion-button>
-
-            <div *ngIf="infoView">
-              <div *ngIf="!listaCromosSinRepetidos || listaCromosSinRepetidos.length === 0">
-                <p>"No tiene cromos"</p>
-              </div>
-              <ion-slides [options]="sliderConfig">
-                <ion-slide *ngFor="let elem of listaCromosSinRepetidos;let i = index">
-                  <ion-card class="card-cromo" style="width: 190px;">
-                    <img *ngIf="MisImagenesCromo[i]" [src]="MisImagenesCromo[i]">
-                    <ion-card-content class="LoTengo-bg">
-                      <h2>Cromo nivel<b> {{elem.cromo.Nivel}}</b></h2>
-                      <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}} </p>
-                    </ion-card-content>
-                  </ion-card>
-                </ion-slide>
-              </ion-slides>
-            </div>
-          </mat-expansion-panel>
-        </div>
-      </mat-accordion>
+    <div  *ngIf = "!coleccion.DosCaras"  >
+    
+      <ion-slides>
+        <!-- Prinero muestro los cromos que tiene el alumno -->
+        <ion-slide *ngFor="let elem of cromosSinRepetidos;let i = index">
+          <img [src]="cromosQueTengoImagenDelante[i]" style = "width:468px; height:675px; padding-right: 20px;">
+        </ion-slide>
+      
+        <!-- y ahora los que no tiene todavia -->
+        <ion-slide *ngFor="let elem of cromosQueNoTengo;let i = index">
+          <img [src]="cromosQueNoTengoImagenDelante[i]" style = "opacity: 0.5 !important; width:468px; height:675px; padding-right: 20px;">
+        </ion-slide>
+      </ion-slides>
     </div>
-    <ion-row style="height: 100px"></ion-row>
+
 
   </div>
-
-  <div *ngIf="juegoSeleccionado.Modo !== 'Individual'">
-    <div class="coleccion-equipo" *ngIf="MiAlumno !== undefined">
-      <img class="logo-liga" src="../../assets/img/collectionicon.svg" width="100px">
-      <div *ngIf="MiEquipo !== undefined">
-        <h2> Hola {{MiAlumno.Nombre}}, formas parte del equipo</h2>
-        <h3> {{MiEquipo.Nombre}} </h3>
-        <h2> en este juego de puntos </h2>
-      </div>
-    </div>
-    <mat-accordion>
-      <mat-expansion-panel class="ranking-acordeon" *ngFor="let equipo of MisEquiposJuegoColecciones">
-        <mat-expansion-panel-header (click)="DameCromosDelAlumno(equipo)">
-          <div class="span">
-            <ion-avatar slot="start" class="avatar">
-              <img src="../../assets/img/equipo.svg">
-            </ion-avatar>
-            <ion-label>
-              <h2> <b>{{equipo.Nombre}}</b> </h2>
-            </ion-label>
-          </div>
-        </mat-expansion-panel-header>
-        <div class="alumnos-grupo">
-          <div class="alumno-image" *ngFor="let alumno of alumnosEquipo">
-            <div *ngIf="alumno.id !== MiAlumno.id" class="border">
-              <div class="img-box">
-                <img src="../../assets/img/usuario.svg">
-              </div>
-            </div>
-            <div *ngIf="alumno.id === MiAlumno.id" class="border-conectado">
-              <div class="img-box">
-                <img src="../../assets/img/usuario.svg">
-              </div>
-            </div>
-            <p>{{alumno.Nombre}} <br> {{alumno.PrimerApellido}} </p>
-          </div>
-        </div>
-
-        <div>
-          <div *ngIf="!listaCromosSinRepetidos || listaCromosSinRepetidos.length === 0">
-            <p>"No tienen cromos"</p>
-          </div>
-          <ion-slides [options]="sliderConfig">
-            <ion-slide *ngFor="let elem of listaCromosSinRepetidos;let i = index">
-              <ion-card class="card-cromo">
-                <img *ngIf="MisImagenesCromo[i]" [src]="MisImagenesCromo[i]">
-                <ion-card-content class="LoTengo-bg">
-                  <h2>Cromo nivel<b> {{elem.cromo.Nivel}}</b></h2>
-                  <p> Prob: {{elem.cromo.Probabilidad}} / Rep: x{{elem.rep}}  </p>
-                </ion-card-content>
-              </ion-card>
-            </ion-slide>
-          </ion-slides>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
+</div>
 </ion-content>

@@ -1,6 +1,12 @@
 
 <ion-content padding class="login-content">
   <div>
+   
+    
+  <p>{{ this.coords.lat }}</p>
+  <p>{{ this.coords.lng }}</p>
+  <button type="button" (click)= obtenerPosicion() > Obtener Coordenadas </button>
+
 
     <div class="login-logo">
       <img class="logo" width="150" height="150">

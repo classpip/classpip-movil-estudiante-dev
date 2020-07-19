@@ -25,6 +25,8 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+
+
 /* AQUÍ VAN TODOS LOS ESTILOS QUE ENGLOBAN LA APLICACIÓN. PONEMOS A DISPOSICIÓN DEL 
 USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
 
@@ -536,21 +538,21 @@ ion-tab-bar, ion-tab-button{
       margin-top: -8px;
     }
     .card-cromo {
-      width: 200px;
-      height: 230px;
+      width: 312px;
+      height: 450px;
       background: mediumspringgreen;
       border-radius: 10px;
       img {
         width: 100%;
-        height: 75%;
+        height: 100%;
       }
       p {
         font-size: 12px;
       }
     }
     .card-cromo-reves {
-      width: 200px;
-      height: 230px;
+      width: 312px;
+      height: 450px;
       background-color: mediumspringgreen;
       border-radius: 10px;
       img {
@@ -559,13 +561,13 @@ ion-tab-bar, ion-tab-button{
       }
     }
     .MeFalta-bg {
-      width: 200px;
-      height: 230px;
+      width: 312px;
+      height: 450px;
       background: lightgrey;
       border-radius: 10px;
       img {
         width: 100%;
-        height: 75%;
+        height: 100%;
         opacity: 0.3;
       }
       p {
@@ -573,8 +575,8 @@ ion-tab-bar, ion-tab-button{
       }
     }
     .falta-cromo-reves {
-      width: 200px;
-      height: 230px;
+      width: 312px;
+      height: 450px;
       background-color: lightgrey;
       border-radius: 10px;
     }
@@ -686,8 +688,8 @@ ion-tab-bar, ion-tab-button{
   }
 
   .flip-card-container {
-    width: 200px;
-    height: 230px;
+    width: 468px;
+    height: 675px;
     margin-top: 15%;
     margin-bottom: 15%;
   }

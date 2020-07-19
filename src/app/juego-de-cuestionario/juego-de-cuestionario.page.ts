@@ -8,7 +8,17 @@ import { Pregunta } from '../clases/Pregunta';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Router } from '@angular/router';
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
-import { RespuestaAlumnoJuegoDeCuestionario } from '../clases/RespuestaAlumnoJuegoDeCuestionario';
+import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
+
+
+// En este componente usamos sockets para notificar al server que el usuario 
+// ya ha contestado el cuestionario.
+// Para usar sockets desde ionic he usado este tutorial:
+// https://devdactic.com/ionic-4-socket-io/
+// Atención porque la IP:puerto a la que se conecta el socket se define en el app.module
+
+import { Socket } from 'ngx-socket-io';
+
 
 @Component({
   selector: 'app-juego-de-cuestionario',
@@ -58,7 +68,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService,
     private alertCtrl: AlertController,
-    private platform: Platform
+    private platform: Platform,
+    private servidor: Socket
   ) { }
 
   ngOnInit() {
@@ -112,6 +123,9 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.juegoSeleccionado.JuegoTerminado) {
       this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameListaAlumnosJuegoCuestionarioOrdenada(this.juegoSeleccionado.id);
     }
+
+
+    this.servidor.connect();
   }
 
   //Esta funcion coge el array en el cual se asigna la posicion de las respuestas correctas y lo
@@ -210,7 +224,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
       datos[currentIndex] = datos[randomIndex];
       datos[randomIndex] = temporaryValue;
     }
-    return datos
+    return datos;
   }
 
   //Funcion para establecer la nota y guardar respuestas
@@ -225,7 +239,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
         this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
       } else if (this.RespuestasAlumno[i] === "") {
         this.Nota = this.Nota;
-        this.feedbacks.push('NO CONTESTADA');
+        this.feedbacks.push(' ');
       } else {
         this.Nota = this.Nota - this.puntuacionIncorrecta;
         this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
@@ -235,22 +249,33 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.Nota <= 0) {
       this.Nota = 0.1;
     }
-    
-    this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario (this.alumnoId, this.juegoSeleccionado.id,
-      this.Nota), this.alumnoJuegoDeCuestionario[0].id)
+    // tslint:disable-next-line:max-line-length
+    this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId ), this.alumnoJuegoDeCuestionario[0].id)
       .subscribe(res => {
+        console.log ('ya he puesto nota');
         console.log(res);
       });
 
+    console.log ('vamos aregistrar las respuestas');
     //Aqui guardamos las respuestas del alumno
+    let cont = 0;
     for(var i = 0; i < this.PreguntasCuestionario.length; i++) {
-      if (this.RespuestasAlumno[i] === "") {
-        this.RespuestasAlumno[i] = "NO CONTESTADA";
+      console.log ('respuesta a la pregunta ' + i);
+      console.log (this.RespuestasAlumno[i]);
+      if ((this.RespuestasAlumno[i] === "") || (this.RespuestasAlumno[i] === undefined)) {
+        this.RespuestasAlumno[i] = '-';
       }
-      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaAlumnoJuegoDeCuestionario(this.PreguntasCuestionario[i].id, this.alumnoJuegoDeCuestionario[0].id,
+      // tslint:disable-next-line:max-line-length
+      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario[0].id, this.PreguntasCuestionario[i].id,
         this.RespuestasAlumno[i]))
         .subscribe(res => {
+          console.log ('ya he guardado respuesta');
           console.log(res);
+          cont++;
+          if (cont === this.PreguntasCuestionario.length)  {
+            // Notificamos respuesta al servidor
+            this.servidor.emit('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
+          }
         });
     }
   }
@@ -266,14 +291,15 @@ export class JuegoDeCuestionarioPage implements OnInit {
           text: 'SI',
           handler: () => {
             this.Nota = 0.1;
-              this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario (this.alumnoId, this.juegoSeleccionado.id,
-              this.Nota), this.alumnoJuegoDeCuestionario[0].id)
+            // tslint:disable-next-line:max-line-length
+            this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId ), this.alumnoJuegoDeCuestionario[0].id)
               .subscribe(res => {
                 console.log(res);
+                this.servidor.emit('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
               });
             this.route.navigateByUrl('tabs/inici');
           }
-        },{
+        }, {
           text: 'NO',
           role: 'cancel',
           handler: () => {

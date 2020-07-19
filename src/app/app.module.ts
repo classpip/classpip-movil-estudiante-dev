@@ -22,6 +22,13 @@ import { MatInputModule, MatRadioModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+//const config: SocketIoConfig = { url: 'http://localhost:8080', options: {} };
+const config: SocketIoConfig = { url: 'http://147.83.118.92:8080', options: {} };
+
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -37,7 +44,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+
+
+    SocketIoModule.forRoot(config)
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
@@ -45,6 +55,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SplashScreen,
     Camera,
     File,
+    Geolocation,
+
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

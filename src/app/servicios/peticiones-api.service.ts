@@ -13,7 +13,7 @@ import {
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
-import { RespuestaAlumnoJuegoDeCuestionario } from '../clases/RespuestaAlumnoJuegoDeCuestionario';
+import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +22,13 @@ import { RespuestaAlumnoJuegoDeCuestionario } from '../clases/RespuestaAlumnoJue
 export class PeticionesAPIService {
 
   //private base = 'http://localhost:';
+
+  private base = 'http://147.83.118.92:';
+  //private base = 'http://192.168.1.35:'; 
+
   //private base = 'http://147.83.118.92:';
-  private base = 'http://192.168.1.143:'; 
+  //private base = 'http://192.168.1.143:'; 
+
 
   private APIUrlProfesores = this.base + '3000/api/Profesores';
   private APIUrlAlumnos = this.base +  '3000/api/Alumnos';
@@ -71,8 +76,12 @@ export class PeticionesAPIService {
 
   private APIUrlJuegoDeCuestionario = this.base + '3000/api/JuegosDeCuestionario';
   private APIUrlAlumnoJuegoDeCuestionario = this.base + '3000/api/AlumnosJuegoDeCuestionario';
-  private APIUrlRespuestaAlumnoJuegoDeCuestionario= this.base + '3000/api/RespuestasAlumnoJuegoDeCuestionario';
   private APIUrlCuestionario = this.base + '3000/api/Cuestionarios';
+  private APIUrlRespuestasJuegoDeCuestionario = this.base + '3000/api/respuestasJuegoDeCuestionario';
+
+
+
+
 
   private APIUrlImagenesAvatares =  this.base + '3000/api/imagenes/ImagenesAvatares';
   private APIUrlJuegoDeAvatar = this.base + '3000/api/juegosDeAvatar';
@@ -85,6 +94,11 @@ export class PeticionesAPIService {
     private http: HttpClient,
     private httpImagenes: Http
   ) { }
+
+  public DameImagenColeccion(imagen: string): Observable<any> {
+    return this.httpImagenes.get(this.APIUrlImagenColeccion + '/download/' + imagen,
+      { responseType: ResponseContentType.Blob });
+  }
 
 
   // FUNCIÓN TEMPORAL DE AUTENTIFICAR (PARA SIMPLIFICAR AHORA)
@@ -531,6 +545,7 @@ export class PeticionesAPIService {
     console.log('Voy a por los alumnos');
     return this.http.get<Alumno[]>(this.APIRUrlJuegoDeColeccion + '/' + juegoDeColeccionId + '/alumnos');
   }
+
   // DEVUELVE UN ARRAY CON LAS INCRIPCIONES DE LOS ALUMNOS A UN JUEGO DE COLECCIÓN DETERMINADO
   public DameInscripcionesAlumnoJuegoDeColeccion(juegoDeColeccionId: number): Observable<AlumnoJuegoDeColeccion[]> {
     return this.http.get<AlumnoJuegoDeColeccion[]>(this.APIUrlAlumnoJuegoDeColeccion + '?filter[where][juegoDeColeccionId]='
@@ -695,9 +710,12 @@ export class PeticionesAPIService {
     return this.http.put<AlumnoJuegoDeCuestionario>(this.APIUrlAlumnoJuegoDeCuestionario + '/' + alumnoJuegoDeCuestionarioId, alumnoJuegoDeCuestionario);
   }
 
-  //GUARDAMOS LAS RESPUESTAS DE LOS ALUMNOS DEL CUESTIONARIO QUE HAYAN REALIZADO
-  public GuardarRespuestaAlumnoJuegoDeCuestionario(respuestaAlumnoJuegoDeCuestionario: RespuestaAlumnoJuegoDeCuestionario):Observable<RespuestaAlumnoJuegoDeCuestionario> {
-    return this.http.post<RespuestaAlumnoJuegoDeCuestionario>(this.APIUrlRespuestaAlumnoJuegoDeCuestionario , respuestaAlumnoJuegoDeCuestionario);
+  // GUARDAMOS LAS RESPUESTAS DE LOS ALUMNOS DEL CUESTIONARIO QUE HAYAN REALIZADO
+  // tslint:disable-next-line:max-line-length
+  public GuardarRespuestaAlumnoJuegoDeCuestionario(respuestaAlumnoJuegoDeCuestionario: RespuestaJuegoDeCuestionario): Observable<RespuestaJuegoDeCuestionario> {
+    console.log ('estoy en api');
+    console.log (respuestaAlumnoJuegoDeCuestionario);
+    return this.http.post<RespuestaJuegoDeCuestionario>(this.APIUrlRespuestasJuegoDeCuestionario , respuestaAlumnoJuegoDeCuestionario);
   }
 
   //OBTENEMOS LISTA INSCRIPCCIONES DEL CUESTINARIO
@@ -721,6 +739,7 @@ export class PeticionesAPIService {
   }
 
   // OBTENEMOS LA INSCRIPCIÓN ESPECÍFICA DE UN ALUMNO CONCRETO EN UN JUEGO DE COMPETICION LIGA CONCRETO.
+  // tslint:disable-next-line:max-line-length
   public DameInscripcionAlumnoJuegoDeCompeticionLiga(alumnoId: number, juegoDeCompLigaId: number): Observable<AlumnoJuegoDeCompeticionLiga> {
     console.log('voy a por los puntos');
     return this.http.get<AlumnoJuegoDeCompeticionLiga>(this.APIUrlAlumnoJuegoDeCompeticionLiga + '?filter[where][alumnoId]=' + alumnoId

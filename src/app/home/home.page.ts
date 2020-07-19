@@ -4,9 +4,11 @@ import { NavController, LoadingController, AlertController } from '@ionic/angula
 import { Alumno } from '../clases';
 import { IniciPage } from '../inici/inici.page';
 import { TabsPage } from '../tabs/tabs.page';
-import { SesionService} from '../servicios/sesion.service';
-import { PeticionesAPIService} from '../servicios/index';
-import { Router } from '@angular/router';
+import { PeticionesAPIService, SesionService} from '../servicios/index';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import Swal from 'sweetalert2';import { Router } from '@angular/router';
+
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -17,6 +19,8 @@ export class HomePage {
   nombre: string;
   apellido: string;
 
+  coords: any = { lat: 0, lng: 0 };
+
   constructor(
     // private http: HttpClient,
     private route: Router,
@@ -24,7 +28,29 @@ export class HomePage {
     private peticionesAPI: PeticionesAPIService,
     private sesion: SesionService,
     public loadingController: LoadingController,
-    public alertController: AlertController)  {}
+    public alertController: AlertController,
+    
+    private geolocation: Geolocation
+    )  {}
+
+
+    
+obtenerPosicion(): any{
+  console.log('entro en la funcion');
+  this.geolocation.getCurrentPosition().then(res => {
+    this.coords.lat = res.coords.latitude;
+    this.coords.lng = res.coords.longitude;
+    console.log(this.coords.lat);
+    console.log(this.coords.lng);
+    Swal.fire('Coordenadas ' + this.coords.lat + ', ' +  this.coords.lng);
+
+  })
+  .catch(
+    (error) => {
+      console.log(error);
+    }
+  );
+}
 
     async presentLoading() {
       const loading = await this.loadingController.create({
@@ -50,6 +76,8 @@ export class HomePage {
     }
 
     Autentificar() {
+
+
       this.presentLoading();
       this.peticionesAPI.DameAlumno(this.nombre, this.apellido).subscribe(
         (res) => {

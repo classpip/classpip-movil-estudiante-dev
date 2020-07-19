@@ -38,6 +38,7 @@ export class SesionService {
 
 
   alumnoJuegoDeColeccion: Alumno;
+  alumnosJuegoDeColeccion: Alumno[];
   inscripcionAlumno: any;
   inscripcionEquipo: any;
   listaGrupos: any;
@@ -46,6 +47,7 @@ export class SesionService {
   punto: Punto;
   insignia: Insignia;
   cromosSinRepetidos: any[];
+  cromosQueNoTengo: any[];
 
   TablaAlumnoJuegoDeCompeticion: TablaAlumnoJuegoDeCompeticion[];
   TablaEquipoJuegoDeCompeticion: TablaEquipoJuegoDeCompeticion[];
@@ -73,6 +75,13 @@ export class SesionService {
   // public  DameProfesor(): any {
   //   return this.profesor;
   // }
+
+  public TomaAlumnosJuegoDeColeccion(alumnos: Alumno []) {
+    this.alumnosJuegoDeColeccion = alumnos;
+  }
+  public DameAlumnosJuegoDeColeccion(): Alumno [] {
+    return this.alumnosJuegoDeColeccion;
+  }
 
   public TomaAlumnoJuegoDeColeccion(alumno: Alumno) {
     this.alumnoJuegoDeColeccion = alumno;
@@ -155,6 +164,13 @@ export class SesionService {
 
   public TomaCromosSinRepetidos(MisCromos: any[]) {
     this.cromosSinRepetidos = MisCromos;
+  }
+  public TomaCromosQueNoTengo(cromos: any[]) {
+    this.cromosQueNoTengo = cromos;
+  }
+
+  public DameCromosQueNoTengo(): any[] {
+    return  this.cromosQueNoTengo;
   }
 
   public DameCromosSinRepetidos(): any[] {
