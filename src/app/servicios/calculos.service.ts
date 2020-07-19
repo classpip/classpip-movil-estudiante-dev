@@ -329,38 +329,17 @@ export class CalculosService {
     return InformacionAlumno;
   }
 
-  public AsignaCromo(cromo: Cromo, alumnoSeleccionado: any, MiAlumno: Alumno, juegoSeleccionado: Juego) {
-    const OK: any[] = [];
-    this.peticionesAPI.DameAlumnoAsignacion(alumnoSeleccionado).subscribe(
-      EsteAlumno => {
-        console.log(EsteAlumno);
-        console.log(juegoSeleccionado);
-        this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, EsteAlumno[0].id).subscribe(
-          EsteAlumnoJuegoColeccion => {
-            console.log(EsteAlumnoJuegoColeccion);
-            console.log(cromo);
-            this.peticionesAPI.AsignarCromoAlumno(new Album(EsteAlumnoJuegoColeccion[0].id, cromo.id)).subscribe(
-              resul => {
-                OK.push(resul);
-                console.log(resul);
-                console.log('Ya he asignado el cromo');
-              }
-            );
-          });
-        this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, MiAlumno.id).subscribe(
-          OtroAlumnoJuegoColeccion => {
-            this.peticionesAPI.DameAlbumAlumno(cromo.id, OtroAlumnoJuegoColeccion[0].id).subscribe(
-              MiAlbum => {
-                this.peticionesAPI.BorrarAlbumAlumno(MiAlbum[0].id).subscribe(
-                  resultado => {
-                    console.log('He borrado el cromo??');
-                    console.log(resultado);
-                  });
-              });
-          });
-      });
+  public RegalaCromo(cromo: Cromo, alumnoDestinatarioId: number, alumnoQueRegala: Alumno, juegoSeleccionado: Juego) {
 
-    return OK;
+    // No entiendo muy bien por qué esta petición devuelve un vector de inscripciones y no una sola.
+    // por eso indexo la inscripcion con [0]
+    // Lo mismo pasa al pedir los cromos del alumno (DameAlbumAlumno)
+    this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, alumnoDestinatarioId)
+    .subscribe( inscripcion => this.peticionesAPI.AsignarCromoAlumno(new Album(inscripcion[0].id, cromo.id)).subscribe()
+    );
+    this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, alumnoQueRegala.id)
+    .subscribe( inscripcion => this.peticionesAPI.DameAlbumAlumno(cromo.id, inscripcion[0].id)
+    .subscribe( album => this.peticionesAPI.BorrarAlbumAlumno(album[0].id).subscribe()));
   }
 
   public DameEquiposJuegoPuntos(juegoId: number) {
