@@ -19,6 +19,9 @@ const routes: Routes = [
   { path: 'juego-competicion-liga', loadChildren: './juego-competicion-liga/juego-competicion-liga.module#JuegoCompeticionLigaPageModule' },
   { path: 'informacion-jornadas', loadChildren: './informacion-jornadas/informacion-jornadas.module#InformacionJornadasPageModule' },
   { path: 'juego-colleccion', loadChildren: './juego-colleccion/juego-colleccion.module#JuegoColleccionPageModule' },
+  { path: 'juego-avatar', loadChildren: './juego-avatar/juego-avatar.module#JuegoAvatarPageModule' },
+  { path: 'avatar-editor', loadChildren: './avatar-editor/avatar-editor.module#AvatarEditorPageModule' },
+  
   { path: 'juego-puntos', loadChildren: './juego-puntos/juego-puntos.module#JuegoPuntosPageModule' },
   { path: 'album-alumno', loadChildren: './album-alumno/album-alumno.module#AlbumAlumnoPageModule' },
   { path: 'modal', loadChildren: './modal/modal.module#ModalPageModule' }
