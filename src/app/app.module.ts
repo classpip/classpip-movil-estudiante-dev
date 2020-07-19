@@ -23,8 +23,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-//const config: SocketIoConfig = { url: 'http://localhost:8080', options: {} };
-const config: SocketIoConfig = { url: 'http://147.83.118.92:8080', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:8080', options: {} };
+// const config: SocketIoConfig = { url: 'http://147.83.118.92:8080', options: {} };
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 

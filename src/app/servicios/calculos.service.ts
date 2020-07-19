@@ -10,7 +10,7 @@ import {
   EquipoJuegoDeColeccion, AlbumEquipo, Cromo, Jornada, MiAlumnoAMostrarJuegoDePuntos, MiEquipoAMostrarJuegoDePuntos,
   // tslint:disable-next-line:max-line-length
   EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion, EquipoJuegoDeCompeticionLiga, InformacionPartidosLiga, TablaJornadas, TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionFormulaUno,
-  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada
+  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta
 } from '../clases/index';
 // import { MatTableDataSource } from '@angular/material/table';
 // import { MiAlumnoAMostrarJuegoDePuntos } from '../clases/MiAlumnoAMostrarJuegoDePuntos';
@@ -121,6 +121,20 @@ export class CalculosService {
                   JuegosInactivos.push(lista[i]);
                 }
               }
+              console.log('voy a por los juegos de geocaching');
+              this.peticionesAPI.DameJuegoDeGeocachingAlumno(AlumnoId)
+              // tslint:disable-next-line:no-shadowed-variable
+              .subscribe( lista => {
+                console.log(lista);
+                  for (let i = 0; i < (lista.length); i++) {
+                    if (lista[i].JuegoActivo === true) {
+                      lista[i].Tipo = 'Juego De Geocaching';
+                      JuegosActivos.push(lista[i]);
+                    } else if (lista[i].JuegoTerminado === true){
+                      lista[i].Tipo = 'Juego De Geocaching';
+                      JuegosInactivos.push(lista[i]);
+                    }
+                  }
               console.log (JuegosActivos);
               console.log('voy a por los juegos de F1 del alumno');
               this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId)
@@ -228,12 +242,15 @@ export class CalculosService {
                                                       JuegosInactivos.push(lista[j]);
                                                     }
                                                   }
+
+                                                  
                                                   // vemos si hemos acabado de recogar los juegos de todos los equipos
                                                   cont = cont + 1;
                                                   if (cont === this.equipos.length) {
                                                         const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
                                                         obs.next(MisObservables);
                                                   }
+                                                   
                                                 }); // juegos de liga del equipo
                                             }); // juegos de F1 del equipo
                                         }); // juegos de coleccion del equipo
@@ -244,6 +261,7 @@ export class CalculosService {
                         }); // juegos de cuestionario
                       }); // juegos de liga
                     }); // juegos de F1
+                  }); // juegos de geocaching  
                 }); // juegos de colección
             }); // juegos de puntos
     }); // observable
@@ -1986,4 +2004,77 @@ export class CalculosService {
       return GanadoresFormulaUno;
     }
   }
+  public DameAlumnosJuegoDeGeocaching(juegoId: number): MiAlumnoAMostrarJuegoDeGeocaching[] {
+    let InformacionAlumno: MiAlumnoAMostrarJuegoDeGeocaching[] = [];
+    this.peticionesAPI.DameAlumnosJuegoDeGeocaching(juegoId).subscribe(
+      listaAlumnos => {
+        for ( let i = 0; i < (listaAlumnos.length); i++) {
+          const MiAlumno = new MiAlumnoAMostrarJuegoDeGeocaching();
+          MiAlumno.Nombre = listaAlumnos[i].Nombre;
+          MiAlumno.PrimerApellido = listaAlumnos[i].PrimerApellido;
+          MiAlumno.ImagenPerfil = listaAlumnos[i].ImagenPerfil;
+          this.peticionesAPI.DameInscripcionAlumnoJuegoDeGeocaching( listaAlumnos[i].id, juegoId).subscribe(
+            Inscripcion => {
+              MiAlumno.Puntuacion = Inscripcion[0].Puntuacion;
+              MiAlumno.Etapa = Inscripcion[0].Etapa
+              MiAlumno.alumnoId = Inscripcion[0].alumnoId;
+              MiAlumno.id = Inscripcion[0].id;
+              MiAlumno.juegoDeGeocachingId = Inscripcion[0].juegoDeGeocachingId;
+            });
+          InformacionAlumno.push(MiAlumno);
+        }
+        InformacionAlumno = InformacionAlumno.sort((a,b) => {
+          return b.Puntuacion - a.Puntuacion;
+        });
+    });
+    return InformacionAlumno;
+  }
+
+  public DameListaAlumnosJuegoGeocachingOrdenada(juegoDeGeocachingId: number): MiAlumnoAMostrarJuegoDeGeocaching[] {
+    let InformacionAlumno: MiAlumnoAMostrarJuegoDeGeocaching[] = [];
+    let Inscripciones: AlumnoJuegoDeGeocaching[] = [];
+    this.peticionesAPI.ListaInscripcionesAlumnosJuegoDeGeocaching(juegoDeGeocachingId).subscribe(res => {
+      Inscripciones = res;
+      Inscripciones = Inscripciones.sort(function(a, b) {
+        return b.Puntuacion - a.Puntuacion;
+      });
+      for (let i = 0; i < (Inscripciones.length); i++) {
+        const MiAlumno = new MiAlumnoAMostrarJuegoDeGeocaching();
+        MiAlumno.Puntuacion = Inscripciones[i].Puntuacion;
+        MiAlumno.Etapa = Inscripciones[i].Etapa;
+        MiAlumno.alumnoId = Inscripciones[i].alumnoId;
+        MiAlumno.id = Inscripciones[i].id;
+        MiAlumno.juegoDeGeocachingId = Inscripciones[i].juegoDeGeocachingId;
+        this.peticionesAPI.DameAlumnoConId (MiAlumno.alumnoId)
+        .subscribe (res => {
+          MiAlumno.Nombre = res.Nombre;
+          MiAlumno.PrimerApellido = res.PrimerApellido;
+          MiAlumno.ImagenPerfil = res.ImagenPerfil;
+        });
+        InformacionAlumno.push(MiAlumno)
+      }
+    });
+    return InformacionAlumno;
+  }
+
+  public DamePreguntasJuegoDeGeocaching(PreguntasId: number[]): any {
+    const preguntasObservable = new Observable(obs => {
+      let contador=0;
+    const preguntas: Pregunta[] = [];
+    for (let i=0; i < (PreguntasId.length); i++) {
+      this.peticionesAPI.DamePreguntas(PreguntasId[i])
+      .subscribe (res => {
+        preguntas.push(res)
+        contador=contador+1;
+        if (contador ===  PreguntasId.length){
+          obs.next(preguntas);
+        }
+      })
+    }
+  });
+    return preguntasObservable;
+  }
+  
+
 }
+

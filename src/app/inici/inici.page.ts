@@ -58,6 +58,8 @@ export class IniciPage implements OnInit {
       this.navCtrl.navigateForward('/juego-competicion-f1');
     } else if (juego.Tipo === 'Juego De Cuestionario') {
       this.navCtrl.navigateForward('/juego-de-cuestionario');
+    } else if (juego.Tipo === 'Juego De Geocaching') {
+      this.navCtrl.navigateForward('/juego-de-geocaching');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }

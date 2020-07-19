@@ -5,7 +5,7 @@ import { CalculosService } from '../servicios/calculos.service';
 import {
   Alumno, Juego, Jornada, TablaJornadas, EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion,
   TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionLiga, TablaClasificacionJornada
-} from '../clases/Index';
+} from '../clases/index';
 import { SesionService } from '../servicios/sesion.service';
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
 

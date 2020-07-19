@@ -20,6 +20,8 @@ export class HomePage {
   apellido: string;
 
   coords: any = { lat: 0, lng: 0 };
+  latitud;
+  longitud;
 
   constructor(
     // private http: HttpClient,
@@ -33,24 +35,6 @@ export class HomePage {
     private geolocation: Geolocation
     )  {}
 
-
-    
-obtenerPosicion(): any{
-  console.log('entro en la funcion');
-  this.geolocation.getCurrentPosition().then(res => {
-    this.coords.lat = res.coords.latitude;
-    this.coords.lng = res.coords.longitude;
-    console.log(this.coords.lat);
-    console.log(this.coords.lng);
-    Swal.fire('Coordenadas ' + this.coords.lat + ', ' +  this.coords.lng);
-
-  })
-  .catch(
-    (error) => {
-      console.log(error);
-    }
-  );
-}
 
     async presentLoading() {
       const loading = await this.loadingController.create({
