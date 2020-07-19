@@ -7,7 +7,8 @@ import {
   Equipo, AsignacionEquipo, AsignacionPuntosJuego, EquipoJuegoDePuntos, Coleccion,
   AlumnoJuegoDeColeccion, EquipoJuegoDeColeccion, Cromo, HistorialPuntosAlumno, HistorialPuntosEquipo,
   Album, AlbumEquipo, Insignia, AlumnoJuegoDeCompeticionLiga, EquipoJuegoDeCompeticionLiga, Jornada, EnfrentamientoLiga,
-  AlumnoJuegoDeCompeticionFormulaUno, EquipoJuegoDeCompeticionFormulaUno
+  AlumnoJuegoDeCompeticionFormulaUno, EquipoJuegoDeCompeticionFormulaUno, AlumnoJuegoDeAvatar,
+  FamiliaAvatares
 } from '../clases';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Cuestionario } from '../clases/Cuestionario';
@@ -82,6 +83,11 @@ export class PeticionesAPIService {
 
 
 
+  private APIUrlImagenesAvatares =  this.base + '3000/api/imagenes/ImagenesAvatares';
+  private APIUrlJuegoDeAvatar = this.base + '3000/api/juegosDeAvatar';
+  private APIUrlAlumnoJuegoDeAvatar = this.base + '3000/api/alumnosJuegoAvatar';
+  private APIUrlFamiliarAvatares = this.base + '3000/api/familiasAvatares';
+
 
 
   constructor(
@@ -93,6 +99,7 @@ export class PeticionesAPIService {
     return this.httpImagenes.get(this.APIUrlImagenColeccion + '/download/' + imagen,
       { responseType: ResponseContentType.Blob });
   }
+
 
   // FUNCIÓN TEMPORAL DE AUTENTIFICAR (PARA SIMPLIFICAR AHORA)
   public DameProfesor(nombre: string, apellido: string): Observable<Profesor> {
@@ -800,6 +807,29 @@ export class PeticionesAPIService {
   /* Dame las imagenes de los cromos */
   public DameImagenCromo(imagen: string): Observable<any> {
     return this.httpImagenes.get(this.APIUrlImagenCromo +  '/download/' + imagen,
+      { responseType: ResponseContentType.Blob });
+  }
+
+  // AVATARES
+  public DameAlumnosJuegoDeAvatar(juegoDeAvatarId: number): Observable<Alumno[]> {
+    console.log('Voy a por los alumnos');
+    return this.http.get<Alumno[]>(this.APIUrlJuegoDeAvatar + '/' + juegoDeAvatarId + '/alumnos');
+  }
+  public DameInscripcionesAlumnoJuegoDeAvatar(juegoDeAvatarId: number): Observable<AlumnoJuegoDeAvatar[]> {
+    return this.http.get<AlumnoJuegoDeAvatar[]>(this.APIUrlAlumnoJuegoDeAvatar
+    + '?filter[where][juegoDeAvatarId]=' + juegoDeAvatarId);
+  }
+  // Devuelve los juegos de puntos del Alumno
+  public DameJuegoDeAvatarAlumno(alumnoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeAvatars');
+  }
+  // Obtener familia de avatar
+  public DameFamilia(familiaId: number): Observable<FamiliaAvatares> {
+    return this.http.get<FamiliaAvatares>(this.APIUrlFamiliarAvatares + '/' + familiaId);
+  }
+
+  public DameImagenAvatar(imagen: string): Observable<any> {
+    return this.httpImagenes.get(this.APIUrlImagenesAvatares + '/download/' + imagen,
       { responseType: ResponseContentType.Blob });
   }
 

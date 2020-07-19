@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Profesor, Grupo, Juego, Equipo, Alumno, Coleccion, Cromo, Punto, Insignia, TablaAlumnoJuegoDeCompeticion,
-         TablaJornadas, Jornada, TablaEquipoJuegoDeCompeticion } from '../clases';
+         TablaJornadas, Jornada, TablaEquipoJuegoDeCompeticion, JuegoDeAvatar } from '../clases';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { ReplaySubject } from 'rxjs';
 
@@ -14,6 +14,7 @@ export class SesionService {
   profesor: Profesor;
   grupo: Grupo;
   juego: Juego;
+  juegodeAvatar: JuegoDeAvatar;
   equipo: Equipo;
   alumnosEquipo: Alumno[];
   alumnosGrupo: Alumno[];
@@ -52,6 +53,8 @@ export class SesionService {
   TablaEquipoJuegoDeCompeticion: TablaEquipoJuegoDeCompeticion[];
   jornadas: any;
   JornadasCompeticion: any;
+
+  PrivilegiosAlumno: any;
   // listaEquiposGrupo: any;
 
   elem;
@@ -122,9 +125,16 @@ export class SesionService {
   public TomaJuego(juego: Juego) {
     this.juego = juego;
   }
+
   public DameJuego(): Juego {
     return this.juego;
   }
+  public TomaJuegoAvatar(juego: JuegoDeAvatar) {
+    this.juegodeAvatar = juego;
+  }  
+  public DameJuegoAvatar() {
+    return this.juegodeAvatar;
+  }  
   public TomaEquipo(equipo: Equipo) {
     this.equipo = equipo;
   }
@@ -410,6 +420,7 @@ export class SesionService {
   }
 
 
+
   public TomaInfoParaRegaloCromo(
     elem,
     pos,
@@ -450,6 +461,17 @@ export class SesionService {
       return datos;
 
     }
+
+  public TomaPrivilegiosAlumno(Priv: any) {
+    this.PrivilegiosAlumno = Priv;
+  }
+
+  public DamePrivilegiosAlumno() {
+    return this.PrivilegiosAlumno;
+  }
+
+  
+
 
 }
 
