@@ -18,7 +18,7 @@
   </div>
   
 
-  <mat-accordion *ngIf="numeroTotalJornadas!==0;else Aviso_no_jornadas">
+  <mat-accordion *ngIf="numeroTotalJornadas!==0">
     <div *ngFor="let jornada of JornadasCompeticion; let i=index">
       <mat-expansion-panel class="ranking-acordeon" (click)="ObtenerEnfrentamientosDeCadaJornada(jornada)">
         <mat-expansion-panel-header>
@@ -40,6 +40,9 @@
         </mat-expansion-panel-header>
 
         <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Liga'">
+          <p *ngIf="jornada.Fecha != undefined"><b>Fecha</b>: {{jornada.Fecha | date: 'dd-MM-yyyy'}}</p>
+          <p *ngIf="jornada.Fecha === undefined"><b>Fecha</b>: Sin especificar</p>
+          <p><b>Criterio</b>: {{jornada.CriterioGanador}}</p>
           <ion-slides [options]="sliderConfig">
             <ion-slide *ngFor="let enfrentamiento of EnfrentamientosJornadaSeleccionada">
               <div>
@@ -75,17 +78,25 @@
           </ion-slides>
         </div>
         <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Fórmula Uno'">
-          <ion-card *ngFor="let participante of GanadoresJornadaF1; let i=index">
-            <ion-item lines="none" >
-              <ion-avatar slot="start">
-                <img src="../../assets/img/usuario.svg">
-              </ion-avatar>
-              <ion-label>
-                <h2> {{participante.participante}} </h2>
-                <p>Posicion: {{participante.posicion}} - Puntos: {{participante.puntos}}</p>
-              </ion-label>
-            </ion-item> 
-          </ion-card>
+          <p *ngIf="jornada.Fecha != undefined"><b>Fecha</b>: {{jornada.Fecha | date: 'dd-MM-yyyy'}}</p>
+          <p *ngIf="jornada.Fecha === undefined"><b>Fecha</b>: Sin especificar</p>
+          <div *ngIf="JornadaFinalizada(jornada) === false">
+            <p>Esta Jornada aún no ha finalizado. No hay ganadores todavía.</p>
+          </div>
+          <div *ngIf="JornadaFinalizada(jornada) === true">
+            <ion-card *ngFor="let participante of GanadoresJornadaF1; let i=index">
+              <ion-item lines="none" >
+                <ion-avatar slot="start">
+                  <img src="../../assets/img/usuario.svg">
+                </ion-avatar>
+                <ion-label>
+                  <h2> {{participante.participante}} </h2>
+                  <p>Posicion: {{participante.posicion}} - Puntos: {{participante.puntos}}</p>
+                </ion-label>
+              </ion-item> 
+            </ion-card>
+          </div>
+
         </div>
       </mat-expansion-panel>
     </div>
