@@ -7,7 +7,12 @@ import {
   Juego, Equipo, Alumno, MiAlumnoAMostrarJuegoDePuntos, Grupo,
   MiEquipoAMostrarJuegoDePuntos, Cromo, Coleccion
 } from '../clases/index';
-import Swal from 'sweetalert2';
+
+import { ModalController } from '@ionic/angular';
+import { IntercambiarCromosPage } from '../intercambiar-cromos/intercambiar-cromos.page';
+
+import 'hammerjs';
+import { LongPressModule } from 'ionic-long-press';
 
 
 import * as URL from '../URLs/urls';
@@ -21,27 +26,12 @@ import { AnonymousSubject } from 'rxjs/internal/Subject';
 export class JuegoColleccionPage implements OnInit {
 
   juegoSeleccionado: Juego;
-  // MisAlumnosAMostrar: MiAlumnoAMostrarJuegoDePuntos[] = [];
-  // MisEquiposJuegoPuntosAMostrar: MiEquipoAMostrarJuegoDePuntos[] = [];
-
-
-
-  //De mi Alumno conectado
-  // MiAlumno: Alumno;
-  // MiEquipo: Equipo;
-  // alumnosMiEquipo: Alumno[];
-  // Grupo: Grupo;
-  // AlumnoMisImagenesCromoDelante: string[] = [];
-  // AlumnoMisImagenesCromoDetras: string[] = [];
-  // AlumnoMisCromos: Cromo[] = [];
-  // AlumnolistaCromosSinRepetidos: any[];
-  // AlumnoCromosQueNoTengo: any[] = [];
-
 
 
   cromosQueTengoImagenDelante: string[] = [];
   cromosQueTengoImagenDetras: string[] = [];
   cromosQueNoTengoImagenDelante: string[] = [];
+  cromosQueNoTengoImagenDetras: string[] = [];
   cromosQueTengo: any[] = [];
   cromosQueNoTengo: any[] = [];
   cromosSinRepetidos: any[];
@@ -50,39 +40,27 @@ export class JuegoColleccionPage implements OnInit {
   alumnosJuegoDeColeccion: Alumno[] = [];
   equiposJuegoDeColeccion: Equipo[] = [];
 
-
-
-  //Cromos
-  // Miequipo: Equipo;
-  // Mialumno: Alumno;
-  // alumnosEquipo: Alumno[];
-  // MisImagenesCromo: string[] = [];
-  // MisCromos: Cromo[] = [];
-  // listaCromosSinRepetidos: any[];
-  // CromosQueNoTengo: any[];
-  // CromosQueNoTengoDelante: any[] = [];
-  // CromosQueNoTengoDetras: any[] = [];
-  // ImagenesCromosQueNoTengoDelante: string[] = [];
-  // ImagenesCromosQueNoTengoDetras: string[] = [];
-
-
-  //Mostrar ranking
- // public hideMe: boolean = false;
-  //Mostrar cromos alumno/equipo
- // infoView: boolean = false;
   sliderConfig: any;
   coleccion: Coleccion;
+  protected interval: any;
+  progress = 0;
+  elem: any;
+  pos: number;
+
 
   constructor(
     private sesion: SesionService,
     public navCtrl: NavController,
+    private alertCtrl: AlertController,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService,
+    public modalController: ModalController
   ) { }
 
   @ViewChild('content', { static: false }) content: IonContent;
 
   ngOnInit() {
+    console.log ('entro en on init');
     this.sliderConfig = {
       slidesPerView: 1.6,
       spaceBetween: 10,
@@ -113,92 +91,129 @@ export class JuegoColleccionPage implements OnInit {
     //     });
     // }
   }
+ // Interval function
+
+
+
+ onPress(elem, i) {
+    this.elem = elem;
+    this.pos = i;
+    this.startInterval();
+ }
+
+ onPressUp() {
+
+     this.stopInterval();
+ }
+
+ startInterval() {
+     const self = this;
+     // tslint:disable-next-line:only-arrow-functions
+     this.interval = setInterval(function() {
+         self.progress = self.progress + 1;
+         if (self.progress === 5) {
+            self.stopInterval();
+            self.progress = 0;
+            self.RegalarCromo (self.elem, self.pos);
+         }
+     }, 1000);
+ }
+
+ stopInterval() {
+     clearInterval(this.interval);
+ }
+
+
   MostrarAlbum() {
     this.sesion.TomaColeccion (this.coleccion);
     this.sesion.TomaCromos (this.cromosQueTengo);
     this.navCtrl.navigateForward('/album-alumno');
   }
-  RegalarCromo(elem, i) { // elem tiene el cromo y el número de repeticiones, 
+
+  async  RegalarCromo(elem, i) {
+    // elem tiene el cromo y el número de repeticiones
     // i es la posición en el vector de cromos, para facilitar su eliminación
-    console.log ('voy a regalar el cromo');
-    console.log (elem);
     if (elem.rep === 1) {
-      // Advierto de que si lo regala se va a quedar sin ese cromo
-      Swal.fire({
-        title: '¿seguro que quieres regalar este cromo?',
-        text: 'No lo tienes repetido. Te vas a quedar si él.',
-        icon: 'success',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirma'
-      }).then((result) => {
-        if (result.value) {
-          // actualizo las lista de cromos y de imágenes
-          // ATENCIÓN: ME VA BIEN ACTUALIZAR LAS LISTAS AHORA.
-          // PERO SI EL REGALO DEL CROMO FINALMENTE FRACASA (POR LO QUE SEA) TENEMOS UN
-          // PROBLEMA PORQUE HE HECHO YA LOS CAMBIOS COMO SE EL REGALO SE HACE.
-          this.cromosSinRepetidos = this.cromosSinRepetidos.filter (e => e.cromo.id !== elem.cromo.id);
-          this.cromosQueTengoImagenDelante.splice (i , 1);
-          if (this.coleccion.DosCaras) {
-            this.cromosQueTengoImagenDetras.splice (i, i);
+      const confirm = await this.alertCtrl.create({
+        header: '¿Seguro que quieres regalar el cromo?',
+        message: 'No lo tienes repetido. Te vas a quedar sin él',
+        buttons: [
+          {
+            text: 'SI',
+            handler: async () => {
+              // preparo el cromo
+              this.sesion.TomaCromo (elem.cromo);
+              console.log ('vamos');
+              const modal = await this.modalController.create({
+                component: IntercambiarCromosPage,
+                cssClass: 'my-custom-class',
+              });
+              await modal.present();
+              const { data } = await modal.onWillDismiss();
+              // En data me indica si ha regalado el cromo o no
+              if (data.regalado) {
+                // Como ha regalado el cromo y era la única copia que tenía de ese cromo
+                // tengo que cambiar las listas de cromos que tengo y que no tengo, y las listas
+                // con las imágenes
+
+                 this.cromosSinRepetidos = this.cromosSinRepetidos.filter (e => e.cromo.id !== elem.cromo.id);
+                 this.cromosQueTengoImagenDelante.splice (i , 1);
+                 if (this.coleccion.DosCaras) {
+                    this.cromosQueTengoImagenDetras.splice (i, 1);
+                  }
+                 elem.rep = 0; // me quedo sin copias de ese cromo
+                 this.cromosQueNoTengo.push (elem);
+                 this.cromosQueNoTengoImagenDelante.push ( URL.ImagenesCromo + elem.cromo.ImagenDelante);
+                 if (this.coleccion.DosCaras)  {
+                    this.cromosQueNoTengoImagenDetras.push ( URL.ImagenesCromo + elem.cromo.ImagenDetras);
+                }
+                 this.cromosQueTengo = this.cromosQueTengo.filter (c => c.id !== elem.cromo.id);
+              }
+
+            }
+          }, {
+            text: 'NO',
+            role: 'cancel',
+            handler: () => {
+              console.log('No regalo');
+            }
           }
-          elem.rep = 0; // me quedo sin copias de ese cromo
-          this.cromosQueNoTengo.push (elem);
-          this.cromosQueTengoImagenDelante.push ( URL.ImagenesCromo + elem.cromo.ImagenDelante);
-          if (this.coleccion.DosCaras)  {
-            this.cromosQueTengoImagenDelante.push ( URL.ImagenesCromo + elem.cromo.ImagenDetras);
-          }
-          this.cromosQueTengo = this.cromosQueTengo.filter (c => c.id !== elem.cromo.id);
-          this.sesion.TomaCromo (elem.cromo);
-          this.sesion.TomaAlumno (this.alumno);
-          this.navCtrl.navigateForward('intercambiar-cromos');
-        }
+        ]
       });
+      await confirm.present();
     } else {
-      Swal.fire({
-        title: '¿seguro que quieres regalar este cromo?',
-        text: 'Tienes ' + elem.rep + ' copias de este cromo.',
-        icon: 'success',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirma'
-      }).then((result) => {
-        if (result.value) {
-          // tomo nota de que tengo una copia menos de ese cromo
-          this.cromosSinRepetidos.filter (e => e.cromo.id === elem.cromo.id)[0].rep--;
-          this.sesion.TomaCromo (elem.cromo);
-          this.navCtrl.navigateForward('intercambiar-cromos');
-        }
+      const confirm = await this.alertCtrl.create({
+        header: '¿Seguro que quieres regalar el cromo?',
+        message: 'Tienes ' + elem.rep + ' copias de este cromo.',
+        buttons: [
+          {
+            text: 'SI',
+            handler: async () => {
+              this.sesion.TomaCromo (elem.cromo);
+              const modal = await this.modalController.create({
+                component: IntercambiarCromosPage,
+                cssClass: 'my-custom-class',
+              });
+              await modal.present();
+              const { data } = await modal.onWillDismiss();
+              if (data.regalado) {
+                // como se ha regalado el cromo tomo nota de que tengo una copia menos de ese cromo
+                this.cromosSinRepetidos.filter (e => e.cromo.id === elem.cromo.id)[0].rep--;
+              }
+            }
+          }, {
+            text: 'NO',
+            role: 'cancel',
+            handler: () => {
+              console.log('No regalo');
+            }
+          }
+        ]
       });
+      await confirm.present();
 
     }
   }
-
-  // DameEquipoAlumnoConectado() {
-  //   // tslint:disable-next-line:prefer-for-of
-  //   for ( let i = 0; i < this.MisEquiposJuegoColecciones.length; i++){
-  //     this.peticionesAPI.DameAlumnosEquipo(this.MisEquiposJuegoColecciones[i].id)
-  //     .subscribe(res => {
-  //       // tslint:disable-next-line:prefer-for-of
-  //       for (let j = 0; j < res.length; j++) {
-  //         if (res[j].Nombre === this.MiAlumno.Nombre) {
-  //           this.alumnosMiEquipo = res;
-  //           console.log(res);
-  //           this.MiEquipo = this.MisEquiposJuegoColecciones[i];
-  //           console.log('tu equipo');
-  //           console.log(this.MiEquipo);
-  //         } else {
-  //           console.log('No hay alumnos en este equipo');
-  //           this.alumnosMiEquipo = undefined;
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
-
-  // Traigo los cromos del alumno
 
   DameLosCromosDelAlumno() {
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, this.alumno.id).subscribe(
@@ -230,61 +245,6 @@ export class JuegoColleccionPage implements OnInit {
         });
   }
 
-  // // Obtenemos los cromos de los demás en el ranking
-  // DameCromosDelAlumno(alumno: any) {
-  //   this.toggleInfoView();
-  //   this.sesion.TomaAlumnoJuegoDeColeccion(alumno);
-  //   if (this.juegoSeleccionado.Modo === 'Individual') {
-  //     this.Mialumno = this.sesion.DameAlumnoJuegoDeColeccion();
-  //     this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, this.Mialumno.id).subscribe(
-  //       InscripcionAlumno => {
-  //         this.peticionesAPI.DameCromosAlumno(InscripcionAlumno[0].id).subscribe(
-  //           Cromos => {
-  //             console.log(Cromos);
-  //             this.MisCromos = Cromos;
-  //             this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
-  //             console.log(this.listaCromosSinRepetidos);
-  //             this.sesion.TomaCromosSinRepetidos(this.listaCromosSinRepetidos);
-  //             this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
-  //               TodosLosCromos => {
-  //                 console.log('aqui estan todos los cromos');
-  //                 console.log(TodosLosCromos);
-  //                 this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-  //               });
-  //             console.log('Cromos que no tengo:');
-  //             console.log(this.CromosQueNoTengoDelante);
-  //             this.DameImagenesCromos();
-  //           });
-  //       });
-  //     // this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
-  //     console.log(this.MisCromos);
-  //     console.log(this.listaCromosSinRepetidos);
-  //     // this.listaCromosSinRepetidos.sort((a, b) => a.cromo.Nombre.localeCompare(b.cromo.Nombre));
-
-  //     // this.MisImagenesCromo = this.calculos.VisualizarCromosDelAlumno(this.MisCromos);
-  //   } else {
-  //     console.log('Voy a buscar los cromos del Equipo');
-  //     this.sesion.TomaEquipo(alumno);
-  //     this.Miequipo = this.sesion.DameEquipo();
-  //     this.AlumnosDelEquipo(this.Miequipo);
-  //     this.peticionesAPI.DameInscripcionEquipoJuegoDeColeccion(this.juegoSeleccionado.id, this.Miequipo.id).subscribe(
-  //       InscripcionEquipo => {
-  //         this.peticionesAPI.DameCromosEquipo(InscripcionEquipo[0].id).subscribe(
-  //           Cromos => {
-  //             console.log(Cromos);
-  //             this.MisCromos = Cromos;
-  //             this.listaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.MisCromos);
-  //             console.log(this.listaCromosSinRepetidos);
-  //             this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
-  //               TodosLosCromos => {
-  //                 this.CromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.MisCromos, TodosLosCromos);
-  //               });
-  //             this.DameImagenesCromos();
-  //           });
-  //       });
-  //     console.log(this.MisImagenesCromo);
-  //   }
-  // }
 
   PreparaImagenesCromosQueTengo() {
     for (let i = 0; i < this.cromosSinRepetidos.length; i++) {
@@ -308,70 +268,5 @@ export class JuegoColleccionPage implements OnInit {
     console.log (this.cromosQueNoTengoImagenDelante);
 
   }
-
-  // DameImagenesCromos() {
-  //   console.log('voy a por las imagenes de cada cromo');
-  //   for (let i = 0; i < this.listaCromosSinRepetidos.length; i++){
-  //     const elem = this.listaCromosSinRepetidos[i];
-  //     console.log('quiero la imagen de este: ' + elem)
-  //     if(elem.cromo.ImagenDelante !== undefined) {
-  //       this.MisImagenesCromo[i] = URL.ImagenesCromo + elem.cromo.ImagenDelante;
-  //     }
-  //   }
-  // }
-
-  // intercambiar Cromo
-  // intercambiarCromo() {
-  //   this.navCtrl.navigateForward('intercambiar-cromos')
-  // }
-  
-  // Alumnos de cada equipo
-  // AlumnosDelEquipo(equipo: Equipo) {
-  //   console.log(equipo);
-
-  //   this.peticionesAPI.DameAlumnosEquipo(equipo.id)
-  //     .subscribe(res => {
-  //       if (res[0] !== undefined) {
-  //         this.alumnosEquipo = res;
-  //         console.log(res);
-  //       } else {
-  //         console.log('No hay alumnos en este equipo');
-  //         this.alumnosEquipo = undefined;
-  //       }
-  //     });
-  // }
-
-  // // Mostrar Ranking y scroll up/down de la pantalla
-  // MuestraElRanking() {
-  //   this.hideMe = true;
-  //   this.scrollToBottom();
-  //   console.log(this.hideMe)
-  // }
-  // OcultarElRanking() {
-  //   this.scrollToTop();
-  //   this.hideMe = false;
-  //   console.log(this.hideMe)
-  // }
-  // scrollToBottom(): void {
-  //   this.content.scrollToBottom(300);
-  // }
-  // scrollToTop() {
-  //   this.content.scrollToTop();
-  // }
-
-  // configuramos el slider de los cromos
- 
-  // y el botón para mostrarlos
-  // toggleInfoView() {
-  //   this.infoView = !this.infoView;
-  // }
-  // cierraOtrosAlbumes() {
-  //   if (this.infoView == true) {
-  //     this.infoView = false;
-  //   }
-  // }
-  
-  /* Nuevo método para obtener las imagenes */
-  
 }
 

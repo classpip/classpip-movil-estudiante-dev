@@ -15,7 +15,8 @@ import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestion
 // ya ha contestado el cuestionario.
 // Para usar sockets desde ionic he usado este tutorial:
 // https://devdactic.com/ionic-4-socket-io/
-// Atención porque la IP:puerto a la que se conecta el socket se define en el app.module
+// Atención porque la IP:puerto del servidor a la que se conecta el socket se define en 
+// URLs 
 
 import { Socket } from 'ngx-socket-io';
 

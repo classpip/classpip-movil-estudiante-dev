@@ -9,7 +9,7 @@ import {  Juego, Equipo, Alumno, Cromo} from '../clases/index';
 import { Router } from '@angular/router';
 import { Variable } from '@angular/compiler/src/render3/r3_ast';
 import * as URL from '../URLs/urls';
-import Swal from 'sweetalert2';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-intercambiar-cromos',
@@ -36,6 +36,7 @@ export class IntercambiarCromosPage implements OnInit {
     private http: HttpClient, private https: Http,
     public loadingController: LoadingController,
     public alertController: AlertController,
+    public modalCtrl: ModalController,
     private route: Router,
   ) { }
 
@@ -57,26 +58,56 @@ export class IntercambiarCromosPage implements OnInit {
 
   }
 
-  onChange(value) {
-    console.log(value);
-    this.alumnoSelecciondo = value.split(' ');
-    console.log(this.alumnoSelecciondo);
-  }
+  async RegalarCromo() {
+    const misInputs: any [] = [];
+    // preparo las opciones para el radio selector
+    this.alumnosJuegoDeColeccion.forEach (alumno => {
+      const input = {
+        type: 'radio',
+        label: alumno.Nombre + ' ' + alumno.PrimerApellido + ' ' + alumno.SegundoApellido,
+        value: alumno.id,
+        checked: false
+      };
+      misInputs.push (input);
+    });
+    misInputs[0].checked = true; // la primera opción está marcada por defecto
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Elige a quién quieres regalar el cromo',
+      inputs : misInputs,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Me arrepiento');
+            // Cierro el diálogo indicando que no se ha ejecutado el regalo
+            this.modalCtrl.dismiss({
+              regalado: false
+            });
+          }
+        }, {
+          text: 'Ok',
+          handler: async (destinatarioId) => {
+            // recibo el id del alumno destinatorio del cromo
+            this.calculos.RegalaCromo(this.cromo, destinatarioId, this.alumno, this.juegoSeleccionado);
+            const alert2 = await this.alertController.create({
+                cssClass: 'my-custom-class',
+                header: 'Cromo regalado con éxito',
+                buttons: ['OK']
+            });
+            await alert2.present();
+            // cierro el diálogo indicando que si se ha efectuado el regalo
+            this.modalCtrl.dismiss({
+              regalado: true
+            });
+          }
+        }
+      ]
+    });
 
-
-  AsignarCromo() {
-    if (this.alumnoSelecciondo === undefined) {
-      Swal.fire('Selecciona primero el compañero al que le regalas el cromo', ' ', 'error');
-    }
-
-    if (this.alumnoSelecciondo !== undefined) {
-      console.log ('voy a asingar a ');
-      console.log (this.alumnoSelecciondo);
-      this.calculos.AsignaCromo(this.cromo, this.alumnoSelecciondo, this.alumno, this.juegoSeleccionado);
-      Swal.fire('Cromo regalado con éxito', ' ', 'success');
-      this.route.navigateByUrl('/juego-colleccion');
-    }
-
+    await alert.present();
   }
 
 }

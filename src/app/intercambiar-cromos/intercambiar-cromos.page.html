@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button class="menu-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title>Cambiar Cromos</ion-title>
+    <ion-title>Regalar cromo</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,9 +11,10 @@
 
   <img class="logo-liga" src="../../assets/img/intercambio.svg" width="100px">
   
-  <br>
-  <p class="InformacionPantalla">¿A quién quieres regalarle el cromo?</p>
-  <br>
+  <ion-button (click)=RegalarCromo() class="intercambiar-btn" shape="round">
+    Elige a quién quieres regalar este cromo
+    <ion-icon style="color:  rgb(255, 255, 255);" name="albums" item-left></ion-icon>
+  </ion-button>
   <!--Se define la estética del cromo según el nivel del propio cromo-->
   <ion-item *ngIf="cromo">
     <ion-card name="cromo">
@@ -21,16 +22,5 @@
     </ion-card>
 
   </ion-item>
-
-  <select class="selectcomp" [(ngModel)]=alumnoSeleccionado (ngModelChange)="onChange($event)" name="alumno">
-    <option *ngFor="let alumno of alumnosJuegoDeColeccion">
-      {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
-    </option>
-  </select>
-
-  <ion-button (click)=AsignarCromo() class="intercambiar-btn" shape="round">
-    Intercambiar Cromos
-    <ion-icon style="color:  rgb(255, 255, 255);" name="albums" item-left></ion-icon>
-  </ion-button>
 
 </ion-content>

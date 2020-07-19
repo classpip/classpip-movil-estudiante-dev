@@ -57,6 +57,14 @@ export class SesionService {
   PrivilegiosAlumno: any;
   // listaEquiposGrupo: any;
 
+  elem;
+  pos;
+  cromosQueTengo;
+  cromosQueTengoImagenDelante;
+  cromosQueTengoImagenDetras;
+  cromosQueNoTengoImagenDelante;
+  cromosQueNoTengoImagenDetras;
+
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
     this.profesor = profesor;
@@ -411,6 +419,49 @@ export class SesionService {
     return Tabla;
   }
 
+
+
+  public TomaInfoParaRegaloCromo(
+    elem,
+    pos,
+    cromosSinRepetidos,
+    cromosQueTengo,
+    cromosQueTengoImagenDelante,
+    cromosQueTengoImagenDetras,
+    cromosQueNoTengo,
+    cromosQueNoTengoImagenDelante,
+    cromosQueNoTengoImagenDetras,
+    coleccion) {
+
+      this.elem = elem;
+      this.pos = pos;
+      this.cromosSinRepetidos = cromosSinRepetidos;
+      this.cromosQueTengo = cromosQueTengo;
+      this.cromosQueTengoImagenDelante = cromosQueTengoImagenDelante;
+      this.cromosQueTengoImagenDetras = cromosQueTengoImagenDetras;
+      this.cromosQueNoTengo = cromosQueNoTengo;
+      this.cromosQueNoTengoImagenDelante = cromosQueNoTengoImagenDelante;
+      this.cromosQueNoTengoImagenDetras = cromosQueNoTengoImagenDetras;
+      this.coleccion = coleccion;
+    }
+
+    public DameInfoParaRegaloCromo(): any {
+      const datos = {
+        elem: this.elem,
+        pos: this.pos,
+        cromosSinRepetidos: this.cromosSinRepetidos,
+        cromosQueTengo: this.cromosQueTengo,
+        cromosQueTengoImagenDelante: this.cromosQueTengoImagenDelante,
+        cromosQueTengoImagenDetras: this.cromosQueTengoImagenDetras,
+        cromosQueNoTengo: this.cromosQueNoTengo,
+        cromosQueNoTengoImagenDelante: this.cromosQueNoTengoImagenDelante ,
+        cromosQueNoTengoImagenDetras: this.cromosQueNoTengoImagenDetras,
+        coleccion: this.coleccion
+      };
+      return datos;
+
+    }
+
   public TomaPrivilegiosAlumno(Priv: any) {
     this.PrivilegiosAlumno = Priv;
   }
@@ -420,6 +471,7 @@ export class SesionService {
   }
 
   
+
 
 }
 
