@@ -33,6 +33,8 @@
               <img *ngIf="juego.Tipo == 'Juego De Competición Liga'" class = "card-img" src="../../assets/img/ligaicon.svg">
               <img *ngIf="juego.Tipo == 'Juego De Cuestionario'" class = "card-img" src="../../assets/img/cuestionariosicon.svg">
               <img *ngIf="juego.Tipo == 'Juego De Geocaching'" class = "card-img" src="../../assets/img/location_icon.svg">
+              <img *ngIf="juego.Tipo == 'Juego De Avatar'" class = "card-img" src="../../assets/img/avataricon.svg">
+               
               <ion-button class="card-btn" expand="full" (click)=JuegoSeleccionado(juego) shape="round">Ver más</ion-button>
              </div>
           </ion-card>

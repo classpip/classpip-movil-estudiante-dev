@@ -100,7 +100,7 @@ export class InformacionJornadasPage implements OnInit {
     console.log('ParticipanteId:');
     console.log(this.datosClasificacionJornada.participanteId);
     this.TablaClasificacionJornadaSeleccionada = this.calculos.PrepararTablaRankingJornadaFormulaUno(this.datosClasificacionJornada);
-    this.GanadoresJornadaF1 = this.TablaClasificacionJornadaSeleccionada.slice(0, 3);
+    this.GanadoresJornadaF1 = this.TablaClasificacionJornadaSeleccionada.slice(0, this.juegoSeleccionado.Puntos.length);
     console.log('los ganadores: ');
     console.log(this.GanadoresJornadaF1);
   }

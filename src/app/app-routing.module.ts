@@ -19,9 +19,13 @@ const routes: Routes = [
   { path: 'juego-competicion-liga', loadChildren: './juego-competicion-liga/juego-competicion-liga.module#JuegoCompeticionLigaPageModule' },
   { path: 'informacion-jornadas', loadChildren: './informacion-jornadas/informacion-jornadas.module#InformacionJornadasPageModule' },
   { path: 'juego-colleccion', loadChildren: './juego-colleccion/juego-colleccion.module#JuegoColleccionPageModule' },
+  { path: 'juego-avatar', loadChildren: './juego-avatar/juego-avatar.module#JuegoAvatarPageModule' },
+  { path: 'avatar-editor', loadChildren: './avatar-editor/avatar-editor.module#AvatarEditorPageModule' },
+  
   { path: 'juego-puntos', loadChildren: './juego-puntos/juego-puntos.module#JuegoPuntosPageModule' },
   { path: 'album-alumno', loadChildren: './album-alumno/album-alumno.module#AlbumAlumnoPageModule' },
-  { path: 'juego-de-geocaching', loadChildren: './juego-de-geocaching/juego-de-geocaching.module#JuegoDeGeocachingPageModule' }
+  { path: 'juego-de-geocaching', loadChildren: './juego-de-geocaching/juego-de-geocaching.module#JuegoDeGeocachingPageModule' },
+  { path: 'modal', loadChildren: './modal/modal.module#ModalPageModule' }
 
 ];
 
@@ -32,3 +36,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
+

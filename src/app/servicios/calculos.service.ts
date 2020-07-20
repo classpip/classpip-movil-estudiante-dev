@@ -176,6 +176,23 @@ export class CalculosService {
                               JuegosInactivos.push(lista[i]);
                             }
                           }
+  
+                          console.log('ya tengo los juegos de cuestionario');
+                      
+                          console.log('voy a por los juegos de avatar');
+                          this.peticionesAPI.DameJuegoDeAvatarAlumno(AlumnoId)
+                          .subscribe( lista => {
+                              for (let i = 0; i < (lista.length); i++) {
+                                if (lista[i].JuegoActivo === true) {
+                                  JuegosActivos.push(lista[i]);
+                                } else {
+                                  JuegosInactivos.push(lista[i]);
+                                }
+                              }
+                            console.log('ya tengo los juegos de avatar');
+
+  
+  
                           console.log('vamos a por los equipos');
                           this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
                           // tslint:disable-next-line:no-shadowed-variable
@@ -258,6 +275,7 @@ export class CalculosService {
                                   } // fin bucle for equipos
                                 } // else de la pregunta de si hay equipos
                               }); // equipos del alumno
+                          });  // juegos de avatar
                         }); // juegos de cuestionario
                       }); // juegos de liga
                     }); // juegos de F1
@@ -300,12 +318,12 @@ export class CalculosService {
     let InformacionAlumno: MiAlumnoAMostrarJuegoDeCuestionario[] = [];
     this.peticionesAPI.DameAlumnosJuegoDeCuestionario(juegoId).subscribe(
       listaAlumnos => {
-        for ( let i = 0; i < (listaAlumnos.length); i++) {
+        for (let i = 0; i < (listaAlumnos.length); i++) {
           const MiAlumno = new MiAlumnoAMostrarJuegoDeCuestionario();
           MiAlumno.Nombre = listaAlumnos[i].Nombre;
           MiAlumno.PrimerApellido = listaAlumnos[i].PrimerApellido;
           MiAlumno.ImagenPerfil = listaAlumnos[i].ImagenPerfil;
-          this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario( listaAlumnos[i].id, juegoId).subscribe(
+          this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(listaAlumnos[i].id, juegoId).subscribe(
             Inscripcion => {
               MiAlumno.Nota = Inscripcion[0].Nota;
               MiAlumno.alumnoId = Inscripcion[0].alumnoId;
@@ -314,10 +332,10 @@ export class CalculosService {
             });
           InformacionAlumno.push(MiAlumno);
         }
-        InformacionAlumno = InformacionAlumno.sort((a,b) => {
+        InformacionAlumno = InformacionAlumno.sort((a, b) => {
           return b.Nota - a.Nota;
         });
-    });
+      });
     return InformacionAlumno;
   }
 
@@ -326,7 +344,7 @@ export class CalculosService {
     let Inscripciones: AlumnoJuegoDeCuestionario[] = [];
     this.peticionesAPI.ListaInscripcionesAlumnosJuegoDeCuestionario(juegoDeCuestionarioId).subscribe(res => {
       Inscripciones = res;
-      Inscripciones = Inscripciones.sort(function(a, b) {
+      Inscripciones = Inscripciones.sort(function (a, b) {
         return b.Nota - a.Nota;
       });
       for (let i = 0; i < (Inscripciones.length); i++) {
@@ -335,50 +353,29 @@ export class CalculosService {
         MiAlumno.alumnoId = Inscripciones[i].alumnoId;
         MiAlumno.id = Inscripciones[i].id;
         MiAlumno.juegoDeCuestionarioId = Inscripciones[i].juegoDeCuestionarioId;
-        this.peticionesAPI.DameAlumnoConId (MiAlumno.alumnoId)
-        .subscribe (res => {
-          MiAlumno.Nombre = res.Nombre;
-          MiAlumno.PrimerApellido = res.PrimerApellido;
-          MiAlumno.ImagenPerfil = res.ImagenPerfil;
-        });
+        this.peticionesAPI.DameAlumnoConId(MiAlumno.alumnoId)
+          .subscribe(res => {
+            MiAlumno.Nombre = res.Nombre;
+            MiAlumno.PrimerApellido = res.PrimerApellido;
+            MiAlumno.ImagenPerfil = res.ImagenPerfil;
+          });
         InformacionAlumno.push(MiAlumno)
       }
     });
     return InformacionAlumno;
   }
 
-  public AsignaCromo(cromo: Cromo, alumnoSeleccionado: any, MiAlumno: Alumno, juegoSeleccionado: Juego) {
-    const OK: any[] = [];
-    this.peticionesAPI.DameAlumnoAsignacion(alumnoSeleccionado).subscribe(
-      EsteAlumno => {
-        console.log(EsteAlumno);
-        console.log(juegoSeleccionado);
-        this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, EsteAlumno[0].id).subscribe(
-          EsteAlumnoJuegoColeccion => {
-            console.log(EsteAlumnoJuegoColeccion);
-            console.log(cromo);
-            this.peticionesAPI.AsignarCromoAlumno(new Album(EsteAlumnoJuegoColeccion[0].id, cromo.id)).subscribe(
-              resul => {
-                OK.push(resul);
-                console.log(resul);
-                console.log('Ya he asignado el cromo');
-              }
-            );
-          });
-        this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, MiAlumno.id).subscribe(
-          OtroAlumnoJuegoColeccion => {
-            this.peticionesAPI.DameAlbumAlumno(cromo.id, OtroAlumnoJuegoColeccion[0].id).subscribe(
-              MiAlbum => {
-                this.peticionesAPI.BorrarAlbumAlumno(MiAlbum[0].id).subscribe(
-                  resultado => {
-                    console.log('He borrado el cromo??');
-                    console.log(resultado);
-                  });
-              });
-          });
-      });
+  public RegalaCromo(cromo: Cromo, alumnoDestinatarioId: number, alumnoQueRegala: Alumno, juegoSeleccionado: Juego) {
 
-    return OK;
+    // No entiendo muy bien por qué esta petición devuelve un vector de inscripciones y no una sola.
+    // por eso indexo la inscripcion con [0]
+    // Lo mismo pasa al pedir los cromos del alumno (DameAlbumAlumno)
+    this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, alumnoDestinatarioId)
+    .subscribe( inscripcion => this.peticionesAPI.AsignarCromoAlumno(new Album(inscripcion[0].id, cromo.id)).subscribe()
+    );
+    this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, alumnoQueRegala.id)
+    .subscribe( inscripcion => this.peticionesAPI.DameAlbumAlumno(cromo.id, inscripcion[0].id)
+    .subscribe( album => this.peticionesAPI.BorrarAlbumAlumno(album[0].id).subscribe()));
   }
 
   public DameEquiposJuegoPuntos(juegoId: number) {
@@ -1204,7 +1201,7 @@ export class CalculosService {
   }
 
 
-  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
+  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any,):
     any {
     const historialObservable = new Observable(obs => {
 
@@ -1232,7 +1229,7 @@ export class CalculosService {
     return historialObservable;
   }
 
-  public PreparaHistorialAlumno(alumnoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
+  public PreparaHistorialAlumno(alumnoJuegoDePuntos: any, tiposPuntosDelJuego: any,):
     any {
     const historialObservable = new Observable(obs => {
 

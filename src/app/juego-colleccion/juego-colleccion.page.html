@@ -13,14 +13,13 @@
   <div *ngIf="alumno !== undefined">
      
     <ion-button class="card-btn" style="color: grey;" (click)=MostrarAlbum()>Ver album</ion-button>
- 
     <div  *ngIf = "coleccion.DosCaras"  >
       
       <ion-slides>
         <!-- Prinero muestro los cromos que tiene el alumno -->
         <!-- Si hace click es que quiere regalar el cromo -->
-        <ion-slide (click) = "RegalarCromo(elem, i)" *ngFor="let elem of cromosSinRepetidos;let i = index">
-          
+        <!-- <ion-slide (click) = "RegalarCromo(elem, i)" *ngFor="let elem of cromosSinRepetidos;let i = index"> -->
+          <ion-slide  (click) = "RegalarCromo(elem, i)"  *ngFor="let elem of cromosSinRepetidos;let i = index">  
             <div class="flip-box">
               <div class="flip-box-inner">
                 <div class="flip-box-front">
