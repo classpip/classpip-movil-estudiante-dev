@@ -16,13 +16,19 @@ export class Juego {
   JuegoTerminado: boolean;
   profesorId: number;
   cuestionarioId: number;
+  PuntuacionCorrectaBonus: number;
+  PuntuacionIncorrectaBonus: number;
+  PreguntasBasicas: number[];
+  PreguntasBonus: number[];
+  idescenario: number;
 
   
 
   constructor(Tipo?: string, Modo?: string, coleccionId?: number, JuegoActivo?: boolean,
     NumeroTotalJornadas?: number, TipoJuegoCompeticion?: string, NumeroParticipantesPuntuan?: number,
     Puntos?: number[], NombreJuego?: string, PuntuacionCorrecta?: number, PuntuacionIncorrecta?: number, 
-    Presentacion?: string, JuegoTermiando?: boolean, profesorId?: number, cuestionarioId?: number) {
+    Presentacion?: string, JuegoTermiando?: boolean, profesorId?: number, cuestionarioId?: number, PuntuacionCorrectaBonus?: number, PuntuacionIncorrectaBonus?: number,
+    PreguntasBasicas?: number[], PreguntasBonus?: number[], idescenario?: number)  {
 
     this.Tipo = Tipo;
     this.Modo = Modo;
@@ -39,7 +45,11 @@ export class Juego {
     this.JuegoTerminado = JuegoTermiando;
     this.profesorId = profesorId;
     this.cuestionarioId = cuestionarioId;
-
+    this.PuntuacionCorrectaBonus = PuntuacionCorrectaBonus;
+    this.PuntuacionIncorrectaBonus = PuntuacionIncorrectaBonus;
+    this.PreguntasBasicas = PreguntasBasicas;
+    this.PreguntasBonus = PreguntasBonus;
+    this.idescenario = idescenario;
     
   }
 }

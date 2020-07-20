@@ -7,8 +7,9 @@ import {
   Equipo, AsignacionEquipo, AsignacionPuntosJuego, EquipoJuegoDePuntos, Coleccion,
   AlumnoJuegoDeColeccion, EquipoJuegoDeColeccion, Cromo, HistorialPuntosAlumno, HistorialPuntosEquipo,
   Album, AlbumEquipo, Insignia, AlumnoJuegoDeCompeticionLiga, EquipoJuegoDeCompeticionLiga, Jornada, EnfrentamientoLiga,
-  AlumnoJuegoDeCompeticionFormulaUno, EquipoJuegoDeCompeticionFormulaUno, AlumnoJuegoDeAvatar,
-  FamiliaAvatares
+  AlumnoJuegoDeCompeticionFormulaUno, EquipoJuegoDeCompeticionFormulaUno, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching,
+  PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares
+
 } from '../clases';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Cuestionario } from '../clases/Cuestionario';
@@ -21,13 +22,14 @@ import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestion
 
 export class PeticionesAPIService {
 
-  //private base = 'http://localhost:';
+  // private base = 'http://localhost:';
 
-  private base = 'http://147.83.118.92:';
+  // private base = 'http://147.83.118.92:';
   //private base = 'http://192.168.1.35:'; 
 
-  //private base = 'http://147.83.118.92:';
+  private base = 'http://147.83.118.92:';
   //private base = 'http://192.168.1.143:'; 
+    // private base = 'http://192.168.1.45:'; 
 
 
   private APIUrlProfesores = this.base + '3000/api/Profesores';
@@ -78,6 +80,11 @@ export class PeticionesAPIService {
   private APIUrlAlumnoJuegoDeCuestionario = this.base + '3000/api/AlumnosJuegoDeCuestionario';
   private APIUrlCuestionario = this.base + '3000/api/Cuestionarios';
   private APIUrlRespuestasJuegoDeCuestionario = this.base + '3000/api/respuestasJuegoDeCuestionario';
+
+  private APIUrlJuegoDeGeocaching = this.base + '3000/api/JuegosDeGeocaching';
+  private APIUrlAlumnoJuegoDeGeocaching = this.base + '3000/api/AlumnosJuegoDeGeocaching';
+  private APIUrlEscenarios = this.base + '3000/api/Escenarios';
+  private APIUrlPreguntas = this.base + '3000/api/Preguntas';
 
 
 
@@ -809,6 +816,37 @@ export class PeticionesAPIService {
     return this.httpImagenes.get(this.APIUrlImagenCromo +  '/download/' + imagen,
       { responseType: ResponseContentType.Blob });
   }
+
+//geocaching
+  public DameJuegoDeGeocachingAlumno(alumnoId: number): Observable<Juego[]> {
+    return this.http.get<Juego[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegosDeGeocaching');
+  }
+  public DameAlumnosJuegoDeGeocaching(juegoDeGeocachingId: number): Observable<Alumno[]> {
+    return this.http.get<Alumno[]>(this.APIUrlJuegoDeGeocaching + '/' + juegoDeGeocachingId + '/alumnos');
+  }
+  public DameInscripcionAlumnoJuegoDeGeocaching(alumnoId: number, juegoDeGeocachingId: number): Observable<AlumnoJuegoDeGeocaching> {
+    return this.http.get<AlumnoJuegoDeGeocaching>(this.APIUrlAlumnoJuegoDeGeocaching + '?filter[where][alumnoId]=' + alumnoId
+    + '&filter[where][juegoDeGeocachingId]=' + juegoDeGeocachingId);
+  }
+  public ListaInscripcionesAlumnosJuegoDeGeocaching(juegoDeGeocachingId: number): Observable<AlumnoJuegoDeGeocaching[]> {
+    return this.http.get<AlumnoJuegoDeGeocaching[]>(this.APIUrlAlumnoJuegoDeGeocaching + '?filter[where][juegoDeGeocachingId]=' + juegoDeGeocachingId);
+  }
+  public DameEscenario(idescenario: number):Observable<Escenario> {
+    return this.http.get<Escenario>(this.APIUrlEscenarios+ '/' + idescenario);
+  }
+public DamePuntosGeolocalizablesEscenario(idescenario: number): Observable<PuntoGeolocalizable[]> {
+    return this.http.get<PuntoGeolocalizable[]>(this.APIUrlEscenarios + '/' + idescenario + '/puntosgeolocalizables');
+}
+public DamePreguntas(preguntaId: number): Observable<Pregunta> {
+  return this.http.get<Pregunta>(this.APIUrlPreguntas + '/' + preguntaId);
+
+}
+
+public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGeocaching, alumnoJuegoDeGeocachingId: number): Observable<AlumnoJuegoDeGeocaching> {
+  // tslint:disable-next-line:max-line-length
+  return this.http.put<AlumnoJuegoDeGeocaching>(this.APIUrlAlumnoJuegoDeGeocaching + '/' + alumnoJuegoDeGeocachingId, alumnoJuegoDeGeocaching);
+}
+  
 
   // AVATARES
   public DameAlumnosJuegoDeAvatar(juegoDeAvatarId: number): Observable<Alumno[]> {
