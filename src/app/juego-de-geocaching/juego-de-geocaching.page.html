@@ -38,12 +38,12 @@
       <mat-step>
         <div *ngIf="rendirse;else Aviso_rendirse">
           <p><b>Segunda Pista: </b>{{puntogeolocalizable.PistaFacil}}</p>
-          <p> distancia: {{distancia}} </p>
-          <button (click) = "llegada()" class = "ion-float-right button-rendirse">llegar</button>
+          <!-- <p> distancia: {{distancia}} </p>
+          <button (click) = "llegada()" class = "ion-float-right button-rendirse">llegar</button> -->
         </div>
         <ng-template #Aviso_rendirse>
           <p><b>Pista: </b>{{puntogeolocalizable.PistaDificil}}</p>
-          <p> distancia: {{distancia}} </p>
+          <!-- <p> distancia: {{distancia}} </p> -->
           <button (click) = "Rendirse()" class = "ion-float-right button-rendirse">Rendirse</button>
         </ng-template>
         <div *ngIf="ubicacion">
