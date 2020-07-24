@@ -120,20 +120,27 @@ export class JuegoAvatarPage implements OnInit {
     // En data me devuelve dos cosas: si ha habido cambio en el avatar y, 
     // en caso afirmativo, la inscripcion que contiene el avatar cambiado
     if (data.hayCambio) {
-      this.tieneAvatar = true;
-      this.inscripcionAlumnoJuegoAvatar = data.inscripcion;
-      // voy a eliminar los complementos que haya ahora en el avatar
-      // pero primero guardo la silueta que no quiero perderla
-      const silueta = document.getElementById ('silueta');
-      const imagenAvatar = document.getElementById('imagenAvatar');
-      // elimino todos los elementos que están en la imagen (incluida la silueta)
-      while (imagenAvatar.firstChild) {
-        imagenAvatar.removeChild(imagenAvatar.lastChild);
+      if (this.tieneAvatar) {
+    
+        this.inscripcionAlumnoJuegoAvatar = data.inscripcion;
+        // voy a eliminar los complementos que haya ahora en el avatar
+        // pero primero guardo la silueta que no quiero perderla
+        const silueta = document.getElementById ('silueta');
+        const imagenAvatar = document.getElementById('imagenAvatar');
+        // elimino todos los elementos que están en la imagen (incluida la silueta)
+        while (imagenAvatar.firstChild) {
+          imagenAvatar.removeChild(imagenAvatar.lastChild);
+        }
+        // y vuelvo a poner la silueta
+        imagenAvatar.appendChild(silueta);
+        // ahora voy a por los nuevos complementos
+        this.MostrarAvatar();
+      } else {
+        this.tieneAvatar = true;
+        this.MostrarAvatar();
       }
-      // y vuelvo a poner la silueta
-      imagenAvatar.appendChild(silueta);
-      // ahora voy a por los nuevos complementos
-      this.MostrarAvatar();
+
+
     //this.navCtrl.navigateForward('/avatar-editor');
     }
   }
