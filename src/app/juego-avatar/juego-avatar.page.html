@@ -8,18 +8,23 @@
 </ion-header>
 
 <ion-content class="juegoavatar-content">
-  <img class="logo" src="../../assets/img/avataricon.svg" width="100px">
-  <h2> Hola {{MiAlumno.Nombre}}, bienvenido al <br> al juego de avatares</h2>
-  <p> <b>Aquí podrás crear y personalizar tu avatar</b><br>
-    recuerda que has de trabajar duro <br> para completar tu obra</p>
 
+   
+
+    <div *ngIf="tieneAvatar" id="imagenAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%; margin-bottom: 30%;">
+      <img #img id="silueta" [src]="imagenSilueta" style="position: relative; z-index: 0;">
+    </div> 
+ 
+    <div *ngIf="!tieneAvatar" style = "height:20%">
+      <h1>No has elegido avatar todavia</h1>
+    </div>
   <div>
     <mat-expansion-panel class="privilegios-btn">
       <mat-expansion-panel-header class="cabecera-privilegios">
         <h2> Ver mis privilegios </h2>
       </mat-expansion-panel-header>
       <div *ngFor="let elem of criterios; let i = index">
-        <ion-card *ngIf="InfoMiAlumno.Privilegios[i] === true">
+        <ion-card *ngIf="inscripcionAlumnoJuegoAvatar.Privilegios[i] === true">
           <ion-item lines="none" class="privilegio-activo">
             <img class="icono-privilegio"  src="../../assets/img/check.svg">
             <ion-label>
@@ -29,7 +34,7 @@
           </ion-item>
         </ion-card>
         <!-- si no tiene el privilegio -->
-        <ion-card *ngIf="InfoMiAlumno.Privilegios[i] === false">
+        <ion-card *ngIf="inscripcionAlumnoJuegoAvatar.Privilegios[i] === false">
           <ion-item lines="none" class="privilegio-inactivo">
             <img class="icono-privilegio" src="../../assets/img/timer.svg">
             <ion-label>

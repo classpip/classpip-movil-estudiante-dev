@@ -8,25 +8,42 @@
 </ion-header>
 
 <ion-content class="editoravatar-content" #content>
-  <img class="logo" src="../../assets/img/avataricon.svg" width="100px">
-  <p> <b> Bienvenido a tu editor de AVATAR </b> <br> aquí podrás editar tus familias <br>
-    de avatar al gusto</p>
 
-  <p>Aquí están las familias activas en este juego</p>
+  <ion-button style = "margin-top: 5%; margin-bottom:5%" (click)="Volver()"> VOLVER </ion-button>
 
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let familia of familiasDelJuego">
+    <mat-expansion-panel *ngFor="let familia of familiasDelJuego" (click) = "modificacion = false">
       <mat-expansion-panel-header>
         <b> {{familia.NombreFamilia}} </b>
       </mat-expansion-panel-header>
-      <ion-button (click)="TraeImagenesFamilia(familia)"> CREAR </ion-button>
+      <!-- En este primer caso ha elegido una familia diferente a la del avatar que tiene -->
+      <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta !== familia.Silueta" (click)="TraeImagenesFamilia(familia)"> CREAR </ion-button>
+      <!-- En este segundo caso la familia elegida es la del avatar que ya tiene. Por eso tengo que mostrar tambien
+      su avatar tal y como está -->
+      <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta === familia.Silueta" (click)="TraeImagenesFamilia(familia);  MuestraAvatar()"> MODIFICAR </ion-button>
+      <!-- Si modifica el avatar muestro el boton de guardar -->
+      <ion-button *ngIf= "modificacion" color="danger" (click)="Guardar()"> GUARDAR </ion-button>
     </mat-expansion-panel>
   </mat-accordion>
+
   <ion-row style="height: 20px"></ion-row>
-  <div *ngIf="FamiliaSeleccionada">
-    <div id="ImagenAvatar" style="display: flex; width: 300px; height: 324px; margin: auto;">
+  <div >
+    <!-- Aqui muestro el avatar tal y como está -->
+
+    <div  id="imagenAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%; margin-bottom: 30%;">
       <img #img id="silueta" [src]="imagenSilueta" style="position: relative; z-index: 0;">
-    </div>
+    </div> 
+   
+<!--  
+    <div  id="imagenAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%; margin-bottom: 30%;">
+      <img #img id="silueta" [src]="imagenSilueta" style="position: relative; z-index: 0;">
+    </div>  -->
+<!--  
+    <div *ngIf="!tieneAvatar" style = "height:20%">
+      <h1>No has elegido avatar todavia</h1>
+    </div> -->
+
+
 
     <div *ngIf="familiaElegida">
       <ion-segment [(ngModel)]="Tipo" #segment>
@@ -48,11 +65,11 @@
     <div class="complementos-segmento">
       <div [ngSwitch]="Tipo" style="overflow-x: auto;">
         <ng-container *ngSwitchCase="'comp1'">
-          <div *ngIf="privilegiosalumno[0] === true; else elseBlock">
+          <div *ngIf="privilegiosAlumno[0] === true; else elseBlock">
             <div *ngFor="let elem of c1; let i = index" class="elementos-complemento">
               <ion-card class="elemento-card">
                 <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Muestra(elem, 1, i)" style="position: absolute; z-index: 1;">
+                <img [src]="elem" tappable (click)="Pon(elem, 1, i)" style="position: absolute; z-index: 1;">
               </ion-card>
             </div>
           </div>
@@ -61,11 +78,11 @@
 
       <div [ngSwitch]="Tipo" style="overflow-x: auto;">
         <ng-container *ngSwitchCase="'comp2'">
-          <div *ngIf="privilegiosalumno[1] === true; else elseBlock">
+          <div *ngIf="privilegiosAlumno[1] === true; else elseBlock">
             <div *ngFor="let elem of c2; let i = index" class="elementos-complemento">
               <ion-card class="elemento-card">
                 <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Muestra(elem, 2, i)" style="position: absolute; z-index: 1;">
+                <img [src]="elem" tappable (click)="Pon(elem, 2, i)" style="position: absolute; z-index: 1;">
               </ion-card>
             </div>            
           </div>
@@ -73,12 +90,12 @@
       </div>
       <div [ngSwitch]="Tipo" style="overflow-x: auto;">
         <ng-container *ngSwitchCase="'comp3'">
-          <div *ngIf="privilegiosalumno[2] === true; else elseBlock">
+          <div *ngIf="privilegiosAlumno[2] === true; else elseBlock">
             <div *ngFor="let elem of c3; let i = index"
               class="elementos-complemento">
               <ion-card class="elemento-card">
                 <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Muestra(elem, 3, i)" style="position: absolute; z-index: 1;">
+                <img [src]="elem" tappable (click)="Pon(elem, 3, i)" style="position: absolute; z-index: 1;">
               </ion-card>
             </div>            
           </div>
@@ -86,12 +103,12 @@
       </div>
       <div [ngSwitch]="Tipo" style="overflow-x: auto;">
         <ng-container *ngSwitchCase="'comp4'">
-          <div *ngIf="privilegiosalumno[3] === true; else elseBlock">
+          <div *ngIf="privilegiosAlumno[3] === true; else elseBlock">
             <div *ngFor="let elem of c4; let i = index"
               class="elementos-complemento">
               <ion-card class="elemento-card">
                 <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Muestra(elem, 4, i)" style="position: absolute; z-index: 1;">
+                <img [src]="elem" tappable (click)="Pon(elem, 4, i)" style="position: absolute; z-index: 1;">
               </ion-card>
             </div>            
           </div>

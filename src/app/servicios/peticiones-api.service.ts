@@ -552,6 +552,8 @@ export class PeticionesAPIService {
       + juegoDeColeccionId);
   }
 
+  
+
   // DEVUELVE UN ARRAY CON LAS INCRIPCIONES DE LOS ALUMNOS A UN JUEGO DE COLECCIÓN DETERMINADO
   public DameInscripcionAlumnoJuegoDeColeccion(juegoDeColeccionId: number, alumnoId: number): Observable<AlumnoJuegoDeColeccion> {
     return this.http.get<AlumnoJuegoDeColeccion>(this.APIUrlAlumnoJuegoDeColeccion + '?filter[where][juegoDeColeccionId]='
@@ -818,6 +820,17 @@ export class PeticionesAPIService {
   public DameInscripcionesAlumnoJuegoDeAvatar(juegoDeAvatarId: number): Observable<AlumnoJuegoDeAvatar[]> {
     return this.http.get<AlumnoJuegoDeAvatar[]>(this.APIUrlAlumnoJuegoDeAvatar
     + '?filter[where][juegoDeAvatarId]=' + juegoDeAvatarId);
+  }
+  // Da la inscripción de un alumno concreto
+  public DameInscripcionAlumnoJuegoDeAvatar(juegoDeAvatarId: number, alumnoId: number): Observable<AlumnoJuegoDeAvatar[]> {
+    return this.http.get<AlumnoJuegoDeAvatar[]>(this.APIUrlAlumnoJuegoDeAvatar
+    + '?filter[where][juegoDeAvatarId]=' + juegoDeAvatarId +  '&filter[where][alumnoId]=' + alumnoId);
+  }
+
+  // Modifica la inscripcion (el avatar) del alumno
+  public ModificaInscripcionAlumnoJuegoDeAvatar(alumnoJuegoDeAvatar: AlumnoJuegoDeAvatar): Observable<AlumnoJuegoDeAvatar> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<AlumnoJuegoDeAvatar>(this.APIUrlAlumnoJuegoDeAvatar + '/' + alumnoJuegoDeAvatar.id, alumnoJuegoDeAvatar);
   }
   // Devuelve los juegos de puntos del Alumno
   public DameJuegoDeAvatarAlumno(alumnoId: number): Observable<Juego[]> {
