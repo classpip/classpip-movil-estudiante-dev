@@ -24,7 +24,8 @@ const routes: Routes = [
   
   { path: 'juego-puntos', loadChildren: './juego-puntos/juego-puntos.module#JuegoPuntosPageModule' },
   { path: 'album-alumno', loadChildren: './album-alumno/album-alumno.module#AlbumAlumnoPageModule' },
-  { path: 'modal', loadChildren: './modal/modal.module#ModalPageModule' }
+  { path: 'modal', loadChildren: './modal/modal.module#ModalPageModule' },  { path: 'ver-avatares-grupo', loadChildren: './ver-avatares-grupo/ver-avatares-grupo.module#VerAvataresGrupoPageModule' }
+
 ];
 
 @NgModule({

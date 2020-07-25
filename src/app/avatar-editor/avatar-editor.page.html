@@ -12,17 +12,34 @@
   <ion-button style = "margin-top: 5%; margin-bottom:5%" (click)="Volver()"> VOLVER </ion-button>
 
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let familia of familiasDelJuego" (click) = "modificacion = false">
+    <mat-expansion-panel *ngFor="let familia of familiasDelJuego; let i=index" (click) = "PreparaEjemplo (familia, i)">
       <mat-expansion-panel-header>
         <b> {{familia.NombreFamilia}} </b>
       </mat-expansion-panel-header>
-      <!-- En este primer caso ha elegido una familia diferente a la del avatar que tiene -->
-      <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta !== familia.Silueta" (click)="TraeImagenesFamilia(familia)"> CREAR </ion-button>
-      <!-- En este segundo caso la familia elegida es la del avatar que ya tiene. Por eso tengo que mostrar tambien
-      su avatar tal y como está -->
-      <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta === familia.Silueta" (click)="TraeImagenesFamilia(familia);  MuestraAvatar()"> MODIFICAR </ion-button>
-      <!-- Si modifica el avatar muestro el boton de guardar -->
-      <ion-button *ngIf= "modificacion" color="danger" (click)="Guardar()"> GUARDAR </ion-button>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div id = {{i}} style="display: flex; width: 70px; height: 83.16px;">
+              <ion-img [src]="imagenPequenaSilueta"  style="position: relative; z-index: 0;" ></ion-img>
+            </div> 
+          </ion-col>
+          <ion-col>
+          <ion-col >
+        
+              
+              <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta !== familia.Silueta" (click)="TraeImagenesFamilia(familia)"> CREAR </ion-button>
+
+              <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta === familia.Silueta" (click)="TraeImagenesFamilia(familia);  MuestraAvatar()"> MODIFICAR </ion-button>
+        
+          </ion-col>
+          <ion-col>
+            
+              <ion-button disabled= "{{!modificacion}}" color="danger" (click)="Guardar()"> GUARDAR </ion-button>
+           
+          </ion-col>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </mat-expansion-panel>
   </mat-accordion>
 

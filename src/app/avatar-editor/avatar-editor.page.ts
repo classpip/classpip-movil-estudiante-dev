@@ -38,6 +38,7 @@ export class AvatarEditorPage implements OnInit {
   modificacion = false;
   interval;
   tieneAvatar = false;
+  imagenPequenaSilueta;
 
   @ViewChild(IonContent, { static: false }) content: IonContent;
   //@ViewChild(IonSegment, { static: false }) segment: IonSegment;
@@ -386,10 +387,30 @@ export class AvatarEditorPage implements OnInit {
           text: 'SI',
           handler: async () => {
             this.inscripcionAlumnoJuegoAvatar.Silueta =  this.familiaElegida.Silueta;
-            this.inscripcionAlumnoJuegoAvatar.Complemento1 = this.familiaElegida.Complemento1[this.complementoElegido[0]];
-            this.inscripcionAlumnoJuegoAvatar.Complemento2 = this.familiaElegida.Complemento2[this.complementoElegido[1]];
-            this.inscripcionAlumnoJuegoAvatar.Complemento3 = this.familiaElegida.Complemento3[this.complementoElegido[2]];
-            this.inscripcionAlumnoJuegoAvatar.Complemento4 = this.familiaElegida.Complemento4[this.complementoElegido[3]];
+            if (this.hayComplementoPuesto[0]) {
+              this.inscripcionAlumnoJuegoAvatar.Complemento1 = this.familiaElegida.Complemento1[this.complementoElegido[0]];
+            } else {
+              this.inscripcionAlumnoJuegoAvatar.Complemento1 = undefined;
+            }
+            if (this.hayComplementoPuesto[1]) {
+              this.inscripcionAlumnoJuegoAvatar.Complemento2 = this.familiaElegida.Complemento2[this.complementoElegido[1]];
+            } else {
+              this.inscripcionAlumnoJuegoAvatar.Complemento2 = undefined;
+            }
+            if (this.hayComplementoPuesto[2]) {
+              this.inscripcionAlumnoJuegoAvatar.Complemento3 = this.familiaElegida.Complemento3[this.complementoElegido[2]];
+            } else {
+              this.inscripcionAlumnoJuegoAvatar.Complemento3 = undefined;
+            }
+            if (this.hayComplementoPuesto[3]) {
+              this.inscripcionAlumnoJuegoAvatar.Complemento4 = this.familiaElegida.Complemento4[this.complementoElegido[3]];
+            } else {
+              this.inscripcionAlumnoJuegoAvatar.Complemento4 = undefined;
+            }
+
+            // this.inscripcionAlumnoJuegoAvatar.Complemento2 = this.familiaElegida.Complemento2[this.complementoElegido[1]];
+            // this.inscripcionAlumnoJuegoAvatar.Complemento3 = this.familiaElegida.Complemento3[this.complementoElegido[2]];
+            // this.inscripcionAlumnoJuegoAvatar.Complemento4 = this.familiaElegida.Complemento4[this.complementoElegido[3]];
             console.log ('Voy a guardar');
             console.log (this.complementoElegido);
             console.log (this.inscripcionAlumnoJuegoAvatar);
@@ -436,6 +457,25 @@ export class AvatarEditorPage implements OnInit {
 
   }
 
+  PreparaEjemplo(familia: FamiliaAvatares, i: number) {
+    console.log ('preparo ejemplo');
+    console.log (familia);
+    this.modificacion = false;
+    this.imagenPequenaSilueta = URL.ImagenesAvatares + familia.Silueta;
+    const imagenAvatar = document.getElementById(i.toString());
+
+    const imagen1 = this.CreaImagen (1, URL.ImagenesAvatares +  familia.Complemento1[0]);
+    imagenAvatar.appendChild(imagen1);
+
+    const imagen2 = this.CreaImagen (2, URL.ImagenesAvatares +  familia.Complemento2[0]);
+    imagenAvatar.appendChild(imagen2);
+
+    const imagen3 = this.CreaImagen (3, URL.ImagenesAvatares +  familia.Complemento3[0]);
+    imagenAvatar.appendChild(imagen3);
+
+    const imagen4 = this.CreaImagen (4, URL.ImagenesAvatares +  familia.Complemento4[0]);
+    imagenAvatar.appendChild(imagen4);
+  }
 
   MostrarAvatar() {
     // Hay un problama para mostrar el avatar
@@ -481,7 +521,7 @@ export class AvatarEditorPage implements OnInit {
 CreaImagen(numeroComplemento: number, imagenString: string): any {
   const imagen = document.createElement('img');
   imagen.style.position = 'absolute';
-  imagen.style.width = '300px'; imagen.style.height = '324px';
+  imagen.style.width = '70px'; imagen.style.height = '83.16px';
   // los complementos se apilan según el orden indicado por el numero de complemento.
   imagen.style.zIndex = numeroComplemento.toString();
 

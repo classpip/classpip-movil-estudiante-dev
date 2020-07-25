@@ -1,0 +1,32 @@
+
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Avatares del grupo</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-slides [options]="sliderConfig">
+    <ion-slide *ngFor="let avatar of listaAvatares">
+      <div>
+
+            <h2> {{avatar.al.Nombre}} {{avatar.al.PrimerApellido}} {{avatar.al.SegundoApellido}} </h2>
+                    
+            <div  *ngIf = "avatar.insc.Silueta" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%; margin-bottom: 30%;">
+              <img  [src]="imagenesAvatares + avatar.insc.Silueta" style="width: 300px; height: 324px; position: relative; z-index: 0;">
+              <img  *ngIf = "avatar.insc.Complemento1" [src]="imagenesAvatares + avatar.insc.Complemento1" style="width: 300px; height: 324px; position: absolute; z-index: 1;">
+              <img  *ngIf = "avatar.insc.Complemento2" [src]="imagenesAvatares + avatar.insc.Complemento2" style="width: 300px; height: 324px;position: absolute; z-index: 2;">
+              <img  *ngIf = "avatar.insc.Complemento3" [src]="imagenesAvatares + avatar.insc.Complemento3" style="width: 300px; height: 324px;position: absolute; z-index: 3;">
+              <img  *ngIf = "avatar.insc.Complemento4" [src]="imagenesAvatares + avatar.insc.Complemento4" style="width: 300px; height: 324px;position: absolute; z-index: 4;">
+            </div> 
+            <div  *ngIf = "!avatar.insc.Silueta">
+              <h1>Aún no tiene avatar</h1>
+            </div>
+ 
+
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
