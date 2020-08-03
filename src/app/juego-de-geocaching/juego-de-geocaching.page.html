@@ -1,0 +1,127 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="!empezado" class="menu-btn"></ion-back-button>
+      <ion-button *ngIf = "empezado" style ="font-size: 17.5px;" (click)="popup()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title *ngIf = "juegoSeleccionado.JuegoActivo">{{juegoSeleccionado.NombreJuego}}</ion-title>
+    <ion-title *ngIf = "!juegoSeleccionado.JuegoActivo">Clasificación {{juegoSeleccionado.NombreJuego}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf = "juegoSeleccionado.JuegoActivo">
+    <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="PuntuacionInicial === '0'">
+
+      <!-- PRIMER PASO -->
+      <mat-step>
+        <p style="margin-top: 50px; text-align: justify;">Descripción: Al empezar cada etapa, aparecerá una pista que te guiará a una ubicación dónde se realizará una pregunta puntuable. ¿Estas seguro de que quieres jugar ahora? Si es que sí, avanza para ver las reglas.</p>
+        <div style="margin-top: auto;">
+          <button class = "ion-float-right siguiente" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+        </div>
+      </mat-step>
+
+      <!-- SEGUNDO PASO -->
+      <mat-step>
+        <div style="margin-top: 50px;">
+          <p><b>Descripción: </b>{{descripcion}}</p>
+          <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
+          <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
+          <p><b>Porcentaje a aumentar por respuesta bonus correcta: </b>{{puntuacionCorrectaBonus}}</p>
+          <p><b>Porcentaje de penalización por respuesta bonus incorrecta: </b>{{puntuacionIncorrectaBonus}}</p>
+          <button (click) = "empezamos()" class = "ion-float-right button-empezar" matStepperNext>Empezar</button>
+        </div>
+      </mat-step>
+      
+       <!-- TERCER PASO -->
+      <mat-step>
+        <div *ngIf="rendirse;else Aviso_rendirse">
+          <p><b>Segunda Pista: </b>{{puntogeolocalizable.PistaFacil}}</p>
+          <p> distancia: {{distancia}} </p>
+          <button (click) = "llegada()" class = "ion-float-right button-rendirse">llegar</button>
+        </div>
+        <ng-template #Aviso_rendirse>
+          <p><b>Pista: </b>{{puntogeolocalizable.PistaDificil}}</p>
+          <p> distancia: {{distancia}} </p>
+          <button (click) = "Rendirse()" class = "ion-float-right button-rendirse">Rendirse</button>
+        </ng-template>
+        <div *ngIf="ubicacion">
+          <p><b style="font-size: 16px;">Avanza para responder la pregunta puntuable</b></p>
+          <button class = "ion-float-right button-empezar" matStepperNext>Responder Pregunta</button>
+        </div>
+      </mat-step>
+
+        <!-- CUARTO PASO -->
+      <mat-step *ngIf="ubicacion">
+        <p style="font-size: 18px;">{{preguntabasica.Pregunta}}</p>
+        <div>
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogidaBasica">
+              <mat-radio-button class="radio-button" *ngFor="let respuestabasica of respuestasPosiblesBasicas" [value]="respuestabasica">
+                <p style="color: black;">{{respuestabasica}}</p>
+              </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <button (click)="PreguntaBasica()" class = "ion-float-right button-empezar" matStepperNext>Confirmar</button>
+      </mat-step>  
+
+
+       <!-- QUINTO PASO -->
+        <mat-step *ngIf="ubicacion && respuesta && bonus">
+           <p style="font-size: 18px;"><b>Bonus: </b>{{preguntabonus.Pregunta}}</p>
+             <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogidaBonus">
+                <mat-radio-button class="radio-button" *ngFor="let respuestabonus of respuestasPosiblesBonus" [value]="respuestabonus">
+                   <p style="color: black;">{{respuestabonus}}</p>
+                </mat-radio-button>
+            </mat-radio-group>
+          <button (click)="PreguntaBonus()" class = "ion-float-right button-empezar" matStepperNext>Confirmar</button>
+        </mat-step>
+
+        
+         <!-- SEXTO PASO -->
+        <mat-step>
+          <p style="font-size: 18px;"><b>Puntuación Etapa: {{Nota}}  </b></p>
+          <p style="font-size: 18px;"><b>Puntuación Total: {{puntuaciontotal}}  </b></p>
+          <p style="font-size: 18px;"><b>Etapas: {{ index+1 }}/ {{numeroEtapas}}  </b></p>
+
+          <div *ngIf="index+1 === numeroEtapas;else Aviso_siguiente">
+            <button (click) = "finalizar()" class = "ion-float-right button-empezar">Finalizar</button>
+          </div>
+          <ng-template #Aviso_siguiente>
+            <button (click) = "siguiente()" class = "ion-float-right button-empezar">Siguiente Etapa</button>
+          </ng-template>
+        </mat-step>
+
+
+    </mat-horizontal-stepper>
+
+
+
+    <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="PuntuacionInicial !== '0'">
+      <mat-step>
+        <div style="margin-top: 100px; text-align: justify;">
+          <p style="font-size: 16px;">Ya has realizado este juego previamente. Y la puntuación obtenida es: <b>{{PuntuacionInicial}}</b></p>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+
+</ion-content>
+
+
+<ion-content *ngIf = "!juegoSeleccionado.JuegoActivo" class="juegoseleccionado-content"  [scrollEvents]="true">
+  <div class="ranking">
+    <ion-card *ngFor="let alum of MisAlumnosDelJuegoDeGeocaching">
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <img src="../../assets/img/usuario.svg">
+        </ion-avatar>
+        <ion-label>
+          <h2> <b>{{alum.Nombre}} {{alum.PrimerApellido}}</b> </h2>
+          <p> Puntos: {{alum.Puntuacion}}</p>
+        </ion-label>
+      </ion-item>
+    </ion-card>
+  </div>
+</ion-content>
+
+

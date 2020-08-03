@@ -34,6 +34,8 @@ export class HomePage {
   timer: any;
 
   coords: any = { lat: 0, lng: 0 };
+  latitud;
+  longitud;
 
   constructor(
     // private http: HttpClient,
@@ -252,6 +254,7 @@ obtenerPosicion(): any{
     }
   );
 }
+
 
     async presentLoading() {
       const loading = await this.loadingController.create({
