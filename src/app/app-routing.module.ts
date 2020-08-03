@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
@@ -25,7 +26,8 @@ const routes: Routes = [
   { path: 'juego-puntos', loadChildren: './juego-puntos/juego-puntos.module#JuegoPuntosPageModule' },
   { path: 'album-alumno', loadChildren: './album-alumno/album-alumno.module#AlbumAlumnoPageModule' },
   { path: 'juego-de-geocaching', loadChildren: './juego-de-geocaching/juego-de-geocaching.module#JuegoDeGeocachingPageModule' },
-  { path: 'modal', loadChildren: './modal/modal.module#ModalPageModule' }
+  { path: 'modal', loadChildren: './modal/modal.module#ModalPageModule' },
+  { path: 'ver-avatares-grupo', loadChildren: './ver-avatares-grupo/ver-avatares-grupo.module#VerAvataresGrupoPageModule' }
 
 ];
 
