@@ -41,7 +41,7 @@ export class AvatarEditorPage implements OnInit {
   imagenPequenaSilueta;
 
   @ViewChild(IonContent, { static: false }) content: IonContent;
-  //@ViewChild(IonSegment, { static: false }) segment: IonSegment;
+
   constructor(private peticionesAPI: PeticionesAPIService,
               private sesion: SesionService,
               private alertCtrl: AlertController,
@@ -126,106 +126,43 @@ export class AvatarEditorPage implements OnInit {
   }
 
 
-  // TraerImagenesComplementos() {
-
-  //   // Vamos a por las imagenes de cada uno de los complementos
-  //   // las guardo con la URL delante para facilitar la visualización
-  //   this.c1 = [];
-  //   this.familiaElegida.Complemento1.forEach(imagenComplemento => {
-  //     this.c1.push(URL.ImagenesAvatares + imagenComplemento);
-  //   });
-
-  //   this.c2 = [];
-  //   this.familiaElegida.Complemento2.forEach(imagenComplemento => {
-  //     this.c2.push(URL.ImagenesAvatares + imagenComplemento);
-  //   });
-  //   this.c3 = [];
-  //   this.familiaElegida.Complemento3.forEach(imagenComplemento => {
-  //     this.c3.push(URL.ImagenesAvatares + imagenComplemento);
-  //   });
-  //   this.c4 = [];
-  //   this.familiaElegida.Complemento4.forEach(imagenComplemento => {
-  //     this.c4.push( URL.ImagenesAvatares + imagenComplemento);
-  //   });
-
-  //   this.familiaCargada = true;
-  //   this.FamiliaSeleccionada = true;
-  //   // Elimino los complementos que haya en este momento en el avatar
-  //   this.EliminarComplementos();
-  // }
-  
-//   MostrarAvatar() {
-//     // Hay un problama para mostrar el avatar
-//     // resulta que la operación getElementById no funciona bien si el elemento
-//     // que quiero obtener tiene un *ngIf, porque de acuerdo con el ciclo de ejecición
-//     // de Angular, primero obtiene el elemento y luego mira el *ngIf para ver si lo
-//     // tiene que colocar o no, con lo cual, al obtener el elemento lo que obtiene es un null.
-//     // Para alterar ese ciclo de ejecición basta con poner el getElementById dentro de un timer.
-//     // Esto hace que cambie el orden en el que se hacen las cosas y el getElementById lo haga
-//     // despues de decidir el *ngIf.
-//     // El timer puede tener un tiempo de disparo de 0. Con eso basta.
-//     let imagenAvatar;
-
-//     this.interval = setInterval(() => {
-//       imagenAvatar = document.getElementById('imagenAvatar');
-//       this.imagenSilueta = URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Silueta;
-
-//       // Ahora traigo los complementos, si existen
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento1 !== undefined) {
-//         const imagen1 = this.CreaImagen (1, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento1);
-//         imagenAvatar.appendChild(imagen1);
-//       }
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento2 !== undefined) {
-//         const imagen2 = this.CreaImagen (2, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento2);
-//         imagenAvatar.appendChild(imagen2);
-//       }
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento3 !== undefined) {
-//         const imagen3 = this.CreaImagen (3, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento3);
-//         imagenAvatar.appendChild(imagen3);
-//       }
-
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento4 !== undefined) {
-//         const imagen4 = this.CreaImagen (4, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento4);
-//         imagenAvatar.appendChild(imagen4);
-//       }
-//       clearInterval(this.interval);
-
-//     }, 0);
-// }
-
 
   MuestraAvatar() {
+    // Hay un problama para mostrar el avatar
+    // resulta que la operación getElementById (que se usa en addImage) no funciona bien si el elemento
+    // que quiero obtener tiene un *ngIf, porque de acuerdo con el ciclo de ejecición
+    // de Angular, primero obtiene el elemento y luego mira el *ngIf para ver si lo
+    // tiene que colocar o no, con lo cual, al obtener el elemento lo que obtiene es un null.
+    // Para alterar ese ciclo de ejecición basta con poner la función que llama a getElementById dentro de un timer.
+    // Esto hace que cambie el orden en el que se hacen las cosas y el getElementById lo haga
+    // despues de decidir el *ngIf.
+    // El timer puede tener un tiempo de disparo de 0. Con eso basta.
+
     this.interval = setInterval(() => {
     // si ya tiene avatar aqui lo preparamos todo para que lo muestre
  
       this.imagenSilueta = URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Silueta;
+
       if (this.inscripcionAlumnoJuegoAvatar.Complemento1 !== undefined) {
         const index = this.familiaElegida.Complemento1.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento1);
         this.Muestra (URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento1, 1, index);
       }
+
       if (this.inscripcionAlumnoJuegoAvatar.Complemento2 !== undefined) {
         const index = this.familiaElegida.Complemento2.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento2);
         this.Muestra (URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento2, 2, index);
-
       }
 
       if (this.inscripcionAlumnoJuegoAvatar.Complemento3 !== undefined) {
         const index = this.familiaElegida.Complemento3.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento3);
         this.Muestra ( URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento3, 3, index);
-
       }
 
       if (this.inscripcionAlumnoJuegoAvatar.Complemento4 !== undefined) {
         const index = this.familiaElegida.Complemento4.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento4);
         this.Muestra ( URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento4, 4, index);
-
       }
-      console.log ('ya he puesto avartar');
-      console.log (this.hayComplementoPuesto);
-      console.log (this.complementoElegido);
-      console.log (this.elementoPuesto);
       clearInterval(this.interval);
-
     }, 0);
   }
 
@@ -248,17 +185,16 @@ export class AvatarEditorPage implements OnInit {
   }
   Muestra(elem, comp, index) {
     this.complementoElegido[comp - 1] = index;
-    console.log("este es el elemento:")
-    console.log(elem);
-    console.log("este es el complemento:")
-    console.log(comp);
     const img = document.createElement("img");
     img.setAttribute('src', elem);
     img.style.position = 'absolute';
-    img.style.width = '300px'; img.style.height = '324px';
+    img.style.width = '300px'; 
+    img.style.height = '324px';
     const comp2 = comp.toString();
     const index2 = index.toString();
     const id = comp2 + index2;
+    // El id lo necesito para poder poner y quitar la imagenes de los complementos
+    // a medida que el usuario los va eligiendo
     img.setAttribute("id", comp2 + index2);
     console.log(img);
     if (comp === 1) {
@@ -278,16 +214,15 @@ export class AvatarEditorPage implements OnInit {
 
   addImage(comp, img, id) {
     if (this.hayComplementoPuesto[comp] === false) {
-        var el = document.getElementById("ImagenAvatar");
+        const el = document.getElementById('ImagenAvatar');
         el.appendChild(img);
         this.hayComplementoPuesto[comp] = true;
         this.elementoPuesto[comp] = id;
-        console.log("elementopuesto: ")
-        console.log(this.elementoPuesto);
+
       } else {
         if (this.elementoPuesto[comp] !== img.id) {
           this.removeImage(this.elementoPuesto[comp]);
-          var el = document.getElementById("ImagenAvatar");
+          const el = document.getElementById('ImagenAvatar');
           el.appendChild(img);
           this.hayComplementoPuesto[comp] = true;
           this.elementoPuesto[comp] = img.id;
@@ -295,82 +230,16 @@ export class AvatarEditorPage implements OnInit {
     }
   }
 
-
-
-  // Muestra(elem, comp, index) {
-  //   this.complementoElegido[comp - 1] = index;
-  //   console.log("este es el elemento:")
-  //   console.log(elem);
-  //   console.log("este es el complemento:")
-  //   console.log(comp);
-  //   console.log ("este es el indice");
-  //   console.log (index);
-  //   const img = document.createElement("img");
-  //   img.setAttribute('src',  elem);
-  //   img.style.position = 'absolute';
-  //   img.style.width = '300px'; img.style.height = '324px';
-  //   const comp2 = comp.toString();
-  //   const index2 = index.toString();
-  //   const id = comp2 + index2;
-  //   img.setAttribute("id", comp2 + index2);
-  //   console.log(img);
-  //   if (comp === 1) {
-  //     img.style.zIndex = "1";
-  //     this.addImage(0, img, id);
-  //   } else if (comp === 2) {
-  //     img.style.zIndex = "2";
-  //     this.addImage(1, img, id);
-  //   } else if (comp === 3) {
-  //     img.style.zIndex = "3";
-  //     this.addImage(2, img, id);
-  //   } else if (comp === 4) {
-  //     img.style.zIndex = "4";
-  //     this.addImage(3, img, id);
-  //   }
-  // }
-
-  // addImage(comp, img, id) {
-  //     console.log ('voy a poner el complemento');
-  //     // this.interval = setInterval(() => {
-  //     if (this.hayComplementoPuesto[comp] === false) {
-  //       console.log ('voy a poner el complemento');
-  //       console.log (img);
-  //       document.getElementById("imagenAvatar").appendChild(img);
-  //       this.hayComplementoPuesto[comp] = true;
-  //       this.elementoPuesto[comp] = id;
-  //       console.log("elementopuesto: ")
-  //       console.log(this.elementoPuesto);
-  //     } else {
-  //       if (this.elementoPuesto[comp] !== img.id) {
-  //         this.removeImage(this.elementoPuesto[comp]);
-  //         console.log ('ya he eliminado el elemento');
-  //         var el = document.getElementById("imagenAvatar");
-  //         el.appendChild(img);
-  //         console.log ('ya he puesto el nuevo elemento');
-  //         this.hayComplementoPuesto[comp] = true;
-  //         this.elementoPuesto[comp] = img.id;
-  //       }
-  //     }
-  //   //   clearInterval(this.interval);
-
-  //   // }, 0);
-  // }
-
   removeImage(id) {
-    console.log ('remove element');
-    console.log (this.elementoPuesto);
-    console.log (id);
-    var elementToBeRemoved = document.getElementById(id);
+    const elementToBeRemoved = document.getElementById(id);
     elementToBeRemoved.parentNode.removeChild(elementToBeRemoved);
   }
   EliminarComplementos() {
-
     for (let i = 0; i < this.hayComplementoPuesto.length; i++) {
       if (this.hayComplementoPuesto [i]) {
         const elementToBeRemoved = document.getElementById(this.elementoPuesto[i]);
         elementToBeRemoved.parentNode.removeChild(elementToBeRemoved);
         this.hayComplementoPuesto[i] = false;
-
       }
     }
   }
@@ -386,6 +255,7 @@ export class AvatarEditorPage implements OnInit {
         {
           text: 'SI',
           handler: async () => {
+            // actualizo los datos de la inscripción
             this.inscripcionAlumnoJuegoAvatar.Silueta =  this.familiaElegida.Silueta;
             if (this.hayComplementoPuesto[0]) {
               this.inscripcionAlumnoJuegoAvatar.Complemento1 = this.familiaElegida.Complemento1[this.complementoElegido[0]];
@@ -407,15 +277,9 @@ export class AvatarEditorPage implements OnInit {
             } else {
               this.inscripcionAlumnoJuegoAvatar.Complemento4 = undefined;
             }
-
-            // this.inscripcionAlumnoJuegoAvatar.Complemento2 = this.familiaElegida.Complemento2[this.complementoElegido[1]];
-            // this.inscripcionAlumnoJuegoAvatar.Complemento3 = this.familiaElegida.Complemento3[this.complementoElegido[2]];
-            // this.inscripcionAlumnoJuegoAvatar.Complemento4 = this.familiaElegida.Complemento4[this.complementoElegido[3]];
-            console.log ('Voy a guardar');
-            console.log (this.complementoElegido);
-            console.log (this.inscripcionAlumnoJuegoAvatar);
+            // Notifico al server que se ha modificado un avatar
             this.servidor.emit('modificacionAvatar', { inscripcion: this.inscripcionAlumnoJuegoAvatar});
-            console.log ('ya he emitido');
+
             this.peticionesAPI.ModificaInscripcionAlumnoJuegoDeAvatar (this.inscripcionAlumnoJuegoAvatar)
             .subscribe (async () => {
               // tslint:disable-next-line:no-shadowed-variable
@@ -425,7 +289,7 @@ export class AvatarEditorPage implements OnInit {
                   {
                     text: 'OK',
                     handler: async () => {
-                      
+                      // cierro la página model preparando la respuesta
                       this.modalCtrl.dismiss({
                         hayCambio: true,
                         inscripcion: this.inscripcionAlumnoJuegoAvatar
@@ -441,6 +305,7 @@ export class AvatarEditorPage implements OnInit {
         }, {
           text: 'NO',
           role: 'cancel',
+       
           handler: () => {
           }
         }
@@ -450,6 +315,7 @@ export class AvatarEditorPage implements OnInit {
 
   }
   Volver () {
+        // cierro la página model preparando la respuesta
     this.modalCtrl.dismiss({
       hayCambio: false,
       inscripcion: this.inscripcionAlumnoJuegoAvatar
@@ -458,10 +324,12 @@ export class AvatarEditorPage implements OnInit {
   }
 
   PreparaEjemplo(familia: FamiliaAvatares, i: number) {
-    console.log ('preparo ejemplo');
-    console.log (familia);
+    // El ejemplo se construye con la primera opción de cada complemento
     this.modificacion = false;
     this.imagenPequenaSilueta = URL.ImagenesAvatares + familia.Silueta;
+    // La imagen de ejemplo de cada familia de avatar tiene un id que es simplemente el 
+    // indice de la familia.
+
     const imagenAvatar = document.getElementById(i.toString());
 
     const imagen1 = this.CreaImagen (1, URL.ImagenesAvatares +  familia.Complemento1[0]);
@@ -477,51 +345,53 @@ export class AvatarEditorPage implements OnInit {
     imagenAvatar.appendChild(imagen4);
   }
 
-  MostrarAvatar() {
-    // Hay un problama para mostrar el avatar
-    // resulta que la operación getElementById no funciona bien si el elemento
-    // que quiero obtener tiene un *ngIf, porque de acuerdo con el ciclo de ejecición
-    // de Angular, primero obtiene el elemento y luego mira el *ngIf para ver si lo
-    // tiene que colocar o no, con lo cual, al obtener el elemento lo que obtiene es un null.
-    // Para alterar ese ciclo de ejecición basta con poner el getElementById dentro de un timer.
-    // Esto hace que cambie el orden en el que se hacen las cosas y el getElementById lo haga
-    // despues de decidir el *ngIf.
-    // El timer puede tener un tiempo de disparo de 0. Con eso basta.
-    let imagenAvatar;
+//   MostrarAvatar() {
+//     // Hay un problama para mostrar el avatar
+//     // resulta que la operación getElementById no funciona bien si el elemento
+//     // que quiero obtener tiene un *ngIf, porque de acuerdo con el ciclo de ejecición
+//     // de Angular, primero obtiene el elemento y luego mira el *ngIf para ver si lo
+//     // tiene que colocar o no, con lo cual, al obtener el elemento lo que obtiene es un null.
+//     // Para alterar ese ciclo de ejecición basta con poner el getElementById dentro de un timer.
+//     // Esto hace que cambie el orden en el que se hacen las cosas y el getElementById lo haga
+//     // despues de decidir el *ngIf.
+//     // El timer puede tener un tiempo de disparo de 0. Con eso basta.
+//     let imagenAvatar;
 
-    this.interval = setInterval(() => {
-      imagenAvatar = document.getElementById('imagenAvatar');
-      this.imagenSilueta = URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Silueta;
+//     this.interval = setInterval(() => {
+//       imagenAvatar = document.getElementById('imagenAvatar');
+//       this.imagenSilueta = URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Silueta;
 
-      // Ahora traigo los complementos, si existen
-      if (this.inscripcionAlumnoJuegoAvatar.Complemento1 !== undefined) {
-        const imagen1 = this.CreaImagen (1, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento1);
-        console.log ('IMAGEN');
-        console.log (imagen1);
-        imagenAvatar.appendChild(imagen1);
-      }
-      if (this.inscripcionAlumnoJuegoAvatar.Complemento2 !== undefined) {
-        const imagen2 = this.CreaImagen (2, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento2);
-        imagenAvatar.appendChild(imagen2);
-      }
-      if (this.inscripcionAlumnoJuegoAvatar.Complemento3 !== undefined) {
-        const imagen3 = this.CreaImagen (3, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento3);
-        imagenAvatar.appendChild(imagen3);
-      }
+//       // Ahora traigo los complementos, si existen
+//       if (this.inscripcionAlumnoJuegoAvatar.Complemento1 !== undefined) {
+//         const imagen1 = this.CreaImagen (1, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento1);
+//         console.log ('IMAGEN');
+//         console.log (imagen1);
+//         imagenAvatar.appendChild(imagen1);
+//       }
+//       if (this.inscripcionAlumnoJuegoAvatar.Complemento2 !== undefined) {
+//         const imagen2 = this.CreaImagen (2, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento2);
+//         imagenAvatar.appendChild(imagen2);
+//       }
+//       if (this.inscripcionAlumnoJuegoAvatar.Complemento3 !== undefined) {
+//         const imagen3 = this.CreaImagen (3, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento3);
+//         imagenAvatar.appendChild(imagen3);
+//       }
 
-      if (this.inscripcionAlumnoJuegoAvatar.Complemento4 !== undefined) {
-        const imagen4 = this.CreaImagen (4, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento4);
-        imagenAvatar.appendChild(imagen4);
-      }
-      clearInterval(this.interval);
+//       if (this.inscripcionAlumnoJuegoAvatar.Complemento4 !== undefined) {
+//         const imagen4 = this.CreaImagen (4, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento4);
+//         imagenAvatar.appendChild(imagen4);
+//       }
+//       clearInterval(this.interval);
 
-    }, 0);
-}
+//     }, 0);
+// }
 
 CreaImagen(numeroComplemento: number, imagenString: string): any {
+  // se usa para crear la imagen del ejemplo de avatar, que es más pequeño
   const imagen = document.createElement('img');
   imagen.style.position = 'absolute';
-  imagen.style.width = '70px'; imagen.style.height = '83.16px';
+  imagen.style.width = '70px'; 
+  imagen.style.height = '83.16px';
   // los complementos se apilan según el orden indicado por el numero de complemento.
   imagen.style.zIndex = numeroComplemento.toString();
 
