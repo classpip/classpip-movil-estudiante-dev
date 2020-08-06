@@ -21,7 +21,7 @@ export class IniciPage implements OnInit {
   JuegosInactivos: Juego[] = [];
 
 
-
+  //animals: any[];
 
   constructor(
     private route: Router,
@@ -29,7 +29,35 @@ export class IniciPage implements OnInit {
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService
-  ) { }
+  ) {
+    // this.animals =
+    // [
+    //     "Aardvark",
+    //     "Albatross",
+    //     "Alligator",
+    //     "Alpaca",
+    //     "Ant",
+    //     "Donkey",
+    //     "Baboon",
+    //     "Badger",
+    //     "Bat",
+    //     "Bear",
+    //     "Bee",
+    //     "Butterfly",
+    //     "Camel",
+    //     "Chicken",
+    //     "Cockroach",
+    //     "Horse",
+    // ];
+   }
+  //  reorderItems(event) {
+  //    console.log(event);
+  //    console.log(`Moving item from ${event.detail.from} to ${event.detail.to}`);
+  //    const itemMove = this.animals.splice(event.detail.from, 1)[0];
+  //    console.log(itemMove);
+  //    this.animals.splice(event.detail.to, 0, itemMove);
+  //    event.detail.complete();
+  //  }
 
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
@@ -63,6 +91,8 @@ export class IniciPage implements OnInit {
     } else if (juego.Tipo === 'Juego De Avatar') {
       this.sesion.TomaJuegoAvatar(juego);
       this.navCtrl.navigateForward('/juego-avatar');
+    } else if (juego.Tipo === 'Juego De Votación Uno A Todos') {
+      this.navCtrl.navigateForward('/juego-votacion-uno-atodos');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }

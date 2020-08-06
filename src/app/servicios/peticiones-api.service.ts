@@ -8,7 +8,7 @@ import {
   AlumnoJuegoDeColeccion, EquipoJuegoDeColeccion, Cromo, HistorialPuntosAlumno, HistorialPuntosEquipo,
   Album, AlbumEquipo, Insignia, AlumnoJuegoDeCompeticionLiga, EquipoJuegoDeCompeticionLiga, Jornada, EnfrentamientoLiga,
   AlumnoJuegoDeCompeticionFormulaUno, EquipoJuegoDeCompeticionFormulaUno, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching,
-  PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares
+  PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares, JuegoDeVotacionUnoATodos, AlumnoJuegoDeVotacionUnoATodos
 
 } from '../clases';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
@@ -94,8 +94,10 @@ export class PeticionesAPIService {
   private APIUrlJuegoDeAvatar = this.base + '3000/api/juegosDeAvatar';
   private APIUrlAlumnoJuegoDeAvatar = this.base + '3000/api/alumnosJuegoAvatar';
   private APIUrlFamiliarAvatares = this.base + '3000/api/familiasAvatares';
-
-
+  private APIUrlAudiosAvatares = this.base + '3000/api/imagenes/AudiosAvatares';
+  private APIUrlAlumnoJuegoDeVotacionUnoATodos = this.base + '3000/api/alumnosJuegoDeVotacionUnoATodos';
+  private APIUrlJuegoDeVotacionUnoATodos = this.base + '3000/api/juegosDeVotacionUnoATodos';
+  
 
   constructor(
     private http: HttpClient,
@@ -870,7 +872,7 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     // tslint:disable-next-line:max-line-length
     return this.http.put<AlumnoJuegoDeAvatar>(this.APIUrlAlumnoJuegoDeAvatar + '/' + alumnoJuegoDeAvatar.id, alumnoJuegoDeAvatar);
   }
-  // Devuelve los juegos de puntos del Alumno
+  // Devuelve los juegos de avatar del Alumno
   public DameJuegoDeAvatarAlumno(alumnoId: number): Observable<Juego[]> {
     return this.http.get<Juego[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeAvatars');
   }
@@ -883,5 +885,35 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     return this.httpImagenes.get(this.APIUrlImagenesAvatares + '/download/' + imagen,
       { responseType: ResponseContentType.Blob });
   }
+
+   // PONE AUDIO DE AVATAR
+   public PonAudioAvatar(formData: FormData): Observable<any> {
+    return this.http.post<any>(this.APIUrlAudiosAvatares + '/upload', formData);
+  }
+
+  public BorraAudioAvatar(audio: string): Observable<any> {
+    return this.http.delete<any>(this.APIUrlAudiosAvatares + '/files/' + audio);
+  }
+
+  // Juegos de votacion
+ // Devuelve los juegos de avatar del Alumno
+  public DameJuegosDeVotacionUnoATodosAlumno(alumnoId: number): Observable<JuegoDeVotacionUnoATodos[]> {
+    return this.http.get<JuegoDeVotacionUnoATodos[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeVotacionUnoATodos');
+  }
+   // Da la inscripción de un alumno concreto
+   public DameInscripcionAlumnoJuegoDeVotacionUnoATodos(juegoId: number, alumnoId: number): Observable<AlumnoJuegoDeVotacionUnoATodos[]> {
+    return this.http.get<AlumnoJuegoDeVotacionUnoATodos[]>(this.APIUrlAlumnoJuegoDeVotacionUnoATodos
+    + '?filter[where][juegoDeVotacionUnoATodosId]=' + juegoId +  '&filter[where][alumnoId]=' + alumnoId);
+  }
+
+  public DameAlumnosJuegoDeVotacionUnoATodos(juegoId: number): Observable<Alumno[]> {
+    return this.http.get<Alumno[]>(this.APIUrlJuegoDeVotacionUnoATodos + '/' + juegoId + '/alumnos');
+  }
+  // Modifica la inscripcion (la votacion) del alumno
+  public RegistraVotacion(alumnoJuegoDeVotacionUnoATodos: AlumnoJuegoDeVotacionUnoATodos): Observable<AlumnoJuegoDeVotacionUnoATodos> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<AlumnoJuegoDeVotacionUnoATodos>(this.APIUrlAlumnoJuegoDeVotacionUnoATodos + '/' + alumnoJuegoDeVotacionUnoATodos.id, alumnoJuegoDeVotacionUnoATodos);
+  }
+  
 
 }

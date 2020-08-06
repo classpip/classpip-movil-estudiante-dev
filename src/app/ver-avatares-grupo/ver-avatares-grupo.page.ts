@@ -44,7 +44,8 @@ export class VerAvataresGrupoPage implements OnInit {
 
           const avatar = {
             insc: inscripcion,
-            al: alumno
+            al: alumno,
+            voz: URL.AudiosAvatares + inscripcion.Voz
           };
           this.listaAvatares.push (avatar);
         });

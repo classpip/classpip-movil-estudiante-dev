@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PeticionesAPIService, SesionService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
-import { NavController, IonContent } from '@ionic/angular';
+import { NavController, IonContent, AlertController } from '@ionic/angular';
 import { Alumno, Equipo, Juego, Punto, Nivel, AlumnoJuegoDePuntos, EquipoJuegoDePuntos,
   TablaAlumnoJuegoDePuntos, TablaEquipoJuegoDePuntos, JuegoDeAvatar, AlumnoJuegoDeAvatar } from '../clases/index';
 
@@ -28,14 +28,16 @@ export class JuegoAvatarPage implements OnInit {
   tieneAvatar = false;
   interval;
   imagenesAvatares = URL.ImagenesAvatares;
-  // para prueba de sonido. El fichero esta en la carpeta de imagenes de avatares del service.
-  himno = "himno-argentino-cort.mp3";
+  audioAvatar;
+  tieneVoz = false;
+
   constructor(
     private calculos: CalculosService,
     public navCtrl: NavController,
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public alertController: AlertController,
   ) { }
 
   ngOnInit() {
@@ -48,7 +50,11 @@ export class JuegoAvatarPage implements OnInit {
         if (this.inscripcionAlumnoJuegoAvatar.Silueta !== undefined) {
           this.tieneAvatar = true;
           console.log ('tiene avatar');
-          // this.MostrarAvatar();
+          console.log (this.inscripcionAlumnoJuegoAvatar);
+          if ((this.inscripcionAlumnoJuegoAvatar.Privilegios[4]) && (this.inscripcionAlumnoJuegoAvatar.Voz)) {
+            this.tieneVoz = true;
+            this.audioAvatar = URL.AudiosAvatares + this.inscripcionAlumnoJuegoAvatar.Voz;
+          }
         }
         this.PrepararCriterios();
       });
@@ -91,5 +97,53 @@ export class JuegoAvatarPage implements OnInit {
   VerAvatares() {
     this.navCtrl.navigateForward('/ver-avatares-grupo');
   }
+
+  // Activa la función SeleccionarInfoFamilia
+  ActivarInput() {
+    console.log('Activar input');
+    document.getElementById('inputVoz').click();
+}
+
+// Par abuscar el fichero JSON que contiene la info de la familia que se va
+// a cargar desde ficheros
+async SeleccionarFicheroVoz($event) {
+
+    const file = $event.target.files[0];
+    if (this.inscripcionAlumnoJuegoAvatar.Voz) {
+      // borro el fichero de audio de la voz anterior
+      this.peticionesAPI.BorraAudioAvatar (this.inscripcionAlumnoJuegoAvatar.Voz).subscribe();
+    }
+
+    this.inscripcionAlumnoJuegoAvatar.Voz = file.name;
+    this.peticionesAPI.ModificaInscripcionAlumnoJuegoDeAvatar (this.inscripcionAlumnoJuegoAvatar)
+    .subscribe ();
+    const formDataOpcion = new FormData();
+    formDataOpcion.append(file.fileName, file);
+    this.peticionesAPI.PonAudioAvatar(formDataOpcion)
+    .subscribe(async () => {
+      this.tieneVoz = true;
+      this.audioAvatar = URL.AudiosAvatares + this.inscripcionAlumnoJuegoAvatar.Voz;
+      const alert2 = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: 'voz asignada con exito',
+        buttons: ['OK']
+      });
+      await alert2.present();
+    });
+}
+
+QuitaVoz() {
+  if (this.inscripcionAlumnoJuegoAvatar.Voz) {
+    // borro el fichero de audio de la voz anterior
+    this.peticionesAPI.BorraAudioAvatar (this.inscripcionAlumnoJuegoAvatar.Voz).subscribe();
+    this.inscripcionAlumnoJuegoAvatar.Voz = undefined;
+    this.peticionesAPI.ModificaInscripcionAlumnoJuegoDeAvatar (this.inscripcionAlumnoJuegoAvatar)
+    .subscribe ();
+    this.tieneVoz = false;
+  }
+
+}
+
+
 
 }

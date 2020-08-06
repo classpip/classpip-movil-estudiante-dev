@@ -8,8 +8,21 @@
 </ion-header>
 
 <ion-content class="juegos-content">
+<!-- 
+  <ion-list>
+    <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false">
 
-
+      <ion-item *ngFor="let animal of animals; let i=index">
+        <ion-label *ngIf = 'i===0'>
+          {{i+1}} {{animal}} 10
+        </ion-label>
+        <ion-label *ngIf = 'i!==0'>
+          {{i+1}} {{animal}}
+        </ion-label>
+        <ion-reorder slot="end"></ion-reorder>
+      </ion-item>
+    </ion-reorder-group>
+  </ion-list> -->
 
 
   <div>
@@ -34,6 +47,7 @@
               <img *ngIf="juego.Tipo == 'Juego De Cuestionario'" class = "card-img" src="../../assets/img/cuestionariosicon.svg">
               <img *ngIf="juego.Tipo == 'Juego De Geocaching'" class = "card-img" src="../../assets/img/location_icon.svg">
               <img *ngIf="juego.Tipo == 'Juego De Avatar'" class = "card-img" src="../../assets/img/avataricon.svg">
+              <img *ngIf="juego.Tipo == 'Juego De Votación Uno A Todos'" class = "card-img" src="../../assets/img/votaciones.jpg">
                
               <ion-button class="card-btn" expand="full" (click)=JuegoSeleccionado(juego) shape="round">Ver más</ion-button>
              </div>
@@ -62,7 +76,9 @@
               <img *ngIf="juego.Tipo == 'Juego De Competición Fórmula Uno'" class = "card-img" src="../../assets/img/f1icon.svg">
               <img *ngIf="juego.Tipo == 'Juego De Competición Liga'" class = "card-img" src="../../assets/img/ligaicon.svg">
               <img *ngIf="juego.Tipo == 'Juego De Cuestionario'" class = "card-img" src="../../assets/img/cuestionariosicon.svg">
-              <img *ngIf="juego.Tipo == 'Juego De Geocaching'" class = "card-img" src="../../assets/img/location_icon.svg">     
+              <img *ngIf="juego.Tipo == 'Juego De Geocaching'" class = "card-img" src="../../assets/img/location_icon.svg">  
+              <img *ngIf="juego.Tipo == 'Juego De Avatar'" class = "card-img" src="../../assets/img/avataricon.svg">
+              <img *ngIf="juego.Tipo == 'Juego De Votación Uno A Todos'" class = "card-img" src="../../assets/img/location_icon.svg">   
               <ion-button class="card-btn" style="color: grey;" (click)=JuegoSeleccionado(juego)>Ver más</ion-button>
              </div>
           </ion-card>

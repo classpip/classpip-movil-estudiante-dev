@@ -123,10 +123,11 @@ export class HomePage {
 SeleccionarFichero($event) {
 
     const file = $event.target.files[0];
-    Swal.fire('Tengo el fichero' + file.fileName);
+    console.log ('tengo el fichero');
+    console.log (file.name);
     const formDataOpcion = new FormData();
     formDataOpcion.append(file.fileName, file);
-    this.peticionesAPI.PonImagenColeccion(formDataOpcion)
+    this.peticionesAPI.PonAudioAvatar(formDataOpcion)
     .subscribe(() => Swal.fire('Fichero cargado con exito', '', 'success'));
 }
 
