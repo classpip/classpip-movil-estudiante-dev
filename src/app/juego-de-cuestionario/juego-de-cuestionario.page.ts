@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SesionService, PeticionesAPIService } from '../servicios';
 import { NavController, AlertController, Platform } from '@ionic/angular';
-import { CalculosService } from '../servicios/calculos.service';
+import { CalculosService, ComServerService } from '../servicios';
 import { Juego } from '../clases';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
@@ -70,7 +70,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     private calculos: CalculosService,
     private alertCtrl: AlertController,
     private platform: Platform,
-    private servidor: Socket
+    private comServer: ComServerService
   ) { }
 
   ngOnInit() {
@@ -124,9 +124,6 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.juegoSeleccionado.JuegoTerminado) {
       this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameListaAlumnosJuegoCuestionarioOrdenada(this.juegoSeleccionado.id);
     }
-
-
-    this.servidor.connect();
   }
 
   //Esta funcion coge el array en el cual se asigna la posicion de las respuestas correctas y lo
@@ -275,7 +272,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
           cont++;
           if (cont === this.PreguntasCuestionario.length)  {
             // Notificamos respuesta al servidor
-            this.servidor.emit('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
+            this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
           }
         });
     }
@@ -296,7 +293,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
             this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId ), this.alumnoJuegoDeCuestionario[0].id)
               .subscribe(res => {
                 console.log(res);
-                this.servidor.emit('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
+                this.comServer.Emitir('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
               });
             this.route.navigateByUrl('tabs/inici');
           }

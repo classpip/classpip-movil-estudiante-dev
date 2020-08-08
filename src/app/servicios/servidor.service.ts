@@ -4,9 +4,9 @@ import { Socket } from 'ngx-socket-io';
 @Injectable({
   providedIn: 'root'
 })
-export class ComServerService {
- 
-  constructor(private servidor: Socket) { }
+export class ServidorService {
+  private servidor: Socket;
+  constructor() { }
   Conectar() {
     this.servidor.connect();
   }
@@ -14,5 +14,3 @@ export class ComServerService {
     this.servidor.emit(mensaje, info);
   }
 }
-
-

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PeticionesAPIService, SesionService } from '../servicios/index';
-import { CalculosService } from '../servicios/calculos.service';
+import { CalculosService, ComServerService } from '../servicios';
 import { NavController, IonContent, AlertController } from '@ionic/angular';
 import { JuegoDeVotacionUnoATodos, Alumno, AlumnoJuegoDeVotacionUnoATodos } from '../clases';
 import { Socket } from 'ngx-socket-io';
@@ -23,11 +23,10 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
     private alertCtrl: AlertController,
-    private servidor: Socket
+    private comServer: ComServerService
   ) { }
 
   ngOnInit() {
-    this.servidor.connect();
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.alumno = this.sesion.DameAlumno();
     if (this.juegoSeleccionado.Modo === 'Individual') {
@@ -87,7 +86,7 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
             }
             // Notifico al server que se ha modificado un avatar
             console.log ('voy a notificar');
-            this.servidor.emit('notificarVotacion', { votacion: this.inscripcionAlumnoJuegoDeVotacionUnoATodos});
+            this.comServer.Emitir('notificarVotacion', { votacion: this.inscripcionAlumnoJuegoDeVotacionUnoATodos});
 
             this.peticionesAPI.RegistraVotacion (this.inscripcionAlumnoJuegoDeVotacionUnoATodos)
             .subscribe (async () => {

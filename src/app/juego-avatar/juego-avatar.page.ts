@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PeticionesAPIService, SesionService } from '../servicios/index';
+import { PeticionesAPIService, SesionService, ComServerService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import { NavController, IonContent, AlertController } from '@ionic/angular';
 import { Alumno, Equipo, Juego, Punto, Nivel, AlumnoJuegoDePuntos, EquipoJuegoDePuntos,
@@ -31,6 +31,8 @@ export class JuegoAvatarPage implements OnInit {
   audioAvatar;
   tieneVoz = false;
 
+
+
   constructor(
     private calculos: CalculosService,
     public navCtrl: NavController,
@@ -38,6 +40,7 @@ export class JuegoAvatarPage implements OnInit {
     private peticionesAPI: PeticionesAPIService,
     public modalController: ModalController,
     public alertController: AlertController,
+    private comServer: ComServerService
   ) { }
 
   ngOnInit() {
@@ -122,6 +125,8 @@ async SeleccionarFicheroVoz($event) {
     this.peticionesAPI.PonAudioAvatar(formDataOpcion)
     .subscribe(async () => {
       this.tieneVoz = true;
+        // Notifico al server que se ha modificado un avatar
+      this.comServer.Emitir('modificacionAvatar', { inscripcion: this.inscripcionAlumnoJuegoAvatar});
       this.audioAvatar = URL.AudiosAvatares + this.inscripcionAlumnoJuegoAvatar.Voz;
       const alert2 = await this.alertController.create({
         cssClass: 'my-custom-class',

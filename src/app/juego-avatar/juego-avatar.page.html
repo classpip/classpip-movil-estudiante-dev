@@ -19,14 +19,17 @@
   </div> 
   <!-- si no tiene avatar muestro la figura predefinida para el caso -->
 
-  <div  *ngIf = "!tieneAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%;  opacity: 0.2;">
+  <div  *ngIf = "!tieneAvatar" style="display: flex; width: 300px; height: 324px; margin: auto;   opacity: 0.2;">
     <img  src = "../assets/interrogante.jpg" style="width: 300px; height: 324px; position: relative; z-index: 0;">
   </div>
-  <audio controls *ngIf = 'tieneVoz' style="margin-bottom: 20%">
-    <source [src]="audioAvatar" type="audio/mpeg">
+  <!-- Poniendo source de esta forma se consigue que se actualice inmediatamente el audio -->
+  <audio controls src = {{audioAvatar}} *ngIf = 'tieneVoz' style="margin-bottom: 20%">
   </audio>
  
-  <div>
+  <div style="margin-top: 20%">
+
+
+
     <mat-expansion-panel class="privilegios-btn">
       <mat-expansion-panel-header class="cabecera-privilegios">
         <h2> Ver mis privilegios </h2>

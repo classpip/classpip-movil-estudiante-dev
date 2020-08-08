@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SesionService, PeticionesAPIService } from '../servicios';
+import { SesionService, PeticionesAPIService, ComServerService } from '../servicios';
 import { FamiliaAvatares, JuegoDeAvatar, AlumnoJuegoDeAvatar } from 'src/app/clases';
 import { IonContent, IonSegment , AlertController} from '@ionic/angular';
 import * as URL from '../URLs/urls';
@@ -7,7 +7,7 @@ import { observable, Observable } from 'rxjs';
 import { ReplaySubject } from 'rxjs';
 import html2canvas from 'html2canvas';
 import { ModalController } from '@ionic/angular';
-import { Socket } from 'ngx-socket-io';
+
 
 @Component({
   selector: 'app-avatar-editor',
@@ -46,10 +46,9 @@ export class AvatarEditorPage implements OnInit {
               private sesion: SesionService,
               private alertCtrl: AlertController,
               public modalCtrl: ModalController,
-              private servidor: Socket) { }
+              private comServer: ComServerService) { }
 
   ngOnInit() {
-    this.servidor.connect();
     this.inscripcionAlumnoJuegoAvatar = this.sesion.DameInscripcionAlumno();
     this.privilegiosAlumno = this.inscripcionAlumnoJuegoAvatar.Privilegios;
     this.hayComplementoPuesto = Array(4).fill(false);
@@ -278,7 +277,7 @@ export class AvatarEditorPage implements OnInit {
               this.inscripcionAlumnoJuegoAvatar.Complemento4 = undefined;
             }
             // Notifico al server que se ha modificado un avatar
-            this.servidor.emit('modificacionAvatar', { inscripcion: this.inscripcionAlumnoJuegoAvatar});
+            this.comServer.Emitir('modificacionAvatar', { inscripcion: this.inscripcionAlumnoJuegoAvatar});
 
             this.peticionesAPI.ModificaInscripcionAlumnoJuegoDeAvatar (this.inscripcionAlumnoJuegoAvatar)
             .subscribe (async () => {

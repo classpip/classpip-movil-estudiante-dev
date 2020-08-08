@@ -4,7 +4,7 @@ import { NavController, LoadingController, AlertController, AngularDelegate } fr
 import { Alumno } from '../clases';
 import { IniciPage } from '../inici/inici.page';
 import { TabsPage } from '../tabs/tabs.page';
-import { PeticionesAPIService, SesionService} from '../servicios/index';
+import { PeticionesAPIService, SesionService, ComServerService} from '../servicios/index';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
@@ -16,10 +16,12 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { Transfer } from '@ionic-native/transfer';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+
 })
 export class HomePage {
   alumno: Alumno;
@@ -37,6 +39,14 @@ export class HomePage {
   latitud;
   longitud;
 
+
+
+  panelOpenState = false;
+   
+  data: any;
+  answer: any[] = [];
+  cont: any[];
+
   constructor(
     // private http: HttpClient,
     private route: Router,
@@ -47,11 +57,79 @@ export class HomePage {
     public alertController: AlertController,
     private geolocation: Geolocation,
     private file: File,
-    private media: Media
+    private media: Media,
+    private comServer: ComServerService
     //private transfer: Transfer,
    // private camera: Camera
 
-    )  {}
+    )  {
+      // this.cont = Array(2).fill(0);
+
+      // this.data = {"questionnaire": {
+      //     "id": "5ac5f074867d190bc471dc59",
+      //     "name": "Diabetes Questionnaire Test",
+      //   "item": [
+      //     {
+      //       "text": "Dibujo",
+      //       "cont": 0,
+
+      //       "options": [
+      //         {
+      //           "value": "Los colores son acertados",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Es interesante",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Me ha hecho reir",
+      //           "checked": false
+      //         }
+      //       ]
+      //     },
+      //     {
+
+      //       "text": "La voz",
+      //       "cont": 0,
+
+      //       "options": [
+      //         {
+      //           "value": "Me ha hecho reir",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Se ha oido perfectamente",
+      //           "checked": false
+      //         },
+            
+      //       ]
+      //     }
+      //   ]
+      // }
+      // };
+  }
+
+
+    
+  // updateAnswer(index,ansindex,value,checked){
+  //   if(!Array.isArray(this.answer[index])){
+  //     this.answer[index] = []
+  //   }
+  //   if(checked){
+  //    this.answer[index][ansindex] =  true;
+  //    this.cont[index]++;
+  //   }else{
+  //     //this.answer[index].splice(ansindex,1)
+  //     this.answer[index][ansindex] =  false;
+  //     this.cont[index]--;
+  //   }
+  // }
+  // Resultado() {
+  //   console.log ('resultado');
+  //   console.log (this.answer);
+  // }
+
 
     ionViewDidEnter() {
 
@@ -290,6 +368,7 @@ obtenerPosicion(): any{
             this.alumno = res[0];
             this.sesion.TomaAlumno(this.alumno);
             console.log('bien logado');
+            this.comServer.Conectar();
             setTimeout(() => {
               this.route.navigateByUrl('/tabs/inici');
             }, 1500);
@@ -305,3 +384,6 @@ obtenerPosicion(): any{
     }
 
 }
+
+
+
