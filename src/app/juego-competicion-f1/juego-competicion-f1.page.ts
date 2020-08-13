@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { Location } from '@angular/common';
+
 import { IonContent, NavController } from '@ionic/angular';
 // Clases
 import {
   Juego, Alumno, Equipo, AlumnoJuegoDeCompeticionFormulaUno, Jornada, TablaJornadas,
-  EquipoJuegoDeCompeticionFormulaUno, TablaAlumnoJuegoDeCompeticion, TablaEquipoJuegoDeCompeticion,
-  TablaPuntosFormulaUno
+  EquipoJuegoDeCompeticionFormulaUno, TablaAlumnoJuegoDeCompeticion, TablaEquipoJuegoDeCompeticion
 } from '../clases/index';
 
 import { Chart } from 'chart.js';
@@ -32,6 +30,7 @@ export class JuegoCompeticionF1Page implements OnInit {
 
   MiAlumno: Alumno;
   MiEquipo: Equipo;
+  posicionDeMiEquipo: number;
 
   alumnosEquipo: Alumno[];
 
@@ -45,6 +44,7 @@ export class JuegoCompeticionF1Page implements OnInit {
 
   jornadas: Jornada[];
   JornadasCompeticion: TablaJornadas[];
+
 
   @ViewChild('barChart', { static: false }) barChart: ElementRef;
   bars: any;
@@ -73,7 +73,7 @@ export class JuegoCompeticionF1Page implements OnInit {
     } else {
       this.EquiposDelJuego();
     }
-    this.DameJornadasDelJuegoDeCompeticionSeleccionado();
+    // this.DameJornadasDelJuegoDeCompeticionSeleccionado();
   }
 
   datatochart() {
@@ -82,21 +82,20 @@ export class JuegoCompeticionF1Page implements OnInit {
     for (let i = 0; i < this.jornadas.length; i++) {
       labels.push("J" + (i + 1));
       if (this.jornadas[i].GanadoresFormulaUno !== undefined) {
-        if (this.jornadas[i].GanadoresFormulaUno[0] === this.MiAlumno.id) {
-          datos.push(this.juegoSeleccionado.Puntos[0]);
+        // La jornada se ha disputado
+        // miramos si el jugador esta entre los que han puntuado
+        let pos;
+        if (this.juegoSeleccionado.Modo === 'Individual') {
+          pos = this.jornadas[i].GanadoresFormulaUno.indexOf (this.MiAlumno.id);
+        } else {
+           pos = this.jornadas[i].GanadoresFormulaUno.indexOf (this.MiEquipo.id);
         }
-        else if (this.jornadas[i].GanadoresFormulaUno[1] === this.MiAlumno.id) {
-          datos.push(this.juegoSeleccionado.Puntos[1]);
+        if (pos !== -1) {
+            // si esta. Guardamos los puntos que sacó en esa jorada.
+            datos.push(this.juegoSeleccionado.Puntos[pos]);
+        } else {
+          datos.push(0);
         }
-        else if (this.jornadas[i].GanadoresFormulaUno[2] === this.MiAlumno.id) {
-          datos.push(this.juegoSeleccionado.Puntos[2]);
-        }
-        else {
-          datos.push(0)
-        }
-      }
-      else {
-        datos.push(0);
       }
       console.log(datos);
     }
@@ -111,8 +110,8 @@ export class JuegoCompeticionF1Page implements OnInit {
         datasets: [{
           label: 'Puntos por jornada',
           data: datos,
-          backgroundColor: 'transparent', //same number of elements as number of dataset
-          borderColor: 'rgb(38, 194, 129)',//same number of elements as number of dataset
+          backgroundColor: 'transparent',
+          borderColor: 'rgb(38, 194, 129)',
           borderWidth: 2
         }]
       },
@@ -129,54 +128,53 @@ export class JuegoCompeticionF1Page implements OnInit {
   }
 
 
-  //Recuperamos las jornadas para poder mandarlas a otras paginas
+  // Recuperamos las jornadas para poder mandarlas a otras paginas
   DameJornadasDelJuegoDeCompeticionSeleccionado() {
     this.peticionesAPI.DameJornadasDeCompeticionFormulaUno(this.juegoSeleccionado.id)
       .subscribe(inscripciones => {
         this.jornadas = inscripciones;
-        console.log('Las jornadas son: ');
-        console.log(this.jornadas);
         this.datatochart();
       });
   }
 
   // Recupera los alumnos que pertenecen al juego
   AlumnosDelJuego() {
-    console.log('Vamos a pos los alumnos');
     this.peticionesAPI.DameAlumnosJuegoDeCompeticionFormulaUno(this.juegoSeleccionado.id)
       .subscribe(alumnosJuego => {
-        console.log('Ya tengo los alumnos');
-        console.log(alumnosJuego);
         this.alumnosDelJuego = alumnosJuego;
         this.RecuperarInscripcionesAlumnoJuego();
+        this.DameJornadasDelJuegoDeCompeticionSeleccionado();
       });
   }
 
   // Recupera los equipos que pertenecen al juego
   EquiposDelJuego() {
-    console.log('Vamos a pos los equipos');
     this.peticionesAPI.DameEquiposJuegoDeCompeticionFormulaUno(this.juegoSeleccionado.id)
       .subscribe(equiposJuego => {
-        console.log('ya tengo los equipos');
         this.equiposDelJuego = equiposJuego;
         this.RecuperarInscripcionesEquiposJuego();
         this.DameEquipoAlumnoConectado();
+        this.DameJornadasDelJuegoDeCompeticionSeleccionado();
       });
   }
 
   DameEquipoAlumnoConectado() {
-    console.log('voy a por el equipo del alumno');
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.equiposDelJuego.length; i++) {
       this.peticionesAPI.DameAlumnosEquipo(this.equiposDelJuego[i].id)
         .subscribe(res => {
           console.log('miro en: ' + this.equiposDelJuego[i]);
-          for (let j = 0; j < res.length; j++)
+          // tslint:disable-next-line:prefer-for-of
+          for (let j = 0; j < res.length; j++) {
             if (res[j].id === this.MiAlumno.id) {
               console.log(res);
               this.MiEquipo = this.equiposDelJuego[i];
               console.log('tu equipo');
               console.log(this.MiEquipo);
+              // tslint:disable-next-line:max-line-length
+              this.posicionDeMiEquipo = this.listaEquiposOrdenadaPorPuntos.findIndex (equipo => equipo.EquipoId === this.MiEquipo.id) + 1;
             }
+          }
         });
     }
   }

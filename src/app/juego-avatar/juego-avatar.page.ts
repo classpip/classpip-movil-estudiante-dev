@@ -1,14 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PeticionesAPIService, SesionService, ComServerService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
-import { NavController, IonContent, AlertController } from '@ionic/angular';
-import { Alumno, Equipo, Juego, Punto, Nivel, AlumnoJuegoDePuntos, EquipoJuegoDePuntos,
-  TablaAlumnoJuegoDePuntos, TablaEquipoJuegoDePuntos, JuegoDeAvatar, AlumnoJuegoDeAvatar } from '../clases/index';
+import { NavController, AlertController } from '@ionic/angular';
+import { Alumno, JuegoDeAvatar, AlumnoJuegoDeAvatar } from '../clases/index';
 
 import * as URL from '../URLs/urls';
 import { ModalController } from '@ionic/angular';
 import {AvatarEditorPage} from '../avatar-editor/avatar-editor.page';
-import { getTreeMultipleDefaultNodeDefsError } from '@angular/cdk/tree';
 
 @Component({
   selector: 'app-juego-avatar',
@@ -34,7 +32,6 @@ export class JuegoAvatarPage implements OnInit {
 
 
   constructor(
-    private calculos: CalculosService,
     public navCtrl: NavController,
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
@@ -52,8 +49,6 @@ export class JuegoAvatarPage implements OnInit {
         this.inscripcionAlumnoJuegoAvatar = inscripcion[0];
         if (this.inscripcionAlumnoJuegoAvatar.Silueta !== undefined) {
           this.tieneAvatar = true;
-          console.log ('tiene avatar');
-          console.log (this.inscripcionAlumnoJuegoAvatar);
           if ((this.inscripcionAlumnoJuegoAvatar.Privilegios[4]) && (this.inscripcionAlumnoJuegoAvatar.Voz)) {
             this.tieneVoz = true;
             this.audioAvatar = URL.AudiosAvatares + this.inscripcionAlumnoJuegoAvatar.Voz;
@@ -62,7 +57,7 @@ export class JuegoAvatarPage implements OnInit {
         this.PrepararCriterios();
       });
      } else {
-       // De momento no hay avatar de equipo
+       // De momento no hay juego de avatar de equipo
      }
   }
 
@@ -74,12 +69,11 @@ export class JuegoAvatarPage implements OnInit {
       {nombre: 'Complemento 3', criterio: this.juegoSeleccionado.CriteriosPrivilegioComplemento3},
       {nombre: 'Complemento 4', criterio: this.juegoSeleccionado.CriteriosPrivilegioComplemento4},
       {nombre: 'Nota de Voz', criterio: this.juegoSeleccionado.CriteriosPrivilegioVoz},
-      {nombre: 'Espíar Compañeros', criterio: this.juegoSeleccionado.CriteriosPrivilegioVerTodos}
+      {nombre: 'Espiar Compañeros', criterio: this.juegoSeleccionado.CriteriosPrivilegioVerTodos}
 
     ]
   }
   async AbreEditorAvatar() {
-
     this.sesion.TomaInscripcionAlumno(this.inscripcionAlumnoJuegoAvatar);
     // abrimos la página del editor de forma modal porque interesa recoger el resultado 
     // para actualizar el avatar en esta página
@@ -101,14 +95,14 @@ export class JuegoAvatarPage implements OnInit {
     this.navCtrl.navigateForward('/ver-avatares-grupo');
   }
 
-  // Activa la función SeleccionarInfoFamilia
+  // Activa la función SeleccionarFicheroVoz
   ActivarInput() {
     console.log('Activar input');
     document.getElementById('inputVoz').click();
 }
 
-// Par abuscar el fichero JSON que contiene la info de la familia que se va
-// a cargar desde ficheros
+// Selecciona y guarda el fichero de voz
+// Si hay uno anterior lo borra.
 async SeleccionarFicheroVoz($event) {
 
     const file = $event.target.files[0];

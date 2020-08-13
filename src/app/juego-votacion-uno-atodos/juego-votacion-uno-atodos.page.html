@@ -8,46 +8,45 @@
 </ion-header>
 
 <ion-content>
+  <!-- Si aun no ha votado -->
   <div *ngIf = 'inscripcionAlumnoJuegoDeVotacionUnoATodos && !inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos'>
     <div style="text-align:center; margin-top: 10%;">  
       <ion-button class="ranking-btn" (click)="Enviar()"> Envía tu votación </ion-button>  
     </div> 
-    
+    <ion-list *ngIf = 'alumnos'>
+      <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false">
 
-  <ion-list *ngIf = 'alumnos'>
-    <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false">
-
-      <ion-item *ngFor="let alumno of alumnos; let i=index">
-        <ion-item>
-        <ion-label>
-          {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
-        </ion-label>
+        <ion-item *ngFor="let alumno of alumnos; let i=index">
+          <ion-item>
+          <ion-label>
+            {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
+          </ion-label>
+          </ion-item>
+          <!-- En el caso de que estemos en una de las posiciones que recibe puntos, muestro los puntos que le corresponden -->
+          <ion-label *ngIf = 'i < juegoSeleccionado.Puntos.length' style="font-size: large; color: red; text-align: right;">
+          {{juegoSeleccionado.Puntos[i]}}
+          </ion-label>
+          <ion-reorder slot="end"></ion-reorder>
         </ion-item>
-        <ion-label *ngIf = 'i < juegoSeleccionado.Puntos.length' style="font-size: large; color: red; text-align: right;">
-         {{juegoSeleccionado.Puntos[i]}}
-        </ion-label>
-        <ion-reorder slot="end"></ion-reorder>
-      </ion-item>
-    </ion-reorder-group>
-  </ion-list>
+      </ion-reorder-group>
+    </ion-list>
   </div>
+  <!-- Ya ha votado -->
   <div *ngIf = 'inscripcionAlumnoJuegoDeVotacionUnoATodos && inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos'>
     <h2 style="text-align: center;">Esta ha sido tu votación</h2>
+    <!-- Solo muestro los alumnos que recibieron votos -->
     <ion-list *ngIf = 'alumnosVotados'>
-      <!-- <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false"> -->
-
         <ion-item *ngFor="let alumno of alumnosVotados; let i=index">
           <ion-item>
           <ion-label>
             {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
           </ion-label>
           </ion-item>
+          <!-- Muestro los votos que recibió este alumno -->
           <ion-label *ngIf = 'i < juegoSeleccionado.Puntos.length' style="font-size: large; color: green; text-align: right;">
           {{juegoSeleccionado.Puntos[i]}}
           </ion-label>
-          <!-- <ion-reorder slot="end"></ion-reorder> -->
         </ion-item>
-      <!-- </ion-reorder-group> -->
     </ion-list>
   </div>
 

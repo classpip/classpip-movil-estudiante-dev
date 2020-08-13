@@ -10,11 +10,11 @@
 <ion-content class="infojornadas-content">
   <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Liga'">
     <img class="logo-liga" src="../../assets/img/jornadasligaicon.svg" width="100px">
-    <p>Enfrentamientos <br> por jornada</p>  
+    <p>Resultados de cada jornada</p>  
   </div>
   <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Fórmula Uno'">
     <img class="logo-liga" src="../../assets/img/jornadasf1icon.svg" width="100px">
-    <p>Enfrentamientos <br> por jornada</p>  
+    <p>Resultados de cada jornada</p>  
   </div>
   
 
@@ -46,32 +46,36 @@
           <ion-slides [options]="sliderConfig">
             <ion-slide *ngFor="let enfrentamiento of EnfrentamientosJornadaSeleccionada">
               <div>
+                <!-- Si el enfrentamiento es de mi alumno o equipo-->
                 <ion-card class="enfrentamiento-card-mialumno"
-                  *ngIf="enfrentamiento.JugadorUno === MiAlumno.id || enfrentamiento.JugadorDos === MiAlumno.id">
-                  <div>
-                    <h2> Enfrentamiento </h2>
-                    <h3>{{enfrentamiento.nombreJugadorUno}}</h3>
-                    <img class="versus-icon" width="80px" src="../../assets/img/versus2.svg">
-                    <h3>{{enfrentamiento.nombreJugadorDos}}</h3>
-                  </div>
-                  <div class="logo-btn">
-                    <p><b>Ganador</b>: <br> {{enfrentamiento.nombreGanador}} </p>
-                  </div>
-                </ion-card>
-                <!-- Si el enfrentamiento es de mi alumno -->
+                  *ngIf="enfrentamiento.JugadorUno === MiAlumno.id || enfrentamiento.JugadorDos === MiAlumno.id
+                        || enfrentamiento.JugadorUno === MiEquipo.id || enfrentamiento.JugadorDos === MiEquipo.id">
+                  
 
-                <!-- Si el enfrentamiento es de otros alumnos -->
+                    <h2> Enfrentamiento </h2>
+                    <h3>{{enfrentamiento.nombreJugadorUno}}</h3>
+                    <img class="versus-icon" width="80px" src="../../assets/img/versus.svg">
+                    <h3>{{enfrentamiento.nombreJugadorDos}}</h3>
+                    
+                    <h3><b>Ganador: {{enfrentamiento.nombreGanador}} </b> </h3>
+                
+               
+                </ion-card>
+             
+                <!-- Si el enfrentamiento es de otros alumnos  o equipos-->
+                
                 <ion-card class="enfrentamiento-card"
-                  *ngIf="enfrentamiento.JugadorUno !== MiAlumno.id && enfrentamiento.JugadorDos !== MiAlumno.id">
-                  <div>
+                  *ngIf="enfrentamiento.JugadorUno !== MiAlumno.id && enfrentamiento.JugadorDos !== MiAlumno.id
+                       && enfrentamiento.JugadorUno !== MiEquipo.id && enfrentamiento.JugadorDos !== MiEquipo.id">
+                  
                     <h2> Enfrentamiento </h2>
                     <h3>{{enfrentamiento.nombreJugadorUno}}</h3>
                     <img class="versus-icon" width="80px" src="../../assets/img/versus2.svg">
                     <h3>{{enfrentamiento.nombreJugadorDos}}</h3>
-                  </div>
-                  <div class="logo-btn">
-                    <p><b>Ganador</b>: <br> {{enfrentamiento.nombreGanador}} </p>
-                  </div>
+                    
+                    <h3><b>Ganador: {{enfrentamiento.nombreGanador}} </b> </h3>
+             
+                 
                 </ion-card>
               </div>
             </ion-slide>

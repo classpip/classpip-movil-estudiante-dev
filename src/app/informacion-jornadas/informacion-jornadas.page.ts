@@ -4,7 +4,7 @@ import { PeticionesAPIService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {
   Alumno, Juego, Jornada, TablaJornadas, EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion,
-  TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionLiga, TablaClasificacionJornada
+  TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionLiga, TablaClasificacionJornada, Equipo
 } from '../clases/index';
 import { SesionService } from '../servicios/sesion.service';
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
@@ -23,6 +23,7 @@ export class InformacionJornadasPage implements OnInit {
   listaAlumnosClasificacion: TablaAlumnoJuegoDeCompeticion[] = [];
   listaEquiposClasificacion: TablaEquipoJuegoDeCompeticion[] = [];
   MiAlumno: Alumno;
+  MiEquipo: Equipo;
 
   EnfrentamientosJornadaSeleccionada: EnfrentamientoLiga[] = [];
   botonResultadosDesactivado: boolean;
@@ -48,6 +49,7 @@ export class InformacionJornadasPage implements OnInit {
 
   ngOnInit() {
     this.MiAlumno = this.sesion.DameAlumno();
+    this.MiEquipo = this.sesion.DameEquipo();
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.numeroTotalJornadas = this.juegoSeleccionado.NumeroTotalJornadas;
     const datos = this.sesion.DameDatosJornadas();

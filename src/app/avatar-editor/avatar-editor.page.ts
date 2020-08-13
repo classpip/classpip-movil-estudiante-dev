@@ -3,9 +3,6 @@ import { SesionService, PeticionesAPIService, ComServerService } from '../servic
 import { FamiliaAvatares, JuegoDeAvatar, AlumnoJuegoDeAvatar } from 'src/app/clases';
 import { IonContent, IonSegment , AlertController} from '@ionic/angular';
 import * as URL from '../URLs/urls';
-import { observable, Observable } from 'rxjs';
-import { ReplaySubject } from 'rxjs';
-import html2canvas from 'html2canvas';
 import { ModalController } from '@ionic/angular';
 
 
@@ -52,7 +49,6 @@ export class AvatarEditorPage implements OnInit {
     this.inscripcionAlumnoJuegoAvatar = this.sesion.DameInscripcionAlumno();
     this.privilegiosAlumno = this.inscripcionAlumnoJuegoAvatar.Privilegios;
     this.hayComplementoPuesto = Array(4).fill(false);
-    this.hayComplementoPuesto = Array(4).fill(false);
     this.elementoPuesto = Array(4);
     this.juegoSeleccionado = this.sesion.DameJuegoAvatar();
     this.familiasDelJuego = [];
@@ -71,8 +67,6 @@ export class AvatarEditorPage implements OnInit {
               // La manera de buscar es usar el nombre de la silueta
               // tslint:disable-next-line:max-line-length
               this.familiaElegida = this.familiasDelJuego.filter (f => this.inscripcionAlumnoJuegoAvatar.Silueta === f.Silueta)[0];
-              console.log ('la famimia que tiene es');
-              console.log (this.familiaElegida);
               this.MuestraAvatar();
             }
           }
@@ -166,8 +160,6 @@ export class AvatarEditorPage implements OnInit {
   }
 
   EliminaImagenes() {
-    console.log ('voy a eliminar imagenes');
-    console.log (this.elementoPuesto);
     for (let i = 0; i < this.elementoPuesto.length; i++) {
       if (this.elementoPuesto[i]) {
         this.removeImage(this.elementoPuesto[i]);
@@ -343,47 +335,6 @@ export class AvatarEditorPage implements OnInit {
     const imagen4 = this.CreaImagen (4, URL.ImagenesAvatares +  familia.Complemento4[0]);
     imagenAvatar.appendChild(imagen4);
   }
-
-//   MostrarAvatar() {
-//     // Hay un problama para mostrar el avatar
-//     // resulta que la operación getElementById no funciona bien si el elemento
-//     // que quiero obtener tiene un *ngIf, porque de acuerdo con el ciclo de ejecición
-//     // de Angular, primero obtiene el elemento y luego mira el *ngIf para ver si lo
-//     // tiene que colocar o no, con lo cual, al obtener el elemento lo que obtiene es un null.
-//     // Para alterar ese ciclo de ejecición basta con poner el getElementById dentro de un timer.
-//     // Esto hace que cambie el orden en el que se hacen las cosas y el getElementById lo haga
-//     // despues de decidir el *ngIf.
-//     // El timer puede tener un tiempo de disparo de 0. Con eso basta.
-//     let imagenAvatar;
-
-//     this.interval = setInterval(() => {
-//       imagenAvatar = document.getElementById('imagenAvatar');
-//       this.imagenSilueta = URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Silueta;
-
-//       // Ahora traigo los complementos, si existen
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento1 !== undefined) {
-//         const imagen1 = this.CreaImagen (1, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento1);
-//         console.log ('IMAGEN');
-//         console.log (imagen1);
-//         imagenAvatar.appendChild(imagen1);
-//       }
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento2 !== undefined) {
-//         const imagen2 = this.CreaImagen (2, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento2);
-//         imagenAvatar.appendChild(imagen2);
-//       }
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento3 !== undefined) {
-//         const imagen3 = this.CreaImagen (3, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento3);
-//         imagenAvatar.appendChild(imagen3);
-//       }
-
-//       if (this.inscripcionAlumnoJuegoAvatar.Complemento4 !== undefined) {
-//         const imagen4 = this.CreaImagen (4, URL.ImagenesAvatares +  this.inscripcionAlumnoJuegoAvatar.Complemento4);
-//         imagenAvatar.appendChild(imagen4);
-//       }
-//       clearInterval(this.interval);
-
-//     }, 0);
-// }
 
 CreaImagen(numeroComplemento: number, imagenString: string): any {
   // se usa para crear la imagen del ejemplo de avatar, que es más pequeño

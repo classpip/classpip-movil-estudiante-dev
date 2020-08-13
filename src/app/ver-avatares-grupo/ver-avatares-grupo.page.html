@@ -10,6 +10,7 @@
 <ion-content>
   <ion-slides [options]="sliderConfig">
     <ion-slide *ngFor="let avatar of listaAvatares">
+      <!-- En la listaAvatares tengo para cada alumno: sus datos (campo al), su inscripcion (campo insc) y su voz (campo Voz) -->
       <div>
 
             <h2> {{avatar.al.Nombre}} {{avatar.al.PrimerApellido}} {{avatar.al.SegundoApellido}} </h2>

@@ -26,6 +26,7 @@ export class JuegoCompeticionLigaPage implements OnInit {
   rankingAlumnoJuegoDeCompeticion: TablaAlumnoJuegoDeCompeticion[] = [];
   rankingEquiposJuegoDeCompeticion: TablaEquipoJuegoDeCompeticion[] = [];
   infomialumno: TablaAlumnoJuegoDeCompeticion;
+  infoMiEquipo: TablaEquipoJuegoDeCompeticion;
 
   alumnosEquipo: Alumno[];
 
@@ -138,17 +139,21 @@ export class JuegoCompeticionLigaPage implements OnInit {
 
   DameEquipoAlumnoConectado() {
     console.log('voy a por el equipo del alumno');
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.equiposDelJuego.length; i++) {
       this.peticionesAPI.DameAlumnosEquipo(this.equiposDelJuego[i].id)
         .subscribe(res => {
           console.log('miro en: ' + this.equiposDelJuego[i]);
-          for (let j = 0; j < res.length; j++)
+          // tslint:disable-next-line:prefer-for-of
+          for (let j = 0; j < res.length; j++) {
             if (res[j].id === this.MiAlumno.id) {
               console.log(res);
               this.MiEquipo = this.equiposDelJuego[i];
+              this.infoMiEquipo = this.rankingEquiposJuegoDeCompeticion.filter (equipo => equipo.id === this.MiEquipo.id)[0];
               console.log('tu equipo');
               console.log(this.MiEquipo);
             }
+          }
         });
     }
   }
@@ -235,6 +240,8 @@ export class JuegoCompeticionLigaPage implements OnInit {
                                       this.JornadasCompeticion);
     this.sesion.TomaTablaAlumnoJuegoDeCompeticion(this.rankingAlumnoJuegoDeCompeticion);
     this.sesion.TomaTablaEquipoJuegoDeCompeticion(this.rankingEquiposJuegoDeCompeticion);
+    this.sesion.TomaAlumno (this.MiAlumno);
+    this.sesion.TomaEquipo(this.MiEquipo);
     this.navCtrl.navigateForward('/informacion-jornadas');
   }
 
