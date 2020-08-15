@@ -2,6 +2,25 @@
 <ion-content padding class="login-content">
   <div>
 
+    <!-- Prueba de wheel selector -->
+
+    <ion-grid>
+      <ion-row>
+        <ion-col col-12><span class="selected-tag">Selected:</span> <span class="selected">{{selected}}</span></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col><button ion-button round outline (click)="selectFruit()">Fruit</button></ion-col>
+        <ion-col><button ion-button round outline (click)="selectANumber()">Number</button></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col><button ion-button round outline (click)="selectNamesUsingDisplayKey()">Names</button></ion-col>
+      </ion-row>
+      
+  
+    </ion-grid>
+
+
+
     <!-- Esto es para hacer la rubrica -->
 
     <!-- <mat-accordion> -->

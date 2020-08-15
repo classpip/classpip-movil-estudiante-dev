@@ -39,6 +39,7 @@ import { IntercambiarCromosPageModule } from './intercambiar-cromos/intercambiar
 import { AvatarEditorPageModule } from './avatar-editor/avatar-editor.module';
 import { LongPressModule } from 'ionic-long-press';
 import { IonicGestureConfig } from '../ionicGestureConfig';
+import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -70,6 +71,7 @@ import { IonicGestureConfig } from '../ionicGestureConfig';
     Camera,
     File,
     Geolocation,
+    WheelSelector,
     Media,
     { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
