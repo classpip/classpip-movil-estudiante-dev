@@ -203,11 +203,24 @@ export class CalculosService {
                                     }
                                   }
                                   console.log('ya tengo los juegos de votacion uno a todos');
+                                  console.log('voy a por los juegos de votacion todos a uno');
+                                  this.peticionesAPI.DameJuegosDeVotacionTodosAUnoAlumno(AlumnoId)
+                                  // tslint:disable-next-line:no-shadowed-variable
+                                  .subscribe( lista => {
+                                      for (let i = 0; i < (lista.length); i++) {
+                                        if (lista[i].JuegoActivo === true) {
+                                          JuegosActivos.push(lista[i]);
+                                        } else {
+                                          JuegosInactivos.push(lista[i]);
+                                        }
+                                      }
+                                      console.log('ya tengo los juegos de votacion todos a uno');
+                                      console.log (lista);
 
 
 
-                                  console.log('vamos a por los equipos');
-                                  this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
+                                    console.log('vamos a por los equipos');
+                                    this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
                               // tslint:disable-next-line:no-shadowed-variable
                               .subscribe( lista => {
                               this.equipos = lista;
@@ -288,6 +301,7 @@ export class CalculosService {
                                   } // fin bucle for equipos
                                 } // else de la pregunta de si hay equipos
                               }); // equipos del alumno
+                            }); // juegos de votacion todos a uno
                             }); // juegos de votacion uno a todos
                           });  // juegos de avatar
                         }); // juegos de cuestionario
@@ -297,7 +311,7 @@ export class CalculosService {
                 }); // juegos de colección
             }); // juegos de puntos
     }); // observable
-      return Observables;
+    return Observables;
   }
 
   public DameAlumnosJuegoPuntos(juegoId: number) {

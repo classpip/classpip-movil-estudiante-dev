@@ -52,6 +52,8 @@ export * from './PuntoGeolocalizable';
 export * from './Pregunta';
 export * from './JuegoDeVotacionUnoATodos';
 export * from './AlumnoJuegoDeVotacionUnoATodos';
+export * from './JuegoDeVotacionTodosAUno';
+export * from './AlumnoJuegoDeVotacionTodosAUno';
 export * from './Criterio';
 export * from './Rubrica';
 

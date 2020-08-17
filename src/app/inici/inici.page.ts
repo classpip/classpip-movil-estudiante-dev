@@ -93,6 +93,8 @@ export class IniciPage implements OnInit {
       this.navCtrl.navigateForward('/juego-avatar');
     } else if (juego.Tipo === 'Juego De Votación Uno A Todos') {
       this.navCtrl.navigateForward('/juego-votacion-uno-atodos');
+    } else if (juego.Tipo === 'Juego De Votación Todos A Uno') {
+      this.navCtrl.navigateForward('/juego-votacion-todos-auno');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }
