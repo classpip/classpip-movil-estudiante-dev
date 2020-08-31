@@ -54,6 +54,7 @@ export class JuegoDeGeocachingPage implements OnInit {
   index: number = 0;
   distancia: number = 1000;
   identificador: any;
+  distanciaNueva: number;
 
   coords: any = { lat:0, lng: 0 }
 
@@ -139,7 +140,10 @@ export class JuegoDeGeocachingPage implements OnInit {
       const lon =  position.coords.longitude;
       console.log('latitud ' + lat);
       console.log('longitud ' + lon );
-      console.log('distancia' + this.distancia)
+      // tslint:disable-next-line:max-line-length
+      this.distancia = Math.trunc(this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud)));
+      // tslint:disable-next-line:max-line-length
+   
 
       if (this.distancia <= 25 && this.alertaproximidad === false) {
         this.caliente();
@@ -148,10 +152,23 @@ export class JuegoDeGeocachingPage implements OnInit {
         this.llegada();
       }
 
-      this.distancia = this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud));
-}, null, this.options);
+     // this.distancia = this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud));
+    }, null, this.options);
 
 }
+// rad(x) {
+//   return x * Math.PI / 180;
+// }
+// getKilometros(lon1, lon2, lat1, lat2) {
+//     const R = 6378.137; //Radio de la tierra en km
+//     const dLat = this.rad( lat2 - lat1 );
+//     const dLong = this.rad( lon2 - lon1 );
+//     // tslint:disable-next-line:max-line-length
+//     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this.rad(lat1)) * Math.cos(this.rad(lat2)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+//     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//     const d = R * c;
+//     return d; //Retorna tres decimales
+//  }
 
 calculateDistance(lon1, lon2, lat1, lat2){
   let p = 0.017453292519943295;

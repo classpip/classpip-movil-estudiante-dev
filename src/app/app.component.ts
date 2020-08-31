@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
 import { Alumno } from '../app/clases/Alumno';
-import { SesionService } from '../app/servicios/sesion.service';
+import { SesionService, ComServerService } from '../app/servicios';
 
 
 @Component({
@@ -19,6 +19,7 @@ export class AppComponent {
   navigate : any;
   constructor(
     private sesion: SesionService,
+    private comServer: ComServerService,
     private route: Router,
     public navCtrl: NavController,
     private platform: Platform,
@@ -39,6 +40,7 @@ export class AppComponent {
   }
 
   GoOut() {
+    this.comServer.Desconectar(this.MiAlumno.Nombre + ' ' + this.MiAlumno.PrimerApellido);
     this.route.navigateByUrl('/home');
   }
 

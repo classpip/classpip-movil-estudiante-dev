@@ -7,8 +7,13 @@ import { Socket } from 'ngx-socket-io';
 export class ComServerService {
  
   constructor(private servidor: Socket) { }
-  Conectar() {
+  Conectar(nombre: string) {
     this.servidor.connect();
+    this.servidor.emit('usuarioConectado', nombre);
+  }
+  Desconectar(nombre: string) {
+    this.servidor.emit('usuarioDesconectado', nombre);
+    this.servidor.disconnect();
   }
   Emitir(mensaje: string, info: any) {
     this.servidor.emit(mensaje, info);

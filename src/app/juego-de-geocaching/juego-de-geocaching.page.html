@@ -37,14 +37,27 @@
        <!-- TERCER PASO -->
       <mat-step>
         <div *ngIf="rendirse;else Aviso_rendirse">
-          <p><b>Segunda Pista: </b>{{puntogeolocalizable.PistaFacil}}</p>
-          <!-- <p> distancia: {{distancia}} </p>
-          <button (click) = "llegada()" class = "ion-float-right button-rendirse">llegar</button> -->
+          <div>
+            <h4 style = "text-align: center;">Pista fácil </h4> 
+            <h2 style = "text-align: center; color:rgb(172, 26, 26)">{{puntogeolocalizable.PistaFacil}} </h2>
+            <br>
+            <br>
+            <h4 style = "text-align: center;">Distancia a tu destino </h4>
+            <h1 style = "text-align: center; color: rgb(172, 26, 26)">{{distancia}} metros </h1>
+          </div>
         </div>
         <ng-template #Aviso_rendirse>
-          <p><b>Pista: </b>{{puntogeolocalizable.PistaDificil}}</p>
-          <!-- <p> distancia: {{distancia}} </p> -->
-          <button (click) = "Rendirse()" class = "ion-float-right button-rendirse">Rendirse</button>
+          <div>
+            <h4 style = "text-align: center;">Pista difícil </h4> 
+            <h2 style = "text-align: center; color: rgb(172, 26, 26)">{{puntogeolocalizable.PistaDificil}} </h2>
+            <br>
+            <br>
+            <button (click) = "Rendirse()" class = "ion-float-right button-rendirse">Rendirse</button>
+
+          </div>
+       
+        
+        
         </ng-template>
         <div *ngIf="ubicacion">
           <p><b style="font-size: 16px;">Avanza para responder la pregunta puntuable</b></p>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SesionService, PeticionesAPIService } from '../servicios';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { CalculosService, ComServerService } from '../servicios';
@@ -9,7 +9,7 @@ import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Router } from '@angular/router';
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
-
+import {MatStepper} from '@angular/material';
 
 
 @Component({
@@ -48,10 +48,18 @@ export class JuegoDeCuestionarioPage implements OnInit {
   todasRespuestas: string[] = [];
   mezclaRespuestas: string[] = [];
   numeroDeRespuestas = 0;
+  tiempoLimite: number;
+  tiempoRestante: number;
+  timer;
+  contar = false;
 
   // Datos juego de cuestionario finalizado
   MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[];
   reorden: AlumnoJuegoDeCuestionario[];
+
+  // @ViewChild('stepper') stepper: MatStepper;
+
+  @ViewChild(MatStepper, { static: false }) stepper: MatStepper;
 
   constructor(
     private sesion: SesionService,
@@ -69,6 +77,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
+    this.tiempoLimite = this.juegoSeleccionado.TiempoLimite;
     // Obtenemos la inscripcion del alumno al juego de cuestionario
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
     .subscribe (res => {
@@ -142,7 +151,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.RespuestasAlumno[i + 1] !== undefined) {
       this.RespuestaEscogida = this.RespuestasAlumno[i + 1];
     } else if ((i + 1) !== this.PreguntasCuestionario.length) {
-      this.RespuestaEscogida = '';
+      this.RespuestaEscogida = undefined;
     } else {
       this.RespuestaEscogida = this.RespuestasAlumno[i];
     }
@@ -218,7 +227,14 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   // Funcion para establecer la nota y guardar respuestas
   ponerNota() {
+    // paramos el timer si está activo
+    if (this.contar) {
+      clearInterval(this.timer);
+      this.contar = false;
+    }
     this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
+    console.log ('Respuestas');
+    console.log (this.RespuestasAlumno);
 
     // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
     // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
@@ -226,8 +242,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
       if (this.RespuestasAlumno[i] === this.PreguntasCuestionario[i].RespuestaCorrecta) {
         this.Nota = this.Nota + this.puntuacionCorrecta;
         this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
-      } else if (this.RespuestasAlumno[i] === '') {
-        this.Nota = this.Nota;
+      } else if (this.RespuestasAlumno[i] === undefined) {
         this.feedbacks.push(' ');
       } else {
         this.Nota = this.Nota - this.puntuacionIncorrecta;
@@ -238,8 +253,9 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.Nota <= 0) {
       this.Nota = 0.1;
     }
+    const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
     // tslint:disable-next-line:max-line-length
-    this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId ), this.alumnoJuegoDeCuestionario[0].id)
+    this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId, tiempoEmpleado), this.alumnoJuegoDeCuestionario[0].id)
       .subscribe(res => {
         console.log ('ya he puesto nota');
         console.log(res);
@@ -263,7 +279,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
           cont++;
           if (cont === this.PreguntasCuestionario.length)  {
             // Notificamos respuesta al servidor
-            this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
+            this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota, tiempo: tiempoEmpleado});
           }
         });
     }
@@ -313,5 +329,38 @@ export class JuegoDeCuestionarioPage implements OnInit {
   // Exit page
   public exitPage() {
     this.route.navigateByUrl('tabs/inici');
+  }
+
+  IniciarTimer() {
+    if (this.tiempoLimite !== 0) {
+      // el timer solo se activa si se ha establecido un tiempo limite
+      this.contar = true; // para que se muestre la cuenta atrás
+      this.tiempoRestante = this.tiempoLimite;
+      this.timer = setInterval(async () => {
+            this.tiempoRestante = this.tiempoRestante - 1;
+            if (this.tiempoRestante === 0) {
+              // salto al paso de cuestionario concluido
+        
+              const confirm = await this.alertCtrl.create({
+                header: 'Se te acabó el tiempo',
+                message: 'Registramos tus respuestas',
+                buttons: [
+                    {
+                    text: 'OK',
+                    role: 'cancel',
+                    handler: () => {
+                    }
+                  }
+                ]
+              });
+              await confirm.present();
+              this.ponerNota();
+              this.stepper.selectedIndex = this.PreguntasCuestionario.length + 3;
+
+
+            }
+
+      }, 1000);
+    }
   }
 }

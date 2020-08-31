@@ -47,11 +47,7 @@
             <ion-slide *ngFor="let enfrentamiento of EnfrentamientosJornadaSeleccionada">
               <div>
                 <!-- Si el enfrentamiento es de mi alumno o equipo-->
-                <ion-card class="enfrentamiento-card-mialumno"
-                  *ngIf="enfrentamiento.JugadorUno === MiAlumno.id || enfrentamiento.JugadorDos === MiAlumno.id
-                        || enfrentamiento.JugadorUno === MiEquipo.id || enfrentamiento.JugadorDos === MiEquipo.id">
-                  
-
+                <ion-card class="enfrentamiento-card-mialumno" *ngIf= "ImplicadoEnEnfrentamiento (enfrentamiento)">
                     <h2> Enfrentamiento </h2>
                     <h3>{{enfrentamiento.nombreJugadorUno}}</h3>
                     <img class="versus-icon" width="80px" src="../../assets/img/versus.svg">
@@ -64,9 +60,7 @@
              
                 <!-- Si el enfrentamiento es de otros alumnos  o equipos-->
                 
-                <ion-card class="enfrentamiento-card"
-                  *ngIf="enfrentamiento.JugadorUno !== MiAlumno.id && enfrentamiento.JugadorDos !== MiAlumno.id
-                       && enfrentamiento.JugadorUno !== MiEquipo.id && enfrentamiento.JugadorDos !== MiEquipo.id">
+                <ion-card class="enfrentamiento-card" *ngIf= "!ImplicadoEnEnfrentamiento (enfrentamiento)">
                   
                     <h2> Enfrentamiento </h2>
                     <h3>{{enfrentamiento.nombreJugadorUno}}</h3>

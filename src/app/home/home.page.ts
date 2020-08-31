@@ -51,7 +51,8 @@ export class HomePage {
   jsonData: any;
 
 
-
+  identificador: any;
+  midiendo = false;
 
   constructor(
     // private http: HttpClient,
@@ -413,8 +414,32 @@ replay() {
 
 }
 
+empezar () {
+  if (this.midiendo) {
+    navigator.geolocation.clearWatch (this.identificador);
+    this.midiendo = false;
+  } else {
+    this.midiendo = true;
+    let options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
 
+    this.identificador = navigator.geolocation.watchPosition((position) => {
+      const lat =  position.coords.latitude;
+      
+      const lon =  position.coords.longitude;
+      this.coords.lat = position.coords.latitude;
+      this.coords.lng =  position.coords.longitude;
+      console.log('latitud ' + lat);
+      console.log('longitud ' + lon );
+      // tslint:disable-next-line:max-line-length
 
+    //this.distancia = this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud));
+    }, null, options);
+  }
+}
 
 obtenerPosicion(): any{
   console.log('entro en la funcion');
@@ -467,7 +492,7 @@ obtenerPosicion(): any{
             this.alumno = res[0];
             this.sesion.TomaAlumno(this.alumno);
             console.log('bien logado');
-            this.comServer.Conectar();
+            this.comServer.Conectar(this.nombre + ' ' + this.apellido);
             setTimeout(() => {
               this.route.navigateByUrl('/tabs/inici');
             }, 1500);

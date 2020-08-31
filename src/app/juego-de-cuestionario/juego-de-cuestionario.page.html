@@ -12,6 +12,12 @@
 </ion-header>
 
 <ion-content *ngIf = "juegoSeleccionado.JuegoActivo">
+  <div>
+    
+    <ion-list *ngIf ="contar" style="text-align:right">
+      <ion-label   style = "text-align: right; color: red; font-size: xx-large;">{{tiempoRestante}}</ion-label>    
+    </ion-list>
+
     <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="NotaInicial === '0'">
 
       <!-- PRIMER PASO -->
@@ -30,7 +36,9 @@
           <p><b>Descripción: </b>{{descripcion}}</p>
           <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
           <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
-          <button class = "ion-float-right siguiente" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+          <p *ngIf = "tiempoLimite !== 0"><b>Tiempo límite: </b>{{tiempoLimite}} segundos</p>
+          <p *ngIf = "tiempoLimite === 0"><b>Sin límite de tiempo </b></p>
+          <button class = "ion-float-right siguiente" (click) = "IniciarTimer()" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
         </div>
       </mat-step>
 
@@ -73,6 +81,7 @@
         <button (click) = "GoMisJuegos()" class = "ion-float-right button-empezar">Cerrar</button>
       </mat-step>
     </mat-horizontal-stepper>
+  </div>
 
     <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="NotaInicial !== '0'">
       <mat-step>
@@ -80,6 +89,7 @@
           <p style="font-size: 18px;">Ya has realizado este examen previamente. Y la puntuacion obtenida es de: <b>{{NotaInicial}}</b></p>
         </div>
       </mat-step>
+       
     </mat-horizontal-stepper>
 </ion-content>
 

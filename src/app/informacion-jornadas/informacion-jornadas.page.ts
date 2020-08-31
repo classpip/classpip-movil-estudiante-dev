@@ -153,10 +153,20 @@ export class InformacionJornadasPage implements OnInit {
     return jornadaFinalizada;
   }
 
-  sliderConfig = {
-    slidesPerView: 1.6,
-    spaceBetween: 10,
-    centeredSlides: true
-  };
+  ImplicadoEnEnfrentamiento(enfrentamiento) {
+    // devuelve cierto si el alumno o el equipo están implicados en el enfrentamiento
+    // para que se muestre esta circunstancia al mostrar los enfrentamientos.
+    if (this.juegoSeleccionado.Modo === 'Individual') {
+      return (enfrentamiento.JugadorUno === this.MiAlumno.id || enfrentamiento.JugadorDos === this.MiAlumno.id);
+    } else {
+      return (enfrentamiento.JugadorUno === this.MiEquipo.id || enfrentamiento.JugadorDos === this.MiEquipo.id);
+    }
+  }
+
+  // sliderConfig = {
+  //   slidesPerView: 1.6,
+  //   spaceBetween: 10,
+  //   centeredSlides: true
+  // };
 
 }
