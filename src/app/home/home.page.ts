@@ -45,6 +45,7 @@ export class HomePage {
 
 
 
+
   panelOpenState = false;
    
   data: any;
@@ -57,6 +58,7 @@ export class HomePage {
   midiendo = false;
 
   contNotif = 0;
+
 
   constructor(
     // private http: HttpClient,

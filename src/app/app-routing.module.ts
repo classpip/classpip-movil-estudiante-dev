@@ -25,6 +25,7 @@ const routes: Routes = [
   
   { path: 'juego-puntos', loadChildren: './juego-puntos/juego-puntos.module#JuegoPuntosPageModule' },
   { path: 'album-alumno', loadChildren: './album-alumno/album-alumno.module#AlbumAlumnoPageModule' },
+
   { path: 'juego-de-geocaching', loadChildren: './juego-de-geocaching/juego-de-geocaching.module#JuegoDeGeocachingPageModule' },
   { path: 'modal', loadChildren: './modal/modal.module#ModalPageModule' },
   { path: 'ver-avatares-grupo', loadChildren: './ver-avatares-grupo/ver-avatares-grupo.module#VerAvataresGrupoPageModule' },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'juego-votacion-uno-atodos', loadChildren: './juego-votacion-uno-atodos/juego-votacion-uno-atodos.module#JuegoVotacionUnoATodosPageModule' },
   // tslint:disable-next-line:max-line-length
   { path: 'juego-votacion-todos-auno', loadChildren: './juego-votacion-todos-auno/juego-votacion-todos-auno.module#JuegoVotacionTodosAUnoPageModule' }
+
 
 ];
 

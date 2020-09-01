@@ -4,7 +4,9 @@ import { PeticionesAPIService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {
   Alumno, Juego, Jornada, TablaJornadas, EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion,
+
   TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionLiga, TablaClasificacionJornada, Equipo
+
 } from '../clases/index';
 import { SesionService } from '../servicios/sesion.service';
 import { typeWithParameters } from '@angular/compiler/src/render3/util';

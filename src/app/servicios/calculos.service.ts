@@ -123,6 +123,22 @@ export class CalculosService {
               }
               console.log('voy a por los juegos de geocaching');
               this.peticionesAPI.DameJuegoDeGeocachingAlumno(AlumnoId)
+
+              // tslint:disable-next-line:no-shadowed-variable
+              .subscribe( lista => {
+                console.log(lista);
+                  for (let i = 0; i < (lista.length); i++) {
+                    if (lista[i].JuegoActivo === true) {
+                      lista[i].Tipo = 'Juego De Geocaching';
+                      JuegosActivos.push(lista[i]);
+                    } else if (lista[i].JuegoTerminado === true){
+                      lista[i].Tipo = 'Juego De Geocaching';
+                      JuegosInactivos.push(lista[i]);
+                    }
+                  }
+              console.log (JuegosActivos);
+              console.log('voy a por los juegos de F1 del alumno');
+              this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId)
               // tslint:disable-next-line:no-shadowed-variable
               .subscribe( lista => {
                 console.log(lista);
@@ -307,7 +323,9 @@ export class CalculosService {
                         }); // juegos de cuestionario
                       }); // juegos de liga
                     }); // juegos de F1
+
                   }); // juegos de geocaching
+
                 }); // juegos de colección
             }); // juegos de puntos
     }); // observable
@@ -2041,14 +2059,18 @@ export class CalculosService {
           this.peticionesAPI.DameInscripcionAlumnoJuegoDeGeocaching( listaAlumnos[i].id, juegoId).subscribe(
             Inscripcion => {
               MiAlumno.Puntuacion = Inscripcion[0].Puntuacion;
+
               MiAlumno.Etapa = Inscripcion[0].Etapa;
+
               MiAlumno.alumnoId = Inscripcion[0].alumnoId;
               MiAlumno.id = Inscripcion[0].id;
               MiAlumno.juegoDeGeocachingId = Inscripcion[0].juegoDeGeocachingId;
             });
           InformacionAlumno.push(MiAlumno);
         }
+
         InformacionAlumno = InformacionAlumno.sort((a, b) => {
+
           return b.Puntuacion - a.Puntuacion;
         });
     });
@@ -2056,7 +2078,9 @@ export class CalculosService {
   }
 
   public DameListaAlumnosJuegoGeocachingOrdenada(juegoDeGeocachingId: number): MiAlumnoAMostrarJuegoDeGeocaching[] {
+
     const InformacionAlumno: MiAlumnoAMostrarJuegoDeGeocaching[] = [];
+
     let Inscripciones: AlumnoJuegoDeGeocaching[] = [];
     this.peticionesAPI.ListaInscripcionesAlumnosJuegoDeGeocaching(juegoDeGeocachingId).subscribe(res => {
       Inscripciones = res;
@@ -2076,7 +2100,9 @@ export class CalculosService {
           MiAlumno.PrimerApellido = res.PrimerApellido;
           MiAlumno.ImagenPerfil = res.ImagenPerfil;
         });
+
         InformacionAlumno.push(MiAlumno);
+
       }
     });
     return InformacionAlumno;
@@ -2084,6 +2110,7 @@ export class CalculosService {
 
   public DamePreguntasJuegoDeGeocaching(PreguntasId: number[]): any {
     const preguntasObservable = new Observable(obs => {
+
       let contador = 0;
       const preguntas: Pregunta[] = [];
       for (let i = 0; i < (PreguntasId.length); i++) {
@@ -2095,6 +2122,7 @@ export class CalculosService {
           obs.next(preguntas);
         }
       });
+
     }
   });
     return preguntasObservable;

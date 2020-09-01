@@ -30,6 +30,10 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 // const config: SocketIoConfig = { url: 'http://147.83.118.92:8080', options: {} };
 
 
+//const config: SocketIoConfig = { url: 'http://localhost:8080', options: {} };
+const config: SocketIoConfig = { url: 'http://147.83.118.92:8080', options: {} };
+
+
 const config: SocketIoConfig = { url: URL.Servidor, options: {} };
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
