@@ -11,9 +11,8 @@
   <div *ngIf="juegoSeleccionado.Modo === 'Individual'">
     <div *ngIf="infomialumno !== undefined" class="info-alumno">
       <img class="logo-liga" src="../../assets/img/ligaicon.svg" width="100px">
-      <h2> Hola {{infomialumno.nombre}}, actualmente vas</h2>
-      <h3> {{ infomialumno.posicion }}o</h3>
-      <h2> en la competición de Liga </h2>
+      <h2> Tienes </h2>
+      <h3> {{ infomialumno.puntos }} puntos</h3>
 
       <ion-list class="puntos-list-bg">
         <ion-item>
@@ -40,36 +39,41 @@
 
     <ion-button class="ranking-btn" (click)="InformacionJornadas();">Jornadas</ion-button>
 
-    <ion-button *ngIf="!hideMe" class="ranking-btn" (click)="MuestraElRanking();">Mostrar Ranking</ion-button>
-    <ion-button *ngIf="hideMe" class="ranking-btn" (click)="OcultarElRanking();">Ocultar Ranking</ion-button>
-    <!-- <ion-button (click)="Autentificar();" class="login-btn">Muestrame a mis compañeros</ion-button>
- -->
+    <ion-button *ngIf="!hideMe" class="ranking-btn" (click)="MuestraElRanking();">Mostrar Clasificación</ion-button>
+    <ion-button *ngIf="hideMe" class="ranking-btn" (click)="OcultarElRanking();">Ocultar Clasificación</ion-button>
+  
     <div *ngIf="hideMe">
       <mat-accordion>
         <div *ngFor="let alumno of rankingAlumnoJuegoDeCompeticion">
-          <mat-expansion-panel class="ranking-acordeon" *ngIf="alumno.id !== MiAlumno.id">
+          <mat-expansion-panel>
             <mat-expansion-panel-header>
-              <div class="span">
-                <ion-avatar slot="start" class="avatar">
-                  <img src="../../assets/img/usuario.svg">
-                </ion-avatar>
-                <ion-label>
-                  <h2> <b>{{alumno.nombre}} {{alumno.primerApellido}}</b> </h2>
+              <ion-item >
+                <ion-label *ngIf="alumno.id === MiAlumno.id" style="font-size: large; width: 200px !important; color:rgb(33, 163, 102);">
+                  {{alumno.posicion}}. {{alumno.nombre}} {{alumno.primerApellido}}
                 </ion-label>
-              </div>
+                <ion-label *ngIf ="alumno.id !== MiAlumno.id" style="font-size: large; width: 200px !important; ">
+                  {{alumno.posicion}}. {{alumno.nombre}} {{alumno.primerApellido}}
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label  style="font-size: large; color: red; text-align: right;">
+                  {{alumno.puntos}} pts.
+                </ion-label>
+              </ion-item>
+             
             </mat-expansion-panel-header>
             <ion-list class="puntos-list-bg-acordeon">
-              <p>Actualmente va <b>{{ alumno.posicion }}</b>o por que:</p>
+              <p>Estás en la posición <b>{{ alumno.posicion }}</b> porque:</p>
               <ion-item>
-                <h2>Ha Jugado:</h2>
+                <h2>Has Jugado:</h2>
                 <h2 slot="end"> {{alumno.partidosJugados}} partidos</h2>
               </ion-item>
               <ion-item>
-                <h2>Ha Ganado:</h2>
+                <h2>Has Ganado:</h2>
                 <h2 slot="end"> {{alumno.partidosGanados}} partidos</h2>
               </ion-item>
               <ion-item>
-                <h2>Ha Empatado:</h2>
+                <h2>Has Empatado:</h2>
                 <h2 slot="end"> {{alumno.partidosEmpatados}} partidos </h2>
               </ion-item>
               <ion-item>
@@ -83,40 +87,68 @@
       </mat-accordion>
     </div>
   </div>
-  <div *ngIf="juegoSeleccionado.Modo !== 'Individual'" class="info-equipo">
-    <img class="logo" src="../../assets/img/ligaicon.svg" width="100px">
-    <h2> Hola {{MiAlumno.Nombre}}, formas parte del equipo</h2>
-    <h3 *ngIf="MiEquipo !== undefined"> {{MiEquipo.Nombre}} </h3>
-    <h2> en este juego de competición Liga </h2>
-    <mat-accordion>
-      <mat-expansion-panel class="ranking-acordeon" *ngFor="let equipo of rankingEquiposJuegoDeCompeticion">
-        <mat-expansion-panel-header (click)="AlumnosDelEquipo(equipo)">
-          <div class="span">
-            <ion-avatar slot="start" class="avatar">
-              <img src="../../assets/img/equipo.svg">
-            </ion-avatar>
-            <ion-label>
-              <h2> <b>{{equipo.nombre}}</b> </h2>
-            </ion-label>
-          </div>
-        </mat-expansion-panel-header>
-        <div class="alumnos-grupo">
-          <div class="alumno-image" *ngFor="let alumno of alumnosEquipo">
-            <div *ngIf="alumno.id !== MiAlumno.id" class="border">
-              <div class="img-box">
-                <img src="../../assets/img/usuario.svg">
-              </div>
+  <div *ngIf="juegoSeleccionado.Modo !== 'Individual'">
+    <div *ngIf="MiEquipo !== undefined" class="info-equipo">
+      <img class="logo" src="../../assets/img/ligaicon.svg" width="100px">
+      <h2> Formas parte del equipo</h2>
+      <h3> {{MiEquipo.Nombre}} </h3>
+      <h2> que tiene </h2>
+      <h3> {{ infoMiEquipo.puntos }} puntos</h3>
+      
+
+      <ion-button class="ranking-btn" (click)="InformacionJornadas();">Jornadas</ion-button>
+
+      <ion-button *ngIf="!hideMe" class="ranking-btn" (click)="MuestraElRanking();">Mostrar Clasificación</ion-button>
+      <ion-button *ngIf="hideMe" class="ranking-btn" (click)="OcultarElRanking();">Ocultar Clasificación</ion-button>
+    
+      <div *ngIf="hideMe">
+        <mat-accordion>
+          <mat-expansion-panel  *ngFor="let equipo of rankingEquiposJuegoDeCompeticion">
+            <mat-expansion-panel-header (click)="AlumnosDelEquipo(equipo)">
+
+              <ion-item >
+                <ion-label *ngIf="equipo.id === MiEquipo.id" style="font-size: large; width: 200px !important; color:rgb(33, 163, 102);">
+                  {{equipo.posicion}}. {{equipo.nombre}} 
+                </ion-label>
+                <ion-label *ngIf ="equipo.id !== MiEquipo.id" style="font-size: large; width: 200px !important; ">
+                  {{equipo.posicion}}. {{equipo.nombre}} 
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label  style="font-size: large; color: red; text-align: right;">
+                  {{equipo.puntos}} pts.
+                </ion-label>
+              </ion-item>
+            
+            </mat-expansion-panel-header>
+            
+            <div  *ngFor="let alumno of alumnosEquipo">
+              <p *ngIf="alumno.id !== MiAlumno.id" >{{alumno.Nombre}} {{alumno.PrimerApellido}} </p>
+              <p *ngIf="alumno.id === MiAlumno.id" style="color:rgb(33, 163, 102);" >{{alumno.Nombre}} {{alumno.PrimerApellido}} </p>
             </div>
-            <div *ngIf="alumno.id === MiAlumno.id" class="border-conectado">
-              <div class="img-box">
-                <img src="../../assets/img/usuario.svg">
-              </div>
-            </div>
-            <p>{{alumno.Nombre}} <br> {{alumno.PrimerApellido}} </p>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <ion-button class="ranking-btn" (click)="InformacionJornadas();">Jornadas</ion-button>
+            <ion-list class="puntos-list-bg-acordeon">
+              <p>Este equipo está en la posición <b>{{ infoMiEquipo.posicion }}</b> porque:</p>
+              <ion-item>
+                <h2>Ha jugado:</h2>
+                <h2 slot="end"> {{infoMiEquipo.partidosJugados}} partidos</h2>
+              </ion-item>
+              <ion-item>
+                <h2>Ha ganado:</h2>
+                <h2 slot="end"> {{infoMiEquipo.partidosGanados}} partidos</h2>
+              </ion-item>
+              <ion-item>
+                <h2>Ha empatado:</h2>
+                <h2 slot="end"> {{infoMiEquipo.partidosEmpatados}} partidos </h2>
+              </ion-item>
+              <ion-item>
+                <h2>Y ha perdido:</h2>
+                <h2 slot="end"> {{infoMiEquipo.partidosPerdidos}} partidos </h2>
+              </ion-item>
+              <p>De un total de <b>{{infoMiEquipo.partidosTotales}}</b> partidos. </p>
+            </ion-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
   </div>
 </ion-content>

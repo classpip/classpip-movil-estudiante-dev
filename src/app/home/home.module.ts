@@ -6,8 +6,11 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 
+import {MatExpansionModule} from '@angular/material/expansion';
+
 @NgModule({
   imports: [
+    MatExpansionModule,
     CommonModule,
     FormsModule,
     IonicModule,

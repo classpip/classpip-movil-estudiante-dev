@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SesionService, PeticionesAPIService } from '../servicios';
 import { NavController, AlertController, Platform } from '@ionic/angular';
-import { CalculosService } from '../servicios/calculos.service';
+import { CalculosService, ComServerService } from '../servicios';
 import { Juego } from '../clases';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
@@ -9,16 +9,7 @@ import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Router } from '@angular/router';
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
-
-
-// En este componente usamos sockets para notificar al server que el usuario 
-// ya ha contestado el cuestionario.
-// Para usar sockets desde ionic he usado este tutorial:
-// https://devdactic.com/ionic-4-socket-io/
-// Atención porque la IP:puerto del servidor a la que se conecta el socket se define en 
-// URLs 
-
-import { Socket } from 'ngx-socket-io';
+import {MatStepper} from '@angular/material';
 
 
 @Component({
@@ -28,39 +19,47 @@ import { Socket } from 'ngx-socket-io';
 })
 export class JuegoDeCuestionarioPage implements OnInit {
 
-  empezado: boolean = false;
+  empezado = false;
 
   alumnoId: number;
   alumnoJuegoDeCuestionario: AlumnoJuegoDeCuestionario;
   juegoSeleccionado: Juego;
   cuestionario: Cuestionario;
   PreguntasCuestionario: Pregunta[];
-  descripcion: string = '';
+  descripcion = '';
   puntuacionCorrecta: number;
   puntuacionIncorrecta: number;
   respuestasPosibles: string[] = [];
   RespuestaEscogida: string;
   RespuestasAlumno: string[] = [];
-  Nota: number = 0;
-  puntuacionMaxima: number = 0;
-  NotaInicial: string = '';
+  Nota = 0;
+  puntuacionMaxima = 0;
+  NotaInicial = '';
   feedbacks: string[] = [];
 
-  //Con este array establecemos la posicion donde estara colocada la respuesta correcta en cada una de las preguntas
+  // Con este array establecemos la posicion donde estara colocada la respuesta correcta en cada una de las preguntas
   ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2];
 
-  //Caso de un cuestionario con preguntas mezcladas 
-  nuevaOrdenacion: number[]= [];
+  // Caso de un cuestionario con preguntas mezcladas
+  nuevaOrdenacion: number[] = [];
   PreguntasCuestionarioOrdenadas: Pregunta[];
 
-  //Caso de un cuestionario con respuestas mezcladas tambien
+  // Caso de un cuestionario con respuestas mezcladas tambien
   todasRespuestas: string[] = [];
   mezclaRespuestas: string[] = [];
-  numeroDeRespuestas: number = 0;
+  numeroDeRespuestas = 0;
+  tiempoLimite: number;
+  tiempoRestante: number;
+  timer;
+  contar = false;
 
-  //Datos juego de cuestionario finalizado
+  // Datos juego de cuestionario finalizado
   MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[];
   reorden: AlumnoJuegoDeCuestionario[];
+
+  // @ViewChild('stepper') stepper: MatStepper;
+
+  @ViewChild(MatStepper, { static: false }) stepper: MatStepper;
 
   constructor(
     private sesion: SesionService,
@@ -70,7 +69,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     private calculos: CalculosService,
     private alertCtrl: AlertController,
     private platform: Platform,
-    private servidor: Socket
+    private comServer: ComServerService
   ) { }
 
   ngOnInit() {
@@ -78,23 +77,24 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
-    //Obtenemos la inscripcion del alumno al juego de cuestionario
+    this.tiempoLimite = this.juegoSeleccionado.TiempoLimite;
+    // Obtenemos la inscripcion del alumno al juego de cuestionario
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
     .subscribe (res => {
       this.alumnoJuegoDeCuestionario = res;
       this.NotaInicial = res[0].Nota.toString();
     });
-    //Obtenemos el cuestionario a realizar
+    // Obtenemos el cuestionario a realizar
     this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
     .subscribe(res => {
       this.cuestionario = res;
       this.descripcion = res.Descripcion;
     });
-    //Obtenemos las preguntas del cuestionario y ordenamos preguntas/respuestas en funcion a lo establecido en el cuestionario
+    // Obtenemos las preguntas del cuestionario y ordenamos preguntas/respuestas en funcion a lo establecido en el cuestionario
     this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
     .subscribe(res => {
       if (this.juegoSeleccionado.Presentacion !== 'Mismo orden para todos') {
-        this.ordenarRespuestas(res)
+        this.ordenarRespuestas(res);
       } else {
         this.PreguntasCuestionario = res;
       }
@@ -106,7 +106,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
         this.respuestasPosibles = this.desordenRespuestas(this.respuestasPosibles);
         this.todasRespuestas = this.respuestasPosibles;
 
-        var i = 1;
+        let i = 1;
         while (i < this.PreguntasCuestionario.length) {
           this.mezclaRespuestas.push(res[i].RespuestaIncorrecta1);
           this.mezclaRespuestas.push(res[i].RespuestaIncorrecta2);
@@ -124,42 +124,39 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.juegoSeleccionado.JuegoTerminado) {
       this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameListaAlumnosJuegoCuestionarioOrdenada(this.juegoSeleccionado.id);
     }
-
-
-    this.servidor.connect();
   }
 
-  //Esta funcion coge el array en el cual se asigna la posicion de las respuestas correctas y lo
-  //reordena en funcion al nuevo orden de las preguntas (ya el primer paso de la funcion es desordenar las preguntas) 
+  // Esta funcion coge el array en el cual se asigna la posicion de las respuestas correctas y lo
+  // reordena en funcion al nuevo orden de las preguntas (ya el primer paso de la funcion es desordenar las preguntas)
   ordenarRespuestas(preguntas: Pregunta[]) {
     this.PreguntasCuestionarioOrdenadas = preguntas;
     this.PreguntasCuestionario = this.desordenPreguntas(this.PreguntasCuestionarioOrdenadas);
-    
-    if (this.PreguntasCuestionarioOrdenadas !== this.PreguntasCuestionario ){
-      for (var i = 0; i < this.PreguntasCuestionarioOrdenadas.length; i++) {
-        for (var j = 0; j < this.PreguntasCuestionario.length; j++) {
+
+    if (this.PreguntasCuestionarioOrdenadas !== this.PreguntasCuestionario ) {
+      for (let i = 0; i < this.PreguntasCuestionarioOrdenadas.length; i++) {
+        for (let j = 0; j < this.PreguntasCuestionario.length; j++) {
           if (this.PreguntasCuestionarioOrdenadas[i] === this.PreguntasCuestionario[j]) {
             this.nuevaOrdenacion.splice(this.nuevaOrdenacion[i], 0, this.ordenRespuestaCorrecta[j]);
           }
         }
       }
       this.ordenRespuestaCorrecta = this.nuevaOrdenacion;
-      
-    }        
+
+    }
   }
 
-  //Funcion para establecer las respuestas posibles de la siguiente pregunta que aparezca en el cuestinario
+  // Funcion para establecer las respuestas posibles de la siguiente pregunta que aparezca en el cuestinario
   cambioRespuestasSiguiente(i: number) {
     this.RespuestasAlumno.splice(i, 1, this.RespuestaEscogida);
-    if (this.RespuestasAlumno[i+1] !== undefined) {
-      this.RespuestaEscogida = this.RespuestasAlumno[i+1];
-    } else if ((i+1) !== this.PreguntasCuestionario.length){
-      this.RespuestaEscogida = '';
+    if (this.RespuestasAlumno[i + 1] !== undefined) {
+      this.RespuestaEscogida = this.RespuestasAlumno[i + 1];
+    } else if ((i + 1) !== this.PreguntasCuestionario.length) {
+      this.RespuestaEscogida = undefined;
     } else {
       this.RespuestaEscogida = this.RespuestasAlumno[i];
     }
 
-    if ((i+1) !== this.PreguntasCuestionario.length && this.juegoSeleccionado.Presentacion !== 'Preguntas y respuestas desordenadas'){
+    if ((i + 1) !== this.PreguntasCuestionario.length && this.juegoSeleccionado.Presentacion !== 'Preguntas y respuestas desordenadas') {
       this.respuestasPosibles = [];
       i = i + 1;
       this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta1);
@@ -168,19 +165,19 @@ export class JuegoDeCuestionarioPage implements OnInit {
       this.respuestasPosibles.splice(this.ordenRespuestaCorrecta[i], 0, this.PreguntasCuestionario[i].RespuestaCorrecta);
     }
 
-    if ((i+1) !== this.PreguntasCuestionario.length && this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
+    if ((i + 1) !== this.PreguntasCuestionario.length && this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
       this.numeroDeRespuestas = this.numeroDeRespuestas + 4;
       this.respuestasPosibles = [];
-      for (var i = this.numeroDeRespuestas; i < (this.numeroDeRespuestas + 4); i++){
-        this.respuestasPosibles.push(this.todasRespuestas[i])
+      for (let i = this.numeroDeRespuestas; i < (this.numeroDeRespuestas + 4); i++) {
+        this.respuestasPosibles.push(this.todasRespuestas[i]);
       }
-      
+
     }
   }
 
-  //Cargamos las respuestas posibles de la pregunta anterior
+  // Cargamos las respuestas posibles de la pregunta anterior
   cambioRespuestasAnterior(i: number) {
-    this.RespuestaEscogida = this.RespuestasAlumno[i-1];
+    this.RespuestaEscogida = this.RespuestasAlumno[i - 1];
     this.respuestasPosibles = [];
     i = i - 1;
     this.respuestasPosibles.push(this.PreguntasCuestionario[i].RespuestaIncorrecta1);
@@ -191,31 +188,16 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.juegoSeleccionado.Presentacion === 'Preguntas y respuestas desordenadas') {
       this.numeroDeRespuestas = this.numeroDeRespuestas - 4;
       this.respuestasPosibles = [];
-      for (var i = this.numeroDeRespuestas; i < (this.numeroDeRespuestas + 4); i++){
-        this.respuestasPosibles.push(this.todasRespuestas[i])
+      for (let i = this.numeroDeRespuestas; i < (this.numeroDeRespuestas + 4); i++) {
+        this.respuestasPosibles.push(this.todasRespuestas[i]);
       }
     }
 
   }
 
-  //Desordenador de preguntas
+  // Desordenador de preguntas
   desordenPreguntas(datos: Pregunta[]): Pregunta[] {
-    var currentIndex = datos.length, temporaryValue, randomIndex;
-
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = datos[currentIndex];
-      datos[currentIndex] = datos[randomIndex];
-      datos[randomIndex] = temporaryValue;
-    }
-    return datos
-  }
-
-  //Desordenador de respuestas
-  desordenRespuestas(datos: string[]): string[] {
-    var currentIndex = datos.length, temporaryValue, randomIndex;
+    let currentIndex = datos.length, temporaryValue, randomIndex;
 
     while (0 !== currentIndex) {
       randomIndex = Math.floor(Math.random() * currentIndex);
@@ -228,18 +210,39 @@ export class JuegoDeCuestionarioPage implements OnInit {
     return datos;
   }
 
-  //Funcion para establecer la nota y guardar respuestas
+  // Desordenador de respuestas
+  desordenRespuestas(datos: string[]): string[] {
+    let currentIndex = datos.length, temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = datos[currentIndex];
+      datos[currentIndex] = datos[randomIndex];
+      datos[randomIndex] = temporaryValue;
+    }
+    return datos;
+  }
+
+  // Funcion para establecer la nota y guardar respuestas
   ponerNota() {
+    // paramos el timer si está activo
+    if (this.contar) {
+      clearInterval(this.timer);
+      this.contar = false;
+    }
     this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
-    
-    //Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
-    //si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
-    for(var i = 0; i < this.PreguntasCuestionario.length; i++) {
-      if (this.RespuestasAlumno[i] === this.PreguntasCuestionario[i].RespuestaCorrecta){
+    console.log ('Respuestas');
+    console.log (this.RespuestasAlumno);
+
+    // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
+    // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
+    for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+      if (this.RespuestasAlumno[i] === this.PreguntasCuestionario[i].RespuestaCorrecta) {
         this.Nota = this.Nota + this.puntuacionCorrecta;
         this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
-      } else if (this.RespuestasAlumno[i] === "") {
-        this.Nota = this.Nota;
+      } else if (this.RespuestasAlumno[i] === undefined) {
         this.feedbacks.push(' ');
       } else {
         this.Nota = this.Nota - this.puntuacionIncorrecta;
@@ -250,20 +253,21 @@ export class JuegoDeCuestionarioPage implements OnInit {
     if (this.Nota <= 0) {
       this.Nota = 0.1;
     }
+    const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
     // tslint:disable-next-line:max-line-length
-    this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId ), this.alumnoJuegoDeCuestionario[0].id)
+    this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId, tiempoEmpleado), this.alumnoJuegoDeCuestionario[0].id)
       .subscribe(res => {
         console.log ('ya he puesto nota');
         console.log(res);
       });
 
     console.log ('vamos aregistrar las respuestas');
-    //Aqui guardamos las respuestas del alumno
+    // Aqui guardamos las respuestas del alumno
     let cont = 0;
-    for(var i = 0; i < this.PreguntasCuestionario.length; i++) {
+    for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
       console.log ('respuesta a la pregunta ' + i);
       console.log (this.RespuestasAlumno[i]);
-      if ((this.RespuestasAlumno[i] === "") || (this.RespuestasAlumno[i] === undefined)) {
+      if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
         this.RespuestasAlumno[i] = '-';
       }
       // tslint:disable-next-line:max-line-length
@@ -275,14 +279,14 @@ export class JuegoDeCuestionarioPage implements OnInit {
           cont++;
           if (cont === this.PreguntasCuestionario.length)  {
             // Notificamos respuesta al servidor
-            this.servidor.emit('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
+            this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota, tiempo: tiempoEmpleado});
           }
         });
     }
   }
 
-  //En el caso de que el alumno le de al boton de salir despues de haber empezado el cuestionario
-  //se activa esta funcion y en el caso de que acepte salir del cuestionario, se le pondrá un 0 en el examen
+  // En el caso de que el alumno le de al boton de salir despues de haber empezado el cuestionario
+  // se activa esta funcion y en el caso de que acepte salir del cuestionario, se le pondrá un 0 en el examen
   async popup() {
     const confirm = await this.alertCtrl.create({
       header: '¿Seguro que quieres salir?',
@@ -296,7 +300,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
             this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId ), this.alumnoJuegoDeCuestionario[0].id)
               .subscribe(res => {
                 console.log(res);
-                this.servidor.emit('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
+                this.comServer.Emitir('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
               });
             this.route.navigateByUrl('tabs/inici');
           }
@@ -312,18 +316,51 @@ export class JuegoDeCuestionarioPage implements OnInit {
     await confirm.present();
   }
 
-  //Flag para ver si hemos empezado el cuestionario
+  // Flag para ver si hemos empezado el cuestionario
   empezamos() {
     this.empezado = true;
   }
 
-  //Volvemos a la pagina de inicio
+  // Volvemos a la pagina de inicio
   GoMisJuegos() {
     this.route.navigateByUrl('tabs/inici');
   }
 
-  //Exit page
+  // Exit page
   public exitPage() {
     this.route.navigateByUrl('tabs/inici');
+  }
+
+  IniciarTimer() {
+    if (this.tiempoLimite !== 0) {
+      // el timer solo se activa si se ha establecido un tiempo limite
+      this.contar = true; // para que se muestre la cuenta atrás
+      this.tiempoRestante = this.tiempoLimite;
+      this.timer = setInterval(async () => {
+            this.tiempoRestante = this.tiempoRestante - 1;
+            if (this.tiempoRestante === 0) {
+              // salto al paso de cuestionario concluido
+        
+              const confirm = await this.alertCtrl.create({
+                header: 'Se te acabó el tiempo',
+                message: 'Registramos tus respuestas',
+                buttons: [
+                    {
+                    text: 'OK',
+                    role: 'cancel',
+                    handler: () => {
+                    }
+                  }
+                ]
+              });
+              await confirm.present();
+              this.ponerNota();
+              this.stepper.selectedIndex = this.PreguntasCuestionario.length + 3;
+
+
+            }
+
+      }, 1000);
+    }
   }
 }

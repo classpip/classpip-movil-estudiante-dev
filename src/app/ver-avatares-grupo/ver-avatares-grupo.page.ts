@@ -28,7 +28,7 @@ export class VerAvataresGrupoPage implements OnInit {
 
   }
   PrepararAvatares() {
-    // traemos las inscripciones
+    // Preparo una lista que contenga para cada alumno sus datos, su inscripción y la voz de su avatar 
 
     this.peticionesAPI.DameInscripcionesAlumnoJuegoDeAvatar(this.juegoSeleccionado.id)
     .subscribe(inscripciones => {
@@ -44,7 +44,8 @@ export class VerAvataresGrupoPage implements OnInit {
 
           const avatar = {
             insc: inscripcion,
-            al: alumno
+            al: alumno,
+            voz: URL.AudiosAvatares + inscripcion.Voz
           };
           this.listaAvatares.push (avatar);
         });

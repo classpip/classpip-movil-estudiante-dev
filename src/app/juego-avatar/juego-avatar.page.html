@@ -9,7 +9,7 @@
 
 <ion-content class="juegoavatar-content">
 <!-- Aqui muestro el avatar, si lo tiene -->
-  <div *ngIf="tieneAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%; margin-bottom: 30%;">
+  <div *ngIf="tieneAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%;">
     <img  [src]="imagenesAvatares + inscripcionAlumnoJuegoAvatar.Silueta" style="width: 300px; height: 324px; position: relative; z-index: 0;">
     <img  *ngIf = "inscripcionAlumnoJuegoAvatar.Complemento1" [src]="imagenesAvatares + inscripcionAlumnoJuegoAvatar.Complemento1" style="width: 300px; height: 324px; position: absolute; z-index: 1;">
     <img  *ngIf = "inscripcionAlumnoJuegoAvatar.Complemento2" [src]="imagenesAvatares + inscripcionAlumnoJuegoAvatar.Complemento2" style="width: 300px; height: 324px;position: absolute; z-index: 2;">
@@ -19,10 +19,14 @@
   </div> 
   <!-- si no tiene avatar muestro la figura predefinida para el caso -->
 
-  <div  *ngIf = "!tieneAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%; margin-bottom: 30%; opacity: 0.2;">
+  <div  *ngIf = "!tieneAvatar" style="display: flex; width: 300px; height: 324px; margin: auto;   opacity: 0.2;">
     <img  src = "../assets/interrogante.jpg" style="width: 300px; height: 324px; position: relative; z-index: 0;">
   </div>
-  <div>
+  <!-- Poniendo source de esta forma se consigue que se actualice inmediatamente el audio -->
+  <audio controls src = {{audioAvatar}} *ngIf = 'tieneVoz' style="margin-bottom: 20%">
+  </audio>
+ 
+  <div style="margin-top: 20%">
     <mat-expansion-panel class="privilegios-btn">
       <mat-expansion-panel-header class="cabecera-privilegios">
         <h2> Ver mis privilegios </h2>
@@ -34,6 +38,12 @@
             <ion-label>
               <h2> <b> {{elem.nombre}} </b></h2>
               <p>{{elem.criterio}}</p>
+              
+              <div *ngIf = "i===4">
+                <input #file id = "inputVoz" type="file" accept=".mp3,audio/*" (change)="SeleccionarFicheroVoz($event)" style="display:none">
+                <ion-button color="danger" (click)="ActivarInput();">Pon voz</ion-button>
+                <ion-button *ngIf ='tieneVoz' color="success" (click)="QuitaVoz();">Quita voz</ion-button>
+              </div>
               <div *ngIf = "i===5">
                 <ion-button color="danger" (click)="VerAvatares();">Espía</ion-button>
               </div>
@@ -55,10 +65,5 @@
     </mat-expansion-panel>
   </div>
   <ion-button class="ranking-btn" (click)="AbreEditorAvatar();">Editar o crear avatar</ion-button>
-  <!-- <div *ngIf = "inscripcionAlumnoJuegoAvatar">
-    <ion-button disabled= "{{!inscripcionAlumnoJuegoAvatar.Privilegios[4]}}" color="success" (click)="VerAvatares();">Ver avatares del grupo</ion-button>
-  </div> -->
-  <audio controls>
-    <source [src]="imagenesAvatares + himno" type="audio/mpeg">
-  </audio>
+ 
 </ion-content>

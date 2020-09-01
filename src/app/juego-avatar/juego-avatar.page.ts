@@ -1,14 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { PeticionesAPIService, SesionService } from '../servicios/index';
+import { Component, OnInit } from '@angular/core';
+import { PeticionesAPIService, SesionService, ComServerService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
-import { NavController, IonContent } from '@ionic/angular';
-import { Alumno, Equipo, Juego, Punto, Nivel, AlumnoJuegoDePuntos, EquipoJuegoDePuntos,
-  TablaAlumnoJuegoDePuntos, TablaEquipoJuegoDePuntos, JuegoDeAvatar, AlumnoJuegoDeAvatar } from '../clases/index';
+import { NavController, AlertController } from '@ionic/angular';
+import { Alumno, JuegoDeAvatar, AlumnoJuegoDeAvatar } from '../clases/index';
 
 import * as URL from '../URLs/urls';
 import { ModalController } from '@ionic/angular';
 import {AvatarEditorPage} from '../avatar-editor/avatar-editor.page';
-import { getTreeMultipleDefaultNodeDefsError } from '@angular/cdk/tree';
 
 @Component({
   selector: 'app-juego-avatar',
@@ -28,14 +26,18 @@ export class JuegoAvatarPage implements OnInit {
   tieneAvatar = false;
   interval;
   imagenesAvatares = URL.ImagenesAvatares;
-  // para prueba de sonido. El fichero esta en la carpeta de imagenes de avatares del service.
-  himno = "himno-argentino-cort.mp3";
+  audioAvatar;
+  tieneVoz = false;
+
+
+
   constructor(
-    private calculos: CalculosService,
     public navCtrl: NavController,
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public alertController: AlertController,
+    private comServer: ComServerService
   ) { }
 
   ngOnInit() {
@@ -47,13 +49,15 @@ export class JuegoAvatarPage implements OnInit {
         this.inscripcionAlumnoJuegoAvatar = inscripcion[0];
         if (this.inscripcionAlumnoJuegoAvatar.Silueta !== undefined) {
           this.tieneAvatar = true;
-          console.log ('tiene avatar');
-          // this.MostrarAvatar();
+          if ((this.inscripcionAlumnoJuegoAvatar.Privilegios[4]) && (this.inscripcionAlumnoJuegoAvatar.Voz)) {
+            this.tieneVoz = true;
+            this.audioAvatar = URL.AudiosAvatares + this.inscripcionAlumnoJuegoAvatar.Voz;
+          }
         }
         this.PrepararCriterios();
       });
      } else {
-       // De momento no hay avatar de equipo
+       // De momento no hay juego de avatar de equipo
      }
   }
 
@@ -65,12 +69,11 @@ export class JuegoAvatarPage implements OnInit {
       {nombre: 'Complemento 3', criterio: this.juegoSeleccionado.CriteriosPrivilegioComplemento3},
       {nombre: 'Complemento 4', criterio: this.juegoSeleccionado.CriteriosPrivilegioComplemento4},
       {nombre: 'Nota de Voz', criterio: this.juegoSeleccionado.CriteriosPrivilegioVoz},
-      {nombre: 'Espíar Compañeros', criterio: this.juegoSeleccionado.CriteriosPrivilegioVerTodos}
+      {nombre: 'Espiar Compañeros', criterio: this.juegoSeleccionado.CriteriosPrivilegioVerTodos}
 
     ]
   }
   async AbreEditorAvatar() {
-
     this.sesion.TomaInscripcionAlumno(this.inscripcionAlumnoJuegoAvatar);
     // abrimos la página del editor de forma modal porque interesa recoger el resultado 
     // para actualizar el avatar en esta página
@@ -91,5 +94,55 @@ export class JuegoAvatarPage implements OnInit {
   VerAvatares() {
     this.navCtrl.navigateForward('/ver-avatares-grupo');
   }
+
+  // Activa la función SeleccionarFicheroVoz
+  ActivarInput() {
+    console.log('Activar input');
+    document.getElementById('inputVoz').click();
+}
+
+// Selecciona y guarda el fichero de voz
+// Si hay uno anterior lo borra.
+async SeleccionarFicheroVoz($event) {
+
+    const file = $event.target.files[0];
+    if (this.inscripcionAlumnoJuegoAvatar.Voz) {
+      // borro el fichero de audio de la voz anterior
+      this.peticionesAPI.BorraAudioAvatar (this.inscripcionAlumnoJuegoAvatar.Voz).subscribe();
+    }
+
+    this.inscripcionAlumnoJuegoAvatar.Voz = file.name;
+    this.peticionesAPI.ModificaInscripcionAlumnoJuegoDeAvatar (this.inscripcionAlumnoJuegoAvatar)
+    .subscribe ();
+    const formDataOpcion = new FormData();
+    formDataOpcion.append(file.fileName, file);
+    this.peticionesAPI.PonAudioAvatar(formDataOpcion)
+    .subscribe(async () => {
+      this.tieneVoz = true;
+        // Notifico al server que se ha modificado un avatar
+      this.comServer.Emitir('modificacionAvatar', { inscripcion: this.inscripcionAlumnoJuegoAvatar});
+      this.audioAvatar = URL.AudiosAvatares + this.inscripcionAlumnoJuegoAvatar.Voz;
+      const alert2 = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: 'voz asignada con exito',
+        buttons: ['OK']
+      });
+      await alert2.present();
+    });
+}
+
+QuitaVoz() {
+  if (this.inscripcionAlumnoJuegoAvatar.Voz) {
+    // borro el fichero de audio de la voz anterior
+    this.peticionesAPI.BorraAudioAvatar (this.inscripcionAlumnoJuegoAvatar.Voz).subscribe();
+    this.inscripcionAlumnoJuegoAvatar.Voz = undefined;
+    this.peticionesAPI.ModificaInscripcionAlumnoJuegoDeAvatar (this.inscripcionAlumnoJuegoAvatar)
+    .subscribe ();
+    this.tieneVoz = false;
+  }
+
+}
+
+
 
 }
