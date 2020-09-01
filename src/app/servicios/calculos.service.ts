@@ -127,26 +127,11 @@ export class CalculosService {
               // tslint:disable-next-line:no-shadowed-variable
               .subscribe( lista => {
                 console.log(lista);
-                  for (let i = 0; i < (lista.length); i++) {
-                    if (lista[i].JuegoActivo === true) {
-                      lista[i].Tipo = 'Juego De Geocaching';
-                      JuegosActivos.push(lista[i]);
-                    } else if (lista[i].JuegoTerminado === true){
-                      lista[i].Tipo = 'Juego De Geocaching';
-                      JuegosInactivos.push(lista[i]);
-                    }
-                  }
-              console.log (JuegosActivos);
-              console.log('voy a por los juegos de F1 del alumno');
-              this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId)
-              // tslint:disable-next-line:no-shadowed-variable
-              .subscribe( lista => {
-                console.log(lista);
                 for (let i = 0; i < (lista.length); i++) {
                     if (lista[i].JuegoActivo === true) {
                       lista[i].Tipo = 'Juego De Geocaching';
                       JuegosActivos.push(lista[i]);
-                    } else if (lista[i].JuegoTerminado === true) {
+                    } else if (lista[i].JuegoTerminado === true){
                       lista[i].Tipo = 'Juego De Geocaching';
                       JuegosInactivos.push(lista[i]);
                     }
@@ -235,77 +220,77 @@ export class CalculosService {
 
 
 
-                                    console.log('vamos a por los equipos');
-                                    this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
-                              // tslint:disable-next-line:no-shadowed-variable
-                              .subscribe( lista => {
-                              this.equipos = lista;
-                              console.log('yasta la lista de equipos');
-                              console.log(this.equipos);
-                              if (this.equipos.length === 0) {
-                                // No hay equipos. Ya puedo retornar las listas de juegos
-                                const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
-                                obs.next(MisObservables);
-                              } else {
-                                let cont = 0;
-                                for (let i = 0; i < (this.equipos.length); i++) {
-                                  console.log('voy a por los juegos de puntos del euqioi ' + this.equipos[i].id);
-                                  this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id)
-                                  // tslint:disable-next-line:no-shadowed-variable
-                                  .subscribe( lista => {
-                                      console.log('ya tengo los juegos de puntos del equipo ');
-                                      console.log(lista);
-                                      for (let j = 0; j < (lista.length); j++) {
-                                        if (lista[j].JuegoActivo === true) {
-                                          JuegosActivos.push(lista[j]);
-                                        } else {
-                                          JuegosInactivos.push(lista[j]);
-                                        }
-                                      }
-                                      console.log('voy a por los juegos de coleccion del euqioi ' + this.equipos[i].id);
-                                      this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id)
-                                       // tslint:disable-next-line:no-shadowed-variable
-                                      .subscribe( lista => {
-                                          console.log('ya tengo los juegos de coleccion del equipo ');
-                                          console.log(lista);
-                                          for (let j = 0; j < (lista.length); j++) {
-                                            if (lista[j].JuegoActivo === true) {
-                                              JuegosActivos.push(lista[j]);
-                                            } else {
-                                              JuegosInactivos.push(lista[j]);
-                                            }
+                                      console.log('vamos a por los equipos');
+                                      this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
+                                // tslint:disable-next-line:no-shadowed-variable
+                                .subscribe( lista => {
+                                this.equipos = lista;
+                                console.log('yasta la lista de equipos');
+                                console.log(this.equipos);
+                                if (this.equipos.length === 0) {
+                                  // No hay equipos. Ya puedo retornar las listas de juegos
+                                  const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
+                                  obs.next(MisObservables);
+                                } else {
+                                  let cont = 0;
+                                  for (let i = 0; i < (this.equipos.length); i++) {
+                                    console.log('voy a por los juegos de puntos del euqioi ' + this.equipos[i].id);
+                                    this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id)
+                                    // tslint:disable-next-line:no-shadowed-variable
+                                    .subscribe( lista => {
+                                        console.log('ya tengo los juegos de puntos del equipo ');
+                                        console.log(lista);
+                                        for (let j = 0; j < (lista.length); j++) {
+                                          if (lista[j].JuegoActivo === true) {
+                                            JuegosActivos.push(lista[j]);
+                                          } else {
+                                            JuegosInactivos.push(lista[j]);
                                           }
-                                          console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
-                                          this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id)
-                                          // tslint:disable-next-line:no-shadowed-variable
-                                          .subscribe( lista => {
-                                              console.log('ya tengo los juegos de F1 del equipo');
-                                              console.log(lista);
-                                              for (let j = 0; j < (lista.length); j++) {
-                                                if (lista[j].JuegoActivo === true) {
-                                                  JuegosActivos.push(lista[j]);
-                                                } else {
-                                                  JuegosInactivos.push(lista[j]);
-                                                }
+                                        }
+                                        console.log('voy a por los juegos de coleccion del euqioi ' + this.equipos[i].id);
+                                        this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id)
+                                        // tslint:disable-next-line:no-shadowed-variable
+                                        .subscribe( lista => {
+                                            console.log('ya tengo los juegos de coleccion del equipo ');
+                                            console.log(lista);
+                                            for (let j = 0; j < (lista.length); j++) {
+                                              if (lista[j].JuegoActivo === true) {
+                                                JuegosActivos.push(lista[j]);
+                                              } else {
+                                                JuegosInactivos.push(lista[j]);
                                               }
-                                              console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
-                                              this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id)
-                                              // tslint:disable-next-line:no-shadowed-variable
-                                              .subscribe( lista => {
-                                                  console.log('ya tengo los juegos de liga del equipo');
-                                                  console.log(lista);
-                                                  for (let j = 0; j < (lista.length); j++) {
-                                                    if (lista[j].JuegoActivo === true) {
-                                                      JuegosActivos.push(lista[j]);
-                                                    } else {
-                                                      JuegosInactivos.push(lista[j]);
-                                                    }
+                                            }
+                                            console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
+                                            this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id)
+                                            // tslint:disable-next-line:no-shadowed-variable
+                                            .subscribe( lista => {
+                                                console.log('ya tengo los juegos de F1 del equipo');
+                                                console.log(lista);
+                                                for (let j = 0; j < (lista.length); j++) {
+                                                  if (lista[j].JuegoActivo === true) {
+                                                    JuegosActivos.push(lista[j]);
+                                                  } else {
+                                                    JuegosInactivos.push(lista[j]);
                                                   }
+                                                }
+                                                console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
+                                                this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id)
+                                                // tslint:disable-next-line:no-shadowed-variable
+                                                .subscribe( lista => {
+                                                    console.log('ya tengo los juegos de liga del equipo');
+                                                    console.log(lista);
+                                                    for (let j = 0; j < (lista.length); j++) {
+                                                      if (lista[j].JuegoActivo === true) {
+                                                        JuegosActivos.push(lista[j]);
+                                                      } else {
+                                                        JuegosInactivos.push(lista[j]);
+                                                      }
+                                               }
 
 
                                                   // vemos si hemos acabado de recogar los juegos de todos los equipos
-                                                  cont = cont + 1;
-                                                  if (cont === this.equipos.length) {
+                                                    cont = cont + 1;
+                                                    if (cont === this.equipos.length) {
                                                         const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
                                                         obs.next(MisObservables);
                                                   }
@@ -320,14 +305,15 @@ export class CalculosService {
                             }); // juegos de votacion todos a uno
                             }); // juegos de votacion uno a todos
                           });  // juegos de avatar
-                        }); // juegos de cuestionario
-                      }); // juegos de liga
-                    }); // juegos de F1
+                      }); // juegos de cuestionario
+                  
+                  }); // juegos de competicion Liga
+                }); // Juegos de Competicion F1
 
-                  }); // juegos de geocaching
+              }); // juegos de geocaching
 
-                }); // juegos de colección
-            }); // juegos de puntos
+          }); // juegos de colección
+      }); // juegos de puntos
     }); // observable
     return Observables;
   }
