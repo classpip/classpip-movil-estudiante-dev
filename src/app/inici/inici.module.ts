@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { IniciPage } from './inici.page';
 
+
 const routes: Routes = [
   {
     path: '',

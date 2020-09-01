@@ -4,7 +4,7 @@ import { NavController, LoadingController, AlertController, AngularDelegate } fr
 import { Alumno } from '../clases';
 import { IniciPage } from '../inici/inici.page';
 import { TabsPage } from '../tabs/tabs.page';
-import { PeticionesAPIService, SesionService} from '../servicios/index';
+import { PeticionesAPIService, SesionService, ComServerService} from '../servicios/index';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
@@ -16,10 +16,16 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { Transfer } from '@ionic-native/transfer';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 
+import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
+
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+
 })
 export class HomePage {
   alumno: Alumno;
@@ -37,6 +43,23 @@ export class HomePage {
   latitud;
   longitud;
 
+
+
+
+  panelOpenState = false;
+   
+  data: any;
+  answer: any[] = [];
+  cont: any[];
+  jsonData: any;
+
+
+  identificador: any;
+  midiendo = false;
+
+  contNotif = 0;
+
+
   constructor(
     // private http: HttpClient,
     private route: Router,
@@ -47,11 +70,110 @@ export class HomePage {
     public alertController: AlertController,
     private geolocation: Geolocation,
     private file: File,
-    private media: Media
+    private media: Media,
+    private comServer: ComServerService,
+    private selector: WheelSelector,
+    private localNotifications: LocalNotifications
     //private transfer: Transfer,
    // private camera: Camera
 
-    )  {}
+    )  {
+
+      this.jsonData = {
+        numbers: [
+          { description: '1' },
+          { description: '2' },
+          { description: '3' }
+        ],
+        fruits: [
+          { description: 'Apple' },
+          { description: 'Banana' },
+          { description: 'Tangerine' }
+        ],
+        firstNames: [
+          { name: 'Fred', id: '1' },
+          { name: 'Jane', id: '2' },
+          { name: 'Bob', id: '3' },
+          { name: 'Earl', id: '4' },
+          { name: 'Eunice', id: '5' }
+        ],
+        lastNames: [
+          { name: 'Johnson', id: '100' },
+          { name: 'Doe', id: '101' },
+          { name: 'Kinishiwa', id: '102' },
+          { name: 'Gordon', id: '103' },
+          { name: 'Smith', id: '104' }
+        ]
+      };
+
+
+      // this.cont = Array(2).fill(0);
+
+      // this.data = {"questionnaire": {
+      //     "id": "5ac5f074867d190bc471dc59",
+      //     "name": "Diabetes Questionnaire Test",
+      //   "item": [
+      //     {
+      //       "text": "Dibujo",
+      //       "cont": 0,
+
+      //       "options": [
+      //         {
+      //           "value": "Los colores son acertados",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Es interesante",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Me ha hecho reir",
+      //           "checked": false
+      //         }
+      //       ]
+      //     },
+      //     {
+
+      //       "text": "La voz",
+      //       "cont": 0,
+
+      //       "options": [
+      //         {
+      //           "value": "Me ha hecho reir",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Se ha oido perfectamente",
+      //           "checked": false
+      //         },
+            
+      //       ]
+      //     }
+      //   ]
+      // }
+      // };
+  }
+
+
+    
+  // updateAnswer(index,ansindex,value,checked){
+  //   if(!Array.isArray(this.answer[index])){
+  //     this.answer[index] = []
+  //   }
+  //   if(checked){
+  //    this.answer[index][ansindex] =  true;
+  //    this.cont[index]++;
+  //   }else{
+  //     //this.answer[index].splice(ansindex,1)
+  //     this.answer[index][ansindex] =  false;
+  //     this.cont[index]--;
+  //   }
+  // }
+  // Resultado() {
+  //   console.log ('resultado');
+  //   console.log (this.answer);
+  // }
+
 
     ionViewDidEnter() {
 
@@ -112,6 +234,69 @@ export class HomePage {
 
 
 
+// basic number selection, index is always returned in the result
+selectANumber() {
+  this.selector.show({
+    title: "How Many?",
+    items: [
+      this.jsonData.numbers
+    ],
+  }).then(
+    result => {
+      console.log(result[0].description + ' at index: ' + result[0].index);
+    },
+    err => console.log('Error: ', err)
+    );
+}
+
+
+
+// basic selection, setting initial displayed default values: '3' 'Banana'
+selectFruit() {
+  this.selector.show({
+    title: "How Much?",
+    items: [
+      this.jsonData.numbers, this.jsonData.fruits
+    ],
+    positiveButtonText: "Ok",
+    negativeButtonText: "Nope",
+    defaultItems: [
+      {index:0, value: this.jsonData.numbers[2].description},
+      {index: 1, value: this.jsonData.fruits[3].description}
+    ]
+  }).then(
+    result => {
+      console.log(result[0].description + ' ' + result[1].description);
+    },
+    err => console.log('Error: ' + JSON.stringify(err))
+    );
+}
+
+
+
+// more complex as overrides which key to display
+// then retrieve properties from original data
+selectNamesUsingDisplayKey() {
+  this.selector.show({
+    title: "Who?",
+    items: [
+      this.jsonData.firstNames, this.jsonData.lastNames
+    ],
+    displayKey: 'name',
+    defaultItems: [
+      {index:0, value: this.jsonData.firstNames[2].name},
+      {index: 0, value: this.jsonData.lastNames[3].name}
+    ]
+  }).then(
+    result => {
+      console.log(result[0].name + ' (id= ' + this.jsonData.firstNames[result[0].index].id + '), ' +
+        result[1].name + ' (id=' + this.jsonData.lastNames[result[1].index].id + ')');
+    },
+    err => console.log('Error: ' + JSON.stringify(err))
+    );
+}
+
+
   // Activa la función SeleccionarInfoFamilia
   ActivarInput() {
     console.log('Activar input');
@@ -123,10 +308,11 @@ export class HomePage {
 SeleccionarFichero($event) {
 
     const file = $event.target.files[0];
-    Swal.fire('Tengo el fichero' + file.fileName);
+    console.log ('tengo el fichero');
+    console.log (file.name);
     const formDataOpcion = new FormData();
     formDataOpcion.append(file.fileName, file);
-    this.peticionesAPI.PonImagenColeccion(formDataOpcion)
+    this.peticionesAPI.PonAudioAvatar(formDataOpcion)
     .subscribe(() => Swal.fire('Fichero cargado con exito', '', 'success'));
 }
 
@@ -235,8 +421,32 @@ replay() {
 
 }
 
+empezar () {
+  if (this.midiendo) {
+    navigator.geolocation.clearWatch (this.identificador);
+    this.midiendo = false;
+  } else {
+    this.midiendo = true;
+    let options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
 
+    this.identificador = navigator.geolocation.watchPosition((position) => {
+      const lat =  position.coords.latitude;
+      
+      const lon =  position.coords.longitude;
+      this.coords.lat = position.coords.latitude;
+      this.coords.lng =  position.coords.longitude;
+      console.log('latitud ' + lat);
+      console.log('longitud ' + lon );
+      // tslint:disable-next-line:max-line-length
 
+    //this.distancia = this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud));
+    }, null, options);
+  }
+}
 
 obtenerPosicion(): any{
   console.log('entro en la funcion');
@@ -289,6 +499,18 @@ obtenerPosicion(): any{
             this.alumno = res[0];
             this.sesion.TomaAlumno(this.alumno);
             console.log('bien logado');
+            this.comServer.Conectar(this.alumno);
+
+            this.comServer.EsperarNotificaciones()
+            .subscribe((notificacion: any) => {
+              console.log ('Pongo notificacion:  ' + notificacion );
+              this.localNotifications.schedule({
+                id: ++this.contNotif,
+                text: notificacion,
+              });
+
+            });
+
             setTimeout(() => {
               this.route.navigateByUrl('/tabs/inici');
             }, 1500);
@@ -304,3 +526,6 @@ obtenerPosicion(): any{
     }
 
 }
+
+
+

@@ -94,8 +94,8 @@ export class CalculosService {
   public DameJuegosAlumno(AlumnoId: number): any {
     const Observables = new Observable(obs => {
       console.log('ya estoy dentro de dame juegos alumno');
-      const JuegosActivos: Juego[] = [];
-      const JuegosInactivos: Juego[] = [];
+      const JuegosActivos: any[] = [];
+      const JuegosInactivos: any[] = [];
       console.log('* voy a por los juegos de puntos del alumno');
       this.peticionesAPI.DameJuegoDePuntosAlumno(AlumnoId)
       .subscribe( lista => {
@@ -123,6 +123,7 @@ export class CalculosService {
               }
               console.log('voy a por los juegos de geocaching');
               this.peticionesAPI.DameJuegoDeGeocachingAlumno(AlumnoId)
+
               // tslint:disable-next-line:no-shadowed-variable
               .subscribe( lista => {
                 console.log(lista);
@@ -140,6 +141,21 @@ export class CalculosService {
               this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId)
               // tslint:disable-next-line:no-shadowed-variable
               .subscribe( lista => {
+                console.log(lista);
+                for (let i = 0; i < (lista.length); i++) {
+                    if (lista[i].JuegoActivo === true) {
+                      lista[i].Tipo = 'Juego De Geocaching';
+                      JuegosActivos.push(lista[i]);
+                    } else if (lista[i].JuegoTerminado === true) {
+                      lista[i].Tipo = 'Juego De Geocaching';
+                      JuegosInactivos.push(lista[i]);
+                    }
+                  }
+                console.log (JuegosActivos);
+                console.log('voy a por los juegos de F1 del alumno');
+                this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId)
+                // tslint:disable-next-line:no-shadowed-variable
+                .subscribe( lista => {
                   for (let i = 0; i < (lista.length); i++) {
                     if (lista[i].JuegoActivo === true) {
                       JuegosActivos.push(lista[i]);
@@ -171,16 +187,17 @@ export class CalculosService {
                               // que no tienen el campo tipo de juego. Tengo que añadirselo yo.
                               lista[i].Tipo = 'Juego De Cuestionario';
                               JuegosActivos.push(lista[i]);
-                            } else if (lista[i].JuegoTerminado === true){
+                            } else if (lista[i].JuegoTerminado === true) {
                               lista[i].Tipo = 'Juego De Cuestionario';
                               JuegosInactivos.push(lista[i]);
                             }
                           }
-  
+
                           console.log('ya tengo los juegos de cuestionario');
-                      
+
                           console.log('voy a por los juegos de avatar');
                           this.peticionesAPI.DameJuegoDeAvatarAlumno(AlumnoId)
+                          // tslint:disable-next-line:no-shadowed-variable
                           .subscribe( lista => {
                               for (let i = 0; i < (lista.length); i++) {
                                 if (lista[i].JuegoActivo === true) {
@@ -189,14 +206,39 @@ export class CalculosService {
                                   JuegosInactivos.push(lista[i]);
                                 }
                               }
-                            console.log('ya tengo los juegos de avatar');
+                              console.log('ya tengo los juegos de avatar');
+                              console.log('voy a por los juegos de votacion uno a todos');
+                              this.peticionesAPI.DameJuegosDeVotacionUnoATodosAlumno(AlumnoId)
+                              // tslint:disable-next-line:no-shadowed-variable
+                              .subscribe( lista => {
+                                  for (let i = 0; i < (lista.length); i++) {
+                                    if (lista[i].JuegoActivo === true) {
+                                      JuegosActivos.push(lista[i]);
+                                    } else {
+                                      JuegosInactivos.push(lista[i]);
+                                    }
+                                  }
+                                  console.log('ya tengo los juegos de votacion uno a todos');
+                                  console.log('voy a por los juegos de votacion todos a uno');
+                                  this.peticionesAPI.DameJuegosDeVotacionTodosAUnoAlumno(AlumnoId)
+                                  // tslint:disable-next-line:no-shadowed-variable
+                                  .subscribe( lista => {
+                                      for (let i = 0; i < (lista.length); i++) {
+                                        if (lista[i].JuegoActivo === true) {
+                                          JuegosActivos.push(lista[i]);
+                                        } else {
+                                          JuegosInactivos.push(lista[i]);
+                                        }
+                                      }
+                                      console.log('ya tengo los juegos de votacion todos a uno');
+                                      console.log (lista);
 
-  
-  
-                          console.log('vamos a por los equipos');
-                          this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
-                          // tslint:disable-next-line:no-shadowed-variable
-                          .subscribe( lista => {
+
+
+                                    console.log('vamos a por los equipos');
+                                    this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
+                              // tslint:disable-next-line:no-shadowed-variable
+                              .subscribe( lista => {
                               this.equipos = lista;
                               console.log('yasta la lista de equipos');
                               console.log(this.equipos);
@@ -260,14 +302,14 @@ export class CalculosService {
                                                     }
                                                   }
 
-                                                  
+
                                                   // vemos si hemos acabado de recogar los juegos de todos los equipos
                                                   cont = cont + 1;
                                                   if (cont === this.equipos.length) {
                                                         const MisObservables = { activos: JuegosActivos, inactivos: JuegosInactivos };
                                                         obs.next(MisObservables);
                                                   }
-                                                   
+
                                                 }); // juegos de liga del equipo
                                             }); // juegos de F1 del equipo
                                         }); // juegos de coleccion del equipo
@@ -275,11 +317,15 @@ export class CalculosService {
                                   } // fin bucle for equipos
                                 } // else de la pregunta de si hay equipos
                               }); // equipos del alumno
+                            }); // juegos de votacion todos a uno
+                            }); // juegos de votacion uno a todos
                           });  // juegos de avatar
                         }); // juegos de cuestionario
                       }); // juegos de liga
                     }); // juegos de F1
-                  }); // juegos de geocaching  
+
+                  }); // juegos de geocaching
+
                 }); // juegos de colección
             }); // juegos de puntos
     }); // observable
@@ -307,7 +353,7 @@ export class CalculosService {
           InformacionAlumno.push(MiAlumno);
         }
         // tslint:disable-next-line:only-arrow-functions
-        InformacionAlumno = InformacionAlumno.sort(function (obj1, obj2) {
+        InformacionAlumno = InformacionAlumno.sort(function(obj1, obj2) {
           return obj2.PuntosTotalesAlumno - obj1.PuntosTotalesAlumno;
         });
       });
@@ -340,11 +386,11 @@ export class CalculosService {
   }
 
   public DameListaAlumnosJuegoCuestionarioOrdenada(juegoDeCuestionarioId: number): MiAlumnoAMostrarJuegoDeCuestionario[] {
-    let InformacionAlumno: MiAlumnoAMostrarJuegoDeCuestionario[] = [];
+    const InformacionAlumno: MiAlumnoAMostrarJuegoDeCuestionario[] = [];
     let Inscripciones: AlumnoJuegoDeCuestionario[] = [];
     this.peticionesAPI.ListaInscripcionesAlumnosJuegoDeCuestionario(juegoDeCuestionarioId).subscribe(res => {
       Inscripciones = res;
-      Inscripciones = Inscripciones.sort(function (a, b) {
+      Inscripciones = Inscripciones.sort(function(a, b) {
         return b.Nota - a.Nota;
       });
       for (let i = 0; i < (Inscripciones.length); i++) {
@@ -359,7 +405,7 @@ export class CalculosService {
             MiAlumno.PrimerApellido = res.PrimerApellido;
             MiAlumno.ImagenPerfil = res.ImagenPerfil;
           });
-        InformacionAlumno.push(MiAlumno)
+        InformacionAlumno.push(MiAlumno);
       }
     });
     return InformacionAlumno;
@@ -427,7 +473,7 @@ export class CalculosService {
   public VisualizarLosCromosDelante(listaCromos: any[]) {
     const imagenesCromo: string[] = [];
     console.log(listaCromos.length);
-    for (let i = 0; i < (listaCromos.length); i++) {
+    for(let i = 0; i < listaCromos.length; i++ ) {
       if (listaCromos[i].cromo.ImagenDelante !== undefined) {
         this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + listaCromos[i].cromo.ImagenDelante,
           { responseType: ResponseContentType.Blob }).subscribe(
@@ -712,7 +758,7 @@ export class CalculosService {
 
             if (i === listaEquiposOrdenadaPorPuntos.length - 1) {
               // tslint:disable-next-line:only-arrow-functions
-              rankingEquiposJuegoDePuntos = rankingEquiposJuegoDePuntos.sort(function (obj1, obj2) {
+              rankingEquiposJuegoDePuntos = rankingEquiposJuegoDePuntos.sort(function(obj1, obj2) {
                 return obj2.puntos - obj1.puntos;
               });
               obs.next(rankingEquiposJuegoDePuntos);
@@ -774,7 +820,7 @@ export class CalculosService {
             if (i === listaAlumnosOrdenadaPorPuntos.length - 1) {
               console.log('vamos a acabar');
               // tslint:disable-next-line:only-arrow-functions
-              rankingJuegoDePuntos = rankingJuegoDePuntos.sort(function (obj1, obj2) {
+              rankingJuegoDePuntos = rankingJuegoDePuntos.sort(function(obj1, obj2) {
                 return obj2.puntos - obj1.puntos;
               });
               obs.next(rankingJuegoDePuntos);
@@ -1201,7 +1247,7 @@ export class CalculosService {
   }
 
 
-  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any,):
+  public PreparaHistorialEquipo(equipoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
     any {
     const historialObservable = new Observable(obs => {
 
@@ -1229,7 +1275,7 @@ export class CalculosService {
     return historialObservable;
   }
 
-  public PreparaHistorialAlumno(alumnoJuegoDePuntos: any, tiposPuntosDelJuego: any,):
+  public PreparaHistorialAlumno(alumnoJuegoDePuntos: any, tiposPuntosDelJuego: any, ):
     any {
     const historialObservable = new Observable(obs => {
 
@@ -1406,7 +1452,7 @@ export class CalculosService {
     console.log('Vamos a rellenar la TablaEquipoJuegoDeCompeticion con la informacionPartidos');
     const rankingJuegoDeCompeticionFinal = this.RellenarTablaAlumnoJuegoDeCompeticion(rankingJuegoDeCompeticion, informacionPartidos);
     for (let i = 0; i < rankingJuegoDeCompeticionFinal.length; i++) {
-      if (rankingJuegoDeCompeticionFinal[i].id == miAlumnoid) {
+      if (rankingJuegoDeCompeticionFinal[i].id === miAlumnoid) {
         informacionAlumno[0] = rankingJuegoDeCompeticionFinal[i];
       }
     }
@@ -1817,7 +1863,7 @@ export class CalculosService {
     return rankingJuegoDeCompeticion;
   }
 
-  //Clasificación F1
+  // Clasificación F1
   public ClasificacionJornada(juegoSeleccionado: Juego, alumnoJuegoDeCompeticionFormulaUno: TablaAlumnoJuegoDeCompeticion[],
                               equipoJuegoDeCompeticionFormulaUno: TablaEquipoJuegoDeCompeticion[], GanadoresFormulaUno: string[],
                               GanadoresFormulaUnoId: number[]) {
@@ -2013,14 +2059,18 @@ export class CalculosService {
           this.peticionesAPI.DameInscripcionAlumnoJuegoDeGeocaching( listaAlumnos[i].id, juegoId).subscribe(
             Inscripcion => {
               MiAlumno.Puntuacion = Inscripcion[0].Puntuacion;
-              MiAlumno.Etapa = Inscripcion[0].Etapa
+
+              MiAlumno.Etapa = Inscripcion[0].Etapa;
+
               MiAlumno.alumnoId = Inscripcion[0].alumnoId;
               MiAlumno.id = Inscripcion[0].id;
               MiAlumno.juegoDeGeocachingId = Inscripcion[0].juegoDeGeocachingId;
             });
           InformacionAlumno.push(MiAlumno);
         }
-        InformacionAlumno = InformacionAlumno.sort((a,b) => {
+
+        InformacionAlumno = InformacionAlumno.sort((a, b) => {
+
           return b.Puntuacion - a.Puntuacion;
         });
     });
@@ -2028,7 +2078,9 @@ export class CalculosService {
   }
 
   public DameListaAlumnosJuegoGeocachingOrdenada(juegoDeGeocachingId: number): MiAlumnoAMostrarJuegoDeGeocaching[] {
-    let InformacionAlumno: MiAlumnoAMostrarJuegoDeGeocaching[] = [];
+
+    const InformacionAlumno: MiAlumnoAMostrarJuegoDeGeocaching[] = [];
+
     let Inscripciones: AlumnoJuegoDeGeocaching[] = [];
     this.peticionesAPI.ListaInscripcionesAlumnosJuegoDeGeocaching(juegoDeGeocachingId).subscribe(res => {
       Inscripciones = res;
@@ -2048,7 +2100,9 @@ export class CalculosService {
           MiAlumno.PrimerApellido = res.PrimerApellido;
           MiAlumno.ImagenPerfil = res.ImagenPerfil;
         });
-        InformacionAlumno.push(MiAlumno)
+
+        InformacionAlumno.push(MiAlumno);
+
       }
     });
     return InformacionAlumno;
@@ -2056,22 +2110,24 @@ export class CalculosService {
 
   public DamePreguntasJuegoDeGeocaching(PreguntasId: number[]): any {
     const preguntasObservable = new Observable(obs => {
-      let contador=0;
-    const preguntas: Pregunta[] = [];
-    for (let i=0; i < (PreguntasId.length); i++) {
+
+      let contador = 0;
+      const preguntas: Pregunta[] = [];
+      for (let i = 0; i < (PreguntasId.length); i++) {
       this.peticionesAPI.DamePreguntas(PreguntasId[i])
       .subscribe (res => {
-        preguntas.push(res)
-        contador=contador+1;
-        if (contador ===  PreguntasId.length){
+        preguntas.push(res);
+        contador = contador + 1;
+        if (contador ===  PreguntasId.length) {
           obs.next(preguntas);
         }
-      })
+      });
+
     }
   });
     return preguntasObservable;
   }
-  
+
 
 }
 

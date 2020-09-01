@@ -55,6 +55,9 @@ export class JuegoDeGeocachingPage implements OnInit {
   distancia: number = 1000;
   identificador: any;
 
+  distanciaNueva: number;
+
+
   coords: any = { lat:0, lng: 0 }
 
   options = {
@@ -71,8 +74,10 @@ export class JuegoDeGeocachingPage implements OnInit {
   PuntuacionInicial: string = '';
  
   //definimos la posición de la respuesta correcta en cada pregunta basica y bonus
+
   ordenRespuestaCorrectaBasicas: number[] = [3, 1, 1, 0, 2, 0, 3, 3, 2, 0, 2, 1, 1,0 , 3, 2, 0, 0, 1, 3];
   ordenRespuestaCorrectaBonus: number[] = [2, 3, 3, 1, 0, 0, 2, 1, 1, 3, 2, 0, 2, 3, 2, 2, 1, 3, 0, 1, 2];
+
  
   constructor(
     private sesion: SesionService,
@@ -139,7 +144,12 @@ export class JuegoDeGeocachingPage implements OnInit {
       const lon =  position.coords.longitude;
       console.log('latitud ' + lat);
       console.log('longitud ' + lon );
-      console.log('distancia' + this.distancia)
+
+      // tslint:disable-next-line:max-line-length
+      this.distancia = Math.trunc(this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud)));
+      // tslint:disable-next-line:max-line-length
+   
+
 
       if (this.distancia <= 25 && this.alertaproximidad === false) {
         this.caliente();
@@ -147,11 +157,10 @@ export class JuegoDeGeocachingPage implements OnInit {
       if (this.distancia <= 5 && this.ubicacion === false) {
         this.llegada();
       }
-
-      this.distancia = this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud));
-}, null, this.options);
+    }, null, this.options);
 
 }
+
 
 calculateDistance(lon1, lon2, lat1, lat2){
   let p = 0.017453292519943295;
@@ -190,7 +199,9 @@ PreguntaBonus(){
 }
 
 preparacionpreguntas(){
+
   if (this.respuestasPosiblesBasicas.length === 0) {
+
     this.respuestasPosiblesBasicas.push(this.preguntasBasicas[this.index].RespuestaIncorrecta1);
     this.respuestasPosiblesBasicas.push(this.preguntasBasicas[this.index].RespuestaIncorrecta2);
     this.respuestasPosiblesBasicas.push(this.preguntasBasicas[this.index].RespuestaIncorrecta3);
@@ -201,6 +212,7 @@ preparacionpreguntas(){
     this.respuestasPosiblesBonus.push(this.preguntasBonus[this.index].RespuestaIncorrecta3);
     this.respuestasPosiblesBonus.splice(this.ordenRespuestaCorrectaBonus[this.index], 0, this.preguntasBonus[this.index].RespuestaCorrecta);
 }
+
 }
 
 Puntuacion(){
@@ -321,7 +333,9 @@ async Rendirse() {
 
 
 async caliente() {
+
   this.alertaproximidad=true;
+
   const confirm = await this.alertCtrl.create({
     header: 'CALIENTE,CALIENTE...',
     buttons: [
@@ -329,7 +343,9 @@ async caliente() {
         text: 'OK',
         role: 'cancel',
         handler: () => {
+
           // this.alertaproximidad=true;
+
           console.log('alerta mensaje caliente caliente');
         }
       }
@@ -339,12 +355,14 @@ async caliente() {
 }
 
 async llegada() {
+
   this.ubicacion=true;
   console.log('llegada: ' + this.ubicacion);
   navigator.geolocation.clearWatch (this.identificador);
   this.preparacionpreguntas();
   console.log('llegada al punto');
   console.log('clearwatch');
+
 
   const confirm = await this.alertCtrl.create({
     header: '¡HAS LLEGADO!',
@@ -353,12 +371,14 @@ async llegada() {
         text: 'OK',
         role: 'cancel',
         handler: () => {
+
           // this.ubicacion=true;
           // console.log('llegada' + this.ubicacion);
           // navigator.geolocation.clearWatch (this.identificador);
           // this.preparacionpreguntas();
           // console.log('llegada al punto');
           // console.log('clearwatch');
+
 
         }
       }
