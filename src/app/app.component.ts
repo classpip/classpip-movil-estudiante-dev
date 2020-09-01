@@ -40,7 +40,7 @@ export class AppComponent {
   }
 
   GoOut() {
-    this.comServer.Desconectar(this.MiAlumno.Nombre + ' ' + this.MiAlumno.PrimerApellido);
+    this.comServer.Desconectar(this.MiAlumno);
     this.route.navigateByUrl('/home');
   }
 

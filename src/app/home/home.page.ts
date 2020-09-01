@@ -18,6 +18,8 @@ import { Media, MediaObject } from '@ionic-native/media/ngx';
 
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
 
 @Component({
   selector: 'app-home',
@@ -54,6 +56,8 @@ export class HomePage {
   identificador: any;
   midiendo = false;
 
+  contNotif = 0;
+
   constructor(
     // private http: HttpClient,
     private route: Router,
@@ -66,7 +70,8 @@ export class HomePage {
     private file: File,
     private media: Media,
     private comServer: ComServerService,
-    private selector: WheelSelector
+    private selector: WheelSelector,
+    private localNotifications: LocalNotifications
     //private transfer: Transfer,
    // private camera: Camera
 
@@ -492,7 +497,18 @@ obtenerPosicion(): any{
             this.alumno = res[0];
             this.sesion.TomaAlumno(this.alumno);
             console.log('bien logado');
-            this.comServer.Conectar(this.nombre + ' ' + this.apellido);
+            this.comServer.Conectar(this.alumno);
+
+            this.comServer.EsperarNotificaciones()
+            .subscribe((notificacion: any) => {
+              console.log ('Pongo notificacion:  ' + notificacion );
+              this.localNotifications.schedule({
+                id: ++this.contNotif,
+                text: notificacion,
+              });
+
+            });
+
             setTimeout(() => {
               this.route.navigateByUrl('/tabs/inici');
             }, 1500);
