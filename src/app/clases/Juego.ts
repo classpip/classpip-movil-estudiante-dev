@@ -3,6 +3,7 @@ import { Nivel } from './Nivel';
 export class Juego {
   Tipo: string;
   Modo: string;
+  Asignacion: string;
   JuegoActivo: boolean;
   grupoId: number;
   id: number;
@@ -29,7 +30,7 @@ export class Juego {
 
   
 
-  constructor(Tipo?: string, Modo?: string, coleccionId?: number, JuegoActivo?: boolean,
+  constructor(Tipo?: string, Modo?: string, Asignacion?: string, coleccionId?: number, JuegoActivo?: boolean,
     NumeroTotalJornadas?: number, TipoJuegoCompeticion?: string, NumeroParticipantesPuntuan?: number,
     Puntos?: number[], NombreJuego?: string, PuntuacionCorrecta?: number, PuntuacionIncorrecta?: number, 
     Presentacion?: string, JuegoTermiando?: boolean, profesorId?: number, cuestionarioId?: number, PuntuacionCorrectaBonus?: number, PuntuacionIncorrectaBonus?: number,
@@ -39,6 +40,7 @@ export class Juego {
 
     this.Tipo = Tipo;
     this.Modo = Modo;
+    this.Asignacion = Asignacion;
     this.JuegoActivo = JuegoActivo;
     this.coleccionId = coleccionId;
     this.NumeroTotalJornadas = NumeroTotalJornadas;
@@ -59,7 +61,5 @@ export class Juego {
     this.idescenario = idescenario;
 
     this.TiempoLimite = TiempoLimite;
-
-    
   }
 }

@@ -3,6 +3,7 @@ export class Alumno {
   PrimerApellido: string;
   SegundoApellido: string;
   ImagenPerfil: string;
+  PermisoCambioImagenPerfil: boolean;
   profesorId: string;
   id: number;
 
@@ -12,5 +13,6 @@ export class Alumno {
     this.PrimerApellido = primerApellido;
     this.SegundoApellido = segundoApellido;
     this.ImagenPerfil = imagenPerfil;
+    this.PermisoCambioImagenPerfil = false;
   }
 }

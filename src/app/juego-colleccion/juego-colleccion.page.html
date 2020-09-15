@@ -9,10 +9,12 @@
 
 <ion-content class="juegocoleccion-content" #content>
 
-<div *ngIf="juegoSeleccionado.Modo === 'Individual' && coleccion !== undefined">
-  <div *ngIf="alumno !== undefined">
+<!-- <div *ngIf="juegoSeleccionado.Modo === 'Individual' && coleccion !== undefined">
+  <div *ngIf="alumno !== undefined"> -->
+  <div *ngIf="preparado && coleccion">
+    <ion-button class="ranking-btn" (click)=MostrarAlbum()>Ver album</ion-button>
      
-    <ion-button class="card-btn" style="color: grey;" (click)=MostrarAlbum()>Ver album</ion-button>
+  
     <div  *ngIf = "coleccion.DosCaras"  >
       
       <ion-slides>
@@ -67,5 +69,5 @@
 
 
   </div>
-</div>
+<!-- </div> -->
 </ion-content>

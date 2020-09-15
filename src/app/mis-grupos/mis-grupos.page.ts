@@ -4,6 +4,8 @@ import { PeticionesAPIService} from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import { SesionService} from '../servicios/sesion.service';
 import { Grupo, Alumno } from '../clases/index';
+import * as URL from '../URLs/urls';
+
 @Component({
   selector: 'app-mis-grupos',
   templateUrl: './mis-grupos.page.html',
@@ -13,7 +15,7 @@ export class MisGruposPage implements OnInit {
 
   Grupos: Grupo[];
   Alumno: Alumno;
-  listaGruposYAlumnos: any [];
+  listaGruposYAlumnos: any;
   listaGruposYEquipos: any [];
   Tipo: string;
   constructor(
@@ -28,10 +30,22 @@ export class MisGruposPage implements OnInit {
       MisGrupos => {
         this.Grupos = MisGrupos;
         console.log(this.Grupos);
-        this.listaGruposYAlumnos = this.calculos.DameLosGruposYLosAlumnos(this.Grupos);
-        console.log(this.listaGruposYAlumnos);
-        console.log(this.listaGruposYAlumnos.length);
-        this.listaGruposYEquipos = this.calculos.DameLosGruposYLosEquipos(this.Grupos);
+        this.calculos.DameLosGruposYLosAlumnos(this.Grupos)
+        .subscribe (lista => {
+          this.listaGruposYAlumnos = lista;
+          // this.listaGruposYAlumnos.forEach (grupo => {
+          //   console.log ('grupo');
+          //   console.log (grupo);
+          //   grupo.Alumnos.forEach (alumno => {
+          //     alumno.ImagenPerfil = URL.ImagenesPerfil + alumno.ImagenPerfil;
+          //   });
+
+          // });
+        });
+
+        this.calculos.DameLosGruposYLosEquipos(this.Grupos)
+        .subscribe (lista =>   this.listaGruposYEquipos = lista);
+        
         // Necesito una nueva clase para añadir el id del grupo y asi diferenciarlos a la hora de mostrarlos por grupo
       });
   }

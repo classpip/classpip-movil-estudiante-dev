@@ -32,7 +32,8 @@
           <ion-card *ngFor="let alum of listaGruposYAlumnos[i].Alumnos">
             <ion-item lines="none">
               <ion-avatar slot="start">
-                <img src="../../assets/img/usuario.svg">
+                <!-- <img src="../../assets/img/usuario.svg"> -->
+                <img *ngIf = "alum.ImagenPerfil" [src] = "alum.ImagenPerfil">
               </ion-avatar>
               <ion-label>
                 <h2> {{alum.Nombre}} {{alum.PrimerApellido}} {{alum.SegundoApellido}} </h2>
@@ -66,26 +67,5 @@
     </div>
 
   </div>
-
-  <!-- 
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        This is the expansion 1 title
-      </mat-expansion-panel-header>
-  
-      <ion-card>
-        <ion-item lines="none">
-          <ion-avatar slot="start">
-            <img src="../../assets/img/usuario.svg">
-          </ion-avatar>
-          <ion-label>
-            <h2> HOLA </h2>
-            <p>-Frase alumno-</p>
-          </ion-label>
-        </ion-item>
-      </ion-card>
-  
-    </mat-expansion-panel> -->
-
 
 </ion-content>

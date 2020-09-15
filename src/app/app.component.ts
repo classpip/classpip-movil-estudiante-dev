@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
 import { Alumno } from '../app/clases/Alumno';
 import { SesionService, ComServerService } from '../app/servicios';
+import * as URL from '../app//URLs/urls';
 
 
 @Component({
@@ -16,7 +17,9 @@ import { SesionService, ComServerService } from '../app/servicios';
 export class AppComponent {
 
   MiAlumno: Alumno;
-  navigate : any;
+  navigate: any;
+  imagenPerfil: string;
+
   constructor(
     private sesion: SesionService,
     private comServer: ComServerService,
@@ -34,8 +37,10 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      this.sesion.EnviameAlumno().subscribe ((alumno) => this.MiAlumno = alumno
-      );
+      this.sesion.EnviameAlumno().subscribe ((alumno) => {
+        this.MiAlumno = alumno;
+      //  this.imagenPerfil = URL.ImagenesPerfil + this.MiAlumno.ImagenPerfil;
+      });
     });
   }
 
@@ -45,7 +50,9 @@ export class AppComponent {
   }
 
   GoMiPerfil() {
+    console.log ('vamos a mi perfil');
     this.route.navigateByUrl('tabs/mi-perfil');
+    //this.route.navigateByUrl('tabs/mis-grupos');
   }
 
   GoMisGrupos() {

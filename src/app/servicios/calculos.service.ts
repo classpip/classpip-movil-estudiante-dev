@@ -397,7 +397,7 @@ export class CalculosService {
     return InformacionAlumno;
   }
 
-  public RegalaCromo(cromo: Cromo, alumnoDestinatarioId: number, alumnoQueRegala: Alumno, juegoSeleccionado: Juego) {
+  public RegalaCromoAlumnos(cromo: Cromo, alumnoDestinatarioId: number, alumnoQueRegalaId: number, juegoSeleccionado: Juego) {
 
     // No entiendo muy bien por qué esta petición devuelve un vector de inscripciones y no una sola.
     // por eso indexo la inscripcion con [0]
@@ -405,9 +405,34 @@ export class CalculosService {
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, alumnoDestinatarioId)
     .subscribe( inscripcion => this.peticionesAPI.AsignarCromoAlumno(new Album(inscripcion[0].id, cromo.id)).subscribe()
     );
-    this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, alumnoQueRegala.id)
+    this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(juegoSeleccionado.id, alumnoQueRegalaId)
     .subscribe( inscripcion => this.peticionesAPI.DameAlbumAlumno(cromo.id, inscripcion[0].id)
     .subscribe( album => this.peticionesAPI.BorrarAlbumAlumno(album[0].id).subscribe()));
+  }
+
+  public RegalaCromoEquipos(cromo: Cromo, equipoDestinatarioId: number, equipoQueRegalaId: number, juegoSeleccionado: Juego) {
+
+    // No entiendo muy bien por qué esta petición devuelve un vector de inscripciones y no una sola.
+    // por eso indexo la inscripcion con [0]
+    // Lo mismo pasa al pedir los cromos del equipo (DameAlbumEquipo)
+    this.peticionesAPI.DameInscripcionEquipoJuegoDeColeccion(juegoSeleccionado.id, equipoDestinatarioId)
+    .subscribe( inscripcion => this.peticionesAPI.AsignarCromoEquipo(new AlbumEquipo(inscripcion[0].id, cromo.id)).subscribe()
+    );
+    this.peticionesAPI.DameInscripcionEquipoJuegoDeColeccion(juegoSeleccionado.id, equipoQueRegalaId)
+    .subscribe( inscripcion => this.peticionesAPI.DameAlbumEquipo(cromo.id, inscripcion[0].id)
+    .subscribe( album => this.peticionesAPI.BorrarAlbumEquipo(album[0].id).subscribe()));
+  }
+ 
+
+  public RegalaCromoAlumnoEquipo(cromo: Cromo, alumnoDestinatarioId: number, alumnoQueRegalaId: number, juegoSeleccionado: Juego) {
+    // Es un juego en equipo pero asignación individual. Por tanto hay que quitar el cromo de los albunes de los equipos
+    this.DameEquipoAlumnoEnJuegoDeColeccion (alumnoDestinatarioId, juegoSeleccionado.id)
+    .subscribe ( equipoDestinatorio => {
+      this.DameEquipoAlumnoEnJuegoDeColeccion (alumnoQueRegalaId, juegoSeleccionado.id)
+      .subscribe ( equipoDeAlumnoQueRegala => {
+        this.RegalaCromoEquipos (cromo, equipoDestinatorio.id, equipoDeAlumnoQueRegala.id, juegoSeleccionado);
+      });
+    });
   }
 
   public DameEquiposJuegoPuntos(juegoId: number) {
@@ -543,31 +568,43 @@ export class CalculosService {
   }
 
 
-  public DameLosGruposYLosAlumnos(listaGrupos: Grupo[]): any[] {
-    const listaGruposYAlumnos: any[] = [];
-    for (let i = 0; i < (listaGrupos.length); i++) {
-      console.log(listaGrupos[i].id);
-      this.peticionesAPI.DameAlumnosGrupo(listaGrupos[i].id).subscribe(
-        MisAlumnos => {
-          console.log(MisAlumnos);
-          listaGruposYAlumnos.push({ Grupo: listaGrupos[i].Descripcion, Alumnos: MisAlumnos });
-        });
-    }
-    console.log(listaGruposYAlumnos);
-    return listaGruposYAlumnos;
+  public DameLosGruposYLosAlumnos(listaGrupos: Grupo[]): any {
+    const observableGruposYAlumnos = new Observable(obs => {
+        const listaGruposYAlumnos: any[] = [];
+        let cont = 0;
+        for (let i = 0; i < (listaGrupos.length); i++) {
+          console.log(listaGrupos[i].id);
+          this.peticionesAPI.DameAlumnosGrupo(listaGrupos[i].id).subscribe(
+            MisAlumnos => {
+              console.log(MisAlumnos);
+              listaGruposYAlumnos.push({ Grupo: listaGrupos[i].Descripcion, Alumnos: MisAlumnos });
+              cont++;
+              if (cont === listaGrupos.length) {
+                obs.next (listaGruposYAlumnos);
+              }
+            });
+        }
+    });
+    return observableGruposYAlumnos;
   }
 
-  public DameLosGruposYLosEquipos(listaGrupos: Grupo[]): any[] {
-    const listaGruposYEquipos: any[] = [];
-    for (let i = 0; i < (listaGrupos.length); i++) {
-      this.peticionesAPI.DameEquiposDelGrupo(listaGrupos[i].id).subscribe(
-        MisEquipos => {
-          listaGruposYEquipos.push({ Grupo: listaGrupos[i].Descripcion, Equipo: MisEquipos });
-        }
-      );
-    }
-    console.log(listaGruposYEquipos);
-    return listaGruposYEquipos;
+  public DameLosGruposYLosEquipos(listaGrupos: Grupo[]): any {
+    const observableGruposYEquipos = new Observable(obs => {
+      const listaGruposYEquipos: any[] = [];
+      let cont = 0;
+      for (let i = 0; i < (listaGrupos.length); i++) {
+        this.peticionesAPI.DameEquiposDelGrupo(listaGrupos[i].id).subscribe(
+          MisEquipos => {
+            listaGruposYEquipos.push({ Grupo: listaGrupos[i].Descripcion, Equipo: MisEquipos });
+            cont++;
+            if (cont === listaGrupos.length) {
+              obs.next (listaGruposYEquipos);
+            }
+          }
+        );
+      }
+    });
+    return observableGruposYEquipos;
   }
 
   public DameHistorialMisPuntos(juegoId: number, alumnoId: number): any {
@@ -2112,6 +2149,33 @@ export class CalculosService {
     }
   });
     return preguntasObservable;
+  }
+
+
+  public DameEquipoAlumnoEnJuegoDeColeccion(alumnoId: number, juegoId: number): any {
+    const equipoObservable = new Observable(obs => {
+      console.log ('voy a por el equipo de este alumno en el juego');
+      // primero traigo los equipos que participan en el juego
+      this.peticionesAPI.DameEquiposJuegoDeColeccion (juegoId)
+      .subscribe (equiposJuego => {
+        console.log ('equipos del juego');
+        console.log (equiposJuego);
+        // ahora traigo los equipos a los que pertenece el alumno
+        this.peticionesAPI.DameEquiposDelAlumno (alumnoId)
+        .subscribe (equiposAlumno => {
+          console.log ('equipos del alumno');
+          console.log (equiposAlumno);
+          // ahora miro cual es el equipo que está en ambas listas
+          const equipo = equiposAlumno.filter(e => equiposJuego.some(a => a.id === e.id))[0];
+          console.log ('interseccion');
+          console.log (equipo);
+          obs.next (equipo);
+        });
+
+      });
+
+    });
+    return equipoObservable;
   }
 
 
