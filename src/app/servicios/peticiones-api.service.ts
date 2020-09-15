@@ -26,7 +26,7 @@ import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestion
 
 export class PeticionesAPIService {
 
-  // private base = 'http://localhost:';
+  //private base = 'http://localhost:';
 
   // private base = 'http://147.83.118.92:';
   //private base = 'http://192.168.1.35:'; 
@@ -105,6 +105,10 @@ export class PeticionesAPIService {
   private APIUrlAlumnoJuegoDeVotacionTodosAUno = this.base + '3000/api/alumnosJuegoDeVotacionTodosAUno';
   private APIUrlJuegoDeVotacionTodosAUno = this.base + '3000/api/juegosDeVotacionTodosAUno';
   
+
+  
+  private APIUrlImagenesPerfil = this.base + '3000/api/imagenes/ImagenesPerfil';
+
   constructor(
     private http: HttpClient,
     private httpImagenes: Http
@@ -251,9 +255,13 @@ export class PeticionesAPIService {
   }
 
   // Devuelve el equipo de un alumno en un Juego de Puntos en concreto
-  public DameEquipoAlumnoJuegoDePuntos(alumnoJuegoDePuntos: number): Observable<Equipo> {
-    return this.http.get<Equipo>(this.APIUrlAlumnoJuegoDePuntos + '/' + alumnoJuegoDePuntos + '/alumno/equipos')
-      ;
+  public DameEquipoAlumnoJuegoDePuntos(alumnoJuegoDePuntosId: number): Observable<Equipo> {
+    return this.http.get<Equipo>(this.APIUrlAlumnoJuegoDePuntos + '/' + alumnoJuegoDePuntosId + '/alumno/equipos');
+  }
+
+  // Devuelve el equipo de un alumno en un Juego de Puntos en concreto
+  public DameEquipoAlumnoJuegoDeColeccion(alumnoJuegoDeColeccionId: number): Observable<Equipo> {
+    return this.http.get<Equipo>(this.APIUrlAlumnoJuegoDeColeccion + '/' + alumnoJuegoDeColeccionId + '/alumno/equipos');
   }
 
 
@@ -616,6 +624,15 @@ export class PeticionesAPIService {
     return this.http.delete<Album>(this.APIRUrlAlbum + '/' + AlbumId);
   }
 
+  // Lo mismo para equipos
+  public DameAlbumEquipo(cromoId: number, equipoJuegoDeColeccionId: number): Observable<Album> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.get<Album>(this.APIRUrlAlbumEquipo + '?filter[where][cromoId]=' + cromoId + '&filter[where][equipoJuegoDeColeccionId]=' + equipoJuegoDeColeccionId);
+  }
+
+  public BorrarAlbumEquipo(AlbumEquipoId: number) {
+    return this.http.delete<Album>(this.APIRUrlAlbumEquipo + '/' + AlbumEquipoId);
+  }
 
   // ASIGNAMOS UN NUEVO CROMO PARA EL ÁLBUM DEL EQUIPO
   public AsignarCromoEquipo(album: AlbumEquipo) {
@@ -943,5 +960,12 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   }
 
 
+  public PonImagenPerfil(formData: FormData): Observable<any> {
+    return this.http.post<any>(this.APIUrlImagenesPerfil + '/upload', formData);
+  }
+
+  public ModificaAlumno(alumno: Alumno): Observable<Alumno> {
+    return this.http.put<Alumno>(this.APIUrlAlumnos + '/' + alumno.id, alumno);
+  }
 
 }

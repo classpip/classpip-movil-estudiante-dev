@@ -1,52 +1,27 @@
-<!-- <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title style="color: rgb(255, 255, 255); font-size: 15px;">Mi Perfil</ion-title>
-    <ion-buttons slot="start" class="menu-btn">
-      <ion-menu-button></ion-menu-button>
+
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-menu-button class="menu-btn"></ion-menu-button>
     </ion-buttons>
+    <ion-title>Mi perfil</ion-title>
   </ion-toolbar>
-</ion-header> -->
-
-<!-- <ion-content>
-  <ion-row *ngFor="let Imagen of MiImagenAlumno;let i = index">
-    <img [src]="MiImagenAlumno[i]">
-  </ion-row> -->
-<!--ion-row>
-    <ion-button (click)="selectImage()">
-      Pick Image to Crop
-    </ion-button>
-  </ion-row-->
-<!--   <button ion-button color="primary" (click)="accessGallery()">Open Gallery</button>
-  <img [src]="base64Image" *ngIf="base64Image" />
-  <p style="text-align: center; color: rgb(0, 68, 107);font-size:5.5vw;"><b>{{Alumno.Nombre}} {{Alumno.PrimerApellido}}
-      {{Alumno.SegundoApellido}}</b> </p>
-
-</ion-content> -->
+</ion-header>
 
 <ion-content>
-  <div class="perfil-header">
-    <h2>Mi Perfil</h2>
-    <!-- <div class="spacer">
-      <div class="puntos">
-        <ion-badge color="primary"> 0 </ion-badge>
-        <p>Puntos</p>
-      </div>
+  <ion-list style="text-align:center">
+    
+    <img [src]="Alumno.ImagenPerfil" style="width: 100px; height: 100px">
+   
+   
 
-      <div class="puntos">
-        <ion-badge color="primary">100</ion-badge>
-        <p>Cromos</p>
-      </div>
-    </div> -->
-  </div>
-  <div class="perfil-pic">
-    <div class="border-out">
-      <div class="border-in">
-        <div class="img-box">
-          <img src="../../assets/img/usuario.svg">
-        </div>
-      </div>
-    </div>
-  </div>
-  <p style="text-align: center; color: rgb(0, 0, 0);font-size:15px;"><b>{{Alumno.Nombre}} {{Alumno.PrimerApellido}}
-    <br> {{Alumno.SegundoApellido}}</b> </p>
+
+    <p style="text-align: center; color: rgb(0, 0, 0);font-size:15px;"><b>{{Alumno.Nombre}} {{Alumno.PrimerApellido}} {{Alumno.SegundoApellido}}</b> </p>
+    <ion-button *ngIf = "Alumno.PermisoCambioImagenPerfil" class="ranking-btn" (click)=CambiarImagen()>Cambiar imagen de perfil</ion-button>
+    <input #file id = "inputImagen" type="file" accept= 'image/*' (change)="SeleccionarImagenPerfil($event)" style="display:none" multiple>
+              
+    
+  </ion-list>
+  
+  
 </ion-content>

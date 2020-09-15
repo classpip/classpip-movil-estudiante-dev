@@ -46,6 +46,7 @@ export class JuegoColleccionPage implements OnInit {
   progress = 0;
   elem: any;
   pos: number;
+  preparado: boolean = false;
 
 
   constructor(
@@ -67,12 +68,17 @@ export class JuegoColleccionPage implements OnInit {
       centeredSlides: true
     };
     this.juegoSeleccionado = this.sesion.DameJuego();
+    this.alumno = this.sesion.DameAlumno();
     this.peticionesAPI.DameColeccion(this.juegoSeleccionado.coleccionId)
     .subscribe (coleccion => this.coleccion = coleccion);
-    this.alumno = this.sesion.DameAlumno();
     this.equipo = this.sesion.DameEquipo();
     if (this.juegoSeleccionado.Modo === 'Individual') {
+     
       this.DameLosCromosDelAlumno();
+
+    } else {
+      this.DameLosCromosDelEquipo ();
+      
     }
     // if (this.juegoSeleccionado.Modo === 'Individual') {
     //   this.DameLosCromosDelAlumno();
@@ -143,6 +149,8 @@ export class JuegoColleccionPage implements OnInit {
             handler: async () => {
               // preparo el cromo
               this.sesion.TomaCromo (elem.cromo);
+              this.sesion.TomaAlumno (this.alumno);
+              this.sesion.TomaEquipo (this.equipo);
               console.log ('vamos');
               const modal = await this.modalController.create({
                 component: IntercambiarCromosPage,
@@ -215,6 +223,51 @@ export class JuegoColleccionPage implements OnInit {
     }
   }
 
+  DameLosCromosDelEquipo() {
+    console.log ('voy a por los cromos del equipo');
+
+    // primero me traigo el equipo del alumno que participa en el juego
+    this.calculos.DameEquipoAlumnoEnJuegoDeColeccion (this.alumno.id, this.juegoSeleccionado.id)
+    .subscribe (equipo => {
+      this.equipo = equipo;
+      // Ahora traigo la inscripcion del equipo en el juego
+      this.peticionesAPI.DameInscripcionEquipoJuegoDeColeccion(this.juegoSeleccionado.id, equipo.id)
+      .subscribe(inscripcionEquipo => {
+        // Y ahora me traigo los cromos del equipo
+        this.peticionesAPI.DameCromosEquipo(inscripcionEquipo[0].id)
+        .subscribe(CromosEquipo => {
+            console.log('aquí están los cromos: ');
+            console.log(CromosEquipo);
+            // this.AlumnoMisCromos = CromosAlumno;
+            this.cromosQueTengo = CromosEquipo;
+            // this.AlumnolistaCromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.cromosDelAlumno);
+            this.cromosSinRepetidos = this.calculos.GeneraListaSinRepetidos(this.cromosQueTengo);
+            // this.sesion.TomaCromosSinRepetidos(this.cromosSinRepetidos);
+            this.peticionesAPI.DameCromosColeccion(this.juegoSeleccionado.coleccionId).subscribe(
+              todosLosCromos => {
+                console.log('aqui estan todos los cromos');
+                console.log(todosLosCromos);
+               // this.AlumnoCromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.AlumnoMisCromos, TodosLosCromosAlumno);
+                console.log ('cromos que tengo');
+                console.log (this.cromosQueTengo);
+                this.cromosQueNoTengo = this.calculos.DameCromosQueNoTengo(this.cromosQueTengo, todosLosCromos);
+                console.log ('cromos que NO tengo');
+                console.log (this.cromosQueNoTengo);
+                this.PreparaImagenesCromosQueTengo();
+                this.PreparaImagenesCromosQueFaltan();
+                this.preparado = true;
+              });
+          });
+
+
+      });
+
+
+    });
+
+  }
+
+
   DameLosCromosDelAlumno() {
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, this.alumno.id).subscribe(
         InscripcionAlumno => {
@@ -239,7 +292,8 @@ export class JuegoColleccionPage implements OnInit {
                   console.log ('cromos que NO tengo');
                   console.log (this.cromosQueNoTengo);
                   this.PreparaImagenesCromosQueTengo();
-                  this.PreparaImagenesCromosQueFaltan();
+                  this.PreparaImagenesCromosQueFaltan();      
+                  this.preparado = true;
                 });
             });
         });
