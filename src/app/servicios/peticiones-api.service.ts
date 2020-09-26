@@ -343,10 +343,15 @@ export class PeticionesAPIService {
     return this.http.post<any>(this.APIUrlLogosEquipos + '/upload', formData);
   }
 
+   
+  public BorraLogoEquipo(logo: string): Observable<any> {
+    return this.http.delete<any>(this.APIUrlLogosEquipos + '/files/' + logo);
+  }
+
 
   // SE USA PARA EDITAR UN EQUIPO
-  public ModificaEquipo(equipo: Equipo, grupoId: number, equipoId: number): Observable<Equipo> {
-    return this.http.put<Equipo>(this.APIUrlGrupos + '/' + grupoId + '/equipos/' + equipoId, equipo);
+  public ModificaEquipo(equipo: Equipo): Observable<Equipo> {
+    return this.http.put<Equipo>(this.APIUrlEquipos + '/' + equipo.id, equipo);
   }
 
   // RECUPERAMOS LAS ASIGNACIONES (COMO LA INSCRIPCIÓN DEL ALUMNO AL EQUIPO) DE UN GRUPO DETERMINADO
@@ -968,4 +973,5 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     return this.http.put<Alumno>(this.APIUrlAlumnos + '/' + alumno.id, alumno);
   }
 
+ 
 }

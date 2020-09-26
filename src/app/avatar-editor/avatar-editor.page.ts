@@ -47,6 +47,8 @@ export class AvatarEditorPage implements OnInit {
 
   ngOnInit() {
     this.inscripcionAlumnoJuegoAvatar = this.sesion.DameInscripcionAlumno();
+    console.log ('tengo avatar');
+    console.log (this.inscripcionAlumnoJuegoAvatar);
     this.privilegiosAlumno = this.inscripcionAlumnoJuegoAvatar.Privilegios;
     this.hayComplementoPuesto = Array(4).fill(false);
     this.elementoPuesto = Array(4);
@@ -239,6 +241,9 @@ export class AvatarEditorPage implements OnInit {
   }
 
   async Guardar() {
+    console.log ('voy a guardar');
+    console.log (this.hayComplementoPuesto);
+    console.log (this.inscripcionAlumnoJuegoAvatar);
 
     const confirm = await this.alertCtrl.create({
       header: '¿Seguro que quieres modificar tu avatar?',
@@ -251,22 +256,22 @@ export class AvatarEditorPage implements OnInit {
             if (this.hayComplementoPuesto[0]) {
               this.inscripcionAlumnoJuegoAvatar.Complemento1 = this.familiaElegida.Complemento1[this.complementoElegido[0]];
             } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento1 = undefined;
+              //this.inscripcionAlumnoJuegoAvatar.Complemento1 = undefined;
             }
             if (this.hayComplementoPuesto[1]) {
               this.inscripcionAlumnoJuegoAvatar.Complemento2 = this.familiaElegida.Complemento2[this.complementoElegido[1]];
             } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento2 = undefined;
+              //this.inscripcionAlumnoJuegoAvatar.Complemento2 = undefined;
             }
             if (this.hayComplementoPuesto[2]) {
               this.inscripcionAlumnoJuegoAvatar.Complemento3 = this.familiaElegida.Complemento3[this.complementoElegido[2]];
             } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento3 = undefined;
+              //this.inscripcionAlumnoJuegoAvatar.Complemento3 = undefined;
             }
             if (this.hayComplementoPuesto[3]) {
               this.inscripcionAlumnoJuegoAvatar.Complemento4 = this.familiaElegida.Complemento4[this.complementoElegido[3]];
             } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento4 = undefined;
+              //this.inscripcionAlumnoJuegoAvatar.Complemento4 = undefined;
             }
             // Notifico al server que se ha modificado un avatar
             this.comServer.Emitir('modificacionAvatar', { inscripcion: this.inscripcionAlumnoJuegoAvatar});
