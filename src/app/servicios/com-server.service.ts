@@ -18,7 +18,19 @@ export class ComServerService {
     this.servidor.disconnect();
   }
   Emitir(mensaje: string, info: any) {
+    console.log ('voy a emitir ' + mensaje);
+    console.log (info);
+    console.log (this.servidor);
     this.servidor.emit(mensaje, info);
+  }
+  EnviarNick(nick: string) {
+    this.servidor.connect();
+    console.log ('envio nick: ' + nick);
+    console.log (this.servidor);
+    this.servidor.emit('nickNameJuegoRapido', nick);
+  }
+  DesconectarJuegoRapido() {
+    this.servidor.disconnect();
   }
 
 

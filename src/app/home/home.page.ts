@@ -58,6 +58,9 @@ export class HomePage {
   midiendo = false;
 
   contNotif = 0;
+  juegoRapido = false;
+  clave: string;
+  nickname: string;
 
 
   constructor(
@@ -488,13 +491,52 @@ obtenerPosicion(): any{
 
       await alert.present();
     }
+    AutentificarJuegoRapido() {
+        console.log ('Juego rapido ' + this.clave + ' ' + this.nickname);
+        this.peticionesAPI.DameJuegoDeEncuestaRapida (this.clave)
+        .subscribe ((juego) => {
+          if (juego[0] !== undefined) {
+            console.log ('Ya tengo el juego');
+            console.log (juego[0]);
+            this.sesion.TomaJuego(juego[0]);
+            this.sesion.TomaNickName (this.nickname);
+            this.comServer.EnviarNick (this.nickname);
+            // this.route.navigateByUrl('/tabs/inici');
+            this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
+
+          } else {
+            this.peticionesAPI.DameJuegoDeVotacionRapida (this.clave)
+            // tslint:disable-next-line:no-shadowed-variable
+            .subscribe (async (juego) => {
+              if (juego[0] !== undefined) {
+                console.log ('Ya tengo el juego');
+                console.log (juego[0]);
+                this.sesion.TomaJuego(juego[0]);
+                this.sesion.TomaNickName (this.nickname);
+                this.comServer.EnviarNick (this.nickname);
+               
+                this.navCtrl.navigateForward('/juego-votacion-rapida');
+              } else {
+                const alert = await this.alertController.create({
+                  header: 'Error',
+                  // subHeader: 'Subtitle',
+                  message: 'No existe ningun juego rápido con esa clave',
+                  buttons: ['OK']
+                });
+                await alert.present();
+                this.juegoRapido = false;
+                this.clave = undefined;
+                this.nickname = undefined;
+              }
+          });
+          }
+        });
+    }
 
     Autentificar() {
-
-
-      this.presentLoading();
-      this.peticionesAPI.DameAlumno(this.nombre, this.apellido).subscribe(
-        (res) => {
+        this.presentLoading();
+        this.peticionesAPI.DameAlumno(this.nombre, this.apellido)
+        .subscribe( (res) => {
           if (res[0] !== undefined) {
             this.alumno = res[0];
             this.sesion.TomaAlumno(this.alumno);
@@ -521,8 +563,11 @@ obtenerPosicion(): any{
             }, 1500);
             console.log('alumno no existe');
           }
-        }
-      );
+        });
+    }
+
+    AccesoJuegoRapido() {
+      this.juegoRapido = true;
     }
 
 }

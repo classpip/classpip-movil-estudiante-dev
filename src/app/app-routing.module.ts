@@ -32,7 +32,10 @@ const routes: Routes = [
   // tslint:disable-next-line:max-line-length
   { path: 'juego-votacion-uno-atodos', loadChildren: './juego-votacion-uno-atodos/juego-votacion-uno-atodos.module#JuegoVotacionUnoATodosPageModule' },
   // tslint:disable-next-line:max-line-length
-  { path: 'juego-votacion-todos-auno', loadChildren: './juego-votacion-todos-auno/juego-votacion-todos-auno.module#JuegoVotacionTodosAUnoPageModule' }
+  { path: 'juego-votacion-todos-auno', loadChildren: './juego-votacion-todos-auno/juego-votacion-todos-auno.module#JuegoVotacionTodosAUnoPageModule' },
+  // tslint:disable-next-line:max-line-length
+  { path: 'juego-cuestionario-satisfaccion', loadChildren: './juego-cuestionario-satisfaccion/juego-cuestionario-satisfaccion.module#JuegoCuestionarioSatisfaccionPageModule' },  { path: 'juego-votacion-rapida', loadChildren: './juego-votacion-rapida/juego-votacion-rapida.module#JuegoVotacionRapidaPageModule' }
+
 
 
 ];

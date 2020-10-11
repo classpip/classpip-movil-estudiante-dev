@@ -57,6 +57,10 @@ export * from './JuegoDeVotacionTodosAUno';
 export * from './AlumnoJuegoDeVotacionTodosAUno';
 export * from './Criterio';
 export * from './Rubrica';
+export * from './JuegoDeCuestionarioSatisfaccion';
+export * from './AlumnoJuegoDeCuestionarioSatisfaccion';
+export * from './CuestionarioSatisfaccion';
+export * from './JuegoDeEncuestaRapida';
 
 
 

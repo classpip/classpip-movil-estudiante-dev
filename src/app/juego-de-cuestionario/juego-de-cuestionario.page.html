@@ -46,7 +46,7 @@
       <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
         <p style="font-size: 18px;">{{pregunta.Pregunta}}</p>
         <div>
-          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaElegida">
               <mat-radio-button class="radio-button" *ngFor="let respuesta of respuestasPosibles" [value]="respuesta">
                 <p style="color: black;">{{respuesta}}</p>
               </mat-radio-button>

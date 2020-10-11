@@ -8,6 +8,7 @@ import {MatAccordion} from '@angular/material/expansion';
 
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 
+
 @Component({
   selector: 'app-juego-votacion-todos-auno',
   templateUrl: './juego-votacion-todos-auno.page.html',
