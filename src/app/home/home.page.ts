@@ -517,18 +517,32 @@ obtenerPosicion(): any{
                
                 this.navCtrl.navigateForward('/juego-votacion-rapida');
               } else {
-                const alert = await this.alertController.create({
-                  header: 'Error',
-                  // subHeader: 'Subtitle',
-                  message: 'No existe ningun juego rápido con esa clave',
-                  buttons: ['OK']
-                });
-                await alert.present();
-                this.juegoRapido = false;
-                this.clave = undefined;
-                this.nickname = undefined;
-              }
-          });
+                  this.peticionesAPI.DameJuegoDeCuestionarioRapido (this.clave)
+                  // tslint:disable-next-line:no-shadowed-variable
+                  .subscribe (async (juego) => {
+                    if (juego[0] !== undefined) {
+                      console.log ('Ya tengo el juego');
+                      console.log (juego[0]);
+                      this.sesion.TomaJuego(juego[0]);
+                      this.sesion.TomaNickName (this.nickname);
+                      this.comServer.EnviarNick (this.nickname);
+                    
+                      this.navCtrl.navigateForward('/juego-de-cuestionario');
+                    } else {
+                      const alert = await this.alertController.create({
+                        header: 'Error',
+                        // subHeader: 'Subtitle',
+                        message: 'No existe ningun juego rápido con esa clave',
+                        buttons: ['OK']
+                      });
+                      await alert.present();
+                      this.juegoRapido = false;
+                      this.clave = undefined;
+                      this.nickname = undefined;
+                    }
+                  });
+                }
+            });
           }
         });
     }
@@ -568,6 +582,9 @@ obtenerPosicion(): any{
 
     AccesoJuegoRapido() {
       this.juegoRapido = true;
+    }
+    Volver() {
+      this.juegoRapido = false;
     }
 
 }

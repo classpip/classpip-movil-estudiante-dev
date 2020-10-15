@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'cromos-amostrar', loadChildren: './cromos-amostrar/cromos-amostrar.module#CromosAMostrarPageModule' },
   { path: 'mi-perfil', loadChildren: './mi-perfil/mi-perfil.module#MiPerfilPageModule' },
   { path: 'mis-grupos', loadChildren: './mis-grupos/mis-grupos.module#MisGruposPageModule' },
+  { path: 'mis-juegos-inactivos', loadChildren: './mis-juegos-inactivos/mis-juegos-inactivos.module#MisJuegosInactivosPageModule' },
   { path: 'intercambiar-cromos', loadChildren: './intercambiar-cromos/intercambiar-cromos.module#IntercambiarCromosPageModule' },
   { path: 'juegos-inactivos', loadChildren: './juegos-inactivos/juegos-inactivos.module#JuegosInactivosPageModule' },
   { path: 'slides', loadChildren: './slides/slides.module#SlidesPageModule' },
@@ -34,7 +35,9 @@ const routes: Routes = [
   // tslint:disable-next-line:max-line-length
   { path: 'juego-votacion-todos-auno', loadChildren: './juego-votacion-todos-auno/juego-votacion-todos-auno.module#JuegoVotacionTodosAUnoPageModule' },
   // tslint:disable-next-line:max-line-length
-  { path: 'juego-cuestionario-satisfaccion', loadChildren: './juego-cuestionario-satisfaccion/juego-cuestionario-satisfaccion.module#JuegoCuestionarioSatisfaccionPageModule' },  { path: 'juego-votacion-rapida', loadChildren: './juego-votacion-rapida/juego-votacion-rapida.module#JuegoVotacionRapidaPageModule' }
+  { path: 'juego-cuestionario-satisfaccion', loadChildren: './juego-cuestionario-satisfaccion/juego-cuestionario-satisfaccion.module#JuegoCuestionarioSatisfaccionPageModule' },
+  { path: 'juego-votacion-rapida', loadChildren: './juego-votacion-rapida/juego-votacion-rapida.module#JuegoVotacionRapidaPageModule' },
+  { path: 'mis-juegos-inactivos', loadChildren: './mis-juegos-inactivos/mis-juegos-inactivos.module#MisJuegosInactivosPageModule' }
 
 
 

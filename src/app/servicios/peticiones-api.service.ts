@@ -111,6 +111,7 @@ export class PeticionesAPIService {
   private APIUrlImagenesPerfil = this.base + '3000/api/imagenes/ImagenesPerfil';
   private APIUrlJuegoDeEncuestaRapida =  this.base + '3000/api/juegosDeEncuestaRapida';
   private APIUrlJuegoDeVotacionRapida = this.base + '3000/api/juegosDeVotacionRapida';
+  private APIUrlJuegoDeCuestionarioRapido = this.base + '3000/api/juegosDeCuestionarioRapido';
 
   constructor(
     private http: HttpClient,
@@ -1012,6 +1013,11 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
 
   public DameJuegoDeVotacionRapida(clave: string): Observable<any[]> {
     return this.http.get<any[]>(this.APIUrlJuegoDeVotacionRapida
+    + '?filter[where][Clave]=' + clave);
+  }
+
+  public DameJuegoDeCuestionarioRapido(clave: string): Observable<any[]> {
+    return this.http.get<any[]>(this.APIUrlJuegoDeCuestionarioRapido
     + '?filter[where][Clave]=' + clave);
   }
 

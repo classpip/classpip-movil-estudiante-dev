@@ -13,22 +13,33 @@
       <ion-row style="height: 20px"></ion-row>
 
       <ion-menu-toggle auto-hide="true">
-        <ion-item lines="none" class="sidemenu-items" (click)="GoMisJuegos();" routerDirection="forward">
-          <ion-icon name="logo-game-controller-b" slot="start"></ion-icon>
-          Mis Juegos
+
+        <ion-item lines="none" class="sidemenu-items" (click)="GoMisJuegosActivos();" routerDirection="forward">
+          <ion-icon class = "verde" name="logo-game-controller-b" slot="start"></ion-icon>
+          Mis Juegos Activos
         </ion-item>
+
+        
+        <ion-item lines="none" class="sidemenu-items" (click)="GoMisJuegosInactivos();" routerDirection="forward">
+          <ion-icon class = "negro" name="logo-game-controller-b" slot="start"></ion-icon>
+          Mis Juegos Inactivos
+        </ion-item>
+        
         <ion-item lines="none" class="sidemenu-items" (click)="GoMisGrupos();" routerDirection="forward">
           <ion-icon name="people" slot="start"></ion-icon>
           Mis Grupos
         </ion-item>
+
         <ion-item lines="none" class="sidemenu-items" (click)="GoMiPerfil();" routerDirection="forward">
           <ion-icon name="person" slot="start"></ion-icon>
           Mi Perfil
         </ion-item>
+
         <ion-item lines="none" class="sidemenu-items" (click)="GoOut();" routerDirection="forward">
           <ion-icon name="log-out" slot="start"></ion-icon>
           Cerrar Sesión
         </ion-item>
+
       </ion-menu-toggle>
     </ion-content>
   </ion-menu>
