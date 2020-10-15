@@ -22,6 +22,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'mis-juegos-inactivos',
+        children: [
+          {
+            path: '',
+            loadChildren: '../mis-juegos-inactivos/mis-juegos-inactivos.module#MisJuegosInactivosPageModule'
+          }
+        ]
+      },
+      {
         path: 'mi-perfil',
         children: [
           {

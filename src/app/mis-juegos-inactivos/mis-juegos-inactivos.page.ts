@@ -8,28 +8,24 @@ import { Router } from '@angular/router';
 import { JuegoSeleccionadoPage } from '../juego-seleccionado/juego-seleccionado.page';
 import { IonSlides } from '@ionic/angular';
 
-
 @Component({
-  selector: 'app-inici',
-  templateUrl: './inici.page.html',
-  styleUrls: ['./inici.page.scss'],
+  selector: 'app-mis-juegos-inactivos',
+  templateUrl: './mis-juegos-inactivos.page.html',
+  styleUrls: ['./mis-juegos-inactivos.page.scss'],
 })
-export class IniciPage implements OnInit {
-
+export class MisJuegosInactivosPage implements OnInit {
   /* Creamos los array con los juegos activos e inactivos que solicitaremos a la API */
   id: number;
-  JuegosActivos: Juego[] = [];
+
+  JuegosInactivos: Juego[] = [];
   disablePrevBtn = true;
   disableNextBtn = false;
-
 
 
 
   @ViewChild(IonSlides, { static: false }) slides: IonSlides;
 
 
-
-  //animals: any[];
 
   constructor(
     private route: Router,
@@ -38,17 +34,17 @@ export class IniciPage implements OnInit {
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService
   ) { }
-  
-
+ 
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
     console.log('Este es el id del alumno que se ha logado: ' + this.id);
     this.calculos.DameJuegosAlumno(this.id)
       .subscribe(listas => {
-        this.JuegosActivos = listas.activos;
+        this.JuegosInactivos = listas.inactivos;
       });
   }
 
+  
 
   JuegoSeleccionado(juego: any) {
 
@@ -76,6 +72,8 @@ export class IniciPage implements OnInit {
       this.navCtrl.navigateForward('/juego-colleccion');
     }
   }
+
+  
   doCheck() {
     // Para decidir si hay que mostrar los botones de previo o siguiente slide
     const prom1 = this.slides.isBeginning();
@@ -86,8 +84,7 @@ export class IniciPage implements OnInit {
       data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
     });
   }
-
-
+  
   next() {
     this.slides.slideNext();
   }

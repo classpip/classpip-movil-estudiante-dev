@@ -1,0 +1,54 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Votación Rápida</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- Si aun no ha votado -->
+  <div *ngIf = 'juegoSeleccionado'>
+    <div style="text-align:center; margin-top: 10%;">  
+      <ion-button class="ranking-btn" (click)="EnviarVotacion()"> Envía tu votación </ion-button>  
+    </div> 
+    <ion-list>
+      <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false">
+
+        <ion-item *ngFor="let concepto of juegoSeleccionado.Conceptos; let i=index">
+          <ion-item>
+          <ion-label>
+            {{concepto}}
+          </ion-label>
+          </ion-item>
+          <!-- En el caso de que estemos en una de las posiciones que recibe puntos, muestro los puntos que le corresponden -->
+          <ion-label *ngIf = 'i < juegoSeleccionado.Puntos.length' style="font-size: large; color: red; text-align: right;">
+          {{juegoSeleccionado.Puntos[i]}}
+          </ion-label>
+          <ion-reorder slot="end"></ion-reorder>
+        </ion-item>
+      </ion-reorder-group>
+    </ion-list>
+  </div>
+  <!-- Ya ha votado -->
+  <!-- <div *ngIf = 'inscripcionAlumnoJuegoDeVotacionUnoATodos && inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos'>
+    <h2 style="text-align: center;">Esta ha sido tu votación</h2>
+
+    <ion-list *ngIf = 'alumnosVotados'>
+        <ion-item *ngFor="let alumno of alumnosVotados; let i=index">
+          <ion-item>
+          <ion-label>
+            {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
+          </ion-label>
+          </ion-item>
+  
+          <ion-label *ngIf = 'i < juegoSeleccionado.Puntos.length' style="font-size: large; color: green; text-align: right;">
+          {{juegoSeleccionado.Puntos[i]}}
+          </ion-label>
+        </ion-item>
+    </ion-list>
+  </div> -->
+
+</ion-content>

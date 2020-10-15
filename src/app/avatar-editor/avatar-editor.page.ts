@@ -28,7 +28,7 @@ export class AvatarEditorPage implements OnInit {
   c4: any[];
   privilegiosAlumno: boolean[];
   hayComplementoPuesto: boolean[];
-  elementoPuesto: any[];
+  complementoPuesto: any[];
   complementoElegido: any[] = [];
   FamiliaSeleccionada: boolean = false;
   Tipo: string;
@@ -36,6 +36,8 @@ export class AvatarEditorPage implements OnInit {
   interval;
   tieneAvatar = false;
   imagenPequenaSilueta;
+
+  mostrarComplementos = false;
 
   @ViewChild(IonContent, { static: false }) content: IonContent;
 
@@ -49,7 +51,7 @@ export class AvatarEditorPage implements OnInit {
     this.inscripcionAlumnoJuegoAvatar = this.sesion.DameInscripcionAlumno();
     this.privilegiosAlumno = this.inscripcionAlumnoJuegoAvatar.Privilegios;
     this.hayComplementoPuesto = Array(4).fill(false);
-    this.elementoPuesto = Array(4);
+    this.complementoPuesto = Array(4);
     this.juegoSeleccionado = this.sesion.DameJuegoAvatar();
     this.familiasDelJuego = [];
     let cont = 0;
@@ -78,14 +80,30 @@ export class AvatarEditorPage implements OnInit {
   ionViewWillEnter() {
     this.Tipo = "comp1";
   }
+
+  CrearAvatar(familia: FamiliaAvatares) {
+    this.mostrarComplementos = true;
+    this.TraeImagenesFamilia(familia);
+     // Elimino las imagenes de la familia mostrada anteriormente
+    this.EliminaImagenes();
+  }
+
+  ModificarAvatar(familia: FamiliaAvatares) {
+    this.mostrarComplementos = true;
+    this.TraeImagenesFamilia(familia);
+  }
+ 
  
   TraeImagenesFamilia(familia: FamiliaAvatares) {
     // para hacer aparecer el boton de guardar en el caso de que se haya modificado el avatar
     this.tieneAvatar = true;
-    this.modificacion = false;
+    if (this.familiaElegida.Silueta !== this.inscripcionAlumnoJuegoAvatar.Silueta) {
+      this.modificacion = false;
+    }
 
     this.familiaCargada = false;
     this.familiaElegida = familia;
+    //this.FamiliaSeleccionada = true;
     this.imagenSilueta = URL.ImagenesAvatares + this.familiaElegida.Silueta;
     this.TraerImagenesComplementos();
   }
@@ -114,8 +132,6 @@ export class AvatarEditorPage implements OnInit {
     });
 
     this.familiaCargada = true;
-    // Elimino las imagenes de la familia mostrada anteriormente
-    this.EliminaImagenes();
   }
 
 
@@ -137,109 +153,87 @@ export class AvatarEditorPage implements OnInit {
       this.imagenSilueta = URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Silueta;
 
       if (this.inscripcionAlumnoJuegoAvatar.Complemento1 !== undefined) {
-        const index = this.familiaElegida.Complemento1.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento1);
-        this.Muestra (URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento1, 1, index);
+        // const index = this.familiaElegida.Complemento1.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento1);
+        this.Muestra (this.inscripcionAlumnoJuegoAvatar.Complemento1, 1);
       }
 
       if (this.inscripcionAlumnoJuegoAvatar.Complemento2 !== undefined) {
-        const index = this.familiaElegida.Complemento2.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento2);
-        this.Muestra (URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento2, 2, index);
+        // const index = this.familiaElegida.Complemento2.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento2);
+        this.Muestra (this.inscripcionAlumnoJuegoAvatar.Complemento2, 2);
       }
 
       if (this.inscripcionAlumnoJuegoAvatar.Complemento3 !== undefined) {
-        const index = this.familiaElegida.Complemento3.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento3);
-        this.Muestra ( URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento3, 3, index);
+        // const index = this.familiaElegida.Complemento3.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento3);
+        this.Muestra ( this.inscripcionAlumnoJuegoAvatar.Complemento3, 3);
       }
 
       if (this.inscripcionAlumnoJuegoAvatar.Complemento4 !== undefined) {
-        const index = this.familiaElegida.Complemento4.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento4);
-        this.Muestra ( URL.ImagenesAvatares + this.inscripcionAlumnoJuegoAvatar.Complemento4, 4, index);
+        // const index = this.familiaElegida.Complemento4.indexOf (this.inscripcionAlumnoJuegoAvatar.Complemento4);
+        this.Muestra (this.inscripcionAlumnoJuegoAvatar.Complemento4, 4);
       }
       clearInterval(this.interval);
     }, 0);
   }
 
   EliminaImagenes() {
-    for (let i = 0; i < this.elementoPuesto.length; i++) {
-      if (this.elementoPuesto[i]) {
-        this.removeImage(this.elementoPuesto[i]);
-        this.elementoPuesto[i] = "";
-        this.hayComplementoPuesto[i] = false;
-      }
-    }
-    this.FamiliaSeleccionada = true;
-    this.scrollToBottom();
-  }
-  Pon(elem, comp, index){
-    this.modificacion = true;
-    this.Muestra(elem, comp, index);
-  }
-  Muestra(elem, comp, index) {
-    this.complementoElegido[comp - 1] = index;
-    const img = document.createElement("img");
-    img.setAttribute('src', elem);
-    img.style.position = 'absolute';
-    img.style.width = '300px'; 
-    img.style.height = '324px';
-    const comp2 = comp.toString();
-    const index2 = index.toString();
-    const id = comp2 + index2;
-    // El id lo necesito para poder poner y quitar la imagenes de los complementos
-    // a medida que el usuario los va eligiendo
-    img.setAttribute("id", comp2 + index2);
-    console.log(img);
-    if (comp === 1) {
-      img.style.zIndex = "1";
-      this.addImage(0, img, id);
-    } else if (comp === 2) {
-      img.style.zIndex = "2";
-      this.addImage(1, img, id);
-    } else if (comp === 3) {
-      img.style.zIndex = "3";
-      this.addImage(2, img, id);
-    } else if (comp === 4) {
-      img.style.zIndex = "4";
-      this.addImage(3, img, id);
-    }
-  }
-
-  addImage(comp, img, id) {
-    if (this.hayComplementoPuesto[comp] === false) {
-        const el = document.getElementById('ImagenAvatar');
-        el.appendChild(img);
-        this.hayComplementoPuesto[comp] = true;
-        this.elementoPuesto[comp] = id;
-
-      } else {
-        if (this.elementoPuesto[comp] !== img.id) {
-          this.removeImage(this.elementoPuesto[comp]);
-          const el = document.getElementById('ImagenAvatar');
-          el.appendChild(img);
-          this.hayComplementoPuesto[comp] = true;
-          this.elementoPuesto[comp] = img.id;
-        }
-    }
-  }
-
-  removeImage(id) {
-    const elementToBeRemoved = document.getElementById(id);
-    elementToBeRemoved.parentNode.removeChild(elementToBeRemoved);
-  }
-  EliminarComplementos() {
     for (let i = 0; i < this.hayComplementoPuesto.length; i++) {
-      if (this.hayComplementoPuesto [i]) {
-        const elementToBeRemoved = document.getElementById(this.elementoPuesto[i]);
+      if (this.hayComplementoPuesto[i]) {
+        // Las imagenes de los complementos tienen como identificador 'cx' siendo x el número de complemento 
+        // (1, 2, 3 o 4)
+        const elementToBeRemoved = document.getElementById('c' + (i + 1).toString());
         elementToBeRemoved.parentNode.removeChild(elementToBeRemoved);
         this.hayComplementoPuesto[i] = false;
       }
     }
+    this.inscripcionAlumnoJuegoAvatar.Complemento1 = undefined;
+    this.inscripcionAlumnoJuegoAvatar.Complemento2 = undefined;
+    this.inscripcionAlumnoJuegoAvatar.Complemento3 = undefined;
+    this.inscripcionAlumnoJuegoAvatar.Complemento4 = undefined;
+
+    this.scrollToBottom();
   }
+  Pon(complemento, ncomp) {
+    // aqui tengo que hacer lago estupido
+    // El complemento viene con la URL completa (asi los guardé en los vectores c1[], c2[] etc porque 
+    // de esos vectores se alumnentan directamente las imagenes del avatar en esta página)
+    // Tengo que separar el nombre para pasarselo a la función Muestra, en la que le volverá a añadir
+    // la URL de las imagenes de Avatares
+    this.modificacion = true;
+    const trozos = complemento.split ('/');
+    complemento = trozos[ trozos.length - 1];
+    this.Muestra(complemento, ncomp);
+  }
+  Muestra(complemento, ncomp) {
+
+    const img = document.createElement("img");
+    img.setAttribute('src', URL.ImagenesAvatares + complemento);
+    img.style.position = 'absolute';
+    img.style.width = '300px'; 
+    img.style.height = '324px';
+    // Le añado un id para poder quitar la imagen cuando sea necesario
+    // el id es cx, siendo x el número de complemento
+    img.setAttribute('id', 'c' + ncomp.toString());
+  
+    img.style.zIndex = ncomp.toString();
+
+    if (this.hayComplementoPuesto[ncomp - 1]) {
+      // si hay un complemento puesto primero lo quito
+      const elementToBeRemoved = document.getElementById('c' + ncomp.toString());
+      console.log (elementToBeRemoved);
+      elementToBeRemoved.parentNode.removeChild(elementToBeRemoved);
+    }
+    const el = document.getElementById('ImagenAvatar');
+    el.appendChild(img);
+    this.hayComplementoPuesto[ncomp - 1] = true;
+    this.complementoPuesto[ncomp - 1] = complemento;
+  }
+ 
   scrollToBottom() {
     this.content.scrollToBottom(300);
   }
 
   async Guardar() {
-
+   
     const confirm = await this.alertCtrl.create({
       header: '¿Seguro que quieres modificar tu avatar?',
       buttons: [
@@ -249,24 +243,16 @@ export class AvatarEditorPage implements OnInit {
             // actualizo los datos de la inscripción
             this.inscripcionAlumnoJuegoAvatar.Silueta =  this.familiaElegida.Silueta;
             if (this.hayComplementoPuesto[0]) {
-              this.inscripcionAlumnoJuegoAvatar.Complemento1 = this.familiaElegida.Complemento1[this.complementoElegido[0]];
-            } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento1 = undefined;
+              this.inscripcionAlumnoJuegoAvatar.Complemento1 =  this.complementoPuesto[0];
             }
             if (this.hayComplementoPuesto[1]) {
-              this.inscripcionAlumnoJuegoAvatar.Complemento2 = this.familiaElegida.Complemento2[this.complementoElegido[1]];
-            } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento2 = undefined;
+              this.inscripcionAlumnoJuegoAvatar.Complemento2 = this.complementoPuesto[1];
             }
             if (this.hayComplementoPuesto[2]) {
-              this.inscripcionAlumnoJuegoAvatar.Complemento3 = this.familiaElegida.Complemento3[this.complementoElegido[2]];
-            } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento3 = undefined;
+              this.inscripcionAlumnoJuegoAvatar.Complemento3 =  this.complementoPuesto[2];
             }
             if (this.hayComplementoPuesto[3]) {
-              this.inscripcionAlumnoJuegoAvatar.Complemento4 = this.familiaElegida.Complemento4[this.complementoElegido[3]];
-            } else {
-              this.inscripcionAlumnoJuegoAvatar.Complemento4 = undefined;
+              this.inscripcionAlumnoJuegoAvatar.Complemento4 =  this.complementoPuesto[3];
             }
             // Notifico al server que se ha modificado un avatar
             this.comServer.Emitir('modificacionAvatar', { inscripcion: this.inscripcionAlumnoJuegoAvatar});
@@ -316,7 +302,8 @@ export class AvatarEditorPage implements OnInit {
 
   PreparaEjemplo(familia: FamiliaAvatares, i: number) {
     // El ejemplo se construye con la primera opción de cada complemento
-    this.modificacion = false;
+    // this.modificacion = false;
+    this.familiaElegida = familia;
     this.imagenPequenaSilueta = URL.ImagenesAvatares + familia.Silueta;
     // La imagen de ejemplo de cada familia de avatar tiene un id que es simplemente el 
     // indice de la familia.
@@ -334,6 +321,7 @@ export class AvatarEditorPage implements OnInit {
 
     const imagen4 = this.CreaImagen (4, URL.ImagenesAvatares +  familia.Complemento4[0]);
     imagenAvatar.appendChild(imagen4);
+   // this.TraeImagenesFamilia (familia);
   }
 
 CreaImagen(numeroComplemento: number, imagenString: string): any {

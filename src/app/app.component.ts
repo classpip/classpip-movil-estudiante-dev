@@ -62,11 +62,11 @@ export class AppComponent {
     this.route.navigateByUrl('tabs/mis-grupos');
   }
 
-  GoMisJuegos() {
+  GoMisJuegosActivos() {
     this.route.navigateByUrl('tabs/inici');
   }
   
-/*   GoJuegosInactivos() {
-    this.route.navigateByUrl('juegos-inactivos');
-  } */
+  GoMisJuegosInactivos() {
+    this.route.navigateByUrl('tabs/mis-juegos-inactivos');
+  } 
 }

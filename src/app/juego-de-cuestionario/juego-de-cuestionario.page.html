@@ -6,12 +6,12 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title *ngIf = "juegoSeleccionado.JuegoActivo">{{juegoSeleccionado.NombreJuego}}</ion-title>
-    <ion-title *ngIf = "!juegoSeleccionado.JuegoActivo">Notas {{juegoSeleccionado.NombreJuego}}</ion-title>
+    <ion-title *ngIf = "juegoSeleccionado && juegoSeleccionado.JuegoActivo">{{juegoSeleccionado.NombreJuego}}</ion-title>
+    <ion-title *ngIf = "juegoSeleccionado && !juegoSeleccionado.JuegoActivo">Notas {{juegoSeleccionado.NombreJuego}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf = "juegoSeleccionado.JuegoActivo">
+<ion-content *ngIf = "juegoSeleccionado && juegoSeleccionado.Tipo === 'Juego De Cuestionario' && juegoSeleccionado.JuegoActivo">
   <div>
     
     <ion-list *ngIf ="contar" style="text-align:right">
@@ -64,7 +64,9 @@
         </div>
         <div class="btnCambiarStep">
           <button class = "ion-float-left anterior" mat-raised-button  matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
-          <button (click) = "ponerNota()" class = "ion-float-right button-empezar" mat-raised-button matStepperNext> Finalizar</button>
+          <button *ngIf = "!cuestionarioRapido" (click) = "ponerNota()" class = "ion-float-right button-empezar" mat-raised-button matStepperNext> Finalizar</button>
+           <button  *ngIf = "cuestionarioRapido" class="especial" style="margin-top:200px;" (click) = "EnviarRespuesta()">Enviar respuesta</button>
+       
         </div>
       </mat-step>
 
@@ -93,7 +95,7 @@
     </mat-horizontal-stepper>
 </ion-content>
 
-<ion-content *ngIf = "!juegoSeleccionado.JuegoActivo" class="juegoseleccionado-content"  [scrollEvents]="true">
+<ion-content *ngIf = "juegoSeleccionado && juegoSeleccionado.Tipo === 'Juego De Cuestionario' && !juegoSeleccionado.JuegoActivo" class="juegoseleccionado-content"  [scrollEvents]="true">
   <div class="ranking">
     <ion-card *ngFor="let alum of MisAlumnosDelJuegoDeCuestionario">
       <ion-item lines="none">
@@ -107,4 +109,90 @@
       </ion-item>
     </ion-card>
   </div>
+
+
+
+</ion-content>
+
+<ion-content *ngIf = "juegoSeleccionado && juegoSeleccionado.Tipo === 'Juego De Cuestionario Rápido'">
+  <div>
+    
+    <ion-list *ngIf ="contar" style="text-align:right">
+      <ion-label   style = "text-align: right; color: red; font-size: xx-large;">{{tiempoRestante}}</ion-label>    
+    </ion-list>
+
+    <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="NotaInicial === '0'">
+
+      <!-- PRIMER PASO -->
+      <mat-step>
+        <p style="margin-top: 250px; text-align: justify;">¿Estas seguro de que deseas empezar el cuestionario? Si es que sí, presiona en "Empezar"</p>
+        <div style="margin-top: auto;">
+          <!-- En el caso de que no funcione en el movil, añadimos: ion-float-right y ion-float-right donde toque -->
+          <button (click) = "empezamos()" class = "ion-float-right button-empezar" matStepperNext>Empezar</button>
+        </div>
+
+      </mat-step>
+
+      <!-- SEGUNDO PASO -->
+      <mat-step>
+        <div style="margin-top: 195px;">
+          <p><b>Descripción: </b>{{descripcion}}</p>
+          <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
+          <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
+          <p *ngIf = "tiempoLimite !== 0"><b>Tiempo límite: </b>{{tiempoLimite}} segundos</p>
+          <p *ngIf = "tiempoLimite === 0"><b>Sin límite de tiempo </b></p>
+          <button class = "ion-float-right siguiente" (click) = "IniciarTimer()" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+        </div>
+      </mat-step>
+
+      <!-- RESPONDEMOS A PREGUNTAS -->
+      <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
+        <p style="font-size: 18px;">{{pregunta.Pregunta}}</p>
+        <div>
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
+              <mat-radio-button class="radio-button" *ngFor="let respuesta of respuestasPosibles" [value]="respuesta">
+                <p style="color: black;">{{respuesta}}</p>
+              </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <button *ngIf = "i !== 0" class = "ion-float-left anterior" (click) = "cambioRespuestasAnterior(i)" mat-button matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+        <button ion-button class = "ion-float-right siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+      </mat-step>
+
+      <!-- FINALIZACION DEL CUESTIONARIO -->
+      <mat-step>
+        <div style="margin-top: 235px;">
+          <p>Cuestionario realizado correctamente.</p>
+          <p> Haga click en "Finalizar" para guardar los cambios.</p>
+        </div>
+        <div class="btnCambiarStep">
+          <button class = "ion-float-left anterior" mat-raised-button  matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+          <button *ngIf = "!cuestionarioRapido" (click) = "ponerNota()" class = "ion-float-right button-empezar" mat-raised-button matStepperNext> Finalizar</button>
+           <button *ngIf = "cuestionarioRapido" (click) = "EnviarRespuesta()" class = "ion-float-right button-empezar" mat-raised-button matStepperNext> Enviar respuesta</button>
+        </div>
+      </mat-step>
+
+      <!-- VEMOS LA NOTA OBTENIDA DEL CUESTIONARIO -->
+      <mat-step >
+        <p style="font-size: 25px;">NOTA: <b>{{Nota}}</b></p>
+        <p style="margin-top: -30px;">(Nota sobre {{puntuacionMaxima}})</p>
+        <div>
+          <p>Feedback de las respuestas:</p>
+        </div>
+        <div *ngFor="let feedback of feedbacks, let i = index">
+          <p><b>{{i+1}}. </b>{{feedback}}</p>
+        </div>
+        <button (click) = "Cerrar()" class = "ion-float-right button-empezar">Cerrar</button>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>
+
+    <mat-horizontal-stepper #stepper style="width:100%;" *ngIf="NotaInicial !== '0'">
+      <mat-step>
+        <div style="margin-top: 250px; text-align: justify;">
+          <p style="font-size: 18px;">Ya has realizado este examen previamente. Y la puntuacion obtenida es de: <b>{{NotaInicial}}</b></p>
+        </div>
+      </mat-step>
+       
+    </mat-horizontal-stepper>
 </ion-content>

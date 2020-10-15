@@ -16,7 +16,7 @@ import { LongPressModule } from 'ionic-long-press';
 
 
 import * as URL from '../URLs/urls';
-import { AnonymousSubject } from 'rxjs/internal/Subject';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-juego-colleccion',
@@ -47,6 +47,15 @@ export class JuegoColleccionPage implements OnInit {
   elem: any;
   pos: number;
   preparado: boolean = false;
+
+  disablePrevBtn = true;
+  disableNextBtn = false;
+
+
+
+
+  @ViewChild(IonSlides, { static: false }) slides: IonSlides;
+
 
 
   constructor(
@@ -321,6 +330,27 @@ export class JuegoColleccionPage implements OnInit {
     console.log ('IMAGENES cromos que NO tengo');
     console.log (this.cromosQueNoTengoImagenDelante);
 
+  }
+
+
+  doCheck() {
+    // Para decidir si hay que mostrar los botones de previo o siguiente slide
+    const prom1 = this.slides.isBeginning();
+    const prom2 = this.slides.isEnd();
+  
+    Promise.all([prom1, prom2]).then((data) => {
+      data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
+      data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
+    });
+  }
+
+  
+  next() {
+    this.slides.slideNext();
+  }
+
+  prev() {
+    this.slides.slidePrev();
   }
 }
 

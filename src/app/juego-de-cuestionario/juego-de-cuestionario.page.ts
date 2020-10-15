@@ -56,6 +56,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   // Datos juego de cuestionario finalizado
   MisAlumnosDelJuegoDeCuestionario: MiAlumnoAMostrarJuegoDeCuestionario[];
   reorden: AlumnoJuegoDeCuestionario[];
+  nickName: string;
+  cuestionarioRapido = false;
 
   // @ViewChild('stepper') stepper: MatStepper;
 
@@ -73,17 +75,29 @@ export class JuegoDeCuestionarioPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.alumnoId = this.sesion.DameAlumno().id;
+
     this.juegoSeleccionado = this.sesion.DameJuego();
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
     this.tiempoLimite = this.juegoSeleccionado.TiempoLimite;
-    // Obtenemos la inscripcion del alumno al juego de cuestionario
-    this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
-    .subscribe (res => {
-      this.alumnoJuegoDeCuestionario = res;
-      this.NotaInicial = res[0].Nota.toString();
-    });
+    if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
+      // Obtenemos la inscripcion del alumno al juego de cuestionario
+      this.alumnoId = this.sesion.DameAlumno().id;
+      this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
+      .subscribe (res => {
+        this.alumnoJuegoDeCuestionario = res;
+        this.NotaInicial = res[0].Nota.toString();
+      });
+      if (this.juegoSeleccionado.JuegoTerminado) {
+        this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameListaAlumnosJuegoCuestionarioOrdenada(this.juegoSeleccionado.id);
+      }
+    } else {
+        // es un juego de cuestionario rápido
+        this.alumnoJuegoDeCuestionario = new AlumnoJuegoDeCuestionario();
+        this.NotaInicial = '0';
+        this.nickName = this.sesion.DameNickName();
+        this.cuestionarioRapido = true;
+    }
     // Obtenemos el cuestionario a realizar
     this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
     .subscribe(res => {
@@ -121,9 +135,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
         }
       }
     });
-    if (this.juegoSeleccionado.JuegoTerminado) {
-      this.MisAlumnosDelJuegoDeCuestionario = this.calculos.DameListaAlumnosJuegoCuestionarioOrdenada(this.juegoSeleccionado.id);
-    }
+   
   }
 
   // Esta funcion coge el array en el cual se asigna la posicion de las respuestas correctas y lo
@@ -147,6 +159,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   // Funcion para establecer las respuestas posibles de la siguiente pregunta que aparezca en el cuestinario
   cambioRespuestasSiguiente(i: number) {
+    console.log ('respuesta ' + i + ': ' + this.RespuestaEscogida);
     this.RespuestasAlumno.splice(i, 1, this.RespuestaEscogida);
     if (this.RespuestasAlumno[i + 1] !== undefined) {
       this.RespuestaEscogida = this.RespuestasAlumno[i + 1];
@@ -261,7 +274,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
         console.log(res);
       });
 
-    console.log ('vamos aregistrar las respuestas');
+    console.log ('vamos a registrar las respuestas');
     // Aqui guardamos las respuestas del alumno
     let cont = 0;
     for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
@@ -343,24 +356,114 @@ export class JuegoDeCuestionarioPage implements OnInit {
         
               const confirm = await this.alertCtrl.create({
                 header: 'Se te acabó el tiempo',
-                message: 'Registramos tus respuestas',
+                message: 'Vamos a enviar tus respuestas',
                 buttons: [
                     {
                     text: 'OK',
                     role: 'cancel',
                     handler: () => {
+                      if (this.juegoSeleccionado.Tipo === 'Juego de Cuestionario') {
+                        this.ponerNota();
+                      } else {
+                        this.EnviarRespuesta();
+                      }
+                      this.stepper.selectedIndex = this.PreguntasCuestionario.length + 3;
                     }
                   }
                 ]
               });
               await confirm.present();
-              this.ponerNota();
-              this.stepper.selectedIndex = this.PreguntasCuestionario.length + 3;
-
 
             }
 
       }, 1000);
     }
+  }
+
+
+  async EnviarRespuesta() {
+    /* Preparamos un mensaje con la siguiente informacion:
+        Nota
+        Tiempo empleado
+        Id de las preguntas del cuestionario
+        Respuestas
+    */
+
+   
+
+    // paramos el timer si está activo
+    if (this.contar) {
+      clearInterval(this.timer);
+      this.contar = false;
+    }
+    this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
+    console.log ('Respuestas');
+    console.log (this.RespuestasAlumno);
+
+    // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
+    // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
+    for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+      if (this.RespuestasAlumno[i] === this.PreguntasCuestionario[i].RespuestaCorrecta) {
+        this.Nota = this.Nota + this.puntuacionCorrecta;
+        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+      } else if (this.RespuestasAlumno[i] === undefined) {
+        this.feedbacks.push(' ');
+      } else {
+        this.Nota = this.Nota - this.puntuacionIncorrecta;
+        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+
+      }
+    }
+    if (this.Nota <= 0) {
+      this.Nota = 0.1;
+    }
+    const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
+
+    console.log ('vamos a registrar las respuestas');
+    // Aqui guardamos las respuestas del alumno
+    for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+      console.log ('respuesta a la pregunta ' + i);
+      console.log (this.RespuestasAlumno[i]);
+      if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
+        this.RespuestasAlumno[i] = '-';
+      }
+    }
+
+    const preguntas: number[] = [];
+    this.PreguntasCuestionario.forEach (pregunta => preguntas.push (pregunta.id));
+    let respuesta: any = [];
+    respuesta = {
+      Nota: this.Nota,
+      Tiempo: tiempoEmpleado,
+      Preguntas: preguntas,
+      Respuestas: this.RespuestasAlumno
+    };
+  
+    console.log ('voy a enviar respuesta');
+    console.log (respuesta);
+    this.comServer.Emitir ('respuestaCuestionarioRapido',
+      { nick: this.nickName,
+        respuestas: respuesta
+      }
+    );
+    const confirm = await this.alertCtrl.create({
+      header: 'Respuestas enviadas con éxito',
+      message: 'Gracias por contestar el cuestionario',
+      buttons: [
+          {
+          text: 'OK',
+          role: 'cancel',
+          handler: () => {
+          }
+        }
+      ]
+    });
+    await confirm.present();
+   
+  }
+
+  Cerrar() {
+    this.comServer.DesconectarJuegoRapido();
+    this.route.navigateByUrl('/home');
   }
 }

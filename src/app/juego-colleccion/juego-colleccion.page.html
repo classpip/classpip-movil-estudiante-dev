@@ -16,8 +16,14 @@
      
   
     <div  *ngIf = "coleccion.DosCaras"  >
+      <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 6px;font-size: 25px;z-index: 2;" (click)="prev()">
+        <i class="material-icons">skip_previous</i>
+      </div>
+      <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 6px;font-size: 25px;z-index: 2;" (click)="next()">
+        <i class="material-icons">skip_next</i>
+      </div>
       
-      <ion-slides>
+      <ion-slides  #slides (ionSlideWillChange)="doCheck()">
         <!-- Prinero muestro los cromos que tiene el alumno -->
         <!-- Si hace click es que quiere regalar el cromo -->
         <!-- <ion-slide (click) = "RegalarCromo(elem, i)" *ngFor="let elem of cromosSinRepetidos;let i = index"> -->
@@ -53,8 +59,14 @@
     </div>
 
     <div  *ngIf = "!coleccion.DosCaras"  >
+      <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 16px;font-size: 25px;z-index: 2;" (click)="prev()">
+        <i class="material-icons">skip_previous</i>
+      </div>
+      <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 16px;font-size: 25px;z-index: 2;" (click)="next()">
+        <i class="material-icons">skip_next</i>
+      </div>
     
-      <ion-slides>
+      <ion-slides  #slides (ionSlideWillChange)="doCheck()">
         <!-- Prinero muestro los cromos que tiene el alumno -->
         <ion-slide *ngFor="let elem of cromosSinRepetidos;let i = index">
           <img [src]="cromosQueTengoImagenDelante[i]" style = "width:468px; height:675px; padding-right: 20px;">
