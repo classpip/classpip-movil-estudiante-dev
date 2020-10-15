@@ -27,8 +27,8 @@
           </ion-col>
           <ion-col>
           <ion-col > 
-              <ion-button disabled= "false" *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta !== familiaElegida.Silueta" (click)="CrearAvatar(familia);"> CREAR </ion-button>
-              <ion-button disabled= "false" *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta === familiaElegida.Silueta" (click)="ModificarAvatar(familia);"> MODIFICAR </ion-button>
+              <ion-button disabled= "false" *ngIf= "familiaElegida && inscripcionAlumnoJuegoAvatar.Silueta !== familiaElegida.Silueta" (click)="CrearAvatar(familia);"> CREAR </ion-button>
+              <ion-button disabled= "false" *ngIf= "familiaElegida && inscripcionAlumnoJuegoAvatar.Silueta === familiaElegida.Silueta" (click)="ModificarAvatar(familia);"> MODIFICAR </ion-button>
           </ion-col>
           </ion-col>
         </ion-row>
