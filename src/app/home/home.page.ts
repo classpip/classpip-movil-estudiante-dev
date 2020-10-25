@@ -528,18 +528,35 @@ obtenerPosicion(): any{
                       this.comServer.EnviarNick (this.nickname);
                     
                       this.navCtrl.navigateForward('/juego-de-cuestionario');
-                    } else {
-                      const alert = await this.alertController.create({
-                        header: 'Error',
-                        // subHeader: 'Subtitle',
-                        message: 'No existe ningun juego rápido con esa clave',
-                        buttons: ['OK']
-                      });
-                      await alert.present();
-                      this.juegoRapido = false;
-                      this.clave = undefined;
-                      this.nickname = undefined;
-                    }
+                      } else {
+                        this.peticionesAPI.DameJuegoDeCogerTurnoRapido (this.clave)
+                        // tslint:disable-next-line:no-shadowed-variable
+                        .subscribe (async (juego) => {
+                          if (juego[0] !== undefined) {
+                            console.log ('Ya tengo el juego');
+                            console.log (juego[0]);
+                            this.sesion.TomaJuego(juego[0]);
+                            this.sesion.TomaNickName (this.nickname);
+                            // hay que enviar la clave también para poder recibir notificaciones
+                            this.comServer.EnviarNickYClave (this.nickname, this.clave);
+                            this.clave = undefined;
+                            this.nickname = undefined;
+                          
+                            this.navCtrl.navigateForward('/juego-coger-turno-rapido');
+                          } else {
+                              const alert = await this.alertController.create({
+                                header: 'Error',
+                                // subHeader: 'Subtitle',
+                                message: 'No existe ningun juego rápido con esa clave',
+                                buttons: ['OK']
+                              });
+                              await alert.present();
+                              this.juegoRapido = false;
+                              this.clave = undefined;
+                              this.nickname = undefined;
+                          }
+                        });
+                      }
                   });
                 }
             });

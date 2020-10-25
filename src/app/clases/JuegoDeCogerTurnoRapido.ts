@@ -1,21 +1,22 @@
-export class JuegoDeEncuestaRapida {
+export class JuegoDeCogerTurnoRapido {
 
     NombreJuego: string;
     Tipo: string;
+    Presentacion: string;
     Clave: string;
-    Respuestas: any;
     id: number;
     profesorId: number;
-    cuestionarioSatisfaccionId: number;
+    Turnos: any[];
+
 
     // tslint:disable-next-line:max-line-length
     constructor(NombreJuego?: string, Tipo?: string, Clave?: string,
-                profesorId?: number, cuestionarioSatisfaccionId?: number) {
+                profesorId?: number,  Presentacion?: string, Turnos?: any[]) {
         this.NombreJuego = NombreJuego;
         this.Tipo = Tipo;
         this.profesorId = profesorId;
         this.Clave = Clave;
-        this.cuestionarioSatisfaccionId = cuestionarioSatisfaccionId;
-        this.Respuestas = [];
+        this.Presentacion = Presentacion;
+        this.Turnos = Turnos;
     }
 }

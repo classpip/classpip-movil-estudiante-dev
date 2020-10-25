@@ -23,7 +23,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   alumnoId: number;
   alumnoJuegoDeCuestionario: AlumnoJuegoDeCuestionario;
-  juegoSeleccionado: Juego;
+  juegoSeleccionado: any;
   cuestionario: Cuestionario;
   PreguntasCuestionario: Pregunta[];
   descripcion = '';
@@ -446,6 +446,21 @@ export class JuegoDeCuestionarioPage implements OnInit {
         respuestas: respuesta
       }
     );
+     // Ahora añado la respuesta a los datos del juego para guardarlo en la base de datos
+    // Asi las respuestas no se perderán si el dashboard no está conectado al juego
+    // Pero primero me traigo de nuevo el juego por si ha habido respuestas despues de que
+    // me lo traje
+    this.peticionesAPI.DameJuegoDeCuestionarioRapido (this.juegoSeleccionado.Clave)
+    .subscribe ( juego => {
+      juego[0].Respuestas.push (
+        { nick: this.nickName,
+          respuestas: respuesta
+      });
+      console.log ('ya he preparado las respuestas');
+      console.log (juego[0]);
+      this.peticionesAPI.ModificarJuegoDeCuestionarioRapido (juego[0]).subscribe();
+    });
+
     const confirm = await this.alertCtrl.create({
       header: 'Respuestas enviadas con éxito',
       message: 'Gracias por contestar el cuestionario',
@@ -459,7 +474,6 @@ export class JuegoDeCuestionarioPage implements OnInit {
       ]
     });
     await confirm.present();
-   
   }
 
   Cerrar() {

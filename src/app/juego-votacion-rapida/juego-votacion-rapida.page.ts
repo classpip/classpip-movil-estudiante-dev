@@ -69,8 +69,20 @@ export class JuegoVotacionRapidaPage implements OnInit {
     ]
   });
   await confirm.present();
-  this.comServer.DesconectarJuegoRapido();
-  this.route.navigateByUrl('/home');
+  // Ahora voy a guardar la votación en el juego para que no se pierde si el dash no
+  // está ahora esperando votaciones.
+  // Pero primero tengo que traer de nuevo el juego por si ha habido otras votaciones 
+  // desde que lo traje al inicio
+  this.peticionesAPI.DameJuegoDeVotacionRapida (this.juegoSeleccionado.Clave)
+  .subscribe (juego => {
+    juego[0].Respuestas.push (
+      { nick: this.nickName,
+      votos: misVotos
+    });
+    this.peticionesAPI.ModificarJuegoVotacionRapida (juego[0]).subscribe();
+    this.comServer.DesconectarJuegoRapido();
+    this.route.navigateByUrl('/home');
+  });
 }
 
 
