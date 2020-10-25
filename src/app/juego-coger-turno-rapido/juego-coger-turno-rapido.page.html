@@ -9,10 +9,21 @@
 
 
 <ion-content>
-  <ion-list *ngIf = "juegoSelecciado">
-    <ion-item (click) = "EnviarTurnoElegido (turno)" *ngFor = "let turno of juegoSeleccionado.Turnos">
-      <ion-label>turno.dia</ion-label>
-      <ion-label>turno.hora</ion-label>
+  <br>
+  <ion-list style="text-align:justify; padding: 10%;">
+    <ion-label>{{juegoSeleccionado.Presentacion}}</ion-label>
+  </ion-list>
+  <br>
+  
+  <ion-list style="text-align:center">
+    <ion-label> <strong>Turnos disponibles</strong></ion-label>
+  </ion-list>
+
+
+  <ion-list  *ngIf = "listaOpciones">
+    <ion-item style = "width: 80%; padding-left: 20%;" (click) = "EnviarTurnoElegido (turno)" *ngFor = "let turno of listaOpciones">
+      <ion-label *ngIf = "!turno.persona">{{turno.dia | date: 'dd-MM-yyyy'}}</ion-label>
+      <ion-label *ngIf = "!turno.persona">{{turno.hora}}</ion-label>
     </ion-item>
   </ion-list>
 

@@ -113,6 +113,8 @@ export class PeticionesAPIService {
   private APIUrlJuegoDeVotacionRapida = this.base + '3000/api/juegosDeVotacionRapida';
   private APIUrlJuegoDeCuestionarioRapido = this.base + '3000/api/juegosDeCuestionarioRapido';
 
+  private APIUrlJuegoDeCogerTurnoRapido = this.base + '3000/api/juegosDeCogerTurnoRapido';
+
   constructor(
     private http: HttpClient,
     private httpImagenes: Http
@@ -1011,15 +1013,37 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     + '?filter[where][Clave]=' + clave);
   }
 
+  
+  public ModificarJuegoDeEncuestaRapida( juego: JuegoDeEncuestaRapida): Observable<JuegoDeEncuestaRapida> {
+    // tslint:disable-next-line:max-line-length
+      return this.http.put<JuegoDeEncuestaRapida>(this.APIUrlJuegoDeEncuestaRapida, juego);
+    }
+
   public DameJuegoDeVotacionRapida(clave: string): Observable<any[]> {
     return this.http.get<any[]>(this.APIUrlJuegoDeVotacionRapida
     + '?filter[where][Clave]=' + clave);
   }
+  public ModificarJuegoVotacionRapida( juego: any): Observable<any> {
+    // tslint:disable-next-line:max-line-length
+      return this.http.put<any>(this.APIUrlJuegoDeVotacionRapida, juego);
+  }
+
 
   public DameJuegoDeCuestionarioRapido(clave: string): Observable<any[]> {
     return this.http.get<any[]>(this.APIUrlJuegoDeCuestionarioRapido
     + '?filter[where][Clave]=' + clave);
   }
+  public ModificarJuegoDeCuestionarioRapido( juego: any): Observable<any> {
+    // tslint:disable-next-line:max-line-length
+      return this.http.put<any>(this.APIUrlJuegoDeCuestionarioRapido, juego);
+  }
+
+
+  public DameJuegoDeCogerTurnoRapido(clave: string): Observable<any[]> {
+    return this.http.get<any[]>(this.APIUrlJuegoDeCogerTurnoRapido
+    + '?filter[where][Clave]=' + clave);
+  }
+
 
  
 }

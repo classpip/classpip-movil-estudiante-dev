@@ -1,0 +1,35 @@
+// ion-list-header{
+//     display:block;
+//     text-align: center;
+// }
+// ion-list{
+//     display:block;
+//     text-align: center;
+//     width: 60% 
+// }
+
+.centrar{
+    justify-content: center;
+    display: block!important;
+    align-items: center!important;
+  }
+
+  .user_Name {
+    display: flex;
+    justify-content: center;
+    width: 200px;
+  }
+// .vertical-center {
+//     .fixed-content,
+//     .scroll-content {
+//         display: flex;
+//         align-items: center;
+
+//         ion-list {
+//             max-width: 300px; 
+//             width:100%; 
+//             margin: auto; 
+//             text-align: center;
+//         }
+//     }
+// }

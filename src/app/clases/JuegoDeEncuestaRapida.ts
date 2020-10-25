@@ -3,6 +3,7 @@ export class JuegoDeEncuestaRapida {
     NombreJuego: string;
     Tipo: string;
     Clave: string;
+    Respuestas: any;
     id: number;
     profesorId: number;
     cuestionarioSatisfaccionId: number;
@@ -15,5 +16,6 @@ export class JuegoDeEncuestaRapida {
         this.profesorId = profesorId;
         this.Clave = Clave;
         this.cuestionarioSatisfaccionId = cuestionarioSatisfaccionId;
+        this.Respuestas = [];
     }
 }

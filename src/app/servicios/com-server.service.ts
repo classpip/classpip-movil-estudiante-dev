@@ -29,7 +29,24 @@ export class ComServerService {
     console.log (this.servidor);
     this.servidor.emit('nickNameJuegoRapido', nick);
   }
+
+  EnviarNickYClave(nick: string, clave: string) {
+    this.servidor.connect();
+    console.log ('envio nick: ' + nick);
+    console.log (this.servidor);
+    this.servidor.emit('nickName+claveJuegoRapido', {
+      n: nick,
+      c: clave
+    });
+  }
+
+
   DesconectarJuegoRapido() {
+    this.servidor.disconnect();
+  }
+
+  DesconectarJuegoCogerTurnoRapido(clave: string) {
+    this.servidor.emit('desconectarJuegoCogerTurno', clave);
     this.servidor.disconnect();
   }
 
@@ -39,6 +56,24 @@ export class ComServerService {
         this.servidor.on('notificacion', (mensaje) => {
             console.log ('llega notificacion: ' + mensaje);
             observer.next(mensaje);
+        });
+    });
+  }
+
+  public EsperoTurnosCogidos(): any  {
+    return Observable.create((observer) => {
+        this.servidor.on('turnoCogido', (turno) => {
+            console.log ('han cogido un turno');
+            console.log (turno);
+            observer.next(turno);
+        });
+    });
+  }
+
+  public EsperoTurnosNuevos(): any  {
+    return Observable.create((observer) => {
+        this.servidor.on('turnoNuevo', (turno) => {
+            observer.next(turno);
         });
     });
   }

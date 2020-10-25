@@ -46,6 +46,10 @@ import { LongPressModule } from 'ionic-long-press';
 import { IonicGestureConfig } from '../ionicGestureConfig';
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 
+import { DateAdapter } from '@angular/material';
+import { CustomDateAdapter } from './CustomDataAdapter';
+import {DatePipe} from '@angular/common';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -79,9 +83,11 @@ import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
     Geolocation,
     WheelSelector,
     LocalNotifications,
+    DatePipe,
     Media,
     { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig},
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: DateAdapter, useClass: CustomDateAdapter}
   ],
   bootstrap: [AppComponent]
 })

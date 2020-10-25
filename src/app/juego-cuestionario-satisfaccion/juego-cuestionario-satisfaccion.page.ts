@@ -37,7 +37,10 @@ export class JuegoCuestionarioSatisfaccionPage implements OnInit {
 
   disablePrevBtn = true;
   disableNextBtn = false;
-
+  valores: number[] = [];
+  valor: number;
+  mostrarRange = false;
+  indiceAnterior = 0;
 
 
   @ViewChild(MatStepper, { static: false }) stepper: MatStepper;
@@ -92,12 +95,75 @@ export class JuegoCuestionarioSatisfaccionPage implements OnInit {
     }
   }
 
-  next() {
+  Avanzar (indice: number) {
+    console.log ('Avanzo desde el slide: ' + indice);
+    // si abandono uno de los slides correspondientes a la entrada de respuesta a afirmaciones
+    // guardo el valor introducido
+    if ((indice >= 1) && (indice <= this.cuestionarioSatisfaccion.Afirmaciones.length)) {
+      this.valores[indice - 1] = this.valor;
+      this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.RespuestasAfirmaciones[indice - 1] = this.valor;
+    }
+    // si voy a entrar en uno de los slides correspondientes a la entrada de respuesta a afirmaciones
+    // muestro el valor que tiene en ese momento la respuesta a esa afirmación
+    if ((indice >= 0) && (indice < this.cuestionarioSatisfaccion.Afirmaciones.length)) {
+      console.log (' voy a mostrar: ' + this.valores[indice] );
+      this.valor = this.valores[indice];
+      this.mostrarRange = true;
+    } else {
+      this.mostrarRange = false;
+    }
+    console.log ( this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.RespuestasAfirmaciones);
+
+  }
+
+  Retroceder(indice: number ) {
+    console.log ('Retrocedo desde el slide: ' + indice);
+    // si abandono uno de los slides correspondientes a la entrada de respuesta a afirmaciones
+    // guardo el valor introducido
+    if ((indice >= 1) && (indice <= this.cuestionarioSatisfaccion.Afirmaciones.length)) {
+      this.valores[indice - 1] = this.valor;
+      this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.RespuestasAfirmaciones[indice - 1] = this.valor;
+
+    }
+     // si voy a entrar en uno de los slides correspondientes a la entrada de respuesta a afirmaciones
+    // muestro el valor que tiene en ese momento la respuesta a esa afirmación
+   
+    if ((indice >= 2) && (indice <= this.cuestionarioSatisfaccion.Afirmaciones.length + 1)) {
+      console.log (' voy a mostrar: ' + this.valores[indice - 2] );
+      this.valor = this.valores[indice - 2];
+      this.mostrarRange = true;
+    } else {
+      this.mostrarRange = false;
+    }
+    console.log ( this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.RespuestasAfirmaciones);
+  
+  }
+  
+  async next() {
+    // const indice = await this.slides.getActiveIndex();
+    // this.Avanzar (indice);
     this.slides.slideNext();
   }
 
-  prev() {
+  async prev() {
+    // const indice = await this.slides.getActiveIndex();
+    // this.Retroceder (indice);
     this.slides.slidePrev();
+  }
+
+  async getIndex() {
+    // Si nos movemos desplazando los slides hay que hacer lo mismo que si nos movemos
+    // oon los botones de ir alante o ir atras. Por eso tenemos que ver si estamos avanzando o
+    // retrocediendo
+
+    const indice = await this.slides.getActiveIndex();
+    console.log ('Llego al slide ' + indice);
+    if (indice > this.indiceAnterior) {
+      this.Avanzar (this.indiceAnterior);
+    } else {
+      this.Retroceder (this.indiceAnterior);
+    }
+    this.indiceAnterior = indice;
   }
 
   async EnviarRespuesta() {
@@ -108,6 +174,20 @@ export class JuegoCuestionarioSatisfaccionPage implements OnInit {
         respuestas: this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion
       }
     );
+    // Ahora añado la respuesta a los datos del juego para guardarlo en la base de datos
+    // Asi las respuestas no se perderán si el dashboard no está conectado al juego
+    // Pero primero me traigo de nuevo el juego por si ha habido respuestas despues de que
+    // me lo traje
+    this.peticionesAPI.DameJuegoDeEncuestaRapida (this.juegoSeleccionado.Clave)
+    .subscribe ( juego => {
+      console.log ('recupero juego');
+      console.log (juego[0]);
+      juego[0].Respuestas.push (this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion);
+      console.log ('voy a modificar el juego ');
+      console.log (juego[0]);
+      this.peticionesAPI.ModificarJuegoDeEncuestaRapida (juego[0]).subscribe();
+    });
+  
     const confirm = await this.alertCtrl.create({
       header: 'Respuestas enviadas con éxito',
       message: 'Gracias por contestar la encuesta',
@@ -208,12 +288,6 @@ export class JuegoCuestionarioSatisfaccionPage implements OnInit {
   }
 
  
-  async getIndex() {
-    const indice = await this.slides.getActiveIndex() - 1;
-    if ((indice >= 0) && (indice < this.cuestionarioSatisfaccion.Afirmaciones.length)) {
-      this.MuestraPicker (indice);
-    }
-  }
   doCheck() {
     // Para decidir si hay que mostrar los botones de previo o siguiente slide
     const prom1 = this.slides.isBeginning();
