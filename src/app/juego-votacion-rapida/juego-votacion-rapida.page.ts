@@ -15,6 +15,10 @@ export class JuegoVotacionRapidaPage implements OnInit {
 
   juegoSeleccionado: any;
   nickName: string;
+  conceptosConPuntos: any[];
+  misVotos: any[];
+  puntosARepartir: number;
+  haVotado = false;
 
 
   
@@ -30,7 +34,17 @@ export class JuegoVotacionRapidaPage implements OnInit {
 
   ngOnInit() {
     this.juegoSeleccionado = this.sesion.DameJuego();
+    this.puntosARepartir = this.juegoSeleccionado.Puntos[0];
     this.nickName = this.sesion.DameNickName();
+    if (this.juegoSeleccionado.ModoReparto === 'Reparto libre') {
+      this.conceptosConPuntos = [];
+      this.juegoSeleccionado.Conceptos.forEach (concepto =>
+        this.conceptosConPuntos.push ({
+          c: concepto,
+          puntos: 0
+        })
+      );
+    }
   }
 
 
@@ -43,17 +57,37 @@ export class JuegoVotacionRapidaPage implements OnInit {
     event.detail.complete();
  }
 
+ Incrementar(i) {
+  if (this.puntosARepartir > 0) {
+    this.conceptosConPuntos[i].puntos++;
+    this.puntosARepartir--;
+  }
+}
+Decrementar(i) {
+  if ( this.conceptosConPuntos[i].puntos > 0) {
+    this.conceptosConPuntos[i].puntos--;
+    this.puntosARepartir++;
+  }
+}
+
  
  async EnviarVotacion() {
   console.log ('voy a enviar la votacion');
-  const misVotos: string[] = [];
-  for (let i = 0; i < this.juegoSeleccionado.Puntos.length; i++) {
-    misVotos[i] = this.juegoSeleccionado.Conceptos[i];
+  this.misVotos = [];
+  if (this.juegoSeleccionado.ModoReparto !== 'Reparto libre') {
+    for (let i = 0; i < this.juegoSeleccionado.Puntos.length; i++) {
+      this.misVotos.push ({
+        c: this.juegoSeleccionado.Conceptos[i],
+        puntos: this.juegoSeleccionado.Puntos[i]
+      });
+    }
+  } else {
+    this.misVotos = this.conceptosConPuntos;
   }
-  console.log (misVotos);
+
   this.comServer.Emitir ('respuestaVotacionRapida',
     { nick: this.nickName,
-      votos: misVotos
+      votos: this.misVotos
     }
   );
   const confirm = await this.alertCtrl.create({
@@ -69,6 +103,12 @@ export class JuegoVotacionRapidaPage implements OnInit {
     ]
   });
   await confirm.present();
+  // tslint:disable-next-line:only-arrow-functions
+  this.misVotos = this.misVotos.sort(function(a, b) {
+    return b.puntos - a.puntos;
+  });
+  this.haVotado = true;
+
   // Ahora voy a guardar la votación en el juego para que no se pierde si el dash no
   // está ahora esperando votaciones.
   // Pero primero tengo que traer de nuevo el juego por si ha habido otras votaciones 
@@ -77,12 +117,15 @@ export class JuegoVotacionRapidaPage implements OnInit {
   .subscribe (juego => {
     juego[0].Respuestas.push (
       { nick: this.nickName,
-      votos: misVotos
+      votos: this.misVotos
     });
     this.peticionesAPI.ModificarJuegoVotacionRapida (juego[0]).subscribe();
-    this.comServer.DesconectarJuegoRapido();
-    this.route.navigateByUrl('/home');
   });
+}
+
+Cerrar() {
+  this.comServer.DesconectarJuegoRapido();
+  this.route.navigateByUrl('/home');
 }
 
 

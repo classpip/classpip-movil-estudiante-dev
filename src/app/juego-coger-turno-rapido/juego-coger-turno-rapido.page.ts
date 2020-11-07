@@ -31,7 +31,13 @@ export class JuegoCogerTurnoRapidoPage implements OnInit {
 
   ngOnInit() {
     this.juegoSeleccionado = this.sesion.DameJuego();
-    this.listaOpciones = this.juegoSeleccionado.Turnos.filter (opcion => opcion.persona === undefined);
+    this.listaOpciones = this.juegoSeleccionado.Turnos.filter (opcion => opcion.persona === undefined && opcion.dia !== '*');
+    // esta es la opción para indicar que ningun turno me va bien
+    this.listaOpciones.push ( {
+      persona: undefined,
+      dia: '*',
+      hora: '*'
+    });
     // tslint:disable-next-line:only-arrow-functions
     this.listaOpciones = this.listaOpciones.sort(function(a, b) {
         if (a.dia < b.dia) {
@@ -47,6 +53,8 @@ export class JuegoCogerTurnoRapidoPage implements OnInit {
         }
     });
 
+    console.log ('ya tengo la liusta de opciones');
+    console.log (this.listaOpciones);
     this.nickName = this.sesion.DameNickName();
     this.comServer.EsperoTurnosCogidos()
     .subscribe((turno) => {
@@ -75,21 +83,47 @@ export class JuegoCogerTurnoRapidoPage implements OnInit {
   }
 
   async EnviarTurnoElegido(turnoElegido) {
-    console.log ('voy a enviar el turno');
-    console.log (turnoElegido);
-    const dia = this.datePipe.transform(turnoElegido.dia, 'dd-MM-yyyy');
-   
-    // this.comServer.Emitir ('turnoElegido',
-    //           { nick: this.nickName,
-    //             turno: turnoElegido,
-    //             clave: this.juegoSeleccionado.Clave
-    //           }
-    // );
-    const confirm = await this.alertCtrl.create({
-        header: '¿Seguro que quieres elegir este turno?',
-        message: '<strong>dia:  </strong>' + dia + '<br><strong>hora: </strong> ' + turnoElegido.hora,
-       
-        buttons: [
+    if (turnoElegido.dia !== '*') {
+      const dia = this.datePipe.transform(turnoElegido.dia, 'dd-MM-yyyy');
+      const confirm = await this.alertCtrl.create({
+          header: '¿Seguro que quieres elegir este turno?',
+          message: '<strong>dia:  </strong>' + dia + '<br><strong>hora: </strong> ' + turnoElegido.hora,
+          buttons: [
+                    {
+                      text: 'OK',
+                      handler: async () => {
+                        this.comServer.Emitir ('turnoElegido',
+                          { nick: this.nickName,
+                            turno: turnoElegido,
+                            clave: this.juegoSeleccionado.Clave
+                          }
+                        );
+                        const confirm2 = await this.alertCtrl.create({
+                          header: 'Turno elegido enviado',
+                          message: 'Gracias por participar',
+                          buttons: [
+                                      {
+                                        text: 'OK',
+                                        role: 'cancel',
+                                        handler: () => {
+                                          this.comServer.DesconectarJuegoCogerTurnoRapido(this.juegoSeleccionado.Clave);
+                                          this.route.navigateByUrl('/home');
+                                        }
+                                      }
+                                    ]
+                          });
+                        await confirm2.present();
+                      }
+                    }, {
+                    text: 'Cancelar'
+                    }
+                  ]
+      });
+      await confirm.present();
+    } else {
+      const confirm = await this.alertCtrl.create({
+        header: '¿Seguro que ningún turno te va bien?',
+         buttons: [
                   {
                     text: 'OK',
                     handler: async () => {
@@ -100,7 +134,7 @@ export class JuegoCogerTurnoRapidoPage implements OnInit {
                         }
                       );
                       const confirm2 = await this.alertCtrl.create({
-                        header: 'Turno elegido enviado',
+                        header: 'Información enviada correctamente',
                         message: 'Gracias por participar',
                         buttons: [
                                     {
@@ -119,43 +153,11 @@ export class JuegoCogerTurnoRapidoPage implements OnInit {
                   text: 'Cancelar'
                   }
                 ]
-    });
-    await confirm.present();
-    // const confirm = await this.alertCtrl.create({
-    //   header: '¿Seguro que quieres elegir este turno?',
-    //   message: 'Gracias por participar',
-    //   buttons: [
-    //       {
-    //       text: 'OK',
-    //       role: 'cancel',
-    //       handler: async () => {
-    //         this.comServer.Emitir ('turnoElegido',
-    //           { nick: this.nickName,
-    //             turno: turnoElegido,
-    //             clave: this.juegoSeleccionado.Clave
-    //           }
-    //         );
-    //         // tslint:disable-next-line:no-shadowed-variable
-    //         const confirm = await this.alertCtrl.create({
-    //           header: 'Turno elegido enviado',
-    //           message: 'Gracias por participar',
-    //           buttons: [
-    //               {
-    //               text: 'OK',
-    //               role: 'cancel',
-    //               handler: () => {
-    //               }
-    //             }
-    //           ]
-    //         });
-    //         await confirm.present();
-    //       }
-    //     }
-    //   ]
-    // });
-    // await confirm.present();
-   
-  }
+      });
+      await confirm.present();
+    }
+
+}
 
 
 }

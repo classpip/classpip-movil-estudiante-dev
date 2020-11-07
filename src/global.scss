@@ -82,7 +82,66 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   .login-logo {
     position: absolute;
     display: block;
-    top: 30%;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    margin-bottom: 25px;
+    .logo {
+      content: url('../src/assets/Login/login-logo-theme2.svg');
+    }
+  }
+
+  .login-credentials {
+    position: absolute;
+    display: block;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    color: #ffffff;
+    opacity: 0.9;
+    ion-item {
+      --border-radius: 20px;
+      --border-width: 2px;
+      --background: rgba(255, 255, 255, 0);
+      --border-color: rgb(255, 255, 255);
+    ion-input {
+        color: #ffffff;
+    }
+    ion-label {
+        color: #ffffff;
+    }
+    }
+  
+    .user-input-logo {
+      content: url('../src/assets/Login/login-usericon-theme2.svg');
+    }
+    .pass-input-logo {
+      content: url('../src/assets/Login/login-lockicon-theme2.svg');
+    }
+  }
+  
+  .login-btn {
+    margin-top: 40px;
+    width: 180px;
+    --border-radius: 20px;
+      --border-width: 2px;
+      --border-style: solid;
+      --background: #ffffff00;
+      --border-color: rgb(255, 255, 255);
+  }
+}
+
+.login-content-registro {
+  --overflow: hidden;
+  --background: linear-gradient(to top right, #aac2c5 -20%, #1e4449 100%);
+  text-align: center;
+  
+  .login-logo {
+    position: absolute;
+    display: block;
+    top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
@@ -142,7 +201,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   .login-logo {
     position: absolute;
     display: block;
-    top: 30%;
+    top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;

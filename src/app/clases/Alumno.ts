@@ -3,16 +3,25 @@ export class Alumno {
   PrimerApellido: string;
   SegundoApellido: string;
   ImagenPerfil: string;
+  Username: string;
+  Password: string;
+  Email: string;
   PermisoCambioImagenPerfil: boolean;
-  profesorId: string;
+  profesorId: number;
   id: number;
 
-  constructor(nombre?: string, primerApellido?: string, segundoApellido?: string, imagenPerfil?: string) {
+  constructor(nombre?: string, primerApellido?: string, segundoApellido?: string,
+              Username?: string, Password?: string, Email?: string, profesorId?: number,
+              imagenPerfil?: string) {
 
     this.Nombre = nombre;
     this.PrimerApellido = primerApellido;
     this.SegundoApellido = segundoApellido;
-    this.ImagenPerfil = imagenPerfil;
+    this.ImagenPerfil = null;
     this.PermisoCambioImagenPerfil = false;
+    this.Username = Username;
+    this.Password = Password;
+    this.Email = Email;
+    this.profesorId = profesorId;
   }
 }
