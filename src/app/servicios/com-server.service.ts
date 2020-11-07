@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { Alumno } from '../clases/index';
+import { Alumno, AlumnoJuegoDeCompeticionFormulaUno } from '../clases/index';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -76,6 +76,14 @@ export class ComServerService {
             observer.next(turno);
         });
     });
+  }
+  public RecordarContrasena(alumno: Alumno) {
+    console.log ('dentro del servicio para recordar contraseña');
+    // Me conecto momentaneamente para enviarle al alumno la contraseña que debe enviar por email
+    this.servidor.connect();
+    this.servidor.emit ('recordarContraseña' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
+    // Me desconecto
+    this.servidor.disconnect();
   }
 }
 

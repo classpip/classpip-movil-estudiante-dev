@@ -132,10 +132,26 @@ export class PeticionesAPIService {
     return this.http.get<Profesor>(this.APIUrlProfesores + '?filter[where][Nombre]=' + nombre + '&filter[where][Apellido]=' + apellido);
   }
 
-  public DameAlumno(nombre: string, apellido: string): Observable<Alumno> {
-    console.log('Entro a mostrar a ' + nombre + ' ' + apellido);
-    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Nombre]=' + nombre
-      + '&filter[where][PrimerApellido]=' + apellido);
+  public DameProfesorPorIdentificador(identificador: string): Observable<Profesor> {
+    return this.http.get<Profesor>(this.APIUrlProfesores + '?filter[where][Identificador]=' + identificador);
+  }
+
+  public DameAlumno(nombreUsuario: string, password: string): Observable<Alumno> {
+    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Username]=' + nombreUsuario
+      + '&filter[where][Password]=' + password);
+  }
+  
+  public DameTodosLosAlumnos(): Observable<Alumno[]> {
+    return this.http.get<Alumno[]>(this.APIUrlAlumnos);
+  }
+
+  public CreaAlumno(alumno: Alumno): Observable<Alumno> {
+    return this.http.post<Alumno>(this.APIUrlAlumnos, alumno);
+  }
+
+  
+  public DameContrasena(nombre: string): Observable<Alumno> {
+    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Username]=' + nombre );
   }
 
   public DameAlumnoAsignacion(nombre: string[]): Observable<Alumno> {
