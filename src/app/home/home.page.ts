@@ -515,7 +515,7 @@ replay() {
             console.log (juego[0]);
             this.sesion.TomaJuego(juego[0]);
             this.sesion.TomaNickName (this.nickname);
-            this.comServer.EnviarNick (this.nickname);
+            this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
             // this.route.navigateByUrl('/tabs/inici');
             this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
 
@@ -528,7 +528,7 @@ replay() {
                 console.log (juego[0]);
                 this.sesion.TomaJuego(juego[0]);
                 this.sesion.TomaNickName (this.nickname);
-                this.comServer.EnviarNick (this.nickname);
+                this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
                
                 this.navCtrl.navigateForward('/juego-votacion-rapida');
               } else {
@@ -540,7 +540,7 @@ replay() {
                       console.log (juego[0]);
                       this.sesion.TomaJuego(juego[0]);
                       this.sesion.TomaNickName (this.nickname);
-                      this.comServer.EnviarNick (this.nickname);
+                      this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
                     
                       this.navCtrl.navigateForward('/juego-de-cuestionario');
                       } else {
@@ -553,7 +553,7 @@ replay() {
                             this.sesion.TomaJuego(juego[0]);
                             this.sesion.TomaNickName (this.nickname);
                             // hay que enviar la clave también para poder recibir notificaciones
-                            this.comServer.EnviarNickYClave (this.nickname, this.clave);
+                            this.comServer.EnviarNickYRegistrar (juego[0].profesorId, this.nickname, this.clave);
                             this.clave = undefined;
                             this.nickname = undefined;
                           
@@ -566,7 +566,6 @@ replay() {
                                 buttons: ['OK']
                               });
                               await alert.present();
-                              this.juegoRapido = false;
                               this.clave = undefined;
                               this.nickname = undefined;
                           }
@@ -580,6 +579,7 @@ replay() {
     }
 
     Autentificar() {
+       
         this.presentLoading();
         this.peticionesAPI.DameAlumno(this.username, this.password)
         .subscribe( (res) => {
