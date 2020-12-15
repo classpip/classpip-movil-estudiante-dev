@@ -58,6 +58,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
   reorden: AlumnoJuegoDeCuestionario[];
   nickName: string;
   cuestionarioRapido = false;
+  seleccion: boolean[][];
+
+
+
+ 
+
 
   // @ViewChild('stepper') stepper: MatStepper;
 
@@ -72,8 +78,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
     private alertCtrl: AlertController,
     private platform: Platform,
     private comServer: ComServerService
-  ) { }
+  ) {
+  }
 
+
+
+  
   ngOnInit() {
 
     this.juegoSeleccionado = this.sesion.DameJuego();
@@ -112,6 +122,18 @@ export class JuegoDeCuestionarioPage implements OnInit {
       } else {
         this.PreguntasCuestionario = res;
       }
+
+      // Preparo la matriz en la que tomaré nota de cuál de las 4 opciones  se ha seleccionado
+      // en cada pregunta para poner mantener los radio buttons marcados cuando naveguemos por las preguntas
+      this.seleccion = [];
+
+      for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+          this.seleccion[i] = [];
+          for (let j = 0; j < 4; j++) {
+              this.seleccion[i][j] = false;
+          }
+      }
+
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta1);
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta2);
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta3);
@@ -135,7 +157,16 @@ export class JuegoDeCuestionarioPage implements OnInit {
         }
       }
     });
-   
+  }
+
+  
+  
+  radioSelect(event, i, j) {
+    this.seleccion[i].fill(false);
+    this.seleccion [i][j] = true;
+  
+    this.RespuestaEscogida = event.detail.value;
+    console.log (this.RespuestaEscogida);
   }
 
   // Esta funcion coge el array en el cual se asigna la posicion de las respuestas correctas y lo

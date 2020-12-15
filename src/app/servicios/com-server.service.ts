@@ -7,37 +7,45 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ComServerService {
+  profesorId: number;
  
   constructor(private servidor: Socket) { }
   Conectar(alumno: Alumno) {
+    this.profesorId = alumno.profesorId;
     this.servidor.connect();
-    this.servidor.emit('usuarioConectado', alumno);
+    this.servidor.emit('alumnoConectado', alumno);
   }
   Desconectar(alumno: Alumno) {
-    this.servidor.emit('usuarioDesconectado', alumno);
+    this.servidor.emit('alumnoDesconectado', alumno);
     this.servidor.disconnect();
   }
-  Emitir(mensaje: string, info: any) {
-    console.log ('voy a emitir ' + mensaje);
-    console.log (info);
-    console.log (this.servidor);
-    this.servidor.emit(mensaje, info);
-  }
-  EnviarNick(nick: string) {
-    this.servidor.connect();
-    console.log ('envio nick: ' + nick);
-    console.log (this.servidor);
-    this.servidor.emit('nickNameJuegoRapido', nick);
+
+  Emitir(mensaje: string, informacion: any) {
+    console.log ('voy a emitir');
+    console.log (mensaje);
+    console.log (informacion);
+    this.servidor.emit(mensaje, { profesorId: this.profesorId, info: informacion});
   }
 
-  EnviarNickYClave(nick: string, clave: string) {
+  EnviarNick(profesorId: number, nick: string) {
+    // Como el alumno no se ha conectado por la via normal, no tenemos guardado el identificador
+    // del profesor. Por eso lo tenemos que recibir como parámetro
     this.servidor.connect();
+    this.profesorId = profesorId;
     console.log ('envio nick: ' + nick);
     console.log (this.servidor);
-    this.servidor.emit('nickName+claveJuegoRapido', {
-      n: nick,
-      c: clave
-    });
+    // tslint:disable-next-line:object-literal-shorthand
+    this.servidor.emit('nickNameJuegoRapido', { profesorId: this.profesorId, info: nick});
+  }
+
+  EnviarNickYRegistrar(profesorId: number, nick: string, clave: string) {
+    // Como el alumno no se ha conectado por la via normal, no tenemos guardado el identificador
+    // del profesor. Por eso lo tenemos que recibir como parámetro.
+    // Ademas, hay que registrar al alumno para que reciba notificaciones en este juego rapido
+    this.servidor.connect();
+    this.profesorId = profesorId;
+    // tslint:disable-next-line:object-literal-shorthand
+    this.servidor.emit('nickNameJuegoRapidoYRegistro', { profesorId: this.profesorId, info: nick, c: clave});
   }
 
 

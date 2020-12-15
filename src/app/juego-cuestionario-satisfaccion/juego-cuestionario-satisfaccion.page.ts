@@ -170,7 +170,8 @@ export class JuegoCuestionarioSatisfaccionPage implements OnInit {
     console.log ('voy a enviar respuesta');
     console.log (this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion);
     this.comServer.Emitir ('respuestaEncuestaRapida',
-      { nick: this.nickName,
+      { clave: this.juegoSeleccionado.Clave,
+        nick: this.nickName,
         respuestas: this.inscripcionAlumnoJuegoDeCuestionarioSatisfaccion
       }
     );

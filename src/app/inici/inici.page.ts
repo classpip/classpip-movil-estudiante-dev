@@ -46,7 +46,7 @@ export class IniciPage implements OnInit {
     this.calculos.DameJuegosAlumno(this.id)
       .subscribe(listas => {
         this.JuegosActivos = listas.activos;
-      });
+    });
   }
 
 

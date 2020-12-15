@@ -58,6 +58,8 @@ export class JuegoCogerTurnoRapidoPage implements OnInit {
     this.nickName = this.sesion.DameNickName();
     this.comServer.EsperoTurnosCogidos()
     .subscribe((turno) => {
+      console.log ('han cogido turno');
+      console.log (turno);
       this.listaOpciones = this.listaOpciones.filter (opcion => (opcion.dia !== turno.dia) || (opcion.hora !== turno.hora));
     });
     this.comServer.EsperoTurnosNuevos()

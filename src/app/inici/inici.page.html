@@ -22,7 +22,6 @@
     <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 15px;font-size: 50px;z-index: 2;" (click)="next()">
       <i class="material-icons">skip_next</i>
     </div>
-    <!-- [options]="sliderConfig" -->
 
     <ion-slides  #slides (ionSlideWillChange)="doCheck()" >
       <ion-slide *ngFor="let juego of JuegosActivos">
