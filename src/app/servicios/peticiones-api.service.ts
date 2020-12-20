@@ -27,12 +27,12 @@ import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestion
 
 export class PeticionesAPIService {
 
-  //private base = 'http://localhost:';
+  private base = 'http://localhost:';
 
   // private base = 'http://147.83.118.92:';
   //private base = 'http://192.168.1.35:'; 
 
-  private base = 'http://147.83.118.92:';
+  //private base = 'http://147.83.118.92:';
   //private base = 'http://192.168.1.143:'; 
     // private base = 'http://192.168.1.45:'; 
 
