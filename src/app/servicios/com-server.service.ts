@@ -93,6 +93,18 @@ export class ComServerService {
     // Me desconecto
     this.servidor.disconnect();
   }
+
+  //Para la función de avanzar pregunta Kahoot
+  public EsperoAvanzarPregunta(): any {
+    console.log("Me voy a subscribir");
+    return Observable.create((observer) => {
+        this.servidor.on('avanzarPregunta', (mensaje) => {
+            console.log ('AVANZo PREGUNTA');
+            console.log (mensaje);
+            observer.next(mensaje);
+        });
+    });
+  }
 }
 
 

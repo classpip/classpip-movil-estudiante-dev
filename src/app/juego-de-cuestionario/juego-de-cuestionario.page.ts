@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
 import {MatStepper} from '@angular/material';
+import * as URL from '../../app//URLs/urls';
 
 
 @Component({
@@ -60,7 +61,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   cuestionarioRapido = false;
   seleccion: boolean[][];
 
-
+ // Vector para cargar las imagenes de las preguntas
+ imagenesPreguntas: string[];
 
  
 
@@ -126,13 +128,17 @@ export class JuegoDeCuestionarioPage implements OnInit {
       // Preparo la matriz en la que tomaré nota de cuál de las 4 opciones  se ha seleccionado
       // en cada pregunta para poner mantener los radio buttons marcados cuando naveguemos por las preguntas
       this.seleccion = [];
+      this.imagenesPreguntas = [];
 
       for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
           this.seleccion[i] = [];
+          this.imagenesPreguntas[i] = URL.ImagenesPregunta + this.PreguntasCuestionario[i].Imagen;
           for (let j = 0; j < 4; j++) {
               this.seleccion[i][j] = false;
           }
       }
+      console.log("FICHEROS DE IMAGEN");
+      console.log(this.imagenesPreguntas);
 
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta1);
       this.respuestasPosibles.push(res[0].RespuestaIncorrecta2);
@@ -376,7 +382,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   IniciarTimer() {
-    if (this.tiempoLimite !== 0) {
+    if(this.juegoSeleccionado.Modalidad === "Test clásico"){
+      if (this.tiempoLimite !== 0) {
       // el timer solo se activa si se ha establecido un tiempo limite
       this.contar = true; // para que se muestre la cuenta atrás
       this.tiempoRestante = this.tiempoLimite;
@@ -408,6 +415,15 @@ export class JuegoDeCuestionarioPage implements OnInit {
             }
 
       }, 1000);
+      }
+    }else if(this.juegoSeleccionado.Modalidad === "Kahoot"){
+      console.log("Me subscribo");
+      this.comServer.EsperoAvanzarPregunta()
+      .subscribe((mensaje)=>{
+        console.log("SIGUIENTE");
+        console.log(mensaje);
+        this.stepper.next();
+      });
     }
   }
 

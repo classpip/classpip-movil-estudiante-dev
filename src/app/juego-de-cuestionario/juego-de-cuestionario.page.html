@@ -43,6 +43,7 @@
 
       <!-- RESPONDEMOS A PREGUNTAS -->
       <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
+        <img [src]="imagenesPreguntas[i]" style = "width:468px; height:675px; padding-right: 20px;">
         <p style="font-size: 18px;">{{pregunta.Pregunta}}</p>
      
         <ion-list>

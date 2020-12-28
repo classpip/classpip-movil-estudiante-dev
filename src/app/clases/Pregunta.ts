@@ -2,6 +2,7 @@ export class Pregunta {
     Titulo: string;
     Pregunta: string;
     Tematica: string;
+    Imagen: string;
     RespuestaCorrecta: string;
     RespuestaIncorrecta1: string;
     RespuestaIncorrecta2: string;
