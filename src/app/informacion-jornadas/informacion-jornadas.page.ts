@@ -26,9 +26,11 @@ export class InformacionJornadasPage implements OnInit {
   listaEquiposClasificacion: TablaEquipoJuegoDeCompeticion[] = [];
   MiAlumno: Alumno;
   MiEquipo: Equipo;
+  
 
   EnfrentamientosJornadaSeleccionada: EnfrentamientoLiga[] = [];
   botonResultadosDesactivado: boolean;
+  alumnosDelGrupo: Alumno[];
 
   //f1
   tablaf1Jornada: TablaClasificacionJornada[] = [];
@@ -41,6 +43,7 @@ export class InformacionJornadasPage implements OnInit {
   };
   TablaClasificacionJornadaSeleccionada: TablaClasificacionJornada[];
   GanadoresJornadaF1: TablaClasificacionJornada[];
+  imagenesDePerfil: string[];
 
   constructor(
     private sesion: SesionService,
@@ -63,6 +66,8 @@ export class InformacionJornadasPage implements OnInit {
     this.listaEquiposClasificacion = this.sesion.DameTablaEquipoJuegoDeCompeticion();
     console.log('La lista de alumnos es: ');
     console.log(this.listaAlumnosClasificacion);
+    this.peticionesAPI.DameAlumnosGrupo (this.juegoSeleccionado.grupoId)
+    .subscribe (alumnos => this.alumnosDelGrupo = alumnos);
   }
 
   
@@ -107,6 +112,11 @@ export class InformacionJornadasPage implements OnInit {
     this.GanadoresJornadaF1 = this.TablaClasificacionJornadaSeleccionada.slice(0, this.juegoSeleccionado.Puntos.length);
     console.log('los ganadores: ');
     console.log(this.GanadoresJornadaF1);
+    this.imagenesDePerfil = [];
+    this.GanadoresJornadaF1.forEach (participante => {
+      const imagen = this.alumnosDelGrupo.filter (alumno => alumno.id === participante.id)[0].ImagenPerfil;
+      this.imagenesDePerfil.push (imagen);
+    })
   }
 
   DameJornadasDelJuegoDeCompeticionF1() {
