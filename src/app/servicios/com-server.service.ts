@@ -1,24 +1,61 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { Alumno } from '../clases/index';
+import { Alumno, AlumnoJuegoDeCompeticionFormulaUno } from '../clases/index';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComServerService {
+  profesorId: number;
  
   constructor(private servidor: Socket) { }
   Conectar(alumno: Alumno) {
+    this.profesorId = alumno.profesorId;
     this.servidor.connect();
-    this.servidor.emit('usuarioConectado', alumno);
+    this.servidor.emit('alumnoConectado', alumno);
   }
   Desconectar(alumno: Alumno) {
-    this.servidor.emit('usuarioDesconectado', alumno);
+    this.servidor.emit('alumnoDesconectado', alumno);
     this.servidor.disconnect();
   }
-  Emitir(mensaje: string, info: any) {
-    this.servidor.emit(mensaje, info);
+
+  Emitir(mensaje: string, informacion: any) {
+    console.log ('voy a emitir');
+    console.log (mensaje);
+    console.log (informacion);
+    this.servidor.emit(mensaje, { profesorId: this.profesorId, info: informacion});
+  }
+
+  EnviarNick(profesorId: number, nick: string) {
+    // Como el alumno no se ha conectado por la via normal, no tenemos guardado el identificador
+    // del profesor. Por eso lo tenemos que recibir como parámetro
+    this.servidor.connect();
+    this.profesorId = profesorId;
+    console.log ('envio nick: ' + nick);
+    console.log (this.servidor);
+    // tslint:disable-next-line:object-literal-shorthand
+    this.servidor.emit('nickNameJuegoRapido', { profesorId: this.profesorId, info: nick});
+  }
+
+  EnviarNickYRegistrar(profesorId: number, nick: string, clave: string) {
+    // Como el alumno no se ha conectado por la via normal, no tenemos guardado el identificador
+    // del profesor. Por eso lo tenemos que recibir como parámetro.
+    // Ademas, hay que registrar al alumno para que reciba notificaciones en este juego rapido
+    this.servidor.connect();
+    this.profesorId = profesorId;
+    // tslint:disable-next-line:object-literal-shorthand
+    this.servidor.emit('nickNameJuegoRapidoYRegistro', { profesorId: this.profesorId, info: nick, c: clave});
+  }
+
+
+  DesconectarJuegoRapido() {
+    this.servidor.disconnect();
+  }
+
+  DesconectarJuegoCogerTurnoRapido(clave: string) {
+    this.servidor.emit('desconectarJuegoCogerTurno', clave);
+    this.servidor.disconnect();
   }
 
 
@@ -29,6 +66,32 @@ export class ComServerService {
             observer.next(mensaje);
         });
     });
+  }
+
+  public EsperoTurnosCogidos(): any  {
+    return Observable.create((observer) => {
+        this.servidor.on('turnoCogido', (turno) => {
+            console.log ('han cogido un turno');
+            console.log (turno);
+            observer.next(turno);
+        });
+    });
+  }
+
+  public EsperoTurnosNuevos(): any  {
+    return Observable.create((observer) => {
+        this.servidor.on('turnoNuevo', (turno) => {
+            observer.next(turno);
+        });
+    });
+  }
+  public RecordarContrasena(alumno: Alumno) {
+    console.log ('dentro del servicio para recordar contraseña');
+    // Me conecto momentaneamente para enviarle al alumno la contraseña que debe enviar por email
+    this.servidor.connect();
+    this.servidor.emit ('recordarContraseña' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
+    // Me desconecto
+    this.servidor.disconnect();
   }
 }
 

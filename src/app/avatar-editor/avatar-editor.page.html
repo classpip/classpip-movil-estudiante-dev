@@ -12,7 +12,7 @@
   <ion-button style = "margin-top: 5%; margin-bottom:5%" (click)="Volver()"> VOLVER </ion-button>
 
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let familia of familiasDelJuego; let i=index" (click) = "PreparaEjemplo (familia, i)">
+    <mat-expansion-panel *ngFor="let familia of familiasDelJuego; let i=index" (opened) = "PreparaEjemplo (familia, i)" (closed) = "mostrarComplementos = false">
       <mat-expansion-panel-header>
         <b> {{familia.NombreFamilia}} </b>
       </mat-expansion-panel-header>
@@ -27,101 +27,103 @@
           </ion-col>
           <ion-col>
           <ion-col > 
-              <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta !== familia.Silueta" (click)="TraeImagenesFamilia(familia)"> CREAR </ion-button>
-              <ion-button *ngIf= "inscripcionAlumnoJuegoAvatar.Silueta === familia.Silueta" (click)="TraeImagenesFamilia(familia);  MuestraAvatar()"> MODIFICAR </ion-button>
-          </ion-col>
-          <ion-col>
-              <ion-button disabled= "{{!modificacion}}" color="danger" (click)="Guardar()"> GUARDAR </ion-button>
+              <ion-button disabled= "false" *ngIf= "familiaElegida && inscripcionAlumnoJuegoAvatar.Silueta !== familiaElegida.Silueta" (click)="CrearAvatar(familia);"> CREAR </ion-button>
+              <ion-button disabled= "false" *ngIf= "familiaElegida && inscripcionAlumnoJuegoAvatar.Silueta === familiaElegida.Silueta" (click)="ModificarAvatar(familia);"> MODIFICAR </ion-button>
           </ion-col>
           </ion-col>
         </ion-row>
       </ion-grid>
+
+    <div *ngIf = "mostrarComplementos">
+      <div *ngIf="familiaElegida">
+        <ion-segment [(ngModel)]="Tipo" #segment>
+          <ion-segment-button value="comp1">
+            {{familiaElegida.NombreComplemento1}}
+          </ion-segment-button>
+          <ion-segment-button value="comp2">
+            {{familiaElegida.NombreComplemento2}}
+          </ion-segment-button>
+          <ion-segment-button value="comp3">
+            {{familiaElegida.NombreComplemento3}}
+          </ion-segment-button>
+          <ion-segment-button value="comp4">
+            {{familiaElegida.NombreComplemento4}}
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <div class="complementos-segmento">
+        <div [ngSwitch]="Tipo" style="overflow-x: auto;">
+          <ng-container *ngSwitchCase="'comp1'">
+            <div *ngIf="privilegiosAlumno[0] === true; else elseBlock">
+              <div *ngFor="let elem of c1; let i = index" class="elementos-complemento">
+                <ion-card class="elemento-card">
+                  <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
+                  <img [src]= "elem" tappable (click)="Pon(elem, 1)" style="position: absolute; z-index: 1;">
+                </ion-card>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <div [ngSwitch]="Tipo" style="overflow-x: auto;">
+          <ng-container *ngSwitchCase="'comp2'">
+            <div *ngIf="privilegiosAlumno[1] === true; else elseBlock">
+              <div *ngFor="let elem of c2; let i = index" class="elementos-complemento">
+                <ion-card class="elemento-card">
+                  <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
+                  <img [src]="elem" tappable (click)="Pon(elem, 2)" style="position: absolute; z-index: 1;">
+                </ion-card>
+              </div>            
+            </div>
+          </ng-container>
+        </div>
+        <div [ngSwitch]="Tipo" style="overflow-x: auto;">
+          <ng-container *ngSwitchCase="'comp3'">
+            <div *ngIf="privilegiosAlumno[2] === true; else elseBlock">
+              <div *ngFor="let elem of c3; let i = index"
+                class="elementos-complemento">
+                <ion-card class="elemento-card">
+                  <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
+                  <img [src]="elem" tappable (click)="Pon(elem, 3)" style="position: absolute; z-index: 1;">
+                </ion-card>
+              </div>            
+            </div>
+          </ng-container>
+        </div>
+        <div [ngSwitch]="Tipo" style="overflow-x: auto;">
+          <ng-container *ngSwitchCase="'comp4'">
+            <div *ngIf="privilegiosAlumno[3] === true; else elseBlock">
+              <div *ngFor="let elem of c4; let i = index"
+                class="elementos-complemento">
+                <ion-card class="elemento-card">
+                  <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
+                  <img [src]="elem" tappable (click)="Pon(elem, 4)" style="position: absolute; z-index: 1;">
+                </ion-card>
+              </div>            
+            </div>
+          </ng-container>
+        </div>
+        <ng-template #elseBlock>
+          <h2 style="margin: auto; font-size: 16px; margin-top: 0px;">
+            No tienes este privilegio</h2>
+        </ng-template>
+      </div>
+    </div>
     </mat-expansion-panel>
   </mat-accordion>
 
   <ion-row style="height: 20px"></ion-row>
   <div >
+    <ion-col>
+      <ion-button disabled= "{{!modificacion}}" color="danger" (click)="Guardar()"> GUARDAR </ion-button>
+    </ion-col>
     <!-- Aqui muestro el avatar tal y como está -->
-    <div *ngIf = "tieneAvatar" id="ImagenAvatar" style="display: flex; width: 300px; height: 324px; margin: auto;margin-top: 20%; margin-bottom: 30%;">
+    <div *ngIf = "tieneAvatar" id="ImagenAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-bottom: 30%;">
       <img #img id="silueta" [src]="imagenSilueta" style="position: relative; z-index: 0;">
     </div>
     <div  *ngIf = "!tieneAvatar" style="display: flex; width: 300px; height: 324px; margin: auto; margin-top: 20%; margin-bottom: 30%; opacity: 0.2;">
       <img  src = "../assets/interrogante.jpg" style="width: 300px; height: 324px; position: relative; z-index: 0;">
-    </div>
-   
-    <div *ngIf="familiaElegida">
-      <ion-segment [(ngModel)]="Tipo" #segment>
-        <ion-segment-button value="comp1">
-          {{familiaElegida.NombreComplemento1}}
-        </ion-segment-button>
-        <ion-segment-button value="comp2">
-          {{familiaElegida.NombreComplemento2}}
-        </ion-segment-button>
-        <ion-segment-button value="comp3">
-          {{familiaElegida.NombreComplemento3}}
-        </ion-segment-button>
-        <ion-segment-button value="comp4">
-          {{familiaElegida.NombreComplemento4}}
-        </ion-segment-button>
-      </ion-segment>
-    </div>
-
-    <div class="complementos-segmento">
-      <div [ngSwitch]="Tipo" style="overflow-x: auto;">
-        <ng-container *ngSwitchCase="'comp1'">
-          <div *ngIf="privilegiosAlumno[0] === true; else elseBlock">
-            <div *ngFor="let elem of c1; let i = index" class="elementos-complemento">
-              <ion-card class="elemento-card">
-                <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Pon(elem, 1, i)" style="position: absolute; z-index: 1;">
-              </ion-card>
-            </div>
-          </div>
-        </ng-container>
-      </div>
-
-      <div [ngSwitch]="Tipo" style="overflow-x: auto;">
-        <ng-container *ngSwitchCase="'comp2'">
-          <div *ngIf="privilegiosAlumno[1] === true; else elseBlock">
-            <div *ngFor="let elem of c2; let i = index" class="elementos-complemento">
-              <ion-card class="elemento-card">
-                <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Pon(elem, 2, i)" style="position: absolute; z-index: 1;">
-              </ion-card>
-            </div>            
-          </div>
-        </ng-container>
-      </div>
-      <div [ngSwitch]="Tipo" style="overflow-x: auto;">
-        <ng-container *ngSwitchCase="'comp3'">
-          <div *ngIf="privilegiosAlumno[2] === true; else elseBlock">
-            <div *ngFor="let elem of c3; let i = index"
-              class="elementos-complemento">
-              <ion-card class="elemento-card">
-                <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Pon(elem, 3, i)" style="position: absolute; z-index: 1;">
-              </ion-card>
-            </div>            
-          </div>
-        </ng-container>
-      </div>
-      <div [ngSwitch]="Tipo" style="overflow-x: auto;">
-        <ng-container *ngSwitchCase="'comp4'">
-          <div *ngIf="privilegiosAlumno[3] === true; else elseBlock">
-            <div *ngFor="let elem of c4; let i = index"
-              class="elementos-complemento">
-              <ion-card class="elemento-card">
-                <img [src]="imagenSilueta" style="position: absolute; z-index: 0; opacity: 0.2;">
-                <img [src]="elem" tappable (click)="Pon(elem, 4, i)" style="position: absolute; z-index: 1;">
-              </ion-card>
-            </div>            
-          </div>
-        </ng-container>
-      </div>
-      <ng-template #elseBlock>
-        <h2 style="margin: auto; font-size: 16px; margin-top: 0px;">
-          No tienes este privilegio</h2>
-      </ng-template>
     </div>
   </div>
 

@@ -31,7 +31,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 
 //const config: SocketIoConfig = { url: 'http://localhost:8080', options: {} };
-const config: SocketIoConfig = { url: 'http://147.83.118.92:8080', options: {} };
+
 
 
 const config: SocketIoConfig = { url: URL.Servidor, options: {} };
@@ -45,6 +45,10 @@ import { AvatarEditorPageModule } from './avatar-editor/avatar-editor.module';
 import { LongPressModule } from 'ionic-long-press';
 import { IonicGestureConfig } from '../ionicGestureConfig';
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
+
+import { DateAdapter } from '@angular/material';
+import { CustomDateAdapter } from './CustomDataAdapter';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -79,9 +83,11 @@ import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
     Geolocation,
     WheelSelector,
     LocalNotifications,
+    DatePipe,
     Media,
     { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig},
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: DateAdapter, useClass: CustomDateAdapter}
   ],
   bootstrap: [AppComponent]
 })

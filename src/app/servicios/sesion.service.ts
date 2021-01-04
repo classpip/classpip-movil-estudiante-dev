@@ -64,6 +64,7 @@ export class SesionService {
   cromosQueTengoImagenDetras;
   cromosQueNoTengoImagenDelante;
   cromosQueNoTengoImagenDetras;
+  nickName;
 
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
@@ -470,7 +471,13 @@ export class SesionService {
     return this.PrivilegiosAlumno;
   }
 
-  
+  public TomaNickName(nick: string) {
+    this.nickName = nick;
+  }
+
+  public DameNickName(): string {
+    return this.nickName;
+  }
 
 
 }

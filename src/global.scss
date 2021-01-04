@@ -31,7 +31,48 @@
 USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
 
 
-/* GENERICO */
+/* BOTONES PARA AVANZAR Y RETROCEDAR EN SLIDES Y STEPPERS */
+
+
+.siguiente {
+  background-color: rgb(11, 72, 100);
+  color: white;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 50px;
+  position: absolute;
+  right: 25px; 
+  width: 100px;
+  bottom: 10px;
+}
+
+
+.siguienteDisabled {
+  background-color: rgb(11, 72, 100);
+  color: white;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 50px;
+  position: absolute;
+  right: 25px; 
+  width: 100px;
+  bottom: 10px;
+  opacity: 0.5;
+}
+
+.anterior {
+  background-color: white;
+  color:rgb(11, 72, 100);
+  border: 2px solid rgb(11, 72, 100);
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 50px;
+  position: absolute;
+  left: 25px; 
+  width: 100px;
+  bottom: 10px
+}
+/* BOTONES GENERALES */
 .ranking-btn {
   margin-bottom: 10%; // Margin to some element put below
   --margin-bottom: 90px; // we add -- to property because its a ionic button, not a normal button
@@ -39,6 +80,22 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   --background: cadetblue; // Background color
   text-transform: none; // Avoid caps.
 }
+
+.ranking-btn-rojo {
+  margin-bottom: 10%; // Margin to some element put below
+  --margin-bottom: 90px; // we add -- to property because its a ionic button, not a normal button
+  --border-radius: 20px; // Rounded Borders
+  --background: rgb(153, 41, 65); // Background color
+  text-transform: none; // Avoid caps.
+}
+.ranking-btn-azul {
+  margin-bottom: 10%; // Margin to some element put below
+  --margin-bottom: 90px; // we add -- to property because its a ionic button, not a normal button
+  --border-radius: 20px; // Rounded Borders
+  --background: rgb(36, 40, 63); // Background color
+  text-transform: none; // Avoid caps.
+}
+
 
 /* ------------------------ESTILO 2---------------------------- */
 /* +++++++++++++++++++++++ 2.1 SLIDER ++++++++++++++++++++++++++*/
@@ -74,15 +131,134 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
 
 /* ++++++++++++++++++++++++ 2.2 LOG IN +++++++++++++++++++++++++++*/
 
-.login-content {
+.login-content-juego-rapido {
   --overflow: hidden;
-  --background: linear-gradient(to top right, #000066 -20%, #ff9999 100%);
+  --background: linear-gradient(to top right, #929e92 -20%, #042204 100%);
   text-align: center;
-
+  
   .login-logo {
     position: absolute;
     display: block;
-    top: 30%;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    margin-bottom: 25px;
+    .logo {
+      content: url('../src/assets/Login/login-logo-theme2.svg');
+    }
+  }
+
+  .login-credentials {
+    position: absolute;
+    display: block;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    color: #ffffff;
+    opacity: 0.9;
+    ion-item {
+      --border-radius: 20px;
+      --border-width: 2px;
+      --background: rgba(255, 255, 255, 0);
+      --border-color: rgb(255, 255, 255);
+    ion-input {
+        color: #ffffff;
+    }
+    ion-label {
+        color: #ffffff;
+    }
+    }
+  
+    .user-input-logo {
+      content: url('../src/assets/Login/login-usericon-theme2.svg');
+    }
+    .pass-input-logo {
+      content: url('../src/assets/Login/login-lockicon-theme2.svg');
+    }
+  }
+  
+  .login-btn {
+    margin-top: 40px;
+    width: 180px;
+    --border-radius: 20px;
+      --border-width: 2px;
+      --border-style: solid;
+      --background: #ffffff00;
+      --border-color: rgb(255, 255, 255);
+  }
+}
+
+.login-content-registro {
+  --overflow: hidden;
+  --background: linear-gradient(to top right, #aac2c5 -20%, #1e4449 100%);
+  text-align: center;
+  
+  .login-logo {
+    position: absolute;
+    display: block;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    margin-bottom: 25px;
+    .logo {
+      content: url('../src/assets/Login/login-logo-theme2.svg');
+    }
+  }
+
+  .login-credentials {
+    position: absolute;
+    display: block;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    color: #ffffff;
+    opacity: 0.9;
+    ion-item {
+      --border-radius: 20px;
+      --border-width: 2px;
+      --background: rgba(255, 255, 255, 0);
+      --border-color: rgb(255, 255, 255);
+    ion-input {
+        color: #ffffff;
+    }
+    ion-label {
+        color: #ffffff;
+    }
+    }
+  
+    .user-input-logo {
+      content: url('../src/assets/Login/login-usericon-theme2.svg');
+    }
+    .pass-input-logo {
+      content: url('../src/assets/Login/login-lockicon-theme2.svg');
+    }
+  }
+  
+  .login-btn {
+    margin-top: 40px;
+    width: 180px;
+    --border-radius: 20px;
+      --border-width: 2px;
+      --border-style: solid;
+      --background: #ffffff00;
+      --border-color: rgb(255, 255, 255);
+  }
+}
+
+.login-content {
+  --overflow: hidden;
+  --background: linear-gradient(to top right, #000066 -20%, #ff9999 100%);
+  
+  text-align: center;
+  
+  .login-logo {
+    position: absolute;
+    display: block;
+    top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
@@ -155,8 +331,8 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
     max-height: fit-content;
     text-align: center;
     background: linear-gradient(to top right, #354f7bff -30%, #ff9999 100%);
-    width: 177px !important;
-    height: 275px !important;
+    width: 275px !important;
+    height: 500px !important;
     margin-bottom: 15%;
     h2 {
       font-family: Arial, Helvetica, sans-serif;
@@ -184,7 +360,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
     .logo-btn {
       height: 60%;
       .card-img {
-        width: 50%;
+        width: 80%;
         margin: auto;
       }
       .card-btn {
@@ -1066,7 +1242,8 @@ ion-tab-bar, ion-tab-button{
       }
     }
     .mat-expansion-panel-content {
-      background: rgba(47, 79, 79, 0.4);
+      //background: rgba(47, 79, 79, 0.4);
+      background: white;
       display: flex;
       .mat-expansion-panel-body {
         margin-top: 15px;

@@ -1,0 +1,31 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Juego de Coger Turno Rápido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <br>
+  <ion-list style="text-align:justify; padding: 10%;">
+    <ion-label>{{juegoSeleccionado.Presentacion}}</ion-label>
+  </ion-list>
+  <br>
+  
+  <ion-list style="text-align:center">
+    <ion-label> <strong>Turnos disponibles</strong></ion-label>
+  </ion-list>
+
+
+  <ion-list  *ngIf = "listaOpciones">
+    <ion-item style = "width: 80%; padding-left: 20%;" (click) = "EnviarTurnoElegido (turno)" *ngFor = "let turno of listaOpciones">
+      <ion-label *ngIf = "!turno.persona && turno.dia !== '*'">{{turno.dia | date: 'dd-MM-yyyy'}}</ion-label>
+      <ion-label *ngIf = "!turno.persona && turno.dia !== '*'">{{turno.hora}}</ion-label>
+      <ion-label *ngIf = "turno.dia === '*'" > Ningún turno me vale</ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

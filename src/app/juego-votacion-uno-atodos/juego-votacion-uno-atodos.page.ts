@@ -11,11 +11,14 @@ import { JuegoDeVotacionUnoATodos, Alumno, AlumnoJuegoDeVotacionUnoATodos } from
   styleUrls: ['./juego-votacion-uno-atodos.page.scss'],
 })
 export class JuegoVotacionUnoATodosPage implements OnInit {
-  juegoSeleccionado: JuegoDeVotacionUnoATodos;
+  juegoSeleccionado: any;
   alumno: Alumno;
   inscripcionAlumnoJuegoDeVotacionUnoATodos: AlumnoJuegoDeVotacionUnoATodos;
   alumnos: Alumno[];
-  alumnosVotados: Alumno[];
+  alumnosVotados: any[];
+  puntos = 50;
+  alumnosConPuntos: any[];
+  puntosARepartir: number;
 
   constructor(
     public navCtrl: NavController,
@@ -27,6 +30,7 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
 
   ngOnInit() {
     this.juegoSeleccionado = this.sesion.DameJuego();
+    this.puntosARepartir = this.juegoSeleccionado.Puntos[0]
     this.alumno = this.sesion.DameAlumno();
     if (this.juegoSeleccionado.Modo === 'Individual') {
        // Traigo la inscripción del alumno
@@ -36,18 +40,34 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
         // traigo los alumnos del juego
         this.peticionesAPI.DameAlumnosJuegoDeVotacionUnoATodos (this.juegoSeleccionado.id)
         .subscribe (alumnos => {
-          if (!this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos) {
-            // el alumno aun no ha votado
-            this.alumnos = alumnos;
-          } else {
-            // Si ha votado preparlo la lista solo con los alumnos a los que ha votado
-            // para mostrar el resultado de su votación
-            this.alumnosVotados = [];
-            // tslint:disable-next-line:prefer-for-of
-            for (let i = 0; i < this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos.length; i++) {
-              const alumno = alumnos.filter (al => al.id === this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos[i])[0];
-              this.alumnosVotados.push (alumno);
-            }
+          this.alumnos = alumnos;
+        
+          if (this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos) {
+              // Si ha votado preparlo la lista solo con los alumnos a los que ha votado
+              // para mostrar el resultado de su votación
+              this.alumnosVotados = [];
+              // tslint:disable-next-line:prefer-for-of
+              for (let i = 0; i < this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos.length; i++) {
+                // tslint:disable-next-line:max-line-length
+                const alumno = this.alumnos.filter (al => al.id === this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos[i].alumnoId)[0];
+                this.alumnosVotados.push ({
+                  al: alumno,
+                  puntos: this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos[i].puntos
+                });
+              }
+              // tslint:disable-next-line:only-arrow-functions
+              this.alumnosVotados = this.alumnosVotados.sort(function(a, b) {
+                return b.puntos - a.puntos;
+              });
+          }
+          if (this.juegoSeleccionado.ModoReparto === 'Reparto libre') {
+            this.alumnosConPuntos = [];
+            this.alumnos.forEach (alumno =>
+              this.alumnosConPuntos.push ({
+                al: alumno,
+                puntos: 0
+              })
+            );
           }
         });
 
@@ -64,6 +84,19 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
      event.detail.complete();
   }
 
+  Incrementar(i) {
+    if (this.puntosARepartir > 0) {
+      this.alumnosConPuntos[i].puntos++;
+      this.puntosARepartir--;
+    }
+  }
+  Decrementar(i) {
+    if ( this.alumnosConPuntos[i].puntos > 0) {
+      this.alumnosConPuntos[i].puntos--;
+      this.puntosARepartir++;
+    }
+  }
+
   // función para enviar la votación. Es async porque usa una alarma
   async Enviar() {
     const confirm = await this.alertCtrl.create({
@@ -73,10 +106,24 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
           text: 'SI',
           handler: async () => {
             this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos = [];
-            // Guardo los identificadores de los alumnos a los que ha votado (que estan en las primeras posiciones de la lista)
-            // tslint:disable-next-line:prefer-for-of
-            for (let i = 0; i < this.juegoSeleccionado.Puntos.length; i++) {
-              this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos[i] = this.alumnos[i].id;
+            if (this.juegoSeleccionado.ModoReparto !== 'Reparto libre') {
+              // Guardo los identificadores de los alumnos a los que ha votado (que estan en las primeras posiciones de la lista)
+              // tslint:disable-next-line:prefer-for-of
+              for (let i = 0; i < this.juegoSeleccionado.Puntos.length; i++) {
+                this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos.push ({
+                  alumnoId: this.alumnos[i].id,
+                  puntos:  this.juegoSeleccionado.Puntos[i]
+                });
+              }
+            } else {
+              // tslint:disable-next-line:prefer-for-of
+              for (let i = 0; i < this.alumnosConPuntos.length; i++) {
+                this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos.push ({
+                  alumnoId: this.alumnosConPuntos[i].al.id,
+                  puntos:  this.alumnosConPuntos[i].puntos
+                });
+              }
+
             }
             // Notifico al server que el alumno ha votado
             this.comServer.Emitir('notificarVotacion', { votacion: this.inscripcionAlumnoJuegoDeVotacionUnoATodos});
@@ -90,14 +137,22 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
                   {
                     text: 'OK',
                     handler: async () => {
-                      // Ahora ya he votado. Preparo la lista de los alumnos votadodos
+                      // Ahora ya he votado. Preparo la lista de los alumnos votados
 
                       this.alumnosVotados = [];
                       // tslint:disable-next-line:prefer-for-of
                       for (let i = 0; i < this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos.length; i++) {
-                        const alumno = this.alumnos.filter (al => al.id === this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos[i])[0];
-                        this.alumnosVotados.push (alumno);
+                        // tslint:disable-next-line:max-line-length
+                        const alumno = this.alumnos.filter (al => al.id === this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos[i].alumnoId)[0];
+                        this.alumnosVotados.push ({
+                          al: alumno,
+                          puntos: this.inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos[i].puntos
+                        });
                       }
+                      // tslint:disable-next-line:only-arrow-functions
+                      this.alumnosVotados = this.alumnosVotados.sort(function(a, b) {
+                        return b.puntos - a.puntos;
+                      }); 
                     }
                   }
 

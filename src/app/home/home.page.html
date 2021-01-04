@@ -1,6 +1,10 @@
 
-<ion-content padding class="login-content">
+<ion-content padding class="login-content" *ngIf ="login">
   <div>
+    <!-- <ion-item>
+      <ion-label>step=100, snaps, </ion-label>
+      <ion-range min="1000" max="2000" step="100" snaps="true" color="secondary" [(ngModel)]="singleValue4"></ion-range>
+    </ion-item> -->
 
 
     <!-- Prueba de wheel selector -->
@@ -78,22 +82,133 @@
   <button type="button" (click)= empezar() > Obtener Coordenadas </button> -->
 
 
-    <div class="login-logo">
-      <img class="logo" width="150" height="150">
-    </div> 
+     <div class="login-logo">
+      <img class="logo" width="100" height="100">
+    </div>  
 
     <div class="login-credentials">
-      <ion-item lines="none">
-        <ion-input type="text" value="" name="User" placeholder="User" requiered [(ngModel)]="nombre"></ion-input>
+      <ion-item  lines="none">
+        <ion-input type="text" value="" name="User" placeholder="Nombre de usuario" requiered [(ngModel)]="username"></ion-input>
         <img class="user-input-logo" width="21" height="21" slot="end">
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
 
       <ion-item lines="none">
-        <ion-input type="password" name="password" placeholder="Password" requiered [(ngModel)]="apellido"></ion-input>
+        <ion-input type="password" name="password" placeholder="Contraseña" requiered [(ngModel)]="password"></ion-input>
         <img class="pass-input-logo" width="20" height="20" slot="end">
       </ion-item>
-      <ion-button (click)="Autentificar();" class="login-btn">Log In
+
+  
+     
+
+    
+      <ion-button  (click)="Autentificar();" class="login-btn">Log In
+      </ion-button>
+      <br>
+      <br>
+      <ion-label  (click)="EnviarContrasena();">¿Olvidaste tu contraseña?
+      </ion-label>
+
+   
+      <ion-button  *ngIf ="!juegoRapido" (click)="AccesoJuegoRapido();" class="login-btn">Juego Rápido
+      </ion-button>
+
+      <br>
+      <br>
+      <br>
+      <ion-label  (click)="AccesoRegistro();">Regístrate en Classpip
+      </ion-label>
+
+
+    </div> 
+    
+  </div>
+</ion-content>
+
+<ion-content padding class="login-content-juego-rapido" *ngIf ="juegoRapido">
+  <div>
+
+
+    <div class="login-logo">
+      <img class="logo" width="100" height="100">
+    </div> 
+
+    <div class="login-credentials">
+      <ion-item lines="none">
+        <ion-input type="text" value="" name="clave" placeholder="Clave" requiered [(ngModel)]="clave"></ion-input>
+        <img class="user-input-logo" width="21" height="21" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+
+      <ion-item lines="none">
+        <ion-input type="text" name="nickname" placeholder="Nickname" requiered [(ngModel)]="nickname"></ion-input>
+        <img class="pass-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+
+      <ion-button (click)="AutentificarJuegoRapido();" class="login-btn">Log In JUEGO RÁPIDO
+      </ion-button>
+      <ion-button (click)="VolverDeJuegoRapido();" class="login-btn">VOLVER A LOGIN
+      </ion-button>
+    </div> 
+    
+  </div>
+</ion-content>
+
+<ion-content padding class="login-content-registro" *ngIf ="registro">
+  <div>
+<!-- 
+
+    <div class="login-logo">
+      <img class="logo" width="150" height="150">
+    </div>  -->
+
+    <div class="login-credentials">
+      <ion-item lines="none">
+        <ion-input type="text" value="" name="nombre" placeholder="Nombre" requiered [(ngModel)]="nombre"></ion-input>
+        <img class="user-input-logo" width="21" height="21" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+
+      <ion-item lines="none">
+        <ion-input type="text" name="primerApellido" placeholder="Primer apellido" requiered [(ngModel)]="primerApellido"></ion-input>
+        <img class="user-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+
+      <ion-item lines="none">
+        <ion-input type="text" name="segundoApellido" placeholder="Segundo apellido" requiered [(ngModel)]="segundoApellido"></ion-input>
+        <img class="user-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+
+      <ion-item lines="none">
+        <ion-input type="text" name="username" placeholder="Nombre de usuario" requiered [(ngModel)]="username"></ion-input>
+        <img class="user-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+      <ion-item lines="none">
+        <ion-input type="text" name="email" placeholder="email" requiered [(ngModel)]="email"></ion-input>
+        <img class="user-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+      <ion-item lines="none">
+        <ion-input type="text" name="contrasena" placeholder="Contraseña" requiered [(ngModel)]="contrasena"></ion-input>
+        <img class="pass-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+      <ion-item lines="none">
+        <ion-input type="text" name="contrasenaRep" placeholder="Repite la contraseña" requiered [(ngModel)]="contrasenaRep"></ion-input>
+        <img class="pass-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+      <ion-row style="height: 5px"></ion-row>
+      <ion-item lines="none">
+        <ion-input type="text" name="identificador" placeholder="Identificador" requiered [(ngModel)]="identificador"></ion-input>
+        <img class="user-input-logo" width="20" height="20" slot="end">
+      </ion-item>
+
+      <ion-button (click)="Registro();" class="login-btn">REGISTRAR
+      </ion-button>
+      <ion-button (click)="VolverDeRegistro();" class="login-btn">VOLVER A LOGIN
       </ion-button>
     </div> 
     

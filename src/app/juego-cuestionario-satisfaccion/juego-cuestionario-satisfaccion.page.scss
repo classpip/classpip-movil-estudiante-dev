@@ -1,0 +1,82 @@
+
+  .especial {
+    margin-bottom: 10%; 
+    margin-bottom: 90px;
+    border-radius: 20px; 
+    background: cadetblue; 
+    text-transform: none; 
+    color: white;
+    font-size: 16px;
+    padding: 10px 30px;
+  }
+  .siguiente {
+    // background-color: rgb(62, 26, 192);
+    color: rgb(194, 18, 18);
+    font-size: 10px;
+    padding: 5px;
+    border-radius: 10px;
+    /* position: absolute;
+    bottom: 35px;
+    right: 25px; */
+    margin-top: 175px; 
+}
+
+.anterior {
+   // background-color: rgb(62, 26, 192);
+    color: rgb(194, 18, 18);
+    font-size: 10px;
+    padding: 5px;
+    border-radius: 10px;
+    /* position: absolute;
+    bottom: 35px;
+    left: 25px; */
+    margin-top: 175px; 
+}
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+.centrar{
+  justify-content: center;
+  display: flex!important;
+  align-items: center!important;
+}
+
+// .custon-nav{
+//     height: 48px;
+//     width: 20px;
+//     cursor: pointer;
+  
+//     vertical-align: middle;
+//     position: absolute;
+//     top: 50%;
+//     transform: translateY(-50%);
+//   }
+//   .prev-icon-custom{
+//     background: url(https://freakyjolly.com/demo/jquery/OwlCarousel2/nav-icon.png) no-repeat scroll 0px 0px;
+//   }
+//   .prev-icon-custom.disabled{
+//     opacity: 0.4;
+//     cursor: default;
+//   }
+//   .next-icon-custom{
+//     background: url(https://freakyjolly.com/demo/jquery/OwlCarousel2/nav-icon.png) no-repeat scroll -32px 0px;
+//   }
+//   .next-icon-custom.disabled{
+//     opacity: 0.4;
+//     cursor: default;
+//   }
+//   .slider-nav{
+//     ion-icon{
+//         height: 100%;
+//     }
+//   }
+  
+//   .slide-text{
+//     position: absolute;
+//     color: white;
+//     bottom: 30px;
+//   }
+  

@@ -11,7 +11,8 @@ import {
   AlumnoJuegoDeCompeticionFormulaUno, EquipoJuegoDeCompeticionFormulaUno, AlumnoJuegoDeGeocaching, Escenario, 
   MiAlumnoAMostrarJuegoDeGeocaching,
   PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares, JuegoDeVotacionUnoATodos, AlumnoJuegoDeVotacionUnoATodos,
-  Rubrica, JuegoDeVotacionTodosAUno, AlumnoJuegoDeVotacionTodosAUno
+  Rubrica, JuegoDeVotacionTodosAUno, AlumnoJuegoDeVotacionTodosAUno, JuegoDeCuestionarioSatisfaccion, AlumnoJuegoDeCuestionarioSatisfaccion,
+  CuestionarioSatisfaccion, JuegoDeEncuestaRapida
 
 
 } from '../clases';
@@ -19,6 +20,7 @@ import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
+import * as URL from '../URLs/urls';
 
 @Injectable({
   providedIn: 'root'
@@ -26,15 +28,7 @@ import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestion
 
 export class PeticionesAPIService {
 
-  // private base = 'http://localhost:';
-
-  // private base = 'http://147.83.118.92:';
-  //private base = 'http://192.168.1.35:'; 
-
-  private base = 'http://147.83.118.92:';
-  //private base = 'http://192.168.1.143:'; 
-    // private base = 'http://192.168.1.45:'; 
-
+  private base = URL.host;
 
   private APIUrlProfesores = this.base + '3000/api/Profesores';
   private APIUrlAlumnos = this.base +  '3000/api/Alumnos';
@@ -104,7 +98,16 @@ export class PeticionesAPIService {
   
   private APIUrlAlumnoJuegoDeVotacionTodosAUno = this.base + '3000/api/alumnosJuegoDeVotacionTodosAUno';
   private APIUrlJuegoDeVotacionTodosAUno = this.base + '3000/api/juegosDeVotacionTodosAUno';
-  
+
+  private APIUrlAlumnoJuegoDeCuestionarioSatisfaccion = this.base + '3000/api/alumnosJuegoDeCuestionarioSatisfaccion';
+  private APIUrlCuestionarioSatisfaccion = this.base + '3000/api/cuestionariosSatisfaccion';
+  private APIUrlImagenesPerfil = this.base + '3000/api/imagenes/ImagenesPerfil';
+  private APIUrlJuegoDeEncuestaRapida =  this.base + '3000/api/juegosDeEncuestaRapida';
+  private APIUrlJuegoDeVotacionRapida = this.base + '3000/api/juegosDeVotacionRapida';
+  private APIUrlJuegoDeCuestionarioRapido = this.base + '3000/api/juegosDeCuestionarioRapido';
+
+  private APIUrlJuegoDeCogerTurnoRapido = this.base + '3000/api/juegosDeCogerTurnoRapido';
+
   constructor(
     private http: HttpClient,
     private httpImagenes: Http
@@ -122,10 +125,27 @@ export class PeticionesAPIService {
     return this.http.get<Profesor>(this.APIUrlProfesores + '?filter[where][Nombre]=' + nombre + '&filter[where][Apellido]=' + apellido);
   }
 
-  public DameAlumno(nombre: string, apellido: string): Observable<Alumno> {
-    console.log('Entro a mostrar a ' + nombre + ' ' + apellido);
-    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Nombre]=' + nombre
-      + '&filter[where][PrimerApellido]=' + apellido);
+  public DameProfesorPorIdentificador(identificador: string): Observable<Profesor> {
+    return this.http.get<Profesor>(this.APIUrlProfesores + '?filter[where][Identificador]=' + identificador);
+  }
+
+  public DameAlumno(nombreUsuario: string, password: string): Observable<Alumno> {
+    
+    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Username]=' + nombreUsuario
+      + '&filter[where][Password]=' + password);
+  }
+  
+  public DameTodosLosAlumnos(): Observable<Alumno[]> {
+    return this.http.get<Alumno[]>(this.APIUrlAlumnos);
+  }
+
+  public CreaAlumno(alumno: Alumno): Observable<Alumno> {
+    return this.http.post<Alumno>(this.APIUrlAlumnos, alumno);
+  }
+
+  
+  public DameContrasena(nombre: string): Observable<Alumno> {
+    return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Username]=' + nombre );
   }
 
   public DameAlumnoAsignacion(nombre: string[]): Observable<Alumno> {
@@ -251,9 +271,13 @@ export class PeticionesAPIService {
   }
 
   // Devuelve el equipo de un alumno en un Juego de Puntos en concreto
-  public DameEquipoAlumnoJuegoDePuntos(alumnoJuegoDePuntos: number): Observable<Equipo> {
-    return this.http.get<Equipo>(this.APIUrlAlumnoJuegoDePuntos + '/' + alumnoJuegoDePuntos + '/alumno/equipos')
-      ;
+  public DameEquipoAlumnoJuegoDePuntos(alumnoJuegoDePuntosId: number): Observable<Equipo> {
+    return this.http.get<Equipo>(this.APIUrlAlumnoJuegoDePuntos + '/' + alumnoJuegoDePuntosId + '/alumno/equipos');
+  }
+
+  // Devuelve el equipo de un alumno en un Juego de Puntos en concreto
+  public DameEquipoAlumnoJuegoDeColeccion(alumnoJuegoDeColeccionId: number): Observable<Equipo> {
+    return this.http.get<Equipo>(this.APIUrlAlumnoJuegoDeColeccion + '/' + alumnoJuegoDeColeccionId + '/alumno/equipos');
   }
 
 
@@ -335,10 +359,15 @@ export class PeticionesAPIService {
     return this.http.post<any>(this.APIUrlLogosEquipos + '/upload', formData);
   }
 
+   
+  public BorraLogoEquipo(logo: string): Observable<any> {
+    return this.http.delete<any>(this.APIUrlLogosEquipos + '/files/' + logo);
+  }
+
 
   // SE USA PARA EDITAR UN EQUIPO
-  public ModificaEquipo(equipo: Equipo, grupoId: number, equipoId: number): Observable<Equipo> {
-    return this.http.put<Equipo>(this.APIUrlGrupos + '/' + grupoId + '/equipos/' + equipoId, equipo);
+  public ModificaEquipo(equipo: Equipo): Observable<Equipo> {
+    return this.http.put<Equipo>(this.APIUrlEquipos + '/' + equipo.id, equipo);
   }
 
   // RECUPERAMOS LAS ASIGNACIONES (COMO LA INSCRIPCIÓN DEL ALUMNO AL EQUIPO) DE UN GRUPO DETERMINADO
@@ -596,6 +625,13 @@ export class PeticionesAPIService {
   public DameColeccion(coleccionId: number): Observable<Coleccion> {
     return this.http.get<Coleccion>(this.APIRUrlColecciones + '/' + coleccionId);
   }
+  // VERSION ALTERNATIVA QUE USA EL MECANISMO DE PROMISE
+  public DameColeccionPromise(coleccionId: number): Promise<Coleccion> {
+    return this.http.get<Coleccion>(this.APIRUrlColecciones + '/' + coleccionId).toPromise();
+  }
+
+
+
   // CAMBIA EL ESTADO DEL JUEGO DE COLECCIÓN DE ACTIVO A INACTIVO O VICEVERSA
   public CambiaEstadoJuegoDeColeccion(juegoDeColeccion: Juego, juegoDeColeccionId: number, grupoId: number): Observable<Juego> {
     return this.http.put<Juego>(this.APIUrlGrupos + '/' + grupoId + '/juegoDeColeccions/' + juegoDeColeccionId, juegoDeColeccion);
@@ -616,6 +652,15 @@ export class PeticionesAPIService {
     return this.http.delete<Album>(this.APIRUrlAlbum + '/' + AlbumId);
   }
 
+  // Lo mismo para equipos
+  public DameAlbumEquipo(cromoId: number, equipoJuegoDeColeccionId: number): Observable<Album> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.get<Album>(this.APIRUrlAlbumEquipo + '?filter[where][cromoId]=' + cromoId + '&filter[where][equipoJuegoDeColeccionId]=' + equipoJuegoDeColeccionId);
+  }
+
+  public BorrarAlbumEquipo(AlbumEquipoId: number) {
+    return this.http.delete<Album>(this.APIRUrlAlbumEquipo + '/' + AlbumEquipoId);
+  }
 
   // ASIGNAMOS UN NUEVO CROMO PARA EL ÁLBUM DEL EQUIPO
   public AsignarCromoEquipo(album: AlbumEquipo) {
@@ -906,6 +951,8 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   public DameJuegosDeVotacionUnoATodosAlumno(alumnoId: number): Observable<JuegoDeVotacionUnoATodos[]> {
     return this.http.get<JuegoDeVotacionUnoATodos[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeVotacionUnoATodos');
   }
+
+
    // Da la inscripción de un alumno concreto
    public DameInscripcionAlumnoJuegoDeVotacionUnoATodos(juegoId: number, alumnoId: number): Observable<AlumnoJuegoDeVotacionUnoATodos[]> {
     return this.http.get<AlumnoJuegoDeVotacionUnoATodos[]>(this.APIUrlAlumnoJuegoDeVotacionUnoATodos
@@ -943,5 +990,86 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   }
 
 
+  public PonImagenPerfil(formData: FormData): Observable<any> {
+    return this.http.post<any>(this.APIUrlImagenesPerfil + '/upload', formData);
+  }
 
+  public ModificaAlumno(alumno: Alumno): Observable<Alumno> {
+    return this.http.put<Alumno>(this.APIUrlAlumnos + '/' + alumno.id, alumno);
+  }
+
+  // Juegos de cuestionario de satisfaccion
+  
+  public DameJuegosDeCuestiinarioSatisfaccionAlumno(alumnoId: number): Observable<JuegoDeCuestionarioSatisfaccion[]> {
+    return this.http.get<JuegoDeCuestionarioSatisfaccion[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeCuestionarioSatisfaccion');
+  }
+
+  // Da la inscripción de un alumno concreto
+  // tslint:disable-next-line:max-line-length
+  public DameInscripcionAlumnoJuegoDeCuestionarioSatisfaccion(juegoId: number, alumnoId: number): Observable<AlumnoJuegoDeCuestionarioSatisfaccion[]> {
+    return this.http.get<AlumnoJuegoDeCuestionarioSatisfaccion[]>(this.APIUrlAlumnoJuegoDeCuestionarioSatisfaccion
+    + '?filter[where][juegoDeCuestionarioSatisfaccionId]=' + juegoId +  '&filter[where][alumnoId]=' + alumnoId);
+  }
+
+  public DameAlumnosJuegoDeCuestionarioSatisfaccion(juegoId: number): Observable<Alumno[]> {
+    return this.http.get<Alumno[]>(this.APIUrlAlumnoJuegoDeCuestionarioSatisfaccion + '/' + juegoId + '/alumnos');
+  }
+
+  public DameCuestionarioSatisfaccion(cuestionarioId: number): Observable<CuestionarioSatisfaccion> {
+    return this.http.get<CuestionarioSatisfaccion>(this.APIUrlCuestionarioSatisfaccion + '/' + cuestionarioId);
+  }
+
+  // tslint:disable-next-line:max-line-length
+  public ModificaInscripcionAlumnoJuegoDeCuestionarioSatisfaccion(inscripcion: AlumnoJuegoDeCuestionarioSatisfaccion): Observable<AlumnoJuegoDeCuestionarioSatisfaccion> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<AlumnoJuegoDeCuestionarioSatisfaccion>(this.APIUrlAlumnoJuegoDeCuestionarioSatisfaccion + '/' + inscripcion.id, inscripcion);
+  }
+
+  public DameJuegoDeEncuestaRapida(clave: string): Observable<any[]> {
+    return this.http.get<any[]>(this.APIUrlJuegoDeEncuestaRapida
+    + '?filter[where][Clave]=' + clave);
+  }
+
+  
+  public ModificarJuegoDeEncuestaRapida( juego: JuegoDeEncuestaRapida): Observable<JuegoDeEncuestaRapida> {
+    // tslint:disable-next-line:max-line-length
+      return this.http.put<JuegoDeEncuestaRapida>(this.APIUrlJuegoDeEncuestaRapida, juego);
+    }
+
+  public DameJuegoDeVotacionRapida(clave: string): Observable<any[]> {
+    return this.http.get<any[]>(this.APIUrlJuegoDeVotacionRapida
+    + '?filter[where][Clave]=' + clave);
+  }
+  public ModificarJuegoVotacionRapida( juego: any): Observable<any> {
+    // tslint:disable-next-line:max-line-length
+      return this.http.put<any>(this.APIUrlJuegoDeVotacionRapida, juego);
+  }
+
+
+  public DameJuegoDeCuestionarioRapido(clave: string): Observable<any[]> {
+    return this.http.get<any[]>(this.APIUrlJuegoDeCuestionarioRapido
+    + '?filter[where][Clave]=' + clave);
+  }
+  public ModificarJuegoDeCuestionarioRapido( juego: any): Observable<any> {
+    // tslint:disable-next-line:max-line-length
+      return this.http.put<any>(this.APIUrlJuegoDeCuestionarioRapido, juego);
+  }
+
+
+  public DameJuegoDeCogerTurnoRapido(clave: string): Observable<any[]> {
+    return this.http.get<any[]>(this.APIUrlJuegoDeCogerTurnoRapido
+    + '?filter[where][Clave]=' + clave);
+  }
+
+  public DameRespuestasAlumnoJuegoDeCuestionario(alumnoJuegoDeCuestionarioId: number): Observable<RespuestaJuegoDeCuestionario[]> {
+    return this.http.get<RespuestaJuegoDeCuestionario[]>(this.APIUrlRespuestasJuegoDeCuestionario
+      + '?filter[where][alumnoJuegoDeCuestionarioId]=' + alumnoJuegoDeCuestionarioId);
+  }
+
+  public DameInscripcionesAlumnoJuegoDeCuestionario(juegoDeCuestionarioId: number): Observable<AlumnoJuegoDeCuestionario[]> {
+    return this.http.get<AlumnoJuegoDeCuestionario[]>(this.APIUrlAlumnoJuegoDeCuestionario
+                                                      + '?filter[where][juegoDeCuestionarioId]=' + juegoDeCuestionarioId);
+  }
+
+ 
 }

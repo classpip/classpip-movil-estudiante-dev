@@ -4,7 +4,7 @@ export class AlumnoJuegoDeVotacionUnoATodos {
     id: number;
     alumnoId: number;
     juegoDeVotacionUnoATodosId: number;
-    Votos: number[];
+    Votos: any[];
   
     constructor(alumnoId?: number, juegoDeVotacionUnoATodosId?: number) {
   

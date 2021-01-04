@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SesionService } from '../servicios/sesion.service';
 import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { PeticionesAPIService } from '../servicios/index';
@@ -6,6 +6,7 @@ import { CalculosService } from '../servicios/calculos.service';
 import { Juego, Equipo } from '../clases/index';
 import { Router } from '@angular/router';
 import { JuegoSeleccionadoPage } from '../juego-seleccionado/juego-seleccionado.page';
+import { IonSlides } from '@ionic/angular';
 
 
 @Component({
@@ -18,7 +19,14 @@ export class IniciPage implements OnInit {
   /* Creamos los array con los juegos activos e inactivos que solicitaremos a la API */
   id: number;
   JuegosActivos: Juego[] = [];
-  JuegosInactivos: Juego[] = [];
+  disablePrevBtn = true;
+  disableNextBtn = false;
+
+
+
+
+  @ViewChild(IonSlides, { static: false }) slides: IonSlides;
+
 
 
   //animals: any[];
@@ -29,35 +37,8 @@ export class IniciPage implements OnInit {
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService
-  ) {
-    // this.animals =
-    // [
-    //     "Aardvark",
-    //     "Albatross",
-    //     "Alligator",
-    //     "Alpaca",
-    //     "Ant",
-    //     "Donkey",
-    //     "Baboon",
-    //     "Badger",
-    //     "Bat",
-    //     "Bear",
-    //     "Bee",
-    //     "Butterfly",
-    //     "Camel",
-    //     "Chicken",
-    //     "Cockroach",
-    //     "Horse",
-    // ];
-   }
-  //  reorderItems(event) {
-  //    console.log(event);
-  //    console.log(`Moving item from ${event.detail.from} to ${event.detail.to}`);
-  //    const itemMove = this.animals.splice(event.detail.from, 1)[0];
-  //    console.log(itemMove);
-  //    this.animals.splice(event.detail.to, 0, itemMove);
-  //    event.detail.complete();
-  //  }
+  ) { }
+  
 
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
@@ -65,13 +46,7 @@ export class IniciPage implements OnInit {
     this.calculos.DameJuegosAlumno(this.id)
       .subscribe(listas => {
         this.JuegosActivos = listas.activos;
-        this.JuegosInactivos = listas.inactivos;
-        console.log('Muestro los Juegos pero luego me da que el length es 0??????');
-        console.log(this.JuegosActivos);
-        console.log(this.JuegosActivos.length);
-        // Si la lista aun esta vacia la dejo como indefinida para que me
-        // salga el mensaje de que aun no hay juegos
-      });
+    });
   }
 
 
@@ -95,9 +70,31 @@ export class IniciPage implements OnInit {
       this.navCtrl.navigateForward('/juego-votacion-uno-atodos');
     } else if (juego.Tipo === 'Juego De Votación Todos A Uno') {
       this.navCtrl.navigateForward('/juego-votacion-todos-auno');
+    } else if (juego.Tipo === 'Juego De Cuestionario de Satisfacción') {
+        this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }
   }
+  doCheck() {
+    // Para decidir si hay que mostrar los botones de previo o siguiente slide
+    const prom1 = this.slides.isBeginning();
+    const prom2 = this.slides.isEnd();
+  
+    Promise.all([prom1, prom2]).then((data) => {
+      data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
+      data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
+    });
+  }
+
+
+  next() {
+    this.slides.slideNext();
+  }
+
+  prev() {
+    this.slides.slidePrev();
+  }
+
 
 }

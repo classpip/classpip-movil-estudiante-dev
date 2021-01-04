@@ -54,10 +54,24 @@ export class HomePage {
   jsonData: any;
 
 
-  identificador: any;
   midiendo = false;
 
   contNotif = 0;
+  juegoRapido = false;
+  clave: string;
+  nickname: string;
+  registro = false;
+  login = true;
+
+  primerApellido: string;
+  segundoApellido: string;
+  username: string;
+  password: string;
+  email: string;
+  contrasena: string;
+  contrasenaRep: string;
+  identificador: string;
+  private alumnosEnClasspip: Alumno[];
 
 
   constructor(
@@ -73,7 +87,8 @@ export class HomePage {
     private media: Media,
     private comServer: ComServerService,
     private selector: WheelSelector,
-    private localNotifications: LocalNotifications
+    private localNotifications: LocalNotifications,
+   
     //private transfer: Transfer,
    // private camera: Camera
 
@@ -176,6 +191,9 @@ export class HomePage {
 
 
     ionViewDidEnter() {
+      this.peticionesAPI.DameTodosLosAlumnos()
+      .subscribe (alumnos => this.alumnosEnClasspip = alumnos);
+
 
       // this.StartTimer();
     }
@@ -421,49 +439,49 @@ replay() {
 
 }
 
-empezar () {
-  if (this.midiendo) {
-    navigator.geolocation.clearWatch (this.identificador);
-    this.midiendo = false;
-  } else {
-    this.midiendo = true;
-    let options = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0
-    };
+// empezar () {
+//   if (this.midiendo) {
+//     navigator.geolocation.clearWatch (this.identificador);
+//     this.midiendo = false;
+//   } else {
+//     this.midiendo = true;
+//     let options = {
+//       enableHighAccuracy: true,
+//       timeout: 5000,
+//       maximumAge: 0
+//     };
 
-    this.identificador = navigator.geolocation.watchPosition((position) => {
-      const lat =  position.coords.latitude;
+//     this.identificador = navigator.geolocation.watchPosition((position) => {
+//       const lat =  position.coords.latitude;
       
-      const lon =  position.coords.longitude;
-      this.coords.lat = position.coords.latitude;
-      this.coords.lng =  position.coords.longitude;
-      console.log('latitud ' + lat);
-      console.log('longitud ' + lon );
-      // tslint:disable-next-line:max-line-length
+//       const lon =  position.coords.longitude;
+//       this.coords.lat = position.coords.latitude;
+//       this.coords.lng =  position.coords.longitude;
+//       console.log('latitud ' + lat);
+//       console.log('longitud ' + lon );
+//       // tslint:disable-next-line:max-line-length
 
-    //this.distancia = this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud));
-    }, null, options);
-  }
-}
+//     //this.distancia = this.calculateDistance(lon, Number(this.puntogeolocalizable.Longitud), lat, Number(this.puntogeolocalizable.Latitud));
+//     }, null, options);
+//   }
+// }
 
-obtenerPosicion(): any{
-  console.log('entro en la funcion');
-  this.geolocation.getCurrentPosition().then(res => {
-    this.coords.lat = res.coords.latitude;
-    this.coords.lng = res.coords.longitude;
-    console.log(this.coords.lat);
-    console.log(this.coords.lng);
-    Swal.fire('Coordenadas ' + this.coords.lat + ', ' +  this.coords.lng);
+// obtenerPosicion(): any{
+//   console.log('entro en la funcion');
+//   this.geolocation.getCurrentPosition().then(res => {
+//     this.coords.lat = res.coords.latitude;
+//     this.coords.lng = res.coords.longitude;
+//     console.log(this.coords.lat);
+//     console.log(this.coords.lng);
+//     Swal.fire('Coordenadas ' + this.coords.lat + ', ' +  this.coords.lng);
 
-  })
-  .catch(
-    (error) => {
-      console.log(error);
-    }
-  );
-}
+//   })
+//   .catch(
+//     (error) => {
+//       console.log(error);
+//     }
+//   );
+// }
 
 
     async presentLoading() {
@@ -488,13 +506,83 @@ obtenerPosicion(): any{
 
       await alert.present();
     }
+    AutentificarJuegoRapido() {
+        console.log ('Juego rapido ' + this.clave + ' ' + this.nickname);
+        this.peticionesAPI.DameJuegoDeEncuestaRapida (this.clave)
+        .subscribe ((juego) => {
+          if (juego[0] !== undefined) {
+            console.log ('Ya tengo el juego');
+            console.log (juego[0]);
+            this.sesion.TomaJuego(juego[0]);
+            this.sesion.TomaNickName (this.nickname);
+            this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
+            // this.route.navigateByUrl('/tabs/inici');
+            this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
+
+          } else {
+            this.peticionesAPI.DameJuegoDeVotacionRapida (this.clave)
+            // tslint:disable-next-line:no-shadowed-variable
+            .subscribe (async (juego) => {
+              if (juego[0] !== undefined) {
+                console.log ('Ya tengo el juego');
+                console.log (juego[0]);
+                this.sesion.TomaJuego(juego[0]);
+                this.sesion.TomaNickName (this.nickname);
+                this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
+               
+                this.navCtrl.navigateForward('/juego-votacion-rapida');
+              } else {
+                  this.peticionesAPI.DameJuegoDeCuestionarioRapido (this.clave)
+                  // tslint:disable-next-line:no-shadowed-variable
+                  .subscribe (async (juego) => {
+                    if (juego[0] !== undefined) {
+                      console.log ('Ya tengo el juego');
+                      console.log (juego[0]);
+                      this.sesion.TomaJuego(juego[0]);
+                      this.sesion.TomaNickName (this.nickname);
+                      this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
+                    
+                      this.navCtrl.navigateForward('/juego-de-cuestionario');
+                      } else {
+                        this.peticionesAPI.DameJuegoDeCogerTurnoRapido (this.clave)
+                        // tslint:disable-next-line:no-shadowed-variable
+                        .subscribe (async (juego) => {
+                          if (juego[0] !== undefined) {
+                            console.log ('Ya tengo el juego');
+                            console.log (juego[0]);
+                            this.sesion.TomaJuego(juego[0]);
+                            this.sesion.TomaNickName (this.nickname);
+                            // hay que enviar la clave también para poder recibir notificaciones
+                            this.comServer.EnviarNickYRegistrar (juego[0].profesorId, this.nickname, this.clave);
+                            this.clave = undefined;
+                            this.nickname = undefined;
+                          
+                            this.navCtrl.navigateForward('/juego-coger-turno-rapido');
+                          } else {
+                              const alert = await this.alertController.create({
+                                header: 'Error',
+                                // subHeader: 'Subtitle',
+                                message: 'No existe ningun juego rápido con esa clave',
+                                buttons: ['OK']
+                              });
+                              await alert.present();
+                              this.clave = undefined;
+                              this.nickname = undefined;
+                          }
+                        });
+                      }
+                  });
+                }
+            });
+          }
+        });
+    }
 
     Autentificar() {
-
-
-      this.presentLoading();
-      this.peticionesAPI.DameAlumno(this.nombre, this.apellido).subscribe(
-        (res) => {
+       
+        this.presentLoading();
+        this.peticionesAPI.DameAlumno(this.username, this.password)
+        .subscribe( (res) => {
           if (res[0] !== undefined) {
             this.alumno = res[0];
             this.sesion.TomaAlumno(this.alumno);
@@ -521,10 +609,127 @@ obtenerPosicion(): any{
             }, 1500);
             console.log('alumno no existe');
           }
-        }
-      );
+        });
     }
 
+    AccesoJuegoRapido() {
+      this.juegoRapido = true;
+      this.login = false;
+    }
+    
+    AccesoRegistro() {
+      this.registro = true;
+      this.login = false;
+    }
+    VolverDeJuegoRapido() {
+      this.juegoRapido = false;
+      this.login = true;
+    }
+    VolverDeRegistro() {
+      this.registro = false;
+      this.login = true;
+    }
+
+    ValidaEmail(email) {
+      const re = /\S+@\S+\.\S+/;
+      return re.test(email);
+    }
+
+    UsernameUsado(username: string) {
+      return this.alumnosEnClasspip.some (alumno => alumno.Username === username);
+    }
+    async Registro() {
+      console.log ('registro');
+      console.log (this.nombre);
+      console.log (this.contrasena);
+      if (this.UsernameUsado (this.username)) {
+        const alert = await this.alertController.create({
+          header: 'Ya existe el nombre de usuario en Classpip',
+          buttons: ['OK']
+        });
+        await alert.present();
+
+      } else if (this.contrasena !== this.contrasenaRep) {
+        const alert = await this.alertController.create({
+          header: 'No coincide la contraseña con la contraseña repetida',
+          buttons: ['OK']
+        });
+        await alert.present();
+      } else if (!this.ValidaEmail (this.email)) {
+        const alert = await this.alertController.create({
+          header: 'El email es incorrecto',
+          buttons: ['OK']
+        });
+        await alert.present();
+      } else {
+          this.peticionesAPI.DameProfesorPorIdentificador (this.identificador)
+          .subscribe (
+              async profesor => {
+                console.log ('ya tengo el profesoer');
+                console.log (profesor[0]);
+                const nuevoAlumno = new Alumno (
+                  this.nombre,
+                  this.primerApellido,
+                  this.segundoApellido,
+                  this.username,
+                  this.contrasena,
+                  this.email,
+                  profesor[0].id
+                );
+                console.log ('voy a crear al alumno');
+                console.log (nuevoAlumno);
+                this.peticionesAPI.CreaAlumno (nuevoAlumno)
+                .subscribe(async () => {
+                  const alert = await this.alertController.create({
+                    header: 'Registro realizado con éxito',
+                    buttons: ['OK']
+                  });
+                  await alert.present();
+                  this.VolverDeRegistro();
+                });
+              },
+              async error => {
+                const alert = await this.alertController.create({
+                  header: 'El ID de profesor es incorrecto',
+                  buttons: ['OK']
+                });
+                await alert.present();
+              }
+          );
+      }
+    }
+
+    async EnviarContrasena() {
+      if (this.username === undefined) {
+        const alert = await this.alertController.create({
+          header: 'Atención: Introduce un nombre de usuario en el formulario',
+          buttons: ['OK']
+        });
+        await alert.present();
+      } else {
+        console.log ('voy a pedir contraseña');
+        this.peticionesAPI.DameContrasena (this.username)
+        .subscribe (async (res) => {
+            if (res[0] !== undefined) {
+              const alumno = res[0]; // Si es diferente de null, el alumno existe
+              // le enviamos la contraseña
+              this.comServer.RecordarContrasena (alumno);
+              const alert = await this.alertController.create({
+                header: 'En breve recibirás un email con tu contraseña',
+                buttons: ['OK']
+              });
+              await alert.present();
+            } else {
+              const alert = await this.alertController.create({
+                header: 'No hay ningun alumno con este nombre de usuario',
+                buttons: ['OK']
+              });
+              await alert.present();
+            }
+        });
+      }
+  
+    }
 }
 
 

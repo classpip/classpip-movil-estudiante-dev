@@ -7,7 +7,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="juegocoleccion-content" #content>
-<ion-button *ngIf ="coleccion.DosCaras" class="card-btn" style="color: grey;" (click)="Voltear()">Dar la vuelta a todos los cromos</ion-button>
+<ion-button *ngIf ="coleccion.DosCaras"  class="ranking-btn" (click)="Voltear()">Dar la vuelta a todos los cromos</ion-button>
+
     
 <div style = "width: 402px">
   <span  *ngFor="let tengo of tengoCromo; let i = index">

@@ -1,0 +1,175 @@
+
+
+
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Cuestionario de satisfacción</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  
+
+  <div *ngIf = "inscripcionAlumnoJuegoDeCuestionarioSatisfaccion && !inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.Contestado">
+  
+    <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 16px;font-size: 25px;z-index: 2;" (click)="prev()">
+      <i class="material-icons">skip_previous</i>
+    </div>
+    <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 16px;font-size: 25px;z-index: 2;" (click)="next()">
+      <i class="material-icons">skip_next</i>
+    </div>
+    <!-- (ionSlideDidChange)="getIndex()" -->
+ 
+    <ion-slides [options]="sliderConfig" #slides (ionSlideWillChange)="doCheck()" (ionSlideDidChange)="getIndex()"  *ngIf ="juegoSeleccionado && cuestionarioSatisfaccion">
+  
+
+      <ion-slide>
+        <div align = 'center' style = "margin-top: 50px;">
+          <p><b>Titulo: </b></p>
+          <p>{{juegoSeleccionado.NombreJuego}}</p>
+          <p *ngIf = "!encuestaRapida"><b>Descripción: </b></p>
+          <p *ngIf = "!encuestaRapida">{{juegoSeleccionado.Presentacion}}</p>
+          <p><b>Afirmaciones: </b>{{cuestionarioSatisfaccion.Afirmaciones.length}}</p>
+          <p><b>Preguntas abiertas: </b>{{cuestionarioSatisfaccion.PreguntasAbiertas.length}}</p>
+
+          <br>
+        
+        </div>
+      </ion-slide>
+
+  
+      <ion-slide *ngFor="let afirmacion of cuestionarioSatisfaccion.Afirmaciones; let i = index;" >
+   
+          
+        <ion-list style="text-align:center; width: 300px; height: 400px;margin-top: 50px;">
+
+        <!-- <ion-list style="text-align:center;background-image:url('../assets/img/fondo_libreta.jpg'); width: 300px; height: 500px;margin-top: 50px;"> -->
+
+         <p  align = "center" style="font-size: 18px;  margin-top: 50px;">
+            Afirmación {{i+1}}/{{cuestionarioSatisfaccion.Afirmaciones.length}} 
+          </p>
+      
+          <p style="font-size: 25px;">{{afirmacion}}</p>
+          <p align = "center" *ngIf = "valor" style="color: red; font-size: 58px;">{{valor}}</p>
+<!--           
+          <ion-item>
+            <i range-left class="material-icons">sentiment_very_dissatisfied</i>
+            <ion-range min="1" max="5" step="1" snaps="true" color="secondary" [(ngModel)]="valor"></ion-range>
+            <i range-right class="material-icons">sentiment_satisfied_alt</i>
+          </ion-item> -->
+
+        </ion-list>
+
+       
+      </ion-slide>
+
+      <ion-slide *ngFor="let pregunta of cuestionarioSatisfaccion.PreguntasAbiertas; let i = index">
+        <ion-list style="text-align:center; width: 300px; height: 500px; margin-top: 50px;">
+        <p  align = "center" style="font-size: 18px; margin-top: 50px;">
+          Pregunta abierta {{i+1}}/{{cuestionarioSatisfaccion.PreguntasAbiertas.length}} 
+        </p>
+        <p style="font-size: 25px;">{{pregunta}}</p>
+        <div>
+          <ion-textarea style = "border-style: solid; border-color: seagreen;text-align:left" rows="10" cols="20" class="md-textarea md-textarea-auto form-control" (change)="GuardaRespuestaAbierta(i,$event)"></ion-textarea>
+        </div> 
+        </ion-list>
+      
+      </ion-slide>
+
+
+
+      <ion-slide>
+        <ion-list *ngIf = "!inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.Contestado">
+
+          <button  *ngIf = "!encuestaRapida" class="especial" style="margin-top:200px;" (click) = "Registrar()">Enviar respuesta</button>
+          <button  *ngIf = "encuestaRapida" class="especial" style="margin-top:200px;" (click) = "EnviarRespuesta()">Enviar respuesta</button>
+        </ion-list>
+        <div *ngIf = "inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.Contestado" style="margin-top: 100px;">
+          <p align = "center">Gracias por responder al cuestionario</p>
+        </div>
+      </ion-slide>
+     
+    </ion-slides>
+    <ion-list class = "centrar">
+      <ion-item style= "width: 80%" *ngIf = "mostrarRange">
+        <i range-left class="material-icons md-36" style = "color: red">sentiment_very_dissatisfied</i>
+        <ion-range min="1" max="5" step="1" snaps="true" color="secondary" [(ngModel)]="valor"></ion-range>
+        <i range-right class="material-icons md-36" style = "color: green">sentiment_satisfied_alt</i>
+      </ion-item>
+    </ion-list>
+
+  </div>
+
+  <div *ngIf = "inscripcionAlumnoJuegoDeCuestionarioSatisfaccion && inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.Contestado">
+    
+    <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 16px;font-size: 25px;z-index: 2;" (click)="prev()">
+      <i class="material-icons">skip_previous</i>
+    </div>
+    <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 16px;font-size: 25px;z-index: 2;" (click)="next()">
+      <i class="material-icons">skip_next</i>
+    </div>
+    <ion-slides [options]="sliderConfig" #slides (ionSlideWillChange)="doCheck()" >
+    <ion-slide>
+      <div align = 'center'style = "margin-top: 50px;">
+        <p><b>Titulo: </b></p>
+        <p>{{juegoSeleccionado.NombreJuego}}</p>
+        <p *ngIf = "!encuestaRapida"><b>Descripción: </b></p>
+        <p *ngIf = "!encuestaRapida">{{juegoSeleccionado.Presentacion}}</p>
+        <p><b>Afirmaciones: </b>{{cuestionarioSatisfaccion.Afirmaciones.length}}</p>
+        <p><b>Preguntas abiertas: </b>{{cuestionarioSatisfaccion.PreguntasAbiertas.length}}</p>
+        <br>
+        <br>
+        <p><b>YA HAS CONTESTADO ESTE CUESTIONARIO </b></p>
+
+      </div>
+   
+      </ion-slide>
+         
+      <ion-slide *ngFor="let afirmacion of cuestionarioSatisfaccion.Afirmaciones; let i = index">
+        <ion-list style="text-align:center;background-image:url('../assets/img/fondo_libreta.jpg'); width: 300px; height: 500px;margin-top: 50px;">
+          <p  align = "center" style="font-size: 18px;  margin-top: 50px;">
+            Afirmación {{i+1}}/{{cuestionarioSatisfaccion.Afirmaciones.length}} 
+          </p>
+          <p style="font-size: 25px;">{{afirmacion}}</p>
+          <p align = "center"  style="color: red; font-size: 58px;">
+            {{inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.RespuestasAfirmaciones[i]}}
+          </p>
+        </ion-list>
+          
+          <div style = "margin-bottom: 10%;">
+          <!-- <button *ngIf = "i !== 0" class = "ion-float-left anterior" mat-button matStepperPrevious><i class=" material-icons">skip_previous</i></button>
+          <button ion-button  class = "ion-float-right siguiente" mat-button matStepperNext><i class=" material-icons" >skip_next</i></button> -->
+          </div>
+      </ion-slide>
+        
+      <ion-slide *ngFor="let pregunta of cuestionarioSatisfaccion.PreguntasAbiertas; let i = index">
+        <ion-list style="text-align:center; background-image:url('../assets/img/fondo_libreta.jpg'); width: 300px; height: 500px; margin-top: 50px; ">
+          <p  align = "center" style="font-size: 18px; margin-top: 50px;">
+            Pregunta abierta {{i+1}}/{{cuestionarioSatisfaccion.PreguntasAbiertas.length}} 
+          </p>
+          <p style="font-size: 25px;">{{pregunta}}</p>
+          <div>
+            <ion-textarea style = "border-style: solid; border-color: seagreen;text-align:left" rows="6" cols="20" class="md-textarea md-textarea-auto form-control">
+            {{inscripcionAlumnoJuegoDeCuestionarioSatisfaccion.RespuestasPreguntasAbiertas[i]}}
+            </ion-textarea>
+          </div> 
+        </ion-list>
+       
+      </ion-slide>
+         <!-- FINALIZACION DEL CUESTIONARIO -->
+         <ion-slide>
+          <div style="margin-top: 200px;">
+            <p align = "center">Gracias de nuevo por haber respondido el cuestionario</p>
+          </div>
+        </ion-slide>
+    </ion-slides>
+  </div>
+  
+
+
+
+</ion-content>

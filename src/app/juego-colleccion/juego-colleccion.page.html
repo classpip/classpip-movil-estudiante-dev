@@ -9,13 +9,26 @@
 
 <ion-content class="juegocoleccion-content" #content>
 
-<div *ngIf="juegoSeleccionado.Modo === 'Individual' && coleccion !== undefined">
-  <div *ngIf="alumno !== undefined">
+<!-- <div *ngIf="juegoSeleccionado.Modo === 'Individual' && coleccion !== undefined">
+  <div *ngIf="alumno !== undefined"> -->
+  <div *ngIf="preparado && coleccion">
+    <ion-button class="ranking-btn" (click)=MostrarAlbum()>Ver album</ion-button>
      
-    <ion-button class="card-btn" style="color: grey;" (click)=MostrarAlbum()>Ver album</ion-button>
+  
     <div  *ngIf = "coleccion.DosCaras"  >
+      <!-- <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 6px;font-size: 25px;z-index: 2;" (click)="prev()">
+        <i class="material-icons">skip_previous</i>
+      </div>
+      <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 6px;font-size: 25px;z-index: 2;" (click)="next()">
+        <i class="material-icons">skip_next</i>
+      </div> -->
       
-      <ion-slides>
+    <button *ngIf="!disablePrevBtn" class = "anterior" mat-raised-button  (click)="prev()">Anterior</button>
+    <button *ngIf="!disableNextBtn"  class = "siguiente" mat-raised-button  (click)="next()">Siguiente</button>
+  
+
+      
+      <ion-slides  #slides (ionSlideWillChange)="doCheck()">
         <!-- Prinero muestro los cromos que tiene el alumno -->
         <!-- Si hace click es que quiere regalar el cromo -->
         <!-- <ion-slide (click) = "RegalarCromo(elem, i)" *ngFor="let elem of cromosSinRepetidos;let i = index"> -->
@@ -51,8 +64,17 @@
     </div>
 
     <div  *ngIf = "!coleccion.DosCaras"  >
+      <!-- <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 16px;font-size: 25px;z-index: 2;" (click)="prev()">
+        <i class="material-icons">skip_previous</i>
+      </div>
+      <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 16px;font-size: 25px;z-index: 2;" (click)="next()">
+        <i class="material-icons">skip_next</i>
+      </div> -->
+      <button *ngIf="!disablePrevBtn" class = "anterior" mat-raised-button  (click)="prev()">Anterior</button>
+      <button *ngIf="!disableNextBtn"  class = "siguiente" mat-raised-button  (click)="next()">Siguiente</button>
     
-      <ion-slides>
+    
+      <ion-slides  #slides (ionSlideWillChange)="doCheck()">
         <!-- Prinero muestro los cromos que tiene el alumno -->
         <ion-slide *ngFor="let elem of cromosSinRepetidos;let i = index">
           <img [src]="cromosQueTengoImagenDelante[i]" style = "width:468px; height:675px; padding-right: 20px;">
@@ -67,5 +89,5 @@
 
 
   </div>
-</div>
+<!-- </div> -->
 </ion-content>
