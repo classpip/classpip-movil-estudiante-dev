@@ -16,12 +16,17 @@
      
   
     <div  *ngIf = "coleccion.DosCaras"  >
-      <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 6px;font-size: 25px;z-index: 2;" (click)="prev()">
+      <!-- <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 6px;font-size: 25px;z-index: 2;" (click)="prev()">
         <i class="material-icons">skip_previous</i>
       </div>
       <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 6px;font-size: 25px;z-index: 2;" (click)="next()">
         <i class="material-icons">skip_next</i>
-      </div>
+      </div> -->
+      
+    <button *ngIf="!disablePrevBtn" class = "anterior" mat-raised-button  (click)="prev()">Anterior</button>
+    <button *ngIf="!disableNextBtn"  class = "siguiente" mat-raised-button  (click)="next()">Siguiente</button>
+  
+
       
       <ion-slides  #slides (ionSlideWillChange)="doCheck()">
         <!-- Prinero muestro los cromos que tiene el alumno -->
@@ -59,12 +64,15 @@
     </div>
 
     <div  *ngIf = "!coleccion.DosCaras"  >
-      <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 16px;font-size: 25px;z-index: 2;" (click)="prev()">
+      <!-- <div *ngIf="!disablePrevBtn" style="position: absolute;top: 50%;left: 16px;font-size: 25px;z-index: 2;" (click)="prev()">
         <i class="material-icons">skip_previous</i>
       </div>
       <div *ngIf="!disableNextBtn" style="position: absolute;top: 50%;right: 16px;font-size: 25px;z-index: 2;" (click)="next()">
         <i class="material-icons">skip_next</i>
-      </div>
+      </div> -->
+      <button *ngIf="!disablePrevBtn" class = "anterior" mat-raised-button  (click)="prev()">Anterior</button>
+      <button *ngIf="!disableNextBtn"  class = "siguiente" mat-raised-button  (click)="next()">Siguiente</button>
+    
     
       <ion-slides  #slides (ionSlideWillChange)="doCheck()">
         <!-- Prinero muestro los cromos que tiene el alumno -->

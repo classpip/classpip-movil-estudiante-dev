@@ -23,6 +23,9 @@ export class MisGruposPage implements OnInit {
   equiposDelAlumno: Equipo[];
   equipoElegido: Equipo;
   alumnosEquipo: Alumno[];
+  mostrarAlumnos = true;
+  mostrarEquipos = false;
+  equiposDelGrupo: Equipo[];
 
   constructor(
     private peticionesAPI: PeticionesAPIService,
@@ -42,6 +45,9 @@ export class MisGruposPage implements OnInit {
         this.calculos.DameLosGruposYLosAlumnos(this.Grupos)
         .subscribe (lista => {
           this.listaGruposYAlumnos = lista;
+          console.log ('listaGruposYAlumnos');
+          console.log (this.listaGruposYAlumnos);
+         
         });
 
         this.calculos.DameLosGruposYLosEquipos(this.Grupos)
@@ -111,5 +117,15 @@ export class MisGruposPage implements OnInit {
     this.peticionesAPI.DameAlumnosEquipo (equipo.id)
     .subscribe (alumnos => this.alumnosEquipo = alumnos);
     this.accordion.closeAll();
+  }
+
+  TraeEquiposGrupo (nombreGrupo) {
+    const grupoId = this.Grupos.find (grupo => grupo.Nombre = nombreGrupo).id;
+    this.peticionesAPI.DameEquiposDelGrupo (grupoId)
+    .subscribe (equipos => {
+      this.equiposDelGrupo = equipos;
+      console.log ('equipos del grupo');
+      console.log (this.equiposDelGrupo);
+    });
   }
 }
