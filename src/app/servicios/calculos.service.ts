@@ -310,18 +310,30 @@ export class CalculosService {
                                                                                                           JuegosInactivos.push(lista[j]);
                                                                                                       }
                                                                                                   }
+                                                                                                  console.log('voy a por los juegos de evaluacion del grupo ' + this.equipos[i].grupoId);
+                                                                                                  this.peticionesAPI.DameJuegoDeEvaluacionGrupo(this.equipos[i].grupoId)
+                                                                                                      // tslint:disable-next-line:no-shadowed-variable
+                                                                                                      .subscribe(lista => {
+                                                                                                          console.log('ya tengo los juegos de evaluacion del grupo ', lista);
+                                                                                                          for (let j = 0; j < (lista.length); j++) {
+                                                                                                              if (lista[j].JuegoActivo === true) {
+                                                                                                                  JuegosActivos.push(lista[j]);
+                                                                                                              } else {
+                                                                                                                  JuegosInactivos.push(lista[j]);
+                                                                                                              }
+                                                                                                          }
 
 
-                                                                                                  // vemos si hemos acabado de recogar los juegos de todos los equipos
-                                                                                                  cont = cont + 1;
-                                                                                                  if (cont === this.equipos.length) {
-                                                                                                      const MisObservables = {
-                                                                                                          activos: JuegosActivos,
-                                                                                                          inactivos: JuegosInactivos
-                                                                                                      };
-                                                                                                      obs.next(MisObservables);
-                                                                                                  }
-
+                                                                                                          // vemos si hemos acabado de recogar los juegos de todos los equipos
+                                                                                                          cont = cont + 1;
+                                                                                                          if (cont === this.equipos.length) {
+                                                                                                              const MisObservables = {
+                                                                                                                  activos: JuegosActivos,
+                                                                                                                  inactivos: JuegosInactivos
+                                                                                                              };
+                                                                                                              obs.next(MisObservables);
+                                                                                                          }
+                                                                                                      });
                                                                                               }); // juegos de liga del equipo
                                                                                       }); // juegos de F1 del equipo
                                                                               }); // juegos de coleccion del equipo
