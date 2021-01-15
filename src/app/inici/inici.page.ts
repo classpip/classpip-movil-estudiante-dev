@@ -73,9 +73,9 @@ export class IniciPage implements OnInit {
     } else if (juego.Tipo === 'Juego De Cuestionario de Satisfacción') {
       this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
     } else if (juego.Tipo === 'Evaluacion') {
+      this.sesion.TomaJuegoEvaluacion(juego);
       this.navCtrl.navigateForward('/juego-evaluacion');
     } else {
-      console.log('JUEGO SELECCIONADO', juego);
       this.navCtrl.navigateForward('/juego-colleccion');
     }
   }

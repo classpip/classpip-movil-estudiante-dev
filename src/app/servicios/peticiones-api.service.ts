@@ -75,6 +75,8 @@ export class PeticionesAPIService {
   private APIRUrlAlbum = this.base + '3000/api/Albumes';
   private APIRUrlAlbumEquipo = this.base + '3000/api/albumsEquipo';
 
+  private APIUrlRubrica = this.base + '3000/api/Rubricas';
+
   private APIUrlJuegoDeCuestionario = this.base + '3000/api/JuegosDeCuestionario';
   private APIUrlAlumnoJuegoDeCuestionario = this.base + '3000/api/AlumnosJuegoDeCuestionario';
   private APIUrlCuestionario = this.base + '3000/api/Cuestionarios';
@@ -1081,6 +1083,9 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   }
   public DameJuegoDeEvaluacionGrupo(grupoId: number): Observable<JuegoDeEvaluacion[]> {
     return this.http.get<JuegoDeEvaluacion[]>(this.APIUrlGrupos + '/' + grupoId + '/juegosDeEvaluacion');
+  }
+  public DameRubrica(rubricaId: number): Observable<Rubrica> {
+    return this.http.get<Rubrica>(this.APIUrlRubrica + '/' + rubricaId);
   }
 
 }
