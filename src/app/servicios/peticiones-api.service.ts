@@ -22,6 +22,7 @@ import { Pregunta } from '../clases/Pregunta';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
 import * as URL from '../URLs/urls';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
+import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,7 @@ export class PeticionesAPIService {
   private APIRUrlAlbumEquipo = this.base + '3000/api/albumsEquipo';
 
   private APIUrlRubrica = this.base + '3000/api/Rubricas';
+  private APIUrlJuegoDeEvaluacion = this.base + '3000/api/JuegosDeEvaluacion';
 
   private APIUrlJuegoDeCuestionario = this.base + '3000/api/JuegosDeCuestionario';
   private APIUrlAlumnoJuegoDeCuestionario = this.base + '3000/api/AlumnosJuegoDeCuestionario';
@@ -1086,6 +1088,9 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   }
   public DameRubrica(rubricaId: number): Observable<Rubrica> {
     return this.http.get<Rubrica>(this.APIUrlRubrica + '/' + rubricaId);
+  }
+  public DameAlumnosJuegoEvaluado(juegoId: number): Observable<AlumnoJuegoEvaluado[]> {
+    return this.http.get<AlumnoJuegoEvaluado[]>(this.APIUrlJuegoDeEvaluacion + '/' + juegoId + '/alumnosJuegoEvaluado');
   }
 
 }
