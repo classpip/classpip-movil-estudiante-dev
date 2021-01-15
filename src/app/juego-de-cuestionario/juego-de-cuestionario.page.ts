@@ -61,7 +61,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   nickName: string;
   cuestionarioRapido = false;
   seleccion: boolean[][];
-  imagenesPreguntas: string [];
+  imagenesPreguntas: string [] = [];
 
   slideActual = 0;
   registrado = false;
@@ -73,6 +73,10 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   disablePrevBtn = true;
   disableNextBtn = false;
+
+  contestar: boolean[];
+  respuestasEmparejamientos: any[];
+
   @ViewChild(IonSlides, { static: false }) slides: IonSlides;
 
 
@@ -125,16 +129,25 @@ export class JuegoDeCuestionarioPage implements OnInit {
             .subscribe(res => {
               this.seleccion = [];
               this.PreguntasCuestionario = res;
+              this.contestar = Array(this.PreguntasCuestionario.length).fill (true);
 
               this.preguntasYRespuestas = [];
               this.PreguntasCuestionario.forEach (p => {
+                let r: any;
+                if (p.Tipo === 'Cuatro opciones') {
                 // tslint:disable-next-line:max-line-length
-                const r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
+                  r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
+                } else if (p.Tipo === 'Emparejamiento') {
+                  r = [];
+                  p.Emparejamientos.forEach (pareja => r.push (pareja.r));
+                }
                 this.preguntasYRespuestas.push ({
                   pregunta: p,
                   respuestas: r,
                 });
               });
+              console.log ('preguntas y respuestas preparadas');
+              console.log (this.preguntasYRespuestas);
               if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
                 this.DesordenarRespuestas ();
               } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
@@ -143,6 +156,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
                 console.log ('preguntas y respuestas desordenadas');
                 this.DesordenarPreguntasYRespuestas ();
               }
+              console.log ('todo preparado');
+              console.log (this.preguntasYRespuestas);
               this.imagenesPreguntas = [];
               for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
                   this.seleccion[i] = [];
@@ -176,16 +191,44 @@ export class JuegoDeCuestionarioPage implements OnInit {
                 console.log ('ya tengo las respuestas');
                 console.log (respuestas);
                 this.RespuestasAlumno = [];
+                this.respuestasEmparejamientos = [];
                 this.imagenesPreguntas = [];
+                this.contestar = [];
                 for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
                   this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.PreguntasCuestionario[i].Imagen;
-          
-                  // tslint:disable-next-line:max-line-length
-                  this.RespuestasAlumno[i] = respuestas.filter (respuesta => respuesta.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta;
-                  if (this.RespuestasAlumno[i] ===  this.PreguntasCuestionario[i].RespuestaCorrecta) {
-                    this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                  if (this.PreguntasCuestionario[i].Tipo === 'Emparejamiento') {
+                    // tslint:disable-next-line:max-line-length
+                    this.respuestasEmparejamientos[i] = respuestas.filter (r => r.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta;
+                    if (this.respuestasEmparejamientos[i] === undefined) {
+                      this.contestar[i] = false;
+                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+
+                    } else {
+                      this.contestar[i] = true;
+                      // Vamos a ver si a respuesta es correcta
+                      let cont = 0;
+                      for (let j = 0; j < this.PreguntasCuestionario[i].Emparejamientos.length; j++) {
+                        if (this.PreguntasCuestionario[i].Emparejamientos[j].r === this.respuestasEmparejamientos[i][j]) {
+                          cont++;
+                        }
+                      }
+                      if (cont === this.PreguntasCuestionario[i].Emparejamientos.length) {
+                        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                      } else {
+                        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                      }
+
+                    }
+
                   } else {
-                    this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                    // tslint:disable-next-line:max-line-length
+                    this.RespuestasAlumno[i] = respuestas.filter (respuesta => respuesta.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta[0];
+                    if (this.RespuestasAlumno[i] ===  this.PreguntasCuestionario[i].RespuestaCorrecta) {
+                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                    } else {
+                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                    }
+
                   }
                 }
               });
@@ -211,21 +254,68 @@ export class JuegoDeCuestionarioPage implements OnInit {
             this.descripcion = res.Descripcion;
           });
           // Obtenemos las preguntas del cuestionario y ordenamos preguntas/respuestas en funcion a lo establecido en el cuestionario
+        // this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
+        //   // tslint:disable-next-line:no-shadowed-variable
+        //   .subscribe(res => {
+        //     this.seleccion = [];
+        //     this.PreguntasCuestionario = res;
+
+        //     this.preguntasYRespuestas = [];
+        //     this.PreguntasCuestionario.forEach (p => {
+        //       // tslint:disable-next-line:max-line-length
+        //       const r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
+        //       this.preguntasYRespuestas.push ({
+        //         pregunta: p,
+        //         respuestas: r,
+        //       });
+        //     });
+        //     if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
+        //       this.DesordenarRespuestas ();
+        //     } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
+        //       this.DesordenarPreguntas ();
+        //     } else {
+        //       console.log ('preguntas y respuestas desordenadas');
+        //       this.DesordenarPreguntasYRespuestas ();
+        //     }
+        //     console.log ('preguntas y respuestas');
+        //     console.log (this.preguntasYRespuestas);
+        //     this.imagenesPreguntas = [];
+        //     for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
+        //         this.seleccion[i] = [];
+        //         for (let j = 0; j < 4; j++) {
+        //             this.seleccion[i][j] = false;
+        //         }
+        //         this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.preguntasYRespuestas[i].pregunta.Imagen;
+        //     }
+        //   });
+
+
+
+
         this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
           // tslint:disable-next-line:no-shadowed-variable
-          .subscribe(res => {
+        .subscribe(res => {
             this.seleccion = [];
             this.PreguntasCuestionario = res;
+            this.contestar = Array(this.PreguntasCuestionario.length).fill (true);
 
             this.preguntasYRespuestas = [];
             this.PreguntasCuestionario.forEach (p => {
+              let r: any;
+              if (p.Tipo === 'Cuatro opciones') {
               // tslint:disable-next-line:max-line-length
-              const r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
+                r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
+              } else if (p.Tipo === 'Emparejamiento') {
+                r = [];
+                p.Emparejamientos.forEach (pareja => r.push (pareja.r));
+              }
               this.preguntasYRespuestas.push ({
                 pregunta: p,
                 respuestas: r,
               });
             });
+            console.log ('preguntas y respuestas preparadas');
+            console.log (this.preguntasYRespuestas);
             if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
               this.DesordenarRespuestas ();
             } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
@@ -234,6 +324,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
               console.log ('preguntas y respuestas desordenadas');
               this.DesordenarPreguntasYRespuestas ();
             }
+            console.log ('todo preparado');
+            console.log (this.preguntasYRespuestas);
             this.imagenesPreguntas = [];
             for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
                 this.seleccion[i] = [];
@@ -242,13 +334,15 @@ export class JuegoDeCuestionarioPage implements OnInit {
                 }
                 this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.preguntasYRespuestas[i].pregunta.Imagen;
             }
-          });
+        });
     }
   }
 
   DesordenarVector(vector: any[]) {
     // genera una permutación aleatoria de los elementos del vector
 
+    console.log ('estoy en funcion desordenar');
+    console.log (vector);
     let currentIndex = vector.length;
     let temporaryValue;
     let randomIndex;
@@ -262,14 +356,19 @@ export class JuegoDeCuestionarioPage implements OnInit {
       vector[currentIndex] = vector[randomIndex];
       vector[randomIndex] = temporaryValue;
     }
+    console.log ('he terminado');
   }
 
   DesordenarPreguntas () {
     this.DesordenarVector (this.preguntasYRespuestas);
   }
   DesordenarRespuestas() {
-    this.preguntasYRespuestas.forEach (pregunta => {
-      this.DesordenarVector (pregunta.respuestas);
+    this.preguntasYRespuestas.forEach (item => {
+      if (item.pregunta.Tipo === 'Cuatro opciones' || item.pregunta.Tipo === 'Emparejamiento') {
+        console.log ('voy a desordenar respuestas');
+        this.DesordenarVector (item.respuestas);
+        console.log (item.respuestas);
+      }
     });
   }
 
@@ -284,6 +383,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // ha elegido la respuesta j
 
     const j = event.detail.value;
+    console.log ('item marcado');
+    console.log (event);
     console.log (j);
     this.RespuestasAlumno[i] = this.preguntasYRespuestas[i].respuestas[j];
 
@@ -297,6 +398,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
 
   ponerNota() {
+ 
     this.alertCtrl.create({
       header: '¿Seguro que quieres enviar ya tus respuestas?',
       buttons: [
@@ -333,20 +435,41 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
     // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
     for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-      if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
-        console.log ('respuesta a la pregunta ' + i + ' es correcta');
-        console.log (this.preguntasYRespuestas[i].pregunta);
-        this.Nota = this.Nota + this.puntuacionCorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
-      // } else if (this.RespuestasAlumno[i] === undefined) {
-      //   this.feedbacks.push(' ');
-      //   this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
-      } else {
-        console.log ('respuesta a la pregunta ' + i + ' es incorrecta');
-        console.log (this.preguntasYRespuestas[i].pregunta);
-        this.Nota = this.Nota - this.puntuacionIncorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        const final = this.preguntasYRespuestas[i].pregunta.Emparejamientos.length;
+        if (!this.contestar[i]) {
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
 
+        } else {
+          // tslint:disable-next-line:no-shadowed-variable
+          let cont = 0;
+          for (let j = 0; j < this.preguntasYRespuestas[i].pregunta.Emparejamientos.length; j++) {
+            if (this.preguntasYRespuestas[i].pregunta.Emparejamientos[j].r === this.preguntasYRespuestas[i].respuestas[j]) {
+              cont++;
+            }
+          }
+          if (cont === this.preguntasYRespuestas[i].pregunta.Emparejamientos.length) {
+            this.Nota = this.Nota + this.puntuacionCorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+          } else {
+            this.Nota = this.Nota - this.puntuacionIncorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+          }
+        }
+      } else {
+        if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+          console.log ('respuesta a la pregunta ' + i + ' es correcta');
+          console.log (this.preguntasYRespuestas[i].pregunta);
+          this.Nota = this.Nota + this.puntuacionCorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+        } else if (this.RespuestasAlumno[i] === undefined) {
+          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+        } else {
+          console.log ('respuesta a la pregunta ' + i + ' es incorrecta');
+          console.log (this.preguntasYRespuestas[i].pregunta);
+          this.Nota = this.Nota - this.puntuacionIncorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+        }
       }
     }
     if (this.Nota <= 0) {
@@ -369,9 +492,19 @@ export class JuegoDeCuestionarioPage implements OnInit {
       if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
         this.RespuestasAlumno[i] = '-';
       }
+      let respuestas;
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        if (this.contestar[i]) {
+          respuestas = this.preguntasYRespuestas[i].respuestas;
+        } else {
+          respuestas = undefined;
+        }
+      } else {
+        respuestas = [];
+        respuestas [0] = this.RespuestasAlumno[i];
+      }
       // tslint:disable-next-line:max-line-length
-      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id,
-        this.RespuestasAlumno[i]))
+      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
         .subscribe(res => {
           console.log ('ya he guardado respuesta');
           console.log(res);
@@ -541,19 +674,59 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
     // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
    
-
+    // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
+    // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
     for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-      if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        const final = this.preguntasYRespuestas[i].pregunta.Emparejamientos.length;
+        if (!this.contestar[i]) {
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
 
-        this.Nota = this.Nota + this.puntuacionCorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+        } else {
+          // tslint:disable-next-line:no-shadowed-variable
+          let cont = 0;
+          for (let j = 0; j < this.preguntasYRespuestas[i].pregunta.Emparejamientos.length; j++) {
+            if (this.preguntasYRespuestas[i].pregunta.Emparejamientos[j].r === this.preguntasYRespuestas[i].respuestas[j]) {
+              cont++;
+            }
+          }
+          if (cont === this.preguntasYRespuestas[i].pregunta.Emparejamientos.length) {
+            this.Nota = this.Nota + this.puntuacionCorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+          } else {
+            this.Nota = this.Nota - this.puntuacionIncorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+          }
+        }
       } else {
-
-        this.Nota = this.Nota - this.puntuacionIncorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
-
+        if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+          console.log ('respuesta a la pregunta ' + i + ' es correcta');
+          console.log (this.preguntasYRespuestas[i].pregunta);
+          this.Nota = this.Nota + this.puntuacionCorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+        } else if (this.RespuestasAlumno[i] === undefined) {
+          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+        } else {
+          console.log ('respuesta a la pregunta ' + i + ' es incorrecta');
+          console.log (this.preguntasYRespuestas[i].pregunta);
+          this.Nota = this.Nota - this.puntuacionIncorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+        }
       }
     }
+
+    // for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
+    //   if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+
+    //     this.Nota = this.Nota + this.puntuacionCorrecta;
+    //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+    //   } else {
+
+    //     this.Nota = this.Nota - this.puntuacionIncorrecta;
+    //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+
+    //   }
+    // }
     if (this.Nota <= 0) {
       this.Nota = 0;
     }
@@ -561,13 +734,55 @@ export class JuegoDeCuestionarioPage implements OnInit {
     const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
 
     // Marcamos con '-' las respuestas que han quedado en blanco
-    for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+    // for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+    //   console.log ('respuesta a la pregunta ' + i);
+    //   console.log (this.RespuestasAlumno[i]);
+    //   if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
+    //     this.RespuestasAlumno[i] = '-';
+    //   }
+    // }
+
+
+
+    const todasLasRespuestas: any [] = [];
+    for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
       console.log ('respuesta a la pregunta ' + i);
       console.log (this.RespuestasAlumno[i]);
       if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
         this.RespuestasAlumno[i] = '-';
       }
+      let respuestas;
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        if (this.contestar[i]) {
+          respuestas = this.preguntasYRespuestas[i].respuestas;
+        } else {
+          respuestas = undefined;
+        }
+      } else {
+        respuestas = [];
+        respuestas [0] = this.RespuestasAlumno[i];
+      }
+      todasLasRespuestas.push (respuestas);
+      // // tslint:disable-next-line:max-line-length
+      // this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
+      //   .subscribe(res => {
+      //     console.log ('ya he guardado respuesta');
+      //     console.log(res);
+      //     cont++;
+      //     if (cont === this.PreguntasCuestionario.length)  {
+      //       this.registrado = true;
+      //       // Notificamos respuesta al servidor
+      //       this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota, tiempo: tiempoEmpleado});
+      //       console.log ('vamos a la pantalla de resultado');
+      //       this.slides.slideTo (this.PreguntasCuestionario.length + 2);
+      //     }
+      //   });
     }
+
+
+
+
+
 
     const preguntas: number[] = [];
     this.preguntasYRespuestas.forEach (item => preguntas.push (item.pregunta.id));
@@ -576,7 +791,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
       Nota: this.Nota,
       Tiempo: tiempoEmpleado,
       Preguntas: preguntas,
-      Respuestas: this.RespuestasAlumno
+      Respuestas: todasLasRespuestas
     };
 
     this.comServer.Emitir ('respuestaCuestionarioRapido',
@@ -608,8 +823,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
           text: 'OK',
           role: 'cancel',
           handler: () => {
-          
-       
+
           }
         }
       ]
@@ -621,6 +835,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.comServer.DesconectarJuegoRapido();
     this.route.navigateByUrl('/home');
   }
+
+  Volver() {
+  
+    this.route.navigateByUrl('/inici');
+  }
+
 
   EstoyConPregunta() {
     if ((this.slideActual >= 1) && (this.slideActual <= this.PreguntasCuestionario.length)) {
@@ -704,5 +924,39 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   }
 
+ // Esta función se ejecuta cuando movemos a los conceptos de sitio
+ reorderItems(event, i) {
+    console.log ('voy a mover');
+    console.log (this.preguntasYRespuestas[i].respuestas);
+    const itemMove = this.preguntasYRespuestas[i].respuestas.splice(event.detail.from, 1)[0];
+    console.log ('from ' + event.detail.from);
+    
+    console.log ('item ' + itemMove);
+    console.log ('to ' + event.detail.to);
+    this.preguntasYRespuestas[i].respuestas.splice(event.detail.to, 0, itemMove);
+    console.log (this.preguntasYRespuestas[i].respuestas);
+    event.detail.complete();
+  }
+  MarcarVerdaderoOFalso(event, i) {
+    // ha elegido la respuesta j
+
+    console.log ('item marcado');
+    console.log (event.detail.value);
+    const j = Number(event.detail.value);
+    if (j === 0) {
+      this.RespuestasAlumno[i] = 'verdadero';
+      this.seleccion[i][0] = true;
+      this.seleccion[i][1] = false;
+      console.log ('marco verdadero');
+
+    } else {
+      this.RespuestasAlumno[i] = 'falso';
+      this.seleccion[i][0] = false;
+      this.seleccion[i][1] = true;
+      console.log ('marco falso');
+    }
+
+  }
+  
 
 }
