@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
-import {Alumno, Juego, Rubrica} from '../clases';
+import {Alumno, Rubrica} from '../clases';
 import {PeticionesAPIService, SesionService} from '../servicios';
 import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
 import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
@@ -15,7 +15,7 @@ export class JuegoEvaluacionPage implements OnInit {
   juego: JuegoDeEvaluacion;
   alumno: Alumno;
   rubrica: Rubrica;
-  alumnosJuegoEvaluado: AlumnoJuegoEvaluado[];
+  alumnosJuegoEvaluado: AlumnoJuegoEvaluado[] = [];
   equiposJuegoEvaluado: EquipoJuegoEvaluado[];
 
   constructor(
