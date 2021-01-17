@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
 import {Alumno, Equipo, Rubrica} from '../clases';
 import {PeticionesAPIService, SesionService} from '../servicios';
@@ -13,10 +13,11 @@ import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
 export class JuegoEvaluacionPage implements OnInit {
 
   juego: JuegoDeEvaluacion;
-  alumno: Alumno;
+  alumno: Alumno = new Alumno();
   equipoId: number;
   rubrica: Rubrica;
   alumnosJuegoEvaluado: AlumnoJuegoEvaluado[] = [];
+  alumnos: Alumno[] = [];
   equiposJuegoEvaluado: EquipoJuegoEvaluado[] = [];
   equiposPorEquipos: boolean;
 
@@ -25,7 +26,16 @@ export class JuegoEvaluacionPage implements OnInit {
       private peticionesAPI: PeticionesAPIService
   ) { }
 
-  async ngOnInit() {
+  DameNombreCompleto(id): string {
+      const alumno: Alumno = this.alumnos.find(item => item.id === id);
+      return alumno.Nombre + ' ' + alumno.PrimerApellido + ' ' + alumno.SegundoApellido;
+  }
+
+  DameMiNombreCompleto(): string {
+      return this.DameNombreCompleto(this.alumno.id);
+  }
+
+  ngOnInit() {
       this.juego = this.sesion.DameJuegoEvaluacion();
       this.alumno = this.sesion.DameAlumno();
       console.log(this.juego, this.alumno);
@@ -39,6 +49,13 @@ export class JuegoEvaluacionPage implements OnInit {
               .subscribe((alumnos: AlumnoJuegoEvaluado[]) => {
                   this.alumnosJuegoEvaluado = alumnos;
                   console.log(this.alumnosJuegoEvaluado);
+                  alumnos.forEach(alumno => {
+                      this.peticionesAPI.DameAlumnoConId(alumno.alumnoEvaluadoId)
+                          .subscribe(res => {
+                              this.alumnos.push(res);
+                              console.log(res);
+                          });
+                  });
               });
       } else if (this.juego.Modo === 'Equipos') {
           this.peticionesAPI.DameEquipo(this.juego.grupoId, this.alumno.id)
