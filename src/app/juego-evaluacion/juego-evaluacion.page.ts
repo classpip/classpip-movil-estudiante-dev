@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
-import {Alumno, Rubrica} from '../clases';
+import {Alumno, Equipo, Rubrica} from '../clases';
 import {PeticionesAPIService, SesionService} from '../servicios';
 import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
 import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
@@ -14,9 +14,11 @@ export class JuegoEvaluacionPage implements OnInit {
 
   juego: JuegoDeEvaluacion;
   alumno: Alumno;
+  equipoId: number;
   rubrica: Rubrica;
   alumnosJuegoEvaluado: AlumnoJuegoEvaluado[] = [];
-  equiposJuegoEvaluado: EquipoJuegoEvaluado[];
+  equiposJuegoEvaluado: EquipoJuegoEvaluado[] = [];
+  equiposPorEquipos: boolean;
 
   constructor(
       private sesion: SesionService,
@@ -39,10 +41,16 @@ export class JuegoEvaluacionPage implements OnInit {
                   console.log(this.alumnosJuegoEvaluado);
               });
       } else if (this.juego.Modo === 'Equipos') {
+          this.peticionesAPI.DameEquipo(this.juego.grupoId, this.alumno.id)
+              .subscribe((equipo: Equipo[]) => {
+                  this.equipoId = equipo[0].id;
+                  console.log('EquipoId', this.equipoId);
+              });
           this.peticionesAPI.DameEquiposJuegoEvaluado(this.juego.id)
               .subscribe((equipos: EquipoJuegoEvaluado[]) => {
                   this.equiposJuegoEvaluado = equipos;
                   console.log(this.equiposJuegoEvaluado);
+                  this.equiposPorEquipos = equipos[0].alumnosEvaluadoresIds === null;
               });
       }
   }

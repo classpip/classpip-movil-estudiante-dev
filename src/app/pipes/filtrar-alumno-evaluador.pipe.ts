@@ -6,11 +6,14 @@ import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
 })
 export class FiltrarAlumnoEvaluadorPipe implements PipeTransform {
 
-  transform(alumnosJuegoEvaluado: AlumnoJuegoEvaluado[], evaluadorId: number): AlumnoJuegoEvaluado[] {
-    if (!alumnosJuegoEvaluado || !evaluadorId) {
-      return alumnosJuegoEvaluado;
+  transform(
+      alumnos: AlumnoJuegoEvaluado[],
+      evaluadorId: number
+      ): AlumnoJuegoEvaluado[] {
+    if (!alumnos || !evaluadorId) {
+      return alumnos;
     }
-    return alumnosJuegoEvaluado.filter(item => item.alumnosEvaluadoresIds.includes(evaluadorId));
+    return alumnos.filter(alumno => alumno.alumnosEvaluadoresIds.includes(evaluadorId));
   }
 
 }

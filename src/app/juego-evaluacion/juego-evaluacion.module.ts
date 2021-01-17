@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { JuegoEvaluacionPage } from './juego-evaluacion.page';
 import {FiltrarAlumnoEvaluadorPipe} from '../pipes/filtrar-alumno-evaluador.pipe';
+import {FiltrarEquipoEvaluadorPipe} from '../pipes/filtrar-equipo-evaluador.pipe';
 
 const routes: Routes = [
   {
@@ -22,6 +23,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [JuegoEvaluacionPage, FiltrarAlumnoEvaluadorPipe]
+  declarations: [JuegoEvaluacionPage, FiltrarAlumnoEvaluadorPipe, FiltrarEquipoEvaluadorPipe]
 })
 export class JuegoEvaluacionPageModule {}

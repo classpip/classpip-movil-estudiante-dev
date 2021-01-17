@@ -8,9 +8,24 @@
 </ion-header>
 
 <ion-content>
+  <!--JUEGO INDIVIDUAL-->
   <ion-list *ngIf="juego.Modo === 'Individual'">
     <ion-item *ngFor="let alumno of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:alumno.id">
       <ion-label>{{alumno.alumnoEvaluadoId}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <!--JUEGO EQUIPOS EVALUADOS POR ALUMNOS -->
+  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == false">
+    <p>JUEGO EQUIPOS EVALUADOS POR ALUMNOS</p>
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:alumno.id, equipoId:null}">
+      <ion-label>{{equipo.equipoEvaluadoId}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <!--JUEGO EQUIPOS EVALUADOS POR EQUIPOS -->
+  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == true">
+    <p>JUEGO EQUIPOS EVALUADOS POR EQUIPOS</p>
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: equipoId}">
+      <ion-label>{{equipo.equipoEvaluadoId}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>
