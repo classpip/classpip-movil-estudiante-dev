@@ -13,12 +13,13 @@ import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
 export class JuegoEvaluacionPage implements OnInit {
 
   juego: JuegoDeEvaluacion;
-  alumno: Alumno = new Alumno();
-  equipoId: number;
+  miAlumno: Alumno = new Alumno();
+  miEquipo: Equipo = null;
   rubrica: Rubrica;
   alumnosJuegoEvaluado: AlumnoJuegoEvaluado[] = [];
   alumnos: Alumno[] = [];
   equiposJuegoEvaluado: EquipoJuegoEvaluado[] = [];
+  equipos: Equipo[] = [];
   equiposPorEquipos: boolean;
 
   constructor(
@@ -28,17 +29,24 @@ export class JuegoEvaluacionPage implements OnInit {
 
   DameNombreCompleto(id): string {
       const alumno: Alumno = this.alumnos.find(item => item.id === id);
+      if (typeof alumno === 'undefined') {
+          return;
+      }
       return alumno.Nombre + ' ' + alumno.PrimerApellido + ' ' + alumno.SegundoApellido;
   }
 
-  DameMiNombreCompleto(): string {
-      return this.DameNombreCompleto(this.alumno.id);
+  DameNombreEquipo(id): string {
+      const equipo: Equipo = this.equipos.find(item => item.id === id);
+      if (typeof equipo === 'undefined') {
+          return;
+      }
+      return equipo.Nombre;
   }
 
   ngOnInit() {
       this.juego = this.sesion.DameJuegoEvaluacion();
-      this.alumno = this.sesion.DameAlumno();
-      console.log(this.juego, this.alumno);
+      this.miAlumno = this.sesion.DameAlumno();
+      console.log(this.juego, this.miAlumno);
       this.peticionesAPI.DameRubrica(this.juego.rubricaId)
           .subscribe((rubrica: Rubrica) => {
               this.rubrica = rubrica;
@@ -58,16 +66,22 @@ export class JuegoEvaluacionPage implements OnInit {
                   });
               });
       } else if (this.juego.Modo === 'Equipos') {
-          this.peticionesAPI.DameEquipo(this.juego.grupoId, this.alumno.id)
+          this.peticionesAPI.DameEquipoDeAlumno(this.juego.grupoId, this.miAlumno.id)
               .subscribe((equipo: Equipo[]) => {
-                  this.equipoId = equipo[0].id;
-                  console.log('EquipoId', this.equipoId);
+                  this.miEquipo = equipo[0];
+                  console.log('EquipoId', this.miEquipo.id);
               });
           this.peticionesAPI.DameEquiposJuegoEvaluado(this.juego.id)
               .subscribe((equipos: EquipoJuegoEvaluado[]) => {
                   this.equiposJuegoEvaluado = equipos;
                   console.log(this.equiposJuegoEvaluado);
                   this.equiposPorEquipos = equipos[0].alumnosEvaluadoresIds === null;
+                  equipos.forEach(equipo => {
+                      this.peticionesAPI.DameEquipo(equipo.id).subscribe(res => {
+                          this.equipos.push(res);
+                          console.log(res);
+                      });
+                  });
               });
       }
   }

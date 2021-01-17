@@ -11,28 +11,28 @@
   <!--JUEGO INDIVIDUAL-->
   <ion-list *ngIf="juego.Modo === 'Individual'">
     <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>{{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}</ion-label>
+      <ion-label>{{miAlumno.Nombre}} {{miAlumno.PrimerApellido}} {{miAlumno.SegundoApellido}}</ion-label>
     </ion-item>
-    <ion-item *ngFor="let alumnoJ of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:alumno.id">
-      <ion-label>{{DameNombreCompleto(alumnoJ.alumnoEvaluadoId)}}</ion-label>
+    <ion-item *ngFor="let alumno of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:miAlumno.id">
+      <ion-label>{{DameNombreCompleto(alumno.alumnoEvaluadoId)}}</ion-label>
     </ion-item>
   </ion-list>
   <!--JUEGO EQUIPOS EVALUADOS POR ALUMNOS -->
   <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == false">
     <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>Mi Equipo</ion-label>
+      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
     </ion-item>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:alumno.id, equipoId:null}">
-      <ion-label>{{equipo.equipoEvaluadoId}}</ion-label>
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}">
+      <ion-label>{{DameNombreEquipo(equipo.id)}}</ion-label>
     </ion-item>
   </ion-list>
   <!--JUEGO EQUIPOS EVALUADOS POR EQUIPOS -->
   <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == true">
     <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>Mi Equipo</ion-label>
+      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
     </ion-item>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: equipoId}">
-      <ion-label>{{equipo.equipoEvaluadoId}}</ion-label>
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}">
+      <ion-label>{{DameNombreEquipo(equipo.id)}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>
