@@ -1,0 +1,38 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Evaluación</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--JUEGO INDIVIDUAL-->
+  <ion-list *ngIf="juego.Modo === 'Individual'">
+    <ion-item *ngIf="juego.autoEvaluacion">
+      <ion-label>{{miAlumno.Nombre}} {{miAlumno.PrimerApellido}} {{miAlumno.SegundoApellido}}</ion-label>
+    </ion-item>
+    <ion-item *ngFor="let alumno of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:miAlumno.id">
+      <ion-label>{{DameNombreCompleto(alumno.alumnoEvaluadoId)}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <!--JUEGO EQUIPOS EVALUADOS POR ALUMNOS -->
+  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == false">
+    <ion-item *ngIf="juego.autoEvaluacion">
+      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
+    </ion-item>
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}">
+      <ion-label>{{DameNombreEquipo(equipo.id)}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <!--JUEGO EQUIPOS EVALUADOS POR EQUIPOS -->
+  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == true">
+    <ion-item *ngIf="juego.autoEvaluacion">
+      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
+    </ion-item>
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}">
+      <ion-label>{{DameNombreEquipo(equipo.id)}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
