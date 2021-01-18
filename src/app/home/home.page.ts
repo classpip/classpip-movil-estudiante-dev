@@ -122,72 +122,72 @@ export class HomePage {
       };
 
 
-      // this.cont = Array(2).fill(0);
+      this.cont = Array(2).fill(0);
 
-      // this.data = {"questionnaire": {
-      //     "id": "5ac5f074867d190bc471dc59",
-      //     "name": "Diabetes Questionnaire Test",
-      //   "item": [
-      //     {
-      //       "text": "Dibujo",
-      //       "cont": 0,
+      this.data = {"questionnaire": {
+          "id": "5ac5f074867d190bc471dc59",
+          "name": "Diabetes Questionnaire Test",
+        "item": [
+          {
+            "text": "Dibujo",
+            "cont": 0,
 
-      //       "options": [
-      //         {
-      //           "value": "Los colores son acertados",
-      //           "checked": false
-      //         },
-      //         {
-      //           "value": "Es interesante",
-      //           "checked": false
-      //         },
-      //         {
-      //           "value": "Me ha hecho reir",
-      //           "checked": false
-      //         }
-      //       ]
-      //     },
-      //     {
+            "options": [
+              {
+                "value": "Los colores son acertados",
+                "checked": false
+              },
+              {
+                "value": "Es interesante",
+                "checked": false
+              },
+              {
+                "value": "Me ha hecho reir",
+                "checked": false
+              }
+            ]
+          },
+          {
 
-      //       "text": "La voz",
-      //       "cont": 0,
+            "text": "La voz",
+            "cont": 0,
 
-      //       "options": [
-      //         {
-      //           "value": "Me ha hecho reir",
-      //           "checked": false
-      //         },
-      //         {
-      //           "value": "Se ha oido perfectamente",
-      //           "checked": false
-      //         },
+            "options": [
+              {
+                "value": "Me ha hecho reir",
+                "checked": false
+              },
+              {
+                "value": "Se ha oido perfectamente",
+                "checked": false
+              },
             
-      //       ]
-      //     }
-      //   ]
-      // }
-      // };
+            ]
+          }
+        ]
+      }
+      };
   }
 
 
     
-  // updateAnswer(index,ansindex,value,checked){
-  //   if(!Array.isArray(this.answer[index])){
-  //     this.answer[index] = []
-  //   }
-  //   if(checked){
-  //    this.answer[index][ansindex] =  true;
-  //    this.cont[index]++;
-  //   }else{
-  //     //this.answer[index].splice(ansindex,1)
-  //     this.answer[index][ansindex] =  false;
-  //     this.cont[index]--;
-  //   }
-  // }
-  // Resultado() {
-  //   console.log ('resultado');
-  //   console.log (this.answer);
-  // }
+  updateAnswer(index,ansindex,value,checked){
+    if(!Array.isArray(this.answer[index])){
+      this.answer[index] = []
+    }
+    if(checked){
+     this.answer[index][ansindex] =  true;
+     this.cont[index]++;
+    }else{
+      //this.answer[index].splice(ansindex,1)
+      this.answer[index][ansindex] =  false;
+      this.cont[index]--;
+    }
+  }
+  Resultado() {
+    console.log ('resultado');
+    console.log (this.answer);
+  }
 
 
     ionViewDidEnter() {
