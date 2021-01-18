@@ -78,21 +78,25 @@
         <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Fórmula Uno'">
           <p *ngIf="jornada.Fecha != undefined"><b>Fecha</b>: {{jornada.Fecha | date: 'dd-MM-yyyy'}}</p>
           <p *ngIf="jornada.Fecha === undefined"><b>Fecha</b>: Sin especificar</p>
+          <p *ngIf="jornada.CriterioGanador !== undefined"><b>Criterio</b>: {{jornada.CriterioGanador}}</p>
+          <p *ngIf="jornada.CriterioGanador === undefined"><b>Criterio</b>: Sin especificar</p>
+   
           <div *ngIf="JornadaFinalizada(jornada) === false">
             <p>Esta Jornada aún no ha finalizado. No hay ganadores todavía.</p>
           </div>
           <div *ngIf="JornadaFinalizada(jornada) === true">
-            <ion-card *ngFor="let participante of GanadoresJornadaF1; let i=index">
-              <ion-item lines="none" >
-                <ion-avatar slot="start">
-                  <img src="../../assets/img/usuario.svg">
-                </ion-avatar>
-                <ion-label>
-                  <h2> {{participante.participante}} </h2>
-                  <p>Posicion: {{participante.posicion}} - Puntos: {{participante.puntos}}</p>
-                </ion-label>
-              </ion-item> 
-            </ion-card>
+            <ion-item  *ngFor="let participante of GanadoresJornadaF1; let i=index">
+              <ion-item lines = "none" style = "width: 20%">
+                <img  *ngIf = "imagenesDePerfil[i]" style = "width:40px; height: 40px;" [src]="imagenesDePerfil[i]">
+              </ion-item>
+              <ion-item lines = "none" style = "width: 60%">
+                <ion-label> {{participante.participante}} </ion-label>
+              </ion-item>
+              <ion-item lines = "none" style = "width: 20%">
+                <ion-label> {{participante.puntos}} </ion-label>
+              </ion-item>
+            </ion-item> 
+
           </div>
 
         </div>

@@ -20,6 +20,7 @@ import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
+import * as URL from '../URLs/urls';
 
 @Injectable({
   providedIn: 'root'
@@ -27,14 +28,10 @@ import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestion
 
 export class PeticionesAPIService {
 
-  private base = 'http://localhost:';
 
-  // private base = 'http://147.83.118.92:';
-  //private base = 'http://192.168.1.35:'; 
 
-  //private base = 'http://147.83.118.92:';
-  //private base = 'http://192.168.1.143:'; 
-    // private base = 'http://192.168.1.45:'; 
+
+  private base = URL.host;
 
 
   private APIUrlProfesores = this.base + '3000/api/Profesores';
@@ -632,6 +629,13 @@ export class PeticionesAPIService {
   public DameColeccion(coleccionId: number): Observable<Coleccion> {
     return this.http.get<Coleccion>(this.APIRUrlColecciones + '/' + coleccionId);
   }
+  // VERSION ALTERNATIVA QUE USA EL MECANISMO DE PROMISE
+  public DameColeccionPromise(coleccionId: number): Promise<Coleccion> {
+    return this.http.get<Coleccion>(this.APIRUrlColecciones + '/' + coleccionId).toPromise();
+  }
+
+
+
   // CAMBIA EL ESTADO DEL JUEGO DE COLECCIÓN DE ACTIVO A INACTIVO O VICEVERSA
   public CambiaEstadoJuegoDeColeccion(juegoDeColeccion: Juego, juegoDeColeccionId: number, grupoId: number): Observable<Juego> {
     return this.http.put<Juego>(this.APIUrlGrupos + '/' + grupoId + '/juegoDeColeccions/' + juegoDeColeccionId, juegoDeColeccion);
@@ -1061,6 +1065,15 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     + '?filter[where][Clave]=' + clave);
   }
 
+  public DameRespuestasAlumnoJuegoDeCuestionario(alumnoJuegoDeCuestionarioId: number): Observable<RespuestaJuegoDeCuestionario[]> {
+    return this.http.get<RespuestaJuegoDeCuestionario[]>(this.APIUrlRespuestasJuegoDeCuestionario
+      + '?filter[where][alumnoJuegoDeCuestionarioId]=' + alumnoJuegoDeCuestionarioId);
+  }
+
+  public DameInscripcionesAlumnoJuegoDeCuestionario(juegoDeCuestionarioId: number): Observable<AlumnoJuegoDeCuestionario[]> {
+    return this.http.get<AlumnoJuegoDeCuestionario[]>(this.APIUrlAlumnoJuegoDeCuestionario
+                                                      + '?filter[where][juegoDeCuestionarioId]=' + juegoDeCuestionarioId);
+  }
 
  
 }

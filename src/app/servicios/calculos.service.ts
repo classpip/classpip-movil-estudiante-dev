@@ -10,7 +10,7 @@ import {
   EquipoJuegoDeColeccion, AlbumEquipo, Cromo, Jornada, MiAlumnoAMostrarJuegoDePuntos, MiEquipoAMostrarJuegoDePuntos,
   // tslint:disable-next-line:max-line-length
   EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion, EquipoJuegoDeCompeticionLiga, InformacionPartidosLiga, TablaJornadas, TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionFormulaUno,
-  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta
+  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta, TablaAlumnoJuegoDeCuestionario
 } from '../clases/index';
 // import { MatTableDataSource } from '@angular/material/table';
 // import { MiAlumnoAMostrarJuegoDePuntos } from '../clases/MiAlumnoAMostrarJuegoDePuntos';
@@ -1910,7 +1910,12 @@ export class CalculosService {
     const Posicion: number[] = [];
     const ParticipantesId: number[] = [];
     if (GanadoresFormulaUno !== undefined) {
-      GanadoresFormulaUno.forEach(ganador => ParticipantesFormulaUno.push(ganador));
+      GanadoresFormulaUno.forEach(ganador => {
+        ParticipantesFormulaUno.push(ganador);
+        // tslint:disable-next-line:max-line-length
+        const alumno = alumnoJuegoDeCompeticionFormulaUno.find (a => (a.nombre + ' ' + a.primerApellido + ' ' + a.segundoApellido) === ganador);
+        ParticipantesId.push(alumno.id);
+      });
       juegoSeleccionado.Puntos.forEach(punto => {
         PuntosFormulaUno.push(punto);
         console.log('Los Puntos del juego son: ' + punto);
@@ -2192,6 +2197,24 @@ export class CalculosService {
     return equipoObservable;
   }
 
+    //////////////////////////////////////// JUEGO DE CUESTIONARIO ///////////////////////////////////
+  public PrepararTablaRankingCuestionario(listaAlumnosOrdenadaPorPuntos: AlumnoJuegoDeCuestionario[],
+                                          alumnosDelJuego: Alumno[]): TablaAlumnoJuegoDeCuestionario[] {
+      const rankingJuegoDeCompeticion: TablaAlumnoJuegoDeCuestionario [] = [];
+      // tslint:disable-next-line:prefer-for-oF
+      for (let i = 0; i < listaAlumnosOrdenadaPorPuntos.length; i++) {
+        let alumno: Alumno;
+        const alumnoId = listaAlumnosOrdenadaPorPuntos[i].alumnoId;
+        alumno = alumnosDelJuego.filter(res => res.id === alumnoId)[0];
+        // tslint:disable-next-line:max-line-length
+        rankingJuegoDeCompeticion[i] = new TablaAlumnoJuegoDeCuestionario(alumno.Nombre, alumno.PrimerApellido, alumno.SegundoApellido, alumno.ImagenPerfil,
+        // tslint:disable-next-line:max-line-length
+        listaAlumnosOrdenadaPorPuntos[i].Nota, listaAlumnosOrdenadaPorPuntos[i].Contestado, alumnoId, listaAlumnosOrdenadaPorPuntos[i].TiempoEmpleado);
+        console.log ('nueva tabla');
+        console.log (rankingJuegoDeCompeticion[i]);
+      }
+      return rankingJuegoDeCompeticion;
+  }
 
 }
 

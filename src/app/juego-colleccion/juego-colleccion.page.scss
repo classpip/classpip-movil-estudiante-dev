@@ -2,7 +2,7 @@
 .flip-box {
   background-color: transparent;
   width: 488px;
-  height: 675px;
+  height: 550px;
 
   perspective: 1000px;
 }
@@ -68,6 +68,13 @@
   opacity: 0.5 !important;
 }
 
+ion-slide {
+  height: 550px;
+  width: 200px;
+
+
+
+}
 
 
 
