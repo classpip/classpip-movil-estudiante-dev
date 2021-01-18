@@ -10,8 +10,10 @@ import { Router } from '@angular/router';
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
 import {MatStepper} from '@angular/material';
+
 import * as URL from '../URLs/urls';
 import { Observable } from 'rxjs';
+
 
 
 @Component({
@@ -38,6 +40,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   puntuacionMaxima = 0;
   NotaInicial = '';
   feedbacks: string[] = [];
+  Modalidad: string;
 
   // Con este array establecemos la posicion donde estara colocada la respuesta correcta en cada una de las preguntas
   ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2];
@@ -62,6 +65,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   cuestionarioRapido = false;
   seleccion: boolean[][];
   imagenesPreguntas: string [] = [];
+
 
   slideActual = 0;
   registrado = false;
@@ -105,8 +109,9 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
     this.tiempoLimite = this.juegoSeleccionado.TiempoLimite;
-    console.log ('ya tengo juego');
-    console.log (this.juegoSeleccionado);
+
+    this.Modalidad = this.juegoSeleccionado.Modalidad;
+
     if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
       // Obtenemos la inscripcion del alumno al juego de cuestionario
       this.alumnoId = this.sesion.DameAlumno().id;
@@ -245,7 +250,6 @@ export class JuegoDeCuestionarioPage implements OnInit {
         this.NotaInicial = '0';
         this.nickName = this.sesion.DameNickName();
         this.cuestionarioRapido = true;
-  
           // Obtenemos el cuestionario a realizar
         this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
           // tslint:disable-next-line:no-shadowed-variable
@@ -615,7 +619,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   IniciarTimer() {
-    if (this.tiempoLimite !== 0) {
+    if(this.juegoSeleccionado.Modalidad === "Test clásico"){
+      if (this.tiempoLimite !== 0) {
       // el timer solo se activa si se ha establecido un tiempo limite
       this.contar = true; // para que se muestre la cuenta atrás
       this.tiempoRestante = this.tiempoLimite;
@@ -648,6 +653,17 @@ export class JuegoDeCuestionarioPage implements OnInit {
             }
 
       }, 1000);
+      }
+    }else if(this.juegoSeleccionado.Modalidad === "Kahoot"){
+      console.log("Me subscribo");
+      this.comServer.EsperoAvanzarPregunta()
+      .subscribe((mensaje)=>{
+        console.log("SIGUIENTE");
+        console.log(mensaje);
+        this.stepper.next();
+      });
+      console.log("LLAMAMOS A EnviarConexionAlumnoKahoot");
+      this.EnviarConexionAlumnoKahoot(this.alumnoId);
     }
   }
 
@@ -834,6 +850,17 @@ export class JuegoDeCuestionarioPage implements OnInit {
   Cerrar() {
     this.comServer.DesconectarJuegoRapido();
     this.route.navigateByUrl('/home');
+  }
+
+
+  //PARA LA MODALIDAD KAHOOT
+
+  EnviarRespuestaKahoot(){
+    this.comServer.EnviarRespuestaKahoot(this.alumnoId, this.RespuestaEscogida);
+  }
+
+  EnviarConexionAlumnoKahoot(alumnoId :number){
+    this.comServer.EnviarConexionAlumnoKahoot(alumnoId);
   }
 
   Volver() {

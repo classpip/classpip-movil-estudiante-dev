@@ -4,6 +4,7 @@ export class Pregunta {
     Pregunta: string;
     Tematica: string;
     Imagen: string;
+
     FeedbackCorrecto: string;
     FeedbackIncorrecto: string;
     id: number;

@@ -93,6 +93,34 @@ export class ComServerService {
     // Me desconecto
     this.servidor.disconnect();
   }
+
+  //Para la función de avanzar pregunta Kahoot
+  public EsperoAvanzarPregunta(): any {
+    console.log("Me voy a subscribir");
+    return Observable.create((observer) => {
+        this.servidor.on('avanzarPregunta', (mensaje) => {
+            console.log ('AVANZo PREGUNTA');
+            console.log (mensaje);
+            observer.next(mensaje);
+        });
+    });
+  }
+
+  //MÉTODOS NECESARIOS, PARA LA INTERACCIÓN DASHBOARD-SERVER, EN LA MODALIDAD KAHOOT
+
+  //Para enviar respuesta al Dashboard en modalidad Kahoot
+  public EnviarRespuestaKahoot(alumnoId: number, respuestaEscogida: string){
+    console.log("Envio la respuesta del alumno a Dashboard");
+    this.servidor.emit('respuestaAlumnoKahoot', { alumnoId: alumnoId, respuesta: respuestaEscogida, profesorId: this.profesorId});
+
+  }
+
+  //Para enviar al Server la conexión al juego, del alumno, en la modalidad Kahoot
+  public EnviarConexionAlumnoKahoot(alumnoId :number){
+    console.log("Envio la conexión del alumno al Server");
+    this.servidor.emit('conexionAlumnoKahoot', { alumnoId: alumnoId, profesorId: this.profesorId});
+
+  }
 }
 
 
