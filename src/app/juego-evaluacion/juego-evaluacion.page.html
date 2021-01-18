@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content>
-  <!--JUEGO INDIVIDUAL-->
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Juego de Evaluación</ion-card-subtitle>
@@ -19,6 +18,7 @@
       Descripción para que se sepa que se evlaua. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
     </ion-card-content>
   </ion-card>
+  <!--JUEGO INDIVIDUAL-->
   <ion-list *ngIf="juego.Modo === 'Individual' && juego.autoEvaluacion">
     <ion-list-header>
       <h1>Autoevaluación</h1>
@@ -48,21 +48,47 @@
     </ion-item>
   </ion-list>
   <!--JUEGO EQUIPOS EVALUADOS POR ALUMNOS -->
-  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == false">
-    <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
+  <ion-list *ngIf="juego.Modo === 'Equipos' && juego.autoEvaluacion">
+    <ion-list-header>
+      <h1>Autoevaluación</h1>
+    </ion-list-header>
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="{{miEquipo ? miEquipo.FotoEquipo : ''}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{miEquipo ? miEquipo.Nombre : ''}}</h2>
+        <h3><i>Aún no te has autoevaluado...</i></h3>
+      </ion-label>
     </ion-item>
+  </ion-list>
+  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == false">
+    <ion-list-header>
+      <h1>A evaluar</h1>
+    </ion-list-header>
     <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}">
-      <ion-label>{{DameNombreEquipo(equipo.equipoEvaluadoId)}}</ion-label>
+      <ion-avatar slot="start">
+        <img src="{{DameFotoEquipo(equipo.equipoEvaluadoId)}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{DameNombreEquipo(equipo.equipoEvaluadoId)}}</h2>
+        <h3><i>Aún no has evaluado...</i></h3>
+      </ion-label>
     </ion-item>
   </ion-list>
   <!--JUEGO EQUIPOS EVALUADOS POR EQUIPOS -->
   <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == true">
-    <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
-    </ion-item>
+    <ion-list-header>
+      <h1>A evaluar</h1>
+    </ion-list-header>
     <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}">
-      <ion-label>{{DameNombreEquipo(equipo.equipoEvaluadoId)}}</ion-label>
+      <ion-avatar slot="start">
+        <img src="{{DameFotoEquipo(equipo.equipoEvaluadoId)}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{DameNombreEquipo(equipo.equipoEvaluadoId)}}</h2>
+        <h3><i>Aún no has evaluado...</i></h3>
+      </ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

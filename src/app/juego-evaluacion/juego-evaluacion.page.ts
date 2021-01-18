@@ -51,6 +51,14 @@ export class JuegoEvaluacionPage implements OnInit {
       return equipo.Nombre;
   }
 
+  DameFotoEquipo(id): string {
+      const equipo: Equipo = this.equipos.find(item => item.id === id);
+      if (typeof equipo === 'undefined') {
+          return;
+      }
+      return equipo.FotoEquipo;
+  }
+
   ngOnInit() {
       this.juego = this.sesion.DameJuegoEvaluacion();
       this.miAlumno = this.sesion.DameAlumno();
