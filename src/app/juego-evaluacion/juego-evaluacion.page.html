@@ -25,7 +25,7 @@
     <ion-list-header>
       <h1>Autoevaluación</h1>
     </ion-list-header>
-    <ion-item>
+    <ion-item (click)="VerPaginaEvaluar(miAlumno.id)">
       <ion-avatar slot="start">
         <img src="{{miAlumno.ImagenPerfil}}" alt="profile">
       </ion-avatar>
@@ -40,7 +40,7 @@
     <ion-list-header>
       <h1>A evaluar</h1>
     </ion-list-header>
-    <ion-item *ngFor="let alumno of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:miAlumno.id">
+    <ion-item *ngFor="let alumno of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:miAlumno.id" (click)="VerPaginaEvaluar(alumno.alumnoEvaluadoId)">
       <ion-avatar slot="start">
         <img src="{{DameUrlImagenPerfil(alumno.alumnoEvaluadoId)}}" alt="profile">
       </ion-avatar>
@@ -56,7 +56,7 @@
     <ion-list-header>
       <h1>Autoevaluación</h1>
     </ion-list-header>
-    <ion-item>
+    <ion-item (click)="VerPaginaEvaluar(miEquipo.id)">
       <ion-avatar slot="start">
         <img src="{{miEquipo ? miEquipo.FotoEquipo : ''}}" alt="profile">
       </ion-avatar>
@@ -71,7 +71,7 @@
     <ion-list-header>
       <h1>A evaluar</h1>
     </ion-list-header>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}">
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}" (click)="VerPaginaEvaluar(equipo.equipoEvaluadoId)">
       <ion-avatar slot="start">
         <img src="{{DameFotoEquipo(equipo.equipoEvaluadoId)}}" alt="profile">
       </ion-avatar>
@@ -87,7 +87,7 @@
     <ion-list-header>
       <h1>A evaluar</h1>
     </ion-list-header>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}">
+    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}" (click)="VerPaginaEvaluar(equipo.equipoEvaluadoId)">
       <ion-avatar slot="start">
         <img src="{{DameFotoEquipo(equipo.equipoEvaluadoId)}}" alt="profile">
       </ion-avatar>

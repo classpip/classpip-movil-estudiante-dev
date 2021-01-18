@@ -4,6 +4,7 @@ import {Alumno, Equipo, Rubrica} from '../clases';
 import {PeticionesAPIService, SesionService} from '../servicios';
 import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
 import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
+import {NavController} from '@ionic/angular';
 
 @Component({
   selector: 'app-juego-evaluacion',
@@ -13,9 +14,9 @@ import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
 export class JuegoEvaluacionPage implements OnInit {
 
   juego: JuegoDeEvaluacion;
-  miAlumno: Alumno = new Alumno();
-  miEquipo: Equipo = null;
-  rubrica: Rubrica;
+  miAlumno: Alumno;
+  miEquipo: Equipo;
+  // rubrica: Rubrica;
   alumnosJuegoEvaluado: AlumnoJuegoEvaluado[] = [];
   alumnos: Alumno[] = [];
   equiposJuegoEvaluado: EquipoJuegoEvaluado[] = [];
@@ -24,8 +25,13 @@ export class JuegoEvaluacionPage implements OnInit {
 
   constructor(
       private sesion: SesionService,
-      private peticionesAPI: PeticionesAPIService
+      private peticionesAPI: PeticionesAPIService,
+      private navCtrl: NavController
   ) { }
+
+  VerPaginaEvaluar(id: number) {
+      this.navCtrl.navigateForward('/pagina-evaluar/' + id).then();
+  }
 
   DameNombreCompleto(id): string {
       const alumno: Alumno = this.alumnos.find(item => item.id === id);
@@ -63,11 +69,13 @@ export class JuegoEvaluacionPage implements OnInit {
       this.juego = this.sesion.DameJuegoEvaluacion();
       this.miAlumno = this.sesion.DameAlumno();
       console.log(this.juego, this.miAlumno);
+      /*
       this.peticionesAPI.DameRubrica(this.juego.rubricaId)
           .subscribe((rubrica: Rubrica) => {
               this.rubrica = rubrica;
               console.log(this.rubrica);
           });
+       */
       if (this.juego.Modo === 'Individual') {
           this.peticionesAPI.DameAlumnosJuegoEvaluado(this.juego.id)
               .subscribe((alumnos: AlumnoJuegoEvaluado[]) => {
