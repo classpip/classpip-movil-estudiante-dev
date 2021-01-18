@@ -231,17 +231,18 @@ export class CalculosService {
                                           console.log('ya tengo los juegos de cuestionario de satisfaccion');
                                           console.log (lista);
                                           console.log('voy a por los juegos de evaluacion');
-                                          this.peticionesAPI.DameJuegosDeEvaluacion(AlumnoId)
+                                          //this.peticionesAPI.DameJuegosDeEvaluacion(AlumnoId)
+                                          this.peticionesAPI.DameJuegosDeCuestiinarioSatisfaccionAlumno(AlumnoId)
                                               // tslint:disable-next-line:no-shadowed-variable
                                               .subscribe( lista => {
-                                                  for (let i = 0; i < (lista.length); i++) {
-                                                      if (lista[i].JuegoActivo === true) {
-                                                          JuegosActivos.push(lista[i]);
-                                                      } else {
-                                                          JuegosInactivos.push(lista[i]);
-                                                      }
-                                                  }
-                                                  console.log('ya tengo los juegos de evaluacion', lista);
+                                                  // for (let i = 0; i < (lista.length); i++) {
+                                                  //     if (lista[i].JuegoActivo === true) {
+                                                  //         JuegosActivos.push(lista[i]);
+                                                  //     } else {
+                                                  //         JuegosInactivos.push(lista[i]);
+                                                  //     }
+                                                  // }
+                                                  // console.log('ya tengo los juegos de evaluacion', lista);
 
 
                                                   console.log('vamos a por los equipos');
@@ -311,17 +312,19 @@ export class CalculosService {
                                                                                                       }
                                                                                                   }
                                                                                                   console.log('voy a por los juegos de evaluacion del grupo ' + this.equipos[i].grupoId);
-                                                                                                  this.peticionesAPI.DameJuegoDeEvaluacionGrupo(this.equipos[i].grupoId)
+                                                                                                  //this.peticionesAPI.DameJuegoDeEvaluacionGrupo(this.equipos[i].grupoId)
+                                                                                                  this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id)
+
                                                                                                       // tslint:disable-next-line:no-shadowed-variable
                                                                                                       .subscribe(lista => {
-                                                                                                          console.log('ya tengo los juegos de evaluacion del grupo ', lista);
-                                                                                                          for (let j = 0; j < (lista.length); j++) {
-                                                                                                              if (lista[j].JuegoActivo === true) {
-                                                                                                                  JuegosActivos.push(lista[j]);
-                                                                                                              } else {
-                                                                                                                  JuegosInactivos.push(lista[j]);
-                                                                                                              }
-                                                                                                          }
+                                                                                                          // console.log('ya tengo los juegos de evaluacion del grupo ', lista);
+                                                                                                          // for (let j = 0; j < (lista.length); j++) {
+                                                                                                          //     if (lista[j].JuegoActivo === true) {
+                                                                                                          //         JuegosActivos.push(lista[j]);
+                                                                                                          //     } else {
+                                                                                                          //         JuegosInactivos.push(lista[j]);
+                                                                                                          //     }
+                                                                                                          // }
 
 
                                                                                                           // vemos si hemos acabado de recogar los juegos de todos los equipos
@@ -341,7 +344,7 @@ export class CalculosService {
                                                               } // fin bucle for equipos
                                                           } // else de la pregunta de si hay equipos
                                                       }); // equipos del alumno
-                                              });
+                                            }); // juegos de evaluacion
                               }); // juegos de cuestionario de satisfaccion
                             }); // juegos de votacion todos a uno
                             }); // juegos de votacion uno a todos

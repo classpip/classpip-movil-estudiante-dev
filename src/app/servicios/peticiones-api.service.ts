@@ -1086,7 +1086,8 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     return this.http.get<JuegoDeEvaluacion[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegosDeEvaluacion');
   }
   public DameJuegoDeEvaluacionEquipo(equipoId: number): Observable<JuegoDeEvaluacion[]> {
-    return this.http.get<JuegoDeEvaluacion[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeEvaluacion');
+     return this.http.get<JuegoDeEvaluacion[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeEvaluacion');
+
   }
   public DameJuegoDeEvaluacionGrupo(grupoId: number): Observable<JuegoDeEvaluacion[]> {
     return this.http.get<JuegoDeEvaluacion[]>(this.APIUrlGrupos + '/' + grupoId + '/juegosDeEvaluacion');
