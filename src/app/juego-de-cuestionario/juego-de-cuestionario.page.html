@@ -29,48 +29,90 @@
 
       </mat-step>
 
-      <!-- SEGUNDO PASO -->
-      <mat-step>
-        <div style="margin-top: 195px;">
-          <p><b>Descripción: </b>{{descripcion}}</p>
-          <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
-          <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
-          <p *ngIf = "tiempoLimite !== 0"><b>Tiempo límite: </b>{{tiempoLimite}} segundos</p>
-          <p *ngIf = "tiempoLimite === 0"><b>Sin límite de tiempo </b></p>
-          <button class = "ion-float-right siguiente" (click) = "IniciarTimer()" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
-        </div>
-      </mat-step>
+      <!-- SEGUNDO PASO SI ES MODALIDAD TEST CLÁSICO-->
+      <div *ngIf = "juegoSeleccionado.Modalidad === 'Test clásico'; else elseBlock" class="contenedor">
+        <mat-step>
+          <div style="margin-top: 195px;">
+            <p><b>Descripción: </b>{{descripcion}}</p>
+            <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
+            <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
+            <p><b>Modalidad: </b>{{Modalidad}}</p>
+            <p *ngIf = "tiempoLimite !== 0"><b>Tiempo límite: </b>{{tiempoLimite}} segundos</p>
+            <p *ngIf = "tiempoLimite === 0"><b>Sin límite de tiempo </b></p>
+            <button class = "ion-float-right siguiente" (click) = "IniciarTimer()" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+          </div>
+        </mat-step>
 
-      <!-- RESPONDEMOS A PREGUNTAS -->
-      <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
-        <img [src]="imagenesPreguntas[i]" style = "width:468px; height:675px; padding-right: 20px;">
-        <p style="font-size: 18px;">{{pregunta.Pregunta}}</p>
-     
-        <ion-list>
-          <ion-radio-group allow-empty-selection="true" name="radio-group" #radioGroup>
- 
+        <!-- RESPONDEMOS A PREGUNTAS -->
+        <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
+          <img [src]="imagenesPreguntas[i]" style = "width:468px; height:675px; padding-right: 20px;">
+          <p style="font-size: 18px;">{{pregunta.Pregunta}}</p>
       
-            <ion-item *ngFor="let respuesta of respuestasPosibles; let j = index"  (ionSelect)="radioSelect($event, i, j)">
-              <p style="font-size: 15px;">{{respuesta}}</p>
-              <ion-radio slot="start" value="{{respuesta}}" checked="{{seleccion[i][j]}}"
-                color="primary"></ion-radio>
-            </ion-item>
+          <ion-list>
+            <ion-radio-group allow-empty-selection="true" name="radio-group" #radioGroup>
+  
+        
+              <ion-item *ngFor="let respuesta of respuestasPosibles; let j = index"  (ionSelect)="radioSelect($event, i, j)">
+                <p style="font-size: 15px;">{{respuesta}}</p>
+                <ion-radio slot="start" value="{{respuesta}}" checked="{{seleccion[i][j]}}"
+                  color="primary"></ion-radio>
+              </ion-item>
+        
+            </ion-radio-group>
+          </ion-list>
       
-          </ion-radio-group>
-        </ion-list>
+        
+  <!--      
+          <div>
+            <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
+                <mat-radio-button class="radio-button" *ngFor="let respuesta of respuestasPosibles" [value]="respuesta">
+                  <p style="color: black; width: 70%">{{respuesta}}</p>
+                </mat-radio-button>
+            </mat-radio-group>
+          </div> -->
+          <button *ngIf = "i !== 0" class = "ion-float-left anterior" (click) = "cambioRespuestasAnterior(i)" mat-button matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+          <button ion-button class = "ion-float-right siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+        </mat-step>
+      </div>
       
+      <!-- SEGUNDO PASO SI ES MODALIDAD KAHOOT-->
+      <div *ngIf = "juegoSeleccionado.Modalidad === 'Kahoot'; else elseBlock" class="contenedor">
+        <mat-step>
+          <div style="margin-top: 195px;">
+            <p><b>Descripción: </b>{{descripcion}}</p>
+            <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
+            <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
+            <p><b>Modalidad: </b>{{Modalidad}}</p>
+            <p *ngIf = "tiempoLimite !== 0"><b>Tiempo por respuesta: </b>{{tiempoLimite}} segundos</p>
+            <p *ngIf = "tiempoLimite === 0"><b>Sin límite de tiempo </b></p>
+            <button class = "ion-float-right siguiente" (click) = "IniciarTimer()" matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+          </div>
+        </mat-step>
+
+        <!-- RESPONDEMOS A PREGUNTAS -->
+        <mat-step *ngFor="let pregunta of PreguntasCuestionario; let i = index">
+          <img [src]="imagenesPreguntas[i]" style = "width:468px; height:675px; padding-right: 20px;">
+          <p style="font-size: 18px;">{{pregunta.Pregunta}}</p>
       
-<!--      
-        <div>
-          <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [(ngModel)]="RespuestaEscogida">
-              <mat-radio-button class="radio-button" *ngFor="let respuesta of respuestasPosibles" [value]="respuesta">
-                <p style="color: black; width: 70%">{{respuesta}}</p>
-              </mat-radio-button>
-          </mat-radio-group>
-        </div> -->
-        <button *ngIf = "i !== 0" class = "ion-float-left anterior" (click) = "cambioRespuestasAnterior(i)" mat-button matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
-        <button ion-button class = "ion-float-right siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
-      </mat-step>
+          <ion-list>
+            <ion-radio-group allow-empty-selection="true" name="radio-group" #radioGroup>
+  
+        
+              <ion-item *ngFor="let respuesta of respuestasPosibles; let j = index"  (ionSelect)="radioSelect($event, i, j)">
+                <p style="font-size: 15px;">{{respuesta}}</p>
+                <ion-radio slot="start" value="{{respuesta}}" checked="{{seleccion[i][j]}}"
+                  color="primary"></ion-radio>
+              </ion-item>
+        
+            </ion-radio-group>
+          </ion-list>
+
+          <button *ngIf = "i !== 0" class = "ion-float-left anterior" (click) = "cambioRespuestasAnterior(i)" mat-button matStepperPrevious><i class="material-icons">arrow_back_ios</i></button>
+          <button ion-button class = "ion-float-right siguiente" (click) = "cambioRespuestasSiguiente(i)" mat-button matStepperNext><i class="material-icons">arrow_forward_ios</i></button>
+
+          <button type="button" class="btn Info" (click) = "EnviarRespuestaKahoot()">Responder<i class="material-icons">info</i></button>
+        </mat-step>
+      </div>
 
       <!-- FINALIZACION DEL CUESTIONARIO -->
       <mat-step>

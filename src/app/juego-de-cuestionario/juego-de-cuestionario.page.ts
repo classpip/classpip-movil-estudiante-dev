@@ -37,6 +37,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   puntuacionMaxima = 0;
   NotaInicial = '';
   feedbacks: string[] = [];
+  Modalidad: string;
 
   // Con este array establecemos la posicion donde estara colocada la respuesta correcta en cada una de las preguntas
   ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2];
@@ -92,6 +93,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
     this.tiempoLimite = this.juegoSeleccionado.TiempoLimite;
+    this.Modalidad = this.juegoSeleccionado.Modalidad;
     if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
       // Obtenemos la inscripcion del alumno al juego de cuestionario
       this.alumnoId = this.sesion.DameAlumno().id;
@@ -424,6 +426,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
         console.log(mensaje);
         this.stepper.next();
       });
+      console.log("LLAMAMOS A EnviarConexionAlumnoKahoot");
+      this.EnviarConexionAlumnoKahoot(this.alumnoId);
     }
   }
 
@@ -526,5 +530,15 @@ export class JuegoDeCuestionarioPage implements OnInit {
   Cerrar() {
     this.comServer.DesconectarJuegoRapido();
     this.route.navigateByUrl('/home');
+  }
+
+  //PARA LA MODALIDAD KAHOOT
+
+  EnviarRespuestaKahoot(){
+    this.comServer.EnviarRespuestaKahoot(this.alumnoId, this.RespuestaEscogida);
+  }
+
+  EnviarConexionAlumnoKahoot(alumnoId :number){
+    this.comServer.EnviarConexionAlumnoKahoot(alumnoId);
   }
 }
