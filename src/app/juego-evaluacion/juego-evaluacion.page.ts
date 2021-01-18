@@ -35,6 +35,14 @@ export class JuegoEvaluacionPage implements OnInit {
       return alumno.Nombre + ' ' + alumno.PrimerApellido + ' ' + alumno.SegundoApellido;
   }
 
+  DameUrlImagenPerfil(id): string {
+      const alumno: Alumno = this.alumnos.find(item => item.id === id);
+      if (typeof alumno === 'undefined') {
+          return;
+      }
+      return alumno.ImagenPerfil;
+  }
+
   DameNombreEquipo(id): string {
       const equipo: Equipo = this.equipos.find(item => item.id === id);
       if (typeof equipo === 'undefined') {
