@@ -27,7 +27,7 @@
 }
 
 ion-slide {
-    height: 500px;
+    height: 400px;
     width: 200px;
 }
   
@@ -42,4 +42,10 @@ ion-slide.swiper-slide {
 .swiper-slide {
     overflow-y: scroll;    
     display: block;    
+}
+ion-reorder{
+    position: absolute;
+    width: 100%;
+    max-width: 100%;
+    opacity: 0;
 }

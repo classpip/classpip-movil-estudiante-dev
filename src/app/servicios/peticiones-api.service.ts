@@ -31,7 +31,11 @@ import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
 
 export class PeticionesAPIService {
 
+
+
+
   private base = URL.host;
+
 
   private APIUrlProfesores = this.base + '3000/api/Profesores';
   private APIUrlAlumnos = this.base +  '3000/api/Alumnos';

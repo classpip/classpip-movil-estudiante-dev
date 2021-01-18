@@ -27,10 +27,20 @@
 
 
 
+
+
+
+
+
     <!-- Esto es para hacer la rubrica -->
 
-    <!-- <mat-accordion> -->
-      <!-- <mat-expansion-panel *ngFor="let item of data.questionnaire.item;let i = index" hideToggle>
+
+
+
+    
+     <!-- ///////////////////////// -->
+    <!-- <mat-accordion>
+      <mat-expansion-panel *ngFor="let item of data.questionnaire.item;let i = index" hideToggle>
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{item.text}}
@@ -41,12 +51,12 @@
         </mat-expansion-panel-header>
         <ion-list>
           <ion-item *ngFor="let option of item.options;let j =index">
-              <ion-label>{{option.value}}</ion-label>
+              <ion-label style = "color: black;">{{option.value}}</ion-label>
               <ion-checkbox [(ngModel)]="option.checked" (ionChange)="updateAnswer(i,j,option.value,option.checked)"></ion-checkbox>
           </ion-item>
       </ion-list>
-      </mat-expansion-panel> -->
-      <!-- Esto es una variante -->
+      </mat-expansion-panel> 
+      Esto es una variante -->
       <!-- <mat-expansion-panel (opened)="panelOpenState = true"
                            (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
@@ -58,9 +68,12 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
         <p>I'm visible because I am open</p>
-      </mat-expansion-panel> -->
-    <!-- </mat-accordion> -->
-    <!-- <button type="button" (click)= Resultado() > Listo </button> -->
+      </mat-expansion-panel>
+    </mat-accordion> 
+    <button type="button" (click)= Resultado() > Listo </button> 
+ -->
+
+
 
     <!-- <p *ngIf="hidevalue==false"> {{maxTime}}</p> -->
     <!-- <button type="button" *ngIf = "!recording" (click)= startRecord() > Start </button>
@@ -99,8 +112,6 @@
       </ion-item>
 
   
-     
-
     
       <ion-button  (click)="Autentificar();" class="login-btn">Log In
       </ion-button>
