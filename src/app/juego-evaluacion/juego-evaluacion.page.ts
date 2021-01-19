@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
 import {Alumno, Equipo, Rubrica} from '../clases';
 import {PeticionesAPIService, SesionService} from '../servicios';
-import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
-import {EquipoJuegoEvaluado} from '../clases/EquipoJuegoEvaluado';
+import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
+import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 import {NavController} from '@ionic/angular';
 
 @Component({
@@ -16,9 +16,9 @@ export class JuegoEvaluacionPage implements OnInit {
   juego: JuegoDeEvaluacion;
   miAlumno: Alumno;
   miEquipo: Equipo;
-  alumnosJuegoEvaluado: AlumnoJuegoEvaluado[] = [];
+  alumnosJuegoDeEvaluacion: AlumnoJuegoDeEvaluacion[] = [];
   alumnos: Alumno[] = [];
-  equiposJuegoEvaluado: EquipoJuegoEvaluado[] = [];
+  equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[] = [];
   equipos: Equipo[] = [];
   equiposPorEquipos: boolean;
 
@@ -26,7 +26,10 @@ export class JuegoEvaluacionPage implements OnInit {
       private sesion: SesionService,
       private peticionesAPI: PeticionesAPIService,
       private navCtrl: NavController
-  ) { }
+  ) {
+      this.juego = this.sesion.DameJuegoEvaluacion();
+      this.miAlumno = this.sesion.DameAlumno();
+  }
 
   VerPaginaEvaluar(id: number) {
       this.navCtrl.navigateForward('/pagina-evaluar/' + id).then();
@@ -65,39 +68,34 @@ export class JuegoEvaluacionPage implements OnInit {
   }
 
   ngOnInit() {
-      this.juego = this.sesion.DameJuegoEvaluacion();
-      this.miAlumno = this.sesion.DameAlumno();
       console.log(this.juego, this.miAlumno);
       if (this.juego.Modo === 'Individual') {
-          this.peticionesAPI.DameAlumnosJuegoEvaluado(this.juego.id)
-              .subscribe((alumnos: AlumnoJuegoEvaluado[]) => {
-                  this.alumnosJuegoEvaluado = alumnos;
-                  console.log(this.alumnosJuegoEvaluado);
-                  alumnos.forEach(alumno => {
-                      this.peticionesAPI.DameAlumnoConId(alumno.alumnoEvaluadoId)
-                          .subscribe(res => {
-                              this.alumnos.push(res);
-                              console.log(res);
-                          });
-                  });
+          this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id)
+              .subscribe((res: AlumnoJuegoDeEvaluacion[]) => {
+                  this.alumnosJuegoDeEvaluacion = res;
+                  console.log(this.alumnosJuegoDeEvaluacion);
+              });
+          this.peticionesAPI.DameAlumnosJuegoDeEvaluacion(this.juego.id)
+              .subscribe((res: Alumno[]) => {
+                  this.alumnos = res;
+                  console.log(this.alumnos);
               });
       } else if (this.juego.Modo === 'Equipos') {
           this.peticionesAPI.DameEquipoDeAlumno(this.juego.grupoId, this.miAlumno.id)
               .subscribe((equipo: Equipo[]) => {
                   this.miEquipo = equipo[0];
-                  console.log('EquipoId', this.miEquipo.id);
+                  console.log(this.miEquipo);
               });
-          this.peticionesAPI.DameEquiposJuegoEvaluado(this.juego.id)
-              .subscribe((equipos: EquipoJuegoEvaluado[]) => {
-                  this.equiposJuegoEvaluado = equipos;
-                  console.log(this.equiposJuegoEvaluado);
-                  this.equiposPorEquipos = equipos[0].alumnosEvaluadoresIds === null;
-                  equipos.forEach(equipo => {
-                      this.peticionesAPI.DameEquipo(equipo.equipoEvaluadoId).subscribe(res => {
-                          this.equipos.push(res);
-                          console.log(res);
-                      });
-                  });
+          this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
+              .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
+                  this.equiposJuegoDeEvaluacion = res;
+                  console.log(this.equiposJuegoDeEvaluacion);
+                  this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
+              });
+          this.peticionesAPI.DameEquiposJuegoDeEvaluacion(this.juego.id)
+              .subscribe((res: Equipo[]) => {
+                  this.equipos = res;
+                  console.log(this.equipos);
               });
       }
   }

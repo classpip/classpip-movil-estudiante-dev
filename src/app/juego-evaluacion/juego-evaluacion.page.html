@@ -40,59 +40,60 @@
     <ion-list-header>
       <h1>A evaluar</h1>
     </ion-list-header>
-    <ion-item *ngFor="let alumno of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:miAlumno.id" (click)="VerPaginaEvaluar(alumno.alumnoEvaluadoId)">
+    <ion-item *ngFor="let alumno of alumnosJuegoDeEvaluacion | filtrarAlumnoEvaluador:miAlumno.id" (click)="VerPaginaEvaluar(alumno.alumnoId)">
       <ion-avatar slot="start">
-        <img src="{{DameUrlImagenPerfil(alumno.alumnoEvaluadoId)}}" alt="profile">
+        <img src="{{DameUrlImagenPerfil(alumno.alumnoId)}}" alt="profile">
       </ion-avatar>
       <ion-label>
-        <h2>{{DameNombreCompleto(alumno.alumnoEvaluadoId)}}</h2>
+        <h2>{{DameNombreCompleto(alumno.alumnoId)}}</h2>
         <h3><i>Aún no has evaluado...</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
-  <!--JUEGO EQUIPOS EVALUADOS POR ALUMNOS -->
-  <ion-list *ngIf="juego.Modo === 'Equipos' && juego.autoEvaluacion">
+  <!--JUEGO EQUIPOS AUTOEVALUACION-->
+  <ion-list *ngIf="miEquipo && juego.Modo === 'Equipos' && juego.autoEvaluacion">
     <ion-list-header>
       <h1>Autoevaluación</h1>
     </ion-list-header>
     <ion-item (click)="VerPaginaEvaluar(miEquipo.id)">
       <ion-avatar slot="start">
-        <img src="{{miEquipo ? miEquipo.FotoEquipo : ''}}" alt="profile">
+        <img src="{{miEquipo.FotoEquipo}}" alt="profile">
       </ion-avatar>
       <ion-label>
-        <h2>{{miEquipo ? miEquipo.Nombre : ''}}</h2>
+        <h2>{{miEquipo.Nombre}}</h2>
         <h3><i>Aún no te has autoevaluado...</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
-  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == false">
+  <!--JUEGO EQUIPOS EVALUADOS POR ALUMNOS -->
+  <ion-list *ngIf="miEquipo && juego.Modo === 'Equipos' && equiposPorEquipos == false">
     <ion-list-header>
       <h1>A evaluar</h1>
     </ion-list-header>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}" (click)="VerPaginaEvaluar(equipo.equipoEvaluadoId)">
+    <ion-item *ngFor="let equipo of equiposJuegoDeEvaluacion | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}" (click)="VerPaginaEvaluar(equipo.equipoId)">
       <ion-avatar slot="start">
-        <img src="{{DameFotoEquipo(equipo.equipoEvaluadoId)}}" alt="profile">
+        <img src="{{DameFotoEquipo(equipo.equipoId)}}" alt="profile">
       </ion-avatar>
       <ion-label>
-        <h2>{{DameNombreEquipo(equipo.equipoEvaluadoId)}}</h2>
+        <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
         <h3><i>Aún no has evaluado...</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
   <!--JUEGO EQUIPOS EVALUADOS POR EQUIPOS -->
-  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == true">
+  <ion-list *ngIf="miEquipo && juego.Modo === 'Equipos' && equiposPorEquipos == true">
     <ion-list-header>
       <h1>A evaluar</h1>
     </ion-list-header>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}" (click)="VerPaginaEvaluar(equipo.equipoEvaluadoId)">
+    <ion-item *ngFor="let equipo of equiposJuegoDeEvaluacion | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}" (click)="VerPaginaEvaluar(equipo.equipoId)">
       <ion-avatar slot="start">
-        <img src="{{DameFotoEquipo(equipo.equipoEvaluadoId)}}" alt="profile">
+        <img src="{{DameFotoEquipo(equipo.equipoId)}}" alt="profile">
       </ion-avatar>
       <ion-label>
-        <h2>{{DameNombreEquipo(equipo.equipoEvaluadoId)}}</h2>
+        <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
         <h3><i>Aún no has evaluado...</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>

@@ -310,11 +310,11 @@ export class CalculosService {
                                                                                                           JuegosInactivos.push(lista[j]);
                                                                                                       }
                                                                                                   }
-                                                                                                  console.log('voy a por los juegos de evaluacion del grupo ' + this.equipos[i].grupoId);
-                                                                                                  this.peticionesAPI.DameJuegoDeEvaluacionGrupo(this.equipos[i].grupoId)
+                                                                                                  console.log('voy a por los juegos de evaluacion del equipo ' + this.equipos[i].id);
+                                                                                                  this.peticionesAPI.DameJuegoDeEvaluacionEquipo(this.equipos[i].id)
                                                                                                       // tslint:disable-next-line:no-shadowed-variable
                                                                                                       .subscribe(lista => {
-                                                                                                          console.log('ya tengo los juegos de evaluacion del grupo ', lista);
+                                                                                                          console.log('ya tengo los juegos de evaluacion del equipo ', lista);
                                                                                                           for (let j = 0; j < (lista.length); j++) {
                                                                                                               if (lista[j].JuegoActivo === true) {
                                                                                                                   JuegosActivos.push(lista[j]);
