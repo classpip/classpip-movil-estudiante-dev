@@ -14,9 +14,11 @@ export class PaginaEvaluarPage implements OnInit {
   rutaId: number;
   juego: JuegoDeEvaluacion;
   miAlumno: Alumno;
-  //
+  // ?juegoAlumnosDeEvaluacion
   alumnos: Alumno[];
   miEquipo: Equipo;
+  // ?juegoEquiposDeEvaluacion
+  equipos: Equipo[];
   rubrica: Rubrica;
 
   constructor(
@@ -31,6 +33,9 @@ export class PaginaEvaluarPage implements OnInit {
     if (this.juego.Modo === 'Individual' && typeof this.alumnos !== 'undefined') {
       const alumno: Alumno = this.alumnos.find(item => item.id === this.rutaId);
       return alumno.Nombre + ' ' + alumno.PrimerApellido + ' ' + alumno.SegundoApellido;
+    } else if (this.juego.Modo === 'Equipos' && typeof this.equipos !== 'undefined') {
+      const equipo: Equipo = this.equipos.find(item => item.id === this.rutaId);
+      return equipo.Nombre;
     }
   }
 
@@ -38,6 +43,9 @@ export class PaginaEvaluarPage implements OnInit {
     if (this.juego.Modo === 'Individual' && typeof this.alumnos !== 'undefined') {
       const alumno: Alumno = this.alumnos.find(item => item.id === this.rutaId);
       return alumno.ImagenPerfil;
+    } else if (this.juego.Modo === 'Equipos' && typeof this.equipos !== 'undefined') {
+      const equipo: Equipo = this.equipos.find(item => item.id === this.rutaId);
+      return equipo.FotoEquipo;
     }
   }
 
@@ -50,6 +58,8 @@ export class PaginaEvaluarPage implements OnInit {
     });
     if (this.juego.Modo === 'Individual') {
       this.alumnos = this.sesion.DameAlumnos();
+    } else if (this.juego.Modo === 'Equipos') {
+      this.equipos = this.sesion.DameEquipos();
     }
   }
 

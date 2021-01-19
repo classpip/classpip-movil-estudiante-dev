@@ -94,11 +94,13 @@ export class JuegoEvaluacionPage implements OnInit {
                   this.equiposJuegoDeEvaluacion = res;
                   console.log(this.equiposJuegoDeEvaluacion);
                   this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
+                  this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
               });
           this.peticionesAPI.DameEquiposJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: Equipo[]) => {
                   this.equipos = res;
                   console.log(this.equipos);
+                  this.sesion.TomaEquipos(this.equipos);
               });
       }
   }

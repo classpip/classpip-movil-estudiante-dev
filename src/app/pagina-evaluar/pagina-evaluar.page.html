@@ -15,7 +15,7 @@
 
 <ion-content>
   <ion-card>
-    <ion-item *ngIf="juego.Modo === 'Individual'">
+    <ion-item>
       <ion-avatar slot="start">
         <img src="{{DameImagenEvaluado()}}" alt="profile">
       </ion-avatar>
@@ -23,7 +23,6 @@
         <h2>{{DameNombreEvaluado()}}</h2>
         <h3>{{juego.NombreJuego}}</h3>
       </ion-label>
-      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-card>
   <ion-card *ngIf="rubrica">
@@ -62,5 +61,6 @@
         </ion-item>
       </div>
     </ion-list>
+    <!--TODO: check non-empty fields, load screen when submited-->
   </ion-card>
 </ion-content>

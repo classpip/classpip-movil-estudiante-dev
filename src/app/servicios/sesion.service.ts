@@ -5,6 +5,7 @@ import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { ReplaySubject } from 'rxjs';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
 import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
+import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,8 @@ export class SesionService {
 
   alumnosJuegoDeEvaluacion: AlumnoJuegoDeEvaluacion[];
   alumnos: Alumno[];
+  equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[];
+  equipos: Equipo[];
 
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
@@ -497,11 +500,23 @@ export class SesionService {
   public DameAlumnosJuegoDeEvaluacion(): AlumnoJuegoDeEvaluacion[] {
     return this.alumnosJuegoDeEvaluacion;
   }
+  public TomaEquiposJuegoDeEvaluacion(equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[]) {
+    this.equiposJuegoDeEvaluacion = equiposJuegoDeEvaluacion;
+  }
+  public DameEquiposJuegoDeEvaluacion(): EquipoJuegoDeEvaluacion[] {
+    return this.equiposJuegoDeEvaluacion;
+  }
   public TomaAlumnos(alumnos: Alumno[]): void {
     this.alumnos = alumnos;
   }
   public DameAlumnos(): Alumno[] {
     return this.alumnos;
+  }
+  public TomaEquipos(equipos: Equipo[]): void {
+    this.equipos = equipos;
+  }
+  public DameEquipos(): Equipo[] {
+    return this.equipos;
   }
 }
 
