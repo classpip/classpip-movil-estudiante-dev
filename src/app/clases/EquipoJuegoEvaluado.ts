@@ -2,7 +2,7 @@ export class EquipoJuegoEvaluado {
 
     id: number;
     juegoEvaluacionId: number;
-    equipoEvaluadoId: number;
+    equipoId: number;
     equiposEvaluadoresIds: number[];
     alumnosEvaluadoresIds: number[];
     notaFinal: number;
@@ -11,7 +11,7 @@ export class EquipoJuegoEvaluado {
     constructor(id: number, juegoEvaluacionId: number, equipoEvaluadoId: number, equiposEvaluadoresIds: number[], alumnosEvaluadoresIds: number[], notaFinal: number) {
         this.id = id;
         this.juegoEvaluacionId = juegoEvaluacionId;
-        this.equipoEvaluadoId = equipoEvaluadoId;
+        this.equipoId = equipoEvaluadoId;
         this.equiposEvaluadoresIds = equiposEvaluadoresIds;
         this.alumnosEvaluadoresIds = alumnosEvaluadoresIds;
         this.notaFinal = notaFinal;
