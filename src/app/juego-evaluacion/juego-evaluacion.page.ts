@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
-import {Alumno, Equipo, Rubrica} from '../clases';
+import {Alumno, Equipo} from '../clases';
 import {PeticionesAPIService, SesionService} from '../servicios';
 import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
 import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
@@ -74,17 +74,20 @@ export class JuegoEvaluacionPage implements OnInit {
               .subscribe((res: AlumnoJuegoDeEvaluacion[]) => {
                   this.alumnosJuegoDeEvaluacion = res;
                   console.log(this.alumnosJuegoDeEvaluacion);
+                  this.sesion.TomaAlumnosJuegoDeEvaluacion(this.alumnosJuegoDeEvaluacion);
               });
           this.peticionesAPI.DameAlumnosJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: Alumno[]) => {
                   this.alumnos = res;
                   console.log(this.alumnos);
+                  this.sesion.TomaAlumnos(this.alumnos);
               });
       } else if (this.juego.Modo === 'Equipos') {
           this.peticionesAPI.DameEquipoDeAlumno(this.juego.grupoId, this.miAlumno.id)
               .subscribe((equipo: Equipo[]) => {
                   this.miEquipo = equipo[0];
                   console.log(this.miEquipo);
+                  this.sesion.TomaEquipo(this.miEquipo);
               });
           this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
               .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
