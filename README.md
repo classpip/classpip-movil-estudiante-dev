@@ -12,9 +12,9 @@
 
 Classpip es una herramienta para introducir gamificación en el aula. La gamificación consiste en la introducción de las mecánicas típicas de los juegos en escenarios que no son juegos, para motivar a las personas a hacer cosas que quizá no tienen muchas ganas de hacer.
 
-![classpip-arch](https://github.com/classpip/classpip/raw/master/images/project-architecture.png)
+![classpip-arch](https://github.com/classpip/classpip/blob/master/classpip.png)
 
-En la actualidad Classpip se compone de 5 aplicaciones. A continuación se describen esas aplicaciones y se proporcionan los enlaces a las versiones en desarrollo de cada una de ellas.
+En la actualidad Classpip se compone de 5 aplicaciones, que se muestran en la figura, con una indicación de las tecnologías más importantes usadas en cada una de ellas. A continuación se describen esas aplicaciones y se proporcionan los enlaces a las versiones en desarrollo de cada una de ellas.
  
 * *Classpip-dashboard*: Es la aplicación web con la que, desde su ordenador, el profesor puede tomar todas las decisiones sobre configuración de los juegos (por ejemplo, crear una colección nueva) e interacción con cada juego (por ejemplo, asignar puntos a los alumnos). 
 [![Classpip Badge](https://img.shields.io/badge/classpip-dashboard-brightgreen.svg)](https://github.com/classpip/classpip-dashboard-dev)
