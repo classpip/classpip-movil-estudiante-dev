@@ -16,7 +16,6 @@ export class JuegoEvaluacionPage implements OnInit {
   juego: JuegoDeEvaluacion;
   miAlumno: Alumno;
   miEquipo: Equipo;
-  // rubrica: Rubrica;
   alumnosJuegoEvaluado: AlumnoJuegoEvaluado[] = [];
   alumnos: Alumno[] = [];
   equiposJuegoEvaluado: EquipoJuegoEvaluado[] = [];
@@ -69,13 +68,6 @@ export class JuegoEvaluacionPage implements OnInit {
       this.juego = this.sesion.DameJuegoEvaluacion();
       this.miAlumno = this.sesion.DameAlumno();
       console.log(this.juego, this.miAlumno);
-      /*
-      this.peticionesAPI.DameRubrica(this.juego.rubricaId)
-          .subscribe((rubrica: Rubrica) => {
-              this.rubrica = rubrica;
-              console.log(this.rubrica);
-          });
-       */
       if (this.juego.Modo === 'Individual') {
           this.peticionesAPI.DameAlumnosJuegoEvaluado(this.juego.id)
               .subscribe((alumnos: AlumnoJuegoEvaluado[]) => {

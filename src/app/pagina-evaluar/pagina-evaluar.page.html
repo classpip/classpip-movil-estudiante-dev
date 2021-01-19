@@ -8,31 +8,32 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-list-header>
-      <h1>Título Rúbrica</h1>
-    </ion-list-header>
-    <ion-item>
-      <h2>Elemento 1 (80%)</h2>
-    </ion-item>
-    <ion-item>
-      Criterio 1 (50%)
-      <ion-input slot="end" type="number" value="5" min="0" max="10"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label>CRITERIO 2 (50%)</ion-label>
-      <ion-input slot="end" type="number" value="5" min="0" max="10"></ion-input>
-    </ion-item>
-    <ion-item>
-      <h2>Elemento 2 (20%)</h2>
-    </ion-item>
-    <ion-item>
-      Criterio 1 (50%)
-      <ion-input slot="end" type="number" value="5" min="0" max="10"></ion-input>
-    </ion-item>
-    <ion-item>
-      Criterio 2 (50%)
-      <ion-input slot="end" type="number" value="5" min="0" max="10"></ion-input>
-    </ion-item>
-  </ion-list>
+  <ion-card *ngIf="rubrica && juego.metodoSubcriterios">
+    <ion-list lines="none">
+      <ion-list-header>
+        <h1>{{rubrica.Nombre}}</h1>
+      </ion-list-header>
+      <div *ngFor="let criterio of rubrica.Criterios; let i = index">
+        <ion-item>
+          <h2>{{criterio.Nombre}} ({{juego.Pesos[i][0]}}%)</h2>
+        </ion-item>
+        <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="10">
+                <div>
+                  <ion-text>{{elemento}} ({{juego.Pesos[i][j+1]}}%)</ion-text>
+                </div>
+              </ion-col>
+              <ion-col size="2">
+                <div>
+                  <ion-input slot="end" type="number" value="0" min="0" max="10"></ion-input>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-card>
 </ion-content>
