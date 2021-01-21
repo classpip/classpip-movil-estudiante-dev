@@ -1093,6 +1093,9 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   public DameRubrica(rubricaId: number): Observable<Rubrica> {
     return this.http.get<Rubrica>(this.APIUrlRubrica + '/' + rubricaId);
   }
+  public EnviarRespuestaAlumnosJuegoDeEvaluacion(relacionId: number, respuesta: any): Observable<AlumnoJuegoDeEvaluacion> {
+    return this.http.patch<AlumnoJuegoDeEvaluacion>(this.APIUrlAlumnoJuegoDeEvaluacion + '/' + relacionId, respuesta);
+  }
   public DameRelacionAlumnosJuegoDeEvaluacion(juegoId: number): Observable<AlumnoJuegoDeEvaluacion[]> {
     return this.http.get<AlumnoJuegoDeEvaluacion[]>(this.APIUrlAlumnoJuegoDeEvaluacion + '?filter[where][juegoDeEvaluacionId]=' + juegoId);
   }

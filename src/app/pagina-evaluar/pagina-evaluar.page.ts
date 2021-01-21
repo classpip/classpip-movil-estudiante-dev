@@ -108,6 +108,27 @@ export class PaginaEvaluarPage implements OnInit {
   EnviarRespuesta(): void {
     this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1] = this.comentario;
     console.log(this.respuestaEvaluacion);
+    if (this.juego.Modo === 'Individual') {
+      this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id).subscribe((res) => {
+        const tmp = res.find(item => item.alumnoId === this.rutaId);
+        if (typeof tmp === 'undefined') {
+          // error
+          console.error('no se ha recibido la respuesta esperada', tmp);
+        } else {
+          let respuestas: any[];
+          if (tmp.respuestas === null) {
+            respuestas = [];
+          } else {
+            respuestas = tmp.respuestas;
+          }
+          respuestas.push({alumnoId: this.miAlumno.id, respuesta: this.respuestaEvaluacion});
+          this.peticionesAPI.EnviarRespuestaAlumnosJuegoDeEvaluacion(tmp.id, {respuestas})
+              .subscribe((res2) => {
+                console.log(res2);
+              });
+        }
+      });
+    }
   }
 
 }
