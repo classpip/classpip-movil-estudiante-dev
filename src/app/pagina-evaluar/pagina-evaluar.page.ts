@@ -15,10 +15,9 @@ export class PaginaEvaluarPage implements OnInit {
   rutaId: number;
   juego: JuegoDeEvaluacion;
   miAlumno: Alumno;
-  // ?juegoAlumnosDeEvaluacion
   alumnos: Alumno[];
   miEquipo: Equipo;
-  // ?juegoEquiposDeEvaluacion
+  alumnosDeMiEquipo: Alumno[];
   equipos: Equipo[];
   rubrica: Rubrica;
   respuestaEvaluacion: Array<any>;
@@ -56,6 +55,10 @@ export class PaginaEvaluarPage implements OnInit {
       this.alumnos = this.sesion.DameAlumnos();
     } else if (this.juego.Modo === 'Equipos') {
       this.equipos = this.sesion.DameEquipos();
+      this.peticionesAPI.DameAlumnosEquipo(this.miEquipo.id).subscribe((res: Alumno[]) => {
+        this.alumnosDeMiEquipo = res;
+        console.log('alumnos de mi equipo', this.alumnosDeMiEquipo);
+      });
     }
   }
 
@@ -108,7 +111,7 @@ export class PaginaEvaluarPage implements OnInit {
     }
   }
 
-  async presentAlert(success: boolean) {
+  async presentAlert(success: boolean, alreadyvoted = false) {
     if (success) {
       const alert = await this.alertController.create({
         backdropDismiss: false,
@@ -118,6 +121,22 @@ export class PaginaEvaluarPage implements OnInit {
             text: 'OK',
             handler: () => {
               console.log('Confirm Ok');
+              this.navCtrl.back();
+            }
+          }
+        ]
+      });
+      await alert.present();
+    } else if (alreadyvoted) {
+      const alert = await this.alertController.create({
+        backdropDismiss: false,
+        header: 'Error',
+        message: 'No se ha enviado el resultado porque ya has votado anteriormente',
+        buttons: [
+          {
+            text: 'Volver',
+            handler: () => {
+              console.log('Volver');
               this.navCtrl.back();
             }
           }
@@ -169,6 +188,12 @@ export class PaginaEvaluarPage implements OnInit {
           if (tmp.respuestas === null) {
             respuestas = [];
           } else {
+            if (tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id)) {
+              console.log('Ya he votado');
+              loading.dismiss();
+              this.presentAlert(false, true);
+              return;
+            }
             respuestas = tmp.respuestas;
           }
           respuestas.push({alumnoId: this.miAlumno.id, respuesta: this.respuestaEvaluacion});
@@ -179,6 +204,44 @@ export class PaginaEvaluarPage implements OnInit {
                 this.presentAlert(true);
               });
         }
+      });
+    } else if (this.juego.Modo === 'Equipos') {
+      this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id).subscribe((res) => {
+        const tmp = res.find(item => item.equipoId === this.rutaId);
+        console.log(tmp);
+        if (typeof tmp === 'undefined') {
+          loading.dismiss();
+          this.presentAlert(false);
+          console.error('no se ha recibido la respuesta esperada', tmp);
+          return;
+        }
+        let respuestas: any[];
+        if (tmp.respuestas === null) {
+          respuestas = [];
+        } else {
+          if (tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id)) {
+            console.log('Ya he votado', tmp.respuestas, tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id));
+            loading.dismiss();
+            this.presentAlert(false, true);
+            return;
+          }
+          if (tmp.alumnosEvaluadoresIds === null &&
+              tmp.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
+          ) {
+            console.log('Uno de mi equipo ya ha votado');
+            loading.dismiss();
+            this.presentAlert(false, true);
+            return;
+          }
+          respuestas = tmp.respuestas;
+        }
+        respuestas.push({alumnoId: this.miAlumno.id, respuesta: this.respuestaEvaluacion});
+        this.peticionesAPI.EnviarRespuestaEquiposJuegoDeEvaluacion(tmp.id, {respuestas})
+            .subscribe((res2) => {
+              console.log(res2);
+              loading.dismiss();
+              this.presentAlert(true);
+            });
       });
     }
   }
