@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {PeticionesAPIService, SesionService} from '../servicios';
-import {Alumno, Criterio, Equipo, Rubrica} from '../clases';
+import {Alumno, Equipo, Rubrica} from '../clases';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
-import {log} from 'util';
+import {AlertController, LoadingController, NavController} from '@ionic/angular';
 
 @Component({
   selector: 'app-pagina-evaluar',
@@ -30,7 +30,10 @@ export class PaginaEvaluarPage implements OnInit {
   constructor(
       private route: ActivatedRoute,
       private peticionesAPI: PeticionesAPIService,
-      private sesion: SesionService
+      private sesion: SesionService,
+      private loadingController: LoadingController,
+      public alertController: AlertController,
+      private navCtrl: NavController
   ) {
     this.rutaId = parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
@@ -105,14 +108,61 @@ export class PaginaEvaluarPage implements OnInit {
     }
   }
 
-  EnviarRespuesta(): void {
+  async presentAlert(success: boolean) {
+    if (success) {
+      const alert = await this.alertController.create({
+        backdropDismiss: false,
+        header: 'Enviado correctamente',
+        buttons: [
+          {
+            text: 'OK',
+            handler: () => {
+              console.log('Confirm Ok');
+              this.navCtrl.back();
+            }
+          }
+        ]
+      });
+      await alert.present();
+    } else {
+      const alert = await this.alertController.create({
+        backdropDismiss: false,
+        header: 'Error',
+        message: 'Ha habido un error enviando la respuesta...',
+        buttons: [
+          {
+            text: 'Reintentar',
+            handler: () => {
+              console.log('Reintentar');
+              this.EnviarRespuesta();
+            }
+          },
+          {
+            text: 'Cancelar',
+            handler: () => {
+              console.log('Cancelar');
+            }
+          }
+        ]
+      });
+      await alert.present();
+    }
+  }
+
+  async EnviarRespuesta() {
+    const loading = await this.loadingController.create({
+      message: 'Enviando respuesta...'
+    });
+    await loading.present();
+
     this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1] = this.comentario;
     console.log(this.respuestaEvaluacion);
     if (this.juego.Modo === 'Individual') {
       this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id).subscribe((res) => {
         const tmp = res.find(item => item.alumnoId === this.rutaId);
         if (typeof tmp === 'undefined') {
-          // error
+          loading.dismiss();
+          this.presentAlert(false);
           console.error('no se ha recibido la respuesta esperada', tmp);
         } else {
           let respuestas: any[];
@@ -125,6 +175,8 @@ export class PaginaEvaluarPage implements OnInit {
           this.peticionesAPI.EnviarRespuestaAlumnosJuegoDeEvaluacion(tmp.id, {respuestas})
               .subscribe((res2) => {
                 console.log(res2);
+                loading.dismiss();
+                this.presentAlert(true);
               });
         }
       });
