@@ -25,6 +25,7 @@ export class PaginaEvaluarPage implements OnInit {
   // Form elements
   allCompleted: Array<boolean>;
   indeterminated: Array<boolean>;
+  comentario = '';
 
   constructor(
       private route: ActivatedRoute,
@@ -102,6 +103,11 @@ export class PaginaEvaluarPage implements OnInit {
       const equipo: Equipo = this.equipos.find(item => item.id === this.rutaId);
       return equipo.FotoEquipo;
     }
+  }
+
+  EnviarRespuesta(): void {
+    this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1] = this.comentario;
+    console.log(this.respuestaEvaluacion);
   }
 
 }

@@ -37,9 +37,20 @@
         </ion-item>
       </div>
     </ion-list>
-    <!--TODO: check non-empty fields, load screen when submited-->
+    <!--TODO: Load screen when submited-->
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Observaciones:</ion-card-title>
+      <ion-card-subtitle>Deja alguna observación</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-textarea [(ngModel)]="comentario"></ion-textarea>
+      </ion-item>
+    </ion-card-content>
   </ion-card>
 </ion-content>
 <ion-footer>
-  <ion-button expand="block" color="success">Enviar</ion-button>
+  <ion-button expand="block" color="success" (click)="EnviarRespuesta()">Enviar</ion-button>
 </ion-footer>
