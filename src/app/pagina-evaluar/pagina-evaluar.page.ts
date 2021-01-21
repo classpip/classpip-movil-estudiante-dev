@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {PeticionesAPIService, SesionService} from '../servicios';
 import {Alumno, Criterio, Equipo, Rubrica} from '../clases';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
+import {log} from 'util';
 
 @Component({
   selector: 'app-pagina-evaluar',
@@ -21,6 +22,9 @@ export class PaginaEvaluarPage implements OnInit {
   equipos: Equipo[];
   rubrica: Rubrica;
   respuestaEvaluacion: Array<any>;
+  // Form elements
+  allCompleted: Array<boolean>;
+  indeterminated: Array<boolean>;
 
   constructor(
       private route: ActivatedRoute,
@@ -41,12 +45,42 @@ export class PaginaEvaluarPage implements OnInit {
         this.respuestaEvaluacion[index] = new Array<boolean>(this.rubrica.Criterios[index].Elementos.length).fill(false);
       });
       this.respuestaEvaluacion.push('');
-      console.log(this.respuestaEvaluacion);
+      this.allCompleted = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
+      this.indeterminated = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
     });
     if (this.juego.Modo === 'Individual') {
       this.alumnos = this.sesion.DameAlumnos();
     } else if (this.juego.Modo === 'Equipos') {
       this.equipos = this.sesion.DameEquipos();
+    }
+  }
+
+  SetAll(i: number): void {
+    if (this.respuestaEvaluacion[i] == null) {
+      return;
+    }
+    setTimeout(() => {
+      for (let j = 0; j < this.respuestaEvaluacion[i].length; j++) {
+        this.respuestaEvaluacion[i][j] = this.allCompleted[i];
+      }
+    });
+  }
+
+  CheckboxChanged(i: number): void {
+    if (this.respuestaEvaluacion[i] == null) {
+      return;
+    }
+    const allItems = this.respuestaEvaluacion[i].length;
+    const selectedItems = this.respuestaEvaluacion[i].filter(item => item === true).length;
+    if (selectedItems > 0 && selectedItems < allItems) {
+      this.indeterminated[i] = true;
+      this.allCompleted[i] = false;
+    } else if (selectedItems === allItems) {
+      this.indeterminated[i] = false;
+      this.allCompleted[i] = true;
+    } else {
+      this.indeterminated[i] = false;
+      this.allCompleted[i] = false;
     }
   }
 

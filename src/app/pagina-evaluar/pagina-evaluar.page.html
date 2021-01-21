@@ -33,11 +33,11 @@
       <div *ngFor="let criterio of rubrica.Criterios; let i = index">
         <ion-item>
           <h2>{{criterio.Nombre}}</h2>
-          <ion-checkbox slot="end" color="primary"></ion-checkbox>
+          <ion-checkbox slot="end" color="primary" [(ngModel)]="allCompleted[i]" [indeterminate]="indeterminated[i]" (click)="SetAll(i)"></ion-checkbox>
         </ion-item>
         <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
           <ion-text>{{elemento}}</ion-text>
-          <ion-checkbox slot="end" color="success"></ion-checkbox>
+          <ion-checkbox slot="end" color="success" [(ngModel)]="respuestaEvaluacion[i][j]" (ionChange)="CheckboxChanged(i)"></ion-checkbox>
         </ion-item>
       </div>
     </ion-list>
