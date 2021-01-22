@@ -114,10 +114,10 @@
       </ion-avatar>
       <ion-label>
         <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
-        <ion-text *ngIf="!EstadoEvaluacion(miEquipo.id)" color="danger">
+        <ion-text *ngIf="!EstadoEvaluacion(equipo.equipoId)" color="danger">
           <h3><i>Aún no habéis evaluado...</i></h3>
         </ion-text>
-        <ion-text *ngIf="EstadoEvaluacion(miEquipo.id)" color="success">
+        <ion-text *ngIf="EstadoEvaluacion(equipo.equipoId)" color="success">
           <h3>Ya habéis evaluado</h3>
         </ion-text>
       </ion-label>
