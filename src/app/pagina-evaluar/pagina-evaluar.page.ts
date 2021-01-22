@@ -62,6 +62,19 @@ export class PaginaEvaluarPage implements OnInit {
     }
   }
 
+  public canDeactivate() {
+    console.log('Check if can deactivate');
+    // @ts-ignore
+    for (let i = 0; i < this.respuestaEvaluacion; i++) {
+      for (let j = 0; j < this.respuestaEvaluacion[i]; j++) {
+        if (this.respuestaEvaluacion[i][j] === true || this.respuestaEvaluacion[i][j] !== '') {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   SetAll(i: number): void {
     if (this.respuestaEvaluacion[i] == null) {
       return;

@@ -49,9 +49,11 @@ import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 import { DateAdapter } from '@angular/material';
 import { CustomDateAdapter } from './CustomDataAdapter';
 import {DatePipe} from '@angular/common';
+import {CanDeactivateJuegoDeEvaluacionService} from './guards/can-deactivate-juego-de-evaluacion.service';
+import {PaginaEvaluarPage} from './pagina-evaluar/pagina-evaluar.page';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, PaginaEvaluarPage],
   entryComponents: [],
   imports: [
     BrowserModule,

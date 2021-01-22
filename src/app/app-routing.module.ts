@@ -1,6 +1,8 @@
 
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {CanDeactivateJuegoDeEvaluacionService} from './guards/can-deactivate-juego-de-evaluacion.service';
+import {PaginaEvaluarPage} from './pagina-evaluar/pagina-evaluar.page';
 
 const routes: Routes = [
   { path: '', redirectTo: 'slides', pathMatch: 'full' },
@@ -41,7 +43,11 @@ const routes: Routes = [
   // tslint:disable-next-line:max-line-length
   { path: 'juego-coger-turno-rapido', loadChildren: './juego-coger-turno-rapido/juego-coger-turno-rapido.module#JuegoCogerTurnoRapidoPageModule' },
   { path: 'juego-evaluacion', loadChildren: './juego-evaluacion/juego-evaluacion.module#JuegoEvaluacionPageModule' },
-  { path: 'pagina-evaluar/:id', loadChildren: './pagina-evaluar/pagina-evaluar.module#PaginaEvaluarPageModule' }
+  // tslint:disable-next-line:max-line-length
+  { path: 'pagina-evaluar/:id',
+    canDeactivate: [CanDeactivateJuegoDeEvaluacionService],
+    component: PaginaEvaluarPage
+  }
 
 
 
@@ -51,6 +57,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
+  providers: [CanDeactivateJuegoDeEvaluacionService],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
