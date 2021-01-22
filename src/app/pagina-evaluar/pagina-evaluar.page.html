@@ -1,7 +1,6 @@
 <ion-header class="juegos-header">
   <ion-toolbar class="header-toolbar">
     <ion-buttons slot="start">
-      <!--TODO: prevent user go back if form is completed-->
       <ion-back-button class="menu-btn"></ion-back-button>
     </ion-buttons>
     <ion-title>
@@ -30,11 +29,11 @@
       <div *ngFor="let criterio of rubrica.Criterios; let i = index">
         <ion-item>
           <h2>{{criterio.Nombre}}</h2>
-          <ion-checkbox slot="end" color="primary" [(ngModel)]="allCompleted[i]" [indeterminate]="indeterminated[i]" (click)="SetAll(i)"></ion-checkbox>
+          <ion-checkbox slot="end" color="primary" [(ngModel)]="allCompleted[i]" [indeterminate]="indeterminated[i]" [disabled]="estado" (click)="SetAll(i)"></ion-checkbox>
         </ion-item>
         <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
           <ion-text>{{elemento}}</ion-text>
-          <ion-checkbox slot="end" color="success" [(ngModel)]="respuestaEvaluacion[i][j]" (ionChange)="CheckboxChanged(i)"></ion-checkbox>
+          <ion-checkbox slot="end" color="success" [(ngModel)]="respuestaEvaluacion[i][j]" [disabled]="estado" (ionChange)="CheckboxChanged(i)"></ion-checkbox>
         </ion-item>
       </div>
     </ion-list>
@@ -46,11 +45,11 @@
     </ion-card-header>
     <ion-card-content>
       <ion-item>
-        <ion-textarea [(ngModel)]="comentario"></ion-textarea>
+        <ion-textarea [(ngModel)]="comentario" [disabled]="estado"></ion-textarea>
       </ion-item>
     </ion-card-content>
   </ion-card>
 </ion-content>
 <ion-footer>
-  <ion-button expand="block" color="success" (click)="EnviarRespuesta()">Enviar</ion-button>
+  <ion-button expand="block" color="success" [disabled]="estado" (click)="EnviarRespuesta()">Enviar</ion-button>
 </ion-footer>

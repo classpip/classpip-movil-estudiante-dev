@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {PeticionesAPIService, SesionService} from '../servicios';
 import {Alumno, Equipo, Rubrica} from '../clases';
@@ -26,6 +26,7 @@ export class PaginaEvaluarPage implements OnInit {
   indeterminated: Array<boolean>;
   comentario = '';
   forceExit = false;
+  estado: boolean;
 
   constructor(
       private route: ActivatedRoute,
@@ -51,12 +52,57 @@ export class PaginaEvaluarPage implements OnInit {
       this.respuestaEvaluacion.push('');
       this.allCompleted = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
       this.indeterminated = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
+      this.estado = this.EstadoEvaluacion();
     });
     if (this.juego.Modo === 'Individual') {
       this.alumnos = this.sesion.DameAlumnos();
     } else if (this.juego.Modo === 'Equipos') {
       this.equipos = this.sesion.DameEquipos();
       this.alumnosDeMiEquipo = this.sesion.DameAlumnosDeMiEquipo();
+    }
+  }
+
+  EstadoEvaluacion(): boolean {
+    const alumnosJuegoDeEvaluacion = this.sesion.DameAlumnosJuegoDeEvaluacion();
+    const equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();
+    if (this.juego.Modo === 'Individual' && typeof alumnosJuegoDeEvaluacion !== 'undefined') {
+      const relacion = alumnosJuegoDeEvaluacion.find(item => item.alumnoId === this.rutaId);
+      if (!relacion || !relacion.respuestas) {
+        return false;
+      }
+      const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
+      if (!miRespuesta) {
+        return false;
+      } else {
+        this.respuestaEvaluacion = miRespuesta.respuesta;
+        this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
+        this.forceExit = true;
+        return true;
+      }
+    } else if (this.juego.Modo === 'Equipos' && typeof equiposJuegoDeEvaluacion !== 'undefined') {
+      const relacion = equiposJuegoDeEvaluacion.find(item => item.equipoId === this.rutaId);
+      if (!relacion || !relacion.respuestas) {
+        return false;
+      }
+      const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.rutaId);
+      if (miRespuesta) {
+        this.respuestaEvaluacion = miRespuesta.respuesta;
+        this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
+        this.forceExit = true;
+        return true;
+      }
+      if (relacion.alumnosEvaluadoresIds === null &&
+          typeof this.alumnosDeMiEquipo !== 'undefined' &&
+          relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
+      ) {
+        // tslint:disable-next-line:max-line-length
+        this.respuestaEvaluacion = relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId)).respuesta;
+        this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
+        this.forceExit = true;
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
