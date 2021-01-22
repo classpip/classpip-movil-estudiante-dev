@@ -6,11 +6,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { PaginaEvaluarPage } from './pagina-evaluar.page';
+import {CanDeactivateJuegoDeEvaluacionService} from '../guards/can-deactivate-juego-de-evaluacion.service';
 
 const routes: Routes = [
   {
     path: '',
-    component: PaginaEvaluarPage
+    component: PaginaEvaluarPage,
+    canDeactivate: [CanDeactivateJuegoDeEvaluacionService]
   }
 ];
 
@@ -21,6 +23,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [PaginaEvaluarPage]
+  declarations: [PaginaEvaluarPage],
+  providers: [CanDeactivateJuegoDeEvaluacionService]
 })
 export class PaginaEvaluarPageModule {}

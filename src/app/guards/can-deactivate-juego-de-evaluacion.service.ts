@@ -16,6 +16,6 @@ export class CanDeactivateJuegoDeEvaluacionService implements CanDeactivate<Pagi
     console.log('Guarda de Evaluacion');
     console.log(currentRoute.params);
     console.log(currentState.url);
-    return component ? component.canDeactivate() : true;
+    return component.canDeactivate() || component.alertGoBack();
   }
 }

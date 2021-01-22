@@ -25,6 +25,7 @@ export class PaginaEvaluarPage implements OnInit {
   allCompleted: Array<boolean>;
   indeterminated: Array<boolean>;
   comentario = '';
+  forceExit = false;
 
   constructor(
       private route: ActivatedRoute,
@@ -62,14 +63,43 @@ export class PaginaEvaluarPage implements OnInit {
     }
   }
 
+  public async alertGoBack() {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'Cuidado',
+      message: 'Tienes cambios hechos, ¿seguro que quieres salir?',
+      buttons: [
+        {
+          text: 'Sí',
+          handler: () => {
+            console.log('Sí');
+            this.forceExit = true;
+          }
+        },
+        {
+          text: 'No',
+          handler: () => {
+            this.forceExit = false;
+          }
+        }
+      ]
+    });
+    await alert.present();
+    await alert.onDidDismiss();
+    console.log(this.forceExit);
+    return this.forceExit;
+  }
+
   public canDeactivate() {
     console.log('Check if can deactivate');
     console.log(this.respuestaEvaluacion);
+    if (this.forceExit) {
+      return true;
+    }
     // @ts-ignore
     for (let i = 0; i < this.respuestaEvaluacion.length; i++) {
       for (let j = 0; j < this.respuestaEvaluacion[i].length; j++) {
         if (this.respuestaEvaluacion[i][j] === true) {
-          console.log(false);
           return false;
         }
       }
@@ -136,6 +166,7 @@ export class PaginaEvaluarPage implements OnInit {
             text: 'OK',
             handler: () => {
               console.log('Confirm Ok');
+              this.forceExit = true;
               this.navCtrl.back();
             }
           }
@@ -151,6 +182,7 @@ export class PaginaEvaluarPage implements OnInit {
           {
             text: 'Volver',
             handler: () => {
+              this.forceExit = true;
               console.log('Volver');
               this.navCtrl.back();
             }
@@ -167,6 +199,7 @@ export class PaginaEvaluarPage implements OnInit {
           {
             text: 'Reintentar',
             handler: () => {
+              this.forceExit = false;
               console.log('Reintentar');
               this.EnviarRespuesta();
             }
@@ -174,6 +207,7 @@ export class PaginaEvaluarPage implements OnInit {
           {
             text: 'Cancelar',
             handler: () => {
+              this.forceExit = false;
               console.log('Cancelar');
             }
           }
