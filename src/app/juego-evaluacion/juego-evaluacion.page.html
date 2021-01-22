@@ -31,7 +31,12 @@
       </ion-avatar>
       <ion-label>
         <h2>{{miAlumno.Nombre}} {{miAlumno.PrimerApellido}} {{miAlumno.SegundoApellido}}</h2>
-        <h3><i>{{EstadoEvaluacion(miAlumno.id)}}</i></h3>
+        <ion-text *ngIf="!EstadoEvaluacion(miAlumno.id)" color="danger">
+          <h3><i>Aún no te has autoevaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(miAlumno.id)" color="success">
+          <h3>Ya te has autoevaluado</h3>
+        </ion-text>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -46,7 +51,12 @@
       </ion-avatar>
       <ion-label>
         <h2>{{DameNombreCompleto(alumno.alumnoId)}}</h2>
-        <h3><i>{{EstadoEvaluacion(alumno.alumnoId)}}</i></h3>
+        <ion-text *ngIf="!EstadoEvaluacion(alumno.alumnoId)" color="danger">
+          <h3><i>Aún no has evaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(alumno.alumnoId)" color="success">
+          <h3>Ya has evaluado</h3>
+        </ion-text>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -62,7 +72,12 @@
       </ion-avatar>
       <ion-label>
         <h2>{{miEquipo.Nombre}}</h2>
-        <h3><i>{{EstadoEvaluacion(miEquipo.id)}}</i></h3>
+        <ion-text *ngIf="!EstadoEvaluacion(miEquipo.id)" color="danger">
+          <h3><i>Aún no te has autoevaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(miEquipo.id)" color="success">
+          <h3>Ya os habéis autoevaluado</h3>
+        </ion-text>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -78,7 +93,12 @@
       </ion-avatar>
       <ion-label>
         <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
-        <h3><i>{{EstadoEvaluacion(equipo.equipoId)}}</i></h3>
+        <ion-text *ngIf="!EstadoEvaluacion(equipo.equipoId)" color="danger">
+          <h3><i>Aún no has evaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(equipo.equipoId)" color="success">
+          <h3>Ya has evaluado</h3>
+        </ion-text>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -94,7 +114,12 @@
       </ion-avatar>
       <ion-label>
         <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
-        <h3><i>{{EstadoEvaluacion(equipo.equipoId)}}</i></h3>
+        <ion-text *ngIf="!EstadoEvaluacion(miEquipo.id)" color="danger">
+          <h3><i>Aún no habéis evaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(miEquipo.id)" color="success">
+          <h3>Ya habéis evaluado</h3>
+        </ion-text>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>

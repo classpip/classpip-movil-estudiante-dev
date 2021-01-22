@@ -67,49 +67,27 @@ export class JuegoEvaluacionPage implements OnInit {
       }
   }
 
-  EstadoEvaluacion(id: number): string {
+  EstadoEvaluacion(id: number): boolean {
       this.alumnosJuegoDeEvaluacion = this.sesion.DameAlumnosJuegoDeEvaluacion();
       this.equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();
       if (this.juego.Modo === 'Individual' && typeof this.alumnosJuegoDeEvaluacion !== 'undefined') {
           const relacion = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === id);
           if (!relacion || !relacion.respuestas) {
-              return 'Aún no has evaluado...';
+              return false;
           }
-          const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
-          if (!miRespuesta) {
-              if (this.miAlumno.id === id) {
-                  return 'Aún no te has autoevaluado...';
-              } else {
-                  return 'Aún no has evaluado...';
-              }
-          } else {
-              if (this.miAlumno.id === id) {
-                  return 'Ya te has autoevaluado';
-              } else {
-                  return 'Ya has evaluado';
-              }
-          }
+          return relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
       } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
           const relacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === id);
           if (!relacion || !relacion.respuestas) {
-              return 'Aún no has evaluado...';
+              return false;
           }
           const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
           if (miRespuesta) {
-              if (this.miAlumno.id === id) {
-                  return 'Ya te has autoevaluado';
-              } else {
-                  return 'Ya has evaluado';
-              }
+              return true;
           }
-          if (this.equiposPorEquipos &&
+          return !!(this.equiposPorEquipos &&
               typeof this.alumnosDeMiEquipo !== 'undefined' &&
-              relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
-          ) {
-              return 'Mi equipo ya ha evaluado';
-          } else {
-              return 'Aún no has evaluado...';
-          }
+              relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId)));
       }
   }
 
