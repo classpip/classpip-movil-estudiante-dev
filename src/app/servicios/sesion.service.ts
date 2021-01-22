@@ -74,6 +74,7 @@ export class SesionService {
   alumnos: Alumno[];
   equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[];
   equipos: Equipo[];
+  alumnosDeMiEquipo: Alumno[];
 
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
@@ -517,6 +518,12 @@ export class SesionService {
   }
   public DameEquipos(): Equipo[] {
     return this.equipos;
+  }
+  public TomaAlumnosDeMiEquipo(alumnos: Alumno[]): void {
+    this.alumnosDeMiEquipo = alumnos;
+  }
+  public DameAlumnosDeMiEquipo(): Alumno[] {
+    return this.alumnosDeMiEquipo;
   }
 }
 

@@ -20,15 +20,97 @@ export class JuegoEvaluacionPage implements OnInit {
   alumnos: Alumno[] = [];
   equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[] = [];
   equipos: Equipo[] = [];
+  alumnosDeMiEquipo: Alumno[];
   equiposPorEquipos: boolean;
 
   constructor(
       private sesion: SesionService,
       private peticionesAPI: PeticionesAPIService,
       private navCtrl: NavController
-  ) {
+  ) {}
+
+  ngOnInit() {
       this.juego = this.sesion.DameJuegoEvaluacion();
       this.miAlumno = this.sesion.DameAlumno();
+      if (this.juego.Modo === 'Individual') {
+          this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id)
+              .subscribe((res: AlumnoJuegoDeEvaluacion[]) => {
+                  this.alumnosJuegoDeEvaluacion = res;
+                  this.sesion.TomaAlumnosJuegoDeEvaluacion(this.alumnosJuegoDeEvaluacion);
+              });
+          this.peticionesAPI.DameAlumnosJuegoDeEvaluacion(this.juego.id)
+              .subscribe((res: Alumno[]) => {
+                  this.alumnos = res;
+                  this.sesion.TomaAlumnos(this.alumnos);
+              });
+      } else if (this.juego.Modo === 'Equipos') {
+          this.peticionesAPI.DameEquipoDeAlumno(this.juego.grupoId, this.miAlumno.id)
+              .subscribe((equipo: Equipo[]) => {
+                  this.miEquipo = equipo[0];
+                  this.sesion.TomaEquipo(this.miEquipo);
+                  this.peticionesAPI.DameAlumnosEquipo(this.miEquipo.id).subscribe((res: Alumno[]) => {
+                      this.alumnosDeMiEquipo = res;
+                      this.sesion.TomaAlumnosDeMiEquipo(this.alumnosDeMiEquipo);
+                  });
+              });
+          this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
+              .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
+                  this.equiposJuegoDeEvaluacion = res;
+                  this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
+                  this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
+              });
+          this.peticionesAPI.DameEquiposJuegoDeEvaluacion(this.juego.id)
+              .subscribe((res: Equipo[]) => {
+                  this.equipos = res;
+                  this.sesion.TomaEquipos(this.equipos);
+              });
+      }
+  }
+
+  EstadoEvaluacion(id: number): string {
+      this.alumnosJuegoDeEvaluacion = this.sesion.DameAlumnosJuegoDeEvaluacion();
+      this.equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();
+      if (this.juego.Modo === 'Individual' && typeof this.alumnosJuegoDeEvaluacion !== 'undefined') {
+          const relacion = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === id);
+          if (!relacion || !relacion.respuestas) {
+              return 'Aún no has evaluado...';
+          }
+          const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
+          if (!miRespuesta) {
+              if (this.miAlumno.id === id) {
+                  return 'Aún no te has autoevaluado...';
+              } else {
+                  return 'Aún no has evaluado...';
+              }
+          } else {
+              if (this.miAlumno.id === id) {
+                  return 'Ya te has autoevaluado';
+              } else {
+                  return 'Ya has evaluado';
+              }
+          }
+      } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
+          const relacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === id);
+          if (!relacion || !relacion.respuestas) {
+              return 'Aún no has evaluado...';
+          }
+          const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
+          if (miRespuesta) {
+              if (this.miAlumno.id === id) {
+                  return 'Ya te has autoevaluado';
+              } else {
+                  return 'Ya has evaluado';
+              }
+          }
+          if (this.equiposPorEquipos &&
+              typeof this.alumnosDeMiEquipo !== 'undefined' &&
+              relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
+          ) {
+              return 'Mi equipo ya ha evaluado';
+          } else {
+              return 'Aún no has evaluado...';
+          }
+      }
   }
 
   VerPaginaEvaluar(id: number) {
@@ -65,44 +147,6 @@ export class JuegoEvaluacionPage implements OnInit {
           return;
       }
       return equipo.FotoEquipo;
-  }
-
-  ngOnInit() {
-      console.log(this.juego, this.miAlumno);
-      if (this.juego.Modo === 'Individual') {
-          this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id)
-              .subscribe((res: AlumnoJuegoDeEvaluacion[]) => {
-                  this.alumnosJuegoDeEvaluacion = res;
-                  console.log(this.alumnosJuegoDeEvaluacion);
-                  this.sesion.TomaAlumnosJuegoDeEvaluacion(this.alumnosJuegoDeEvaluacion);
-              });
-          this.peticionesAPI.DameAlumnosJuegoDeEvaluacion(this.juego.id)
-              .subscribe((res: Alumno[]) => {
-                  this.alumnos = res;
-                  console.log(this.alumnos);
-                  this.sesion.TomaAlumnos(this.alumnos);
-              });
-      } else if (this.juego.Modo === 'Equipos') {
-          this.peticionesAPI.DameEquipoDeAlumno(this.juego.grupoId, this.miAlumno.id)
-              .subscribe((equipo: Equipo[]) => {
-                  this.miEquipo = equipo[0];
-                  console.log(this.miEquipo);
-                  this.sesion.TomaEquipo(this.miEquipo);
-              });
-          this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
-              .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
-                  this.equiposJuegoDeEvaluacion = res;
-                  console.log(this.equiposJuegoDeEvaluacion);
-                  this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
-                  this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
-              });
-          this.peticionesAPI.DameEquiposJuegoDeEvaluacion(this.juego.id)
-              .subscribe((res: Equipo[]) => {
-                  this.equipos = res;
-                  console.log(this.equipos);
-                  this.sesion.TomaEquipos(this.equipos);
-              });
-      }
   }
 
 }

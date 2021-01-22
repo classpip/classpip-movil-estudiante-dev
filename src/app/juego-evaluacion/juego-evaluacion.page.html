@@ -31,7 +31,7 @@
       </ion-avatar>
       <ion-label>
         <h2>{{miAlumno.Nombre}} {{miAlumno.PrimerApellido}} {{miAlumno.SegundoApellido}}</h2>
-        <h3><i>Aún no te has autoevaluado...</i></h3>
+        <h3><i>{{EstadoEvaluacion(miAlumno.id)}}</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -46,7 +46,7 @@
       </ion-avatar>
       <ion-label>
         <h2>{{DameNombreCompleto(alumno.alumnoId)}}</h2>
-        <h3><i>Aún no has evaluado...</i></h3>
+        <h3><i>{{EstadoEvaluacion(alumno.alumnoId)}}</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -62,7 +62,7 @@
       </ion-avatar>
       <ion-label>
         <h2>{{miEquipo.Nombre}}</h2>
-        <h3><i>Aún no te has autoevaluado...</i></h3>
+        <h3><i>{{EstadoEvaluacion(miEquipo.id)}}</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -78,7 +78,7 @@
       </ion-avatar>
       <ion-label>
         <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
-        <h3><i>Aún no has evaluado...</i></h3>
+        <h3><i>{{EstadoEvaluacion(equipo.equipoId)}}</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
@@ -94,7 +94,7 @@
       </ion-avatar>
       <ion-label>
         <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
-        <h3><i>Aún no has evaluado...</i></h3>
+        <h3><i>{{EstadoEvaluacion(equipo.equipoId)}}</i></h3>
       </ion-label>
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>

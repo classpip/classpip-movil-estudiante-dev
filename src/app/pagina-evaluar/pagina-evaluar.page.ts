@@ -56,10 +56,7 @@ export class PaginaEvaluarPage implements OnInit {
       this.alumnos = this.sesion.DameAlumnos();
     } else if (this.juego.Modo === 'Equipos') {
       this.equipos = this.sesion.DameEquipos();
-      this.peticionesAPI.DameAlumnosEquipo(this.miEquipo.id).subscribe((res: Alumno[]) => {
-        this.alumnosDeMiEquipo = res;
-        console.log('alumnos de mi equipo', this.alumnosDeMiEquipo);
-      });
+      this.alumnosDeMiEquipo = this.sesion.DameAlumnosDeMiEquipo();
     }
   }
 
@@ -92,12 +89,13 @@ export class PaginaEvaluarPage implements OnInit {
 
   public canDeactivate() {
     console.log('Check if can deactivate');
-    console.log(this.respuestaEvaluacion);
     if (this.forceExit) {
       return true;
     }
     // @ts-ignore
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.respuestaEvaluacion.length; i++) {
+      // tslint:disable-next-line:prefer-for-of
       for (let j = 0; j < this.respuestaEvaluacion[i].length; j++) {
         if (this.respuestaEvaluacion[i][j] === true) {
           return false;
@@ -229,6 +227,7 @@ export class PaginaEvaluarPage implements OnInit {
       this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id).subscribe((res) => {
         const tmp = res.find(item => item.alumnoId === this.rutaId);
         if (typeof tmp === 'undefined') {
+          this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
           loading.dismiss();
           this.presentAlert(false);
           console.error('no se ha recibido la respuesta esperada', tmp);
@@ -239,6 +238,7 @@ export class PaginaEvaluarPage implements OnInit {
           } else {
             if (tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id)) {
               console.log('Ya he votado');
+              this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
               loading.dismiss();
               this.presentAlert(false, true);
               return;
@@ -249,6 +249,10 @@ export class PaginaEvaluarPage implements OnInit {
           this.peticionesAPI.EnviarRespuestaAlumnosJuegoDeEvaluacion(tmp.id, {respuestas})
               .subscribe((res2) => {
                 console.log(res2);
+                console.log('Pre-change', res);
+                res = res.map((item) => item.id === res2.id ? res2 : item);
+                console.log('Post-change', res);
+                this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
                 loading.dismiss();
                 this.presentAlert(true);
               });
@@ -259,6 +263,7 @@ export class PaginaEvaluarPage implements OnInit {
         const tmp = res.find(item => item.equipoId === this.rutaId);
         console.log(tmp);
         if (typeof tmp === 'undefined') {
+          this.sesion.TomaEquiposJuegoDeEvaluacion(res);
           loading.dismiss();
           this.presentAlert(false);
           console.error('no se ha recibido la respuesta esperada', tmp);
@@ -269,7 +274,8 @@ export class PaginaEvaluarPage implements OnInit {
           respuestas = [];
         } else {
           if (tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id)) {
-            console.log('Ya he votado', tmp.respuestas, tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id));
+            console.log('Ya he votado');
+            this.sesion.TomaEquiposJuegoDeEvaluacion(res);
             loading.dismiss();
             this.presentAlert(false, true);
             return;
@@ -278,6 +284,7 @@ export class PaginaEvaluarPage implements OnInit {
               tmp.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
           ) {
             console.log('Uno de mi equipo ya ha votado');
+            this.sesion.TomaEquiposJuegoDeEvaluacion(res);
             loading.dismiss();
             this.presentAlert(false, true);
             return;
@@ -288,6 +295,10 @@ export class PaginaEvaluarPage implements OnInit {
         this.peticionesAPI.EnviarRespuestaEquiposJuegoDeEvaluacion(tmp.id, {respuestas})
             .subscribe((res2) => {
               console.log(res2);
+              console.log('Pre-change', res);
+              res = res.map((item) => item.id === res2.id ? res2 : item);
+              console.log('Post-change', res);
+              this.sesion.TomaEquiposJuegoDeEvaluacion(res);
               loading.dismiss();
               this.presentAlert(true);
             });
