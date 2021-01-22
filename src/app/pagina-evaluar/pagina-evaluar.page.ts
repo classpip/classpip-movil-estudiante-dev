@@ -64,15 +64,17 @@ export class PaginaEvaluarPage implements OnInit {
 
   public canDeactivate() {
     console.log('Check if can deactivate');
+    console.log(this.respuestaEvaluacion);
     // @ts-ignore
-    for (let i = 0; i < this.respuestaEvaluacion; i++) {
-      for (let j = 0; j < this.respuestaEvaluacion[i]; j++) {
-        if (this.respuestaEvaluacion[i][j] === true || this.respuestaEvaluacion[i][j] !== '') {
+    for (let i = 0; i < this.respuestaEvaluacion.length; i++) {
+      for (let j = 0; j < this.respuestaEvaluacion[i].length; j++) {
+        if (this.respuestaEvaluacion[i][j] === true) {
+          console.log(false);
           return false;
         }
       }
     }
-    return true;
+    return this.comentario.length === 0;
   }
 
   SetAll(i: number): void {
