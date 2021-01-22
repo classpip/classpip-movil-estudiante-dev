@@ -84,19 +84,22 @@ export class PaginaEvaluarPage implements OnInit {
       if (!relacion || !relacion.respuestas) {
         return false;
       }
-      const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.rutaId);
+      const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
       if (miRespuesta) {
         this.respuestaEvaluacion = miRespuesta.respuesta;
         this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
         this.forceExit = true;
         return true;
       }
-      if (relacion.alumnosEvaluadoresIds === null &&
-          typeof this.alumnosDeMiEquipo !== 'undefined' &&
-          relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
-      ) {
-        // tslint:disable-next-line:max-line-length
-        this.respuestaEvaluacion = relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId)).respuesta;
+      if (relacion.alumnosEvaluadoresIds !== null || typeof this.alumnosDeMiEquipo === 'undefined') {
+        return false;
+      }
+      console.log('relacion', relacion);
+      console.log('alumnos de mi equipo', this.alumnosDeMiEquipo);
+      const otrasRespuestas = relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId));
+      console.log('otrasRespuestas', otrasRespuestas);
+      if (otrasRespuestas) {
+        this.respuestaEvaluacion = otrasRespuestas.respuesta;
         this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
         this.forceExit = true;
         return true;
