@@ -58,7 +58,7 @@ export class JuegoEvaluacionPage implements OnInit {
                   this.alumnosJuegoEvaluado = alumnos;
                   console.log(this.alumnosJuegoEvaluado);
                   alumnos.forEach(alumno => {
-                      this.peticionesAPI.DameAlumnoConId(alumno.alumnoEvaluadoId)
+                      this.peticionesAPI.DameAlumnoConId(alumno.alumnoId)
                           .subscribe(res => {
                               this.alumnos.push(res);
                               console.log(res);

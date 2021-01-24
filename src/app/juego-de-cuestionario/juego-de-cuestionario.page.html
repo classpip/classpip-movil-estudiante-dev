@@ -117,22 +117,22 @@
               <p style="font-size: 18px;">{{item.pregunta.Pregunta}}</p>
 
               <ion-item>
-                <ion-list style = "width:40%">
+                <ion-list style = "width:50%">
                     <ion-item  *ngFor="let pareja of item.pregunta.Emparejamientos">
                       <ion-item lines = "none">
-                        <ion-label  style = "font-size: small;">
+                        <ion-label class="ion-text-wrap" style = "font-size: small;">
                           {{pareja.l}}
                         </ion-label>
                       </ion-item>
                     </ion-item>
                 </ion-list>
 
-                <ion-list style = "width:60%">
+                <ion-list style = "width:50%">
                   <ion-reorder-group (ionItemReorder)="reorderItems($event, i)" disabled="false">
             
                     <ion-item  *ngFor="let respuesta of item.respuestas; let j=index;">
                       <ion-item *ngIf = "contestar[i]" style = "width:100%" lines = "none">
-                        <ion-label style = "font-size: small;" >
+                        <ion-label class="ion-text-wrap" style = "font-size: small;" >
                           {{respuesta}}
                         </ion-label>
                         <i class="material-icons" style = "color: gray">pan_tool</i> 

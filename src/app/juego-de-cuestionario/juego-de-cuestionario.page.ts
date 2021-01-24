@@ -629,6 +629,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
             if (this.tiempoRestante === 0) {
               // salto al paso de cuestionario concluido
               clearInterval(this.timer);
+              console.log ('Fin del tiempo');
               const confirm = await this.alertCtrl.create({
                 header: 'Se te acabó el tiempo',
                 message: 'Vamos a enviar tus respuestas',
@@ -638,8 +639,9 @@ export class JuegoDeCuestionarioPage implements OnInit {
                     role: 'cancel',
                     handler: () => {
                       this.registrado = true;
-                      if (this.juegoSeleccionado.Tipo === 'Juego de Cuestionario') {
-                        this.ponerNota();
+                      if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
+
+                        this.registrarNota();
                       } else {
                         this.EnviarRespuesta();
                       }
