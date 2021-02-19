@@ -341,7 +341,7 @@ export class CalculosService {
                                                               } // fin bucle for equipos
                                                           } // else de la pregunta de si hay equipos
                                                       }); // equipos del alumno
-                                              });
+                                            }); // juegos de evaluacion
                               }); // juegos de cuestionario de satisfaccion
                             }); // juegos de votacion todos a uno
                             }); // juegos de votacion uno a todos
