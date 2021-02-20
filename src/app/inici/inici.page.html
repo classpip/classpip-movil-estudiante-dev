@@ -48,6 +48,8 @@
               <img *ngIf="juego.Tipo == 'Juego De Votación Uno A Todos'" class = "card-img" src="../../assets/img/votaciones.jpg">
               <img *ngIf="juego.Tipo == 'Juego De Votación Todos A Uno'" class = "card-img" src="../../assets/img/votaciones.jpg"> 
               <img *ngIf="juego.Tipo == 'Juego De Cuestionario de Satisfacción'" class = "card-img" src="../../assets/img/satisfaccion.png">
+              <img *ngIf="juego.Tipo == 'Evaluacion'" class = "card-img" src="../../assets/img/evaluacion.png">
+
 
                
               <ion-button class="card-btn" expand="full" (click)=JuegoSeleccionado(juego) shape="round">Ver más</ion-button>
