@@ -19,6 +19,7 @@ import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Platform } from '@ionic/angular';
 
 
 @Component({
@@ -88,85 +89,92 @@ export class HomePage {
     private comServer: ComServerService,
     private selector: WheelSelector,
     private localNotifications: LocalNotifications,
+    platform: Platform
    
     //private transfer: Transfer,
    // private camera: Camera
 
     )  {
 
-      this.jsonData = {
-        numbers: [
-          { description: '1' },
-          { description: '2' },
-          { description: '3' }
-        ],
-        fruits: [
-          { description: 'Apple' },
-          { description: 'Banana' },
-          { description: 'Tangerine' }
-        ],
-        firstNames: [
-          { name: 'Fred', id: '1' },
-          { name: 'Jane', id: '2' },
-          { name: 'Bob', id: '3' },
-          { name: 'Earl', id: '4' },
-          { name: 'Eunice', id: '5' }
-        ],
-        lastNames: [
-          { name: 'Johnson', id: '100' },
-          { name: 'Doe', id: '101' },
-          { name: 'Kinishiwa', id: '102' },
-          { name: 'Gordon', id: '103' },
-          { name: 'Smith', id: '104' }
-        ]
-      };
+        platform.ready().then(() => {
+          console.log('Width: ' + platform.width());
+          console.log('Height: ' + platform.height());
+        });
+      
+
+      // this.jsonData = {
+      //   numbers: [
+      //     { description: '1' },
+      //     { description: '2' },
+      //     { description: '3' }
+      //   ],
+      //   fruits: [
+      //     { description: 'Apple' },
+      //     { description: 'Banana' },
+      //     { description: 'Tangerine' }
+      //   ],
+      //   firstNames: [
+      //     { name: 'Fred', id: '1' },
+      //     { name: 'Jane', id: '2' },
+      //     { name: 'Bob', id: '3' },
+      //     { name: 'Earl', id: '4' },
+      //     { name: 'Eunice', id: '5' }
+      //   ],
+      //   lastNames: [
+      //     { name: 'Johnson', id: '100' },
+      //     { name: 'Doe', id: '101' },
+      //     { name: 'Kinishiwa', id: '102' },
+      //     { name: 'Gordon', id: '103' },
+      //     { name: 'Smith', id: '104' }
+      //   ]
+      // };
 
 
-      this.cont = Array(2).fill(0);
+      // this.cont = Array(2).fill(0);
 
-      this.data = {"questionnaire": {
-          "id": "5ac5f074867d190bc471dc59",
-          "name": "Diabetes Questionnaire Test",
-        "item": [
-          {
-            "text": "Dibujo",
-            "cont": 0,
+      // this.data = {"questionnaire": {
+      //     "id": "5ac5f074867d190bc471dc59",
+      //     "name": "Diabetes Questionnaire Test",
+      //   "item": [
+      //     {
+      //       "text": "Dibujo",
+      //       "cont": 0,
 
-            "options": [
-              {
-                "value": "Los colores son acertados",
-                "checked": false
-              },
-              {
-                "value": "Es interesante",
-                "checked": false
-              },
-              {
-                "value": "Me ha hecho reir",
-                "checked": false
-              }
-            ]
-          },
-          {
+      //       "options": [
+      //         {
+      //           "value": "Los colores son acertados",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Es interesante",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Me ha hecho reir",
+      //           "checked": false
+      //         }
+      //       ]
+      //     },
+      //     {
 
-            "text": "La voz",
-            "cont": 0,
+      //       "text": "La voz",
+      //       "cont": 0,
 
-            "options": [
-              {
-                "value": "Me ha hecho reir",
-                "checked": false
-              },
-              {
-                "value": "Se ha oido perfectamente",
-                "checked": false
-              },
+      //       "options": [
+      //         {
+      //           "value": "Me ha hecho reir",
+      //           "checked": false
+      //         },
+      //         {
+      //           "value": "Se ha oido perfectamente",
+      //           "checked": false
+      //         },
             
-            ]
-          }
-        ]
-      }
-      };
+      //       ]
+      //     }
+      //   ]
+      // }
+      // };
   }
 
 
@@ -540,7 +548,11 @@ replay() {
                       console.log (juego[0]);
                       this.sesion.TomaJuego(juego[0]);
                       this.sesion.TomaNickName (this.nickname);
-                      this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
+                      if (juego[0].Modalidad === 'Clásico') {
+                        this.comServer.EnviarNick (juego[0].profesorId, this.nickname);
+                      } else {
+                        this.comServer.EnviarNickYRegistrar (juego[0].profesorId, this.nickname, this.clave);
+                      }
                     
                       this.navCtrl.navigateForward('/juego-de-cuestionario');
                       } else {
@@ -566,8 +578,8 @@ replay() {
                                 buttons: ['OK']
                               });
                               await alert.present();
-                              this.clave = undefined;
-                              this.nickname = undefined;
+                              // this.clave = undefined;
+                              // this.nickname = undefined;
                           }
                         });
                       }
