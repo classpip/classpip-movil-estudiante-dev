@@ -67,6 +67,22 @@ export class JuegoEvaluacionPage implements OnInit {
       }
   }
 
+  MiNotaFinal(): number {
+      let miRelacion: any;
+      this.alumnosJuegoDeEvaluacion = this.sesion.DameAlumnosJuegoDeEvaluacion();
+      this.equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();
+      if (this.juego.Modo === 'Individual' && typeof this.alumnosJuegoDeEvaluacion !== 'undefined') {
+          miRelacion = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === this.miAlumno.id);
+      } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
+          miRelacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id);
+      }
+      if (!miRelacion || miRelacion.notaFinal === null) {
+          return null;
+      } else {
+          return miRelacion.notaFinal;
+      }
+  }
+
   EstadoEvaluacion(id: number): boolean {
       this.alumnosJuegoDeEvaluacion = this.sesion.DameAlumnosJuegoDeEvaluacion();
       this.equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();

@@ -10,15 +10,22 @@
 <ion-content>
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Juego de Evaluación</ion-card-subtitle>
       <ion-card-title>{{juego.NombreJuego}}</ion-card-title>
       <ion-card-subtitle>
-        Modo: <b>{{juego.Modo}}</b>
+        Juego de Evaluación
+        Modo: <strong>{{juego.Modo}}</strong>
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       {{juego.Descripcion}}
     </ion-card-content>
+  </ion-card>
+  <ion-card color="primary" *ngIf="MiNotaFinal() !== null">
+    <ion-card-header>
+      <ion-card-title>
+        Nota Final {{MiNotaFinal()}}
+      </ion-card-title>
+    </ion-card-header>
   </ion-card>
   <!--JUEGO INDIVIDUAL-->
   <ion-list *ngIf="juego.Modo === 'Individual' && juego.autoEvaluacion">
