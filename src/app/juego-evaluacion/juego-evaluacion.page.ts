@@ -22,12 +22,15 @@ export class JuegoEvaluacionPage implements OnInit {
   equipos: Equipo[] = [];
   alumnosDeMiEquipo: Alumno[];
   equiposPorEquipos: boolean;
+  notaFinal: number;
 
   constructor(
       private sesion: SesionService,
       private peticionesAPI: PeticionesAPIService,
       private navCtrl: NavController
-  ) {}
+  ) {
+      this.notaFinal = -1;
+  }
 
   ngOnInit() {
       this.juego = this.sesion.DameJuegoEvaluacion();
@@ -67,19 +70,85 @@ export class JuegoEvaluacionPage implements OnInit {
       }
   }
 
+  CalcularNotaFinal(respuestas: any[]): number {
+      let notaFinal: number;
+      let notaProfesor: number;
+      let media = 0;
+      let evaluadores = 0;
+      console.log('Calcular nota de respuestas', respuestas);
+      if (this.juego.metodoSubcriterios) {
+          notaFinal = 0;
+          // tslint:disable-next-line:prefer-for-of
+          for (let n = 0, notaEvaluador = 0; n < respuestas.length; n++, notaEvaluador = 0) {
+              for (let i = 0, notaCriterio = 0; i < this.juego.Pesos.length; i++, notaCriterio = 0) {
+                  for (let j = 1; j < this.juego.Pesos[i].length; j++) {
+                      if (respuestas[n].respuesta[i][j - 1]) {
+                          notaCriterio += this.juego.Pesos[i][j] / 10;
+                      }
+                  }
+                  notaEvaluador += notaCriterio * this.juego.Pesos[i][0] / 100;
+              }
+              notaEvaluador = Math.round((notaEvaluador + Number.EPSILON) * 100) / 100;
+              if (!respuestas[n].hasOwnProperty('profesorId')) {
+                  media += notaEvaluador;
+                  evaluadores++;
+                  console.log('nota evaluador', notaEvaluador);
+              } else {
+                  notaProfesor = notaEvaluador;
+                  console.log('nota profesor', notaProfesor);
+              }
+          }
+          if (!this.juego.profesorEvalua) {
+              notaFinal = Math.round(((media / evaluadores) + Number.EPSILON) * 100) / 100;
+          } else if (this.juego.profesorEvalua && this.juego.notaProfesorNormal) {
+              notaFinal = Math.round((((media + notaProfesor) / (evaluadores + 1)) + Number.EPSILON) * 100) / 100;
+          } else if (this.juego.profesorEvalua && !this.juego.notaProfesorNormal) {
+              notaFinal = Math.round(((((media / evaluadores) + notaProfesor) / 2) + Number.EPSILON) * 100) / 100;
+          }
+          console.log('NOTA FINAL', notaFinal);
+          this.notaFinal = notaFinal;
+          return this.notaFinal;
+      }
+  }
+
   MiNotaFinal(): number {
+      if (this.notaFinal !== -1) {
+          return this.notaFinal;
+      }
       let miRelacion: any;
+      let alumnosDeMiRelacion: number[] = [];
+      let alumnosEvaluadores: number[] = [];
+
       this.alumnosJuegoDeEvaluacion = this.sesion.DameAlumnosJuegoDeEvaluacion();
       this.equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();
       if (this.juego.Modo === 'Individual' && typeof this.alumnosJuegoDeEvaluacion !== 'undefined') {
           miRelacion = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === this.miAlumno.id);
+          if (!miRelacion.respuestas) {
+              return null;
+          }
+          alumnosEvaluadores = miRelacion.respuestas.slice().filter(item => !item.profesorId).map(item => item.alumnoId);
+          console.log('alumnosEvaluadores', alumnosEvaluadores);
+          alumnosDeMiRelacion = miRelacion.alumnosEvaluadoresIds.slice();
+          console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
+          if (this.juego.autoEvaluacion && !alumnosDeMiRelacion.includes(this.miAlumno.id)) {
+              alumnosDeMiRelacion.push(this.miAlumno.id);
+          }
+          if (alumnosDeMiRelacion.sort().join(',') !== alumnosEvaluadores.sort().join(',')) {
+              console.log('Faltan alumnos por evaluarte');
+              return null;
+          }
+          console.log('Todos los alumnos te han evaluado');
+          if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
+              console.log('Profesor falta por evaluar');
+              return null;
+          }
+          return this.CalcularNotaFinal(miRelacion.respuestas);
       } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
           miRelacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id);
-      }
-      if (!miRelacion || miRelacion.notaFinal === null) {
-          return null;
-      } else {
-          return miRelacion.notaFinal;
+          if (!miRelacion.respuestas) {
+              return null;
+          }
+          // TODO: Falta terminar
       }
   }
 
