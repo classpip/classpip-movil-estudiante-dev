@@ -40,6 +40,7 @@ export class JuegoEvaluacionPage implements OnInit {
               .subscribe((res: AlumnoJuegoDeEvaluacion[]) => {
                   this.alumnosJuegoDeEvaluacion = res;
                   this.sesion.TomaAlumnosJuegoDeEvaluacion(this.alumnosJuegoDeEvaluacion);
+                  this.MiNotaFinal();
               });
           this.peticionesAPI.DameAlumnosJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: Alumno[]) => {

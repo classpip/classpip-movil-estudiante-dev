@@ -20,13 +20,9 @@
       {{juego.Descripcion}}
     </ion-card-content>
   </ion-card>
-  <ion-card color="primary" *ngIf="MiNotaFinal() !== null">
-    <ion-card-header>
-      <ion-card-title>
-        Nota Final {{MiNotaFinal()}}
-      </ion-card-title>
-    </ion-card-header>
-  </ion-card>
+  <ion-button color="primary" expand="block" *ngIf="notaFinal !== -1">
+    Nota Final {{MiNotaFinal()}}
+  </ion-button>
   <!--JUEGO INDIVIDUAL-->
   <ion-list *ngIf="juego.Modo === 'Individual' && juego.autoEvaluacion">
     <ion-list-header>
