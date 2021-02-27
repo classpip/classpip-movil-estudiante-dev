@@ -71,13 +71,12 @@ export class JuegoEvaluacionPage implements OnInit {
   }
 
   CalcularNotaFinal(respuestas: any[]): number {
-      let notaFinal: number;
+      let notaFinal = 0;
       let notaProfesor: number;
       let media = 0;
       let evaluadores = 0;
       console.log('Calcular nota de respuestas', respuestas);
       if (this.juego.metodoSubcriterios) {
-          notaFinal = 0;
           // tslint:disable-next-line:prefer-for-of
           for (let n = 0, notaEvaluador = 0; n < respuestas.length; n++, notaEvaluador = 0) {
               for (let i = 0, notaCriterio = 0; i < this.juego.Pesos.length; i++, notaCriterio = 0) {
@@ -98,17 +97,49 @@ export class JuegoEvaluacionPage implements OnInit {
                   console.log('nota profesor', notaProfesor);
               }
           }
-          if (!this.juego.profesorEvalua) {
-              notaFinal = Math.round(((media / evaluadores) + Number.EPSILON) * 100) / 100;
-          } else if (this.juego.profesorEvalua && this.juego.notaProfesorNormal) {
-              notaFinal = Math.round((((media + notaProfesor) / (evaluadores + 1)) + Number.EPSILON) * 100) / 100;
-          } else if (this.juego.profesorEvalua && !this.juego.notaProfesorNormal) {
-              notaFinal = Math.round(((((media / evaluadores) + notaProfesor) / 2) + Number.EPSILON) * 100) / 100;
+      } else {
+          for (let n = 0, notaEvaluador = 0; n < respuestas.length; n++, notaEvaluador = 0) {
+              for (let i = 0, notaCriterio = 10; i < this.juego.Penalizacion.length - 1; i++, notaCriterio = 10) {
+                  const fallos = respuestas[n].respuesta[i].filter(item => item === false).length;
+                  if (fallos > 0) {
+                      let minimo: number;
+                      let rangoMinimo;
+                      let maximo: number;
+                      minimo = Math.min.apply(Math, this.juego.Penalizacion[i].map(item => item.num));
+                      if (fallos >= minimo) {
+                          rangoMinimo = this.juego.Penalizacion[i].filter(item => item.num <= fallos);
+                          if (rangoMinimo.length === 0) {
+                              maximo = Math.max.apply(Math, this.juego.Penalizacion[i].map(item => item.num));
+                          } else {
+                              maximo = Math.max.apply(Math, rangoMinimo.map(item => item.num));
+                          }
+                          const penalizacion = this.juego.Penalizacion[i].find(item => item.num === maximo).p;
+                          notaCriterio = penalizacion / 10;
+                      }
+                  }
+                  notaEvaluador += notaCriterio * this.juego.Penalizacion[this.juego.Penalizacion.length - 1][i] / 100;
+              }
+              notaEvaluador = Math.round((notaEvaluador + Number.EPSILON) * 100) / 100;
+              if (!respuestas[n].hasOwnProperty('profesorId')) {
+                  media += notaEvaluador;
+                  evaluadores++;
+                  console.log('nota evaluador', notaEvaluador);
+              } else {
+                  notaProfesor = notaEvaluador;
+                  console.log('nota profesor', notaProfesor);
+              }
           }
-          console.log('NOTA FINAL', notaFinal);
-          this.notaFinal = notaFinal;
-          return this.notaFinal;
       }
+      if (!this.juego.profesorEvalua) {
+          notaFinal = Math.round(((media / evaluadores) + Number.EPSILON) * 100) / 100;
+      } else if (this.juego.profesorEvalua && this.juego.notaProfesorNormal) {
+          notaFinal = Math.round((((media + notaProfesor) / (evaluadores + 1)) + Number.EPSILON) * 100) / 100;
+      } else if (this.juego.profesorEvalua && !this.juego.notaProfesorNormal) {
+          notaFinal = Math.round(((((media / evaluadores) + notaProfesor) / 2) + Number.EPSILON) * 100) / 100;
+      }
+      console.log('NOTA FINAL', notaFinal);
+      this.notaFinal = notaFinal;
+      return this.notaFinal;
   }
 
   MiNotaFinal(): number {
