@@ -5,6 +5,7 @@ import {PeticionesAPIService, SesionService} from '../servicios';
 import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
 import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 import {NavController} from '@ionic/angular';
+import {createConsoleLogger} from '@angular-devkit/core/node';
 
 @Component({
   selector: 'app-juego-evaluacion',
@@ -23,6 +24,7 @@ export class JuegoEvaluacionPage implements OnInit {
   alumnosDeMiEquipo: Alumno[];
   equiposPorEquipos: boolean;
   notaFinal: number;
+  alumnosDeEquipo = [];
 
   constructor(
       private sesion: SesionService,
@@ -55,7 +57,7 @@ export class JuegoEvaluacionPage implements OnInit {
                   this.peticionesAPI.DameAlumnosEquipo(this.miEquipo.id).subscribe((res: Alumno[]) => {
                       this.alumnosDeMiEquipo = res;
                       this.sesion.TomaAlumnosDeMiEquipo(this.alumnosDeMiEquipo);
-                      this.MiNotaFinal();
+                      setTimeout(() => this.MiNotaFinal(), 1000);
                   });
               });
           this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
@@ -63,6 +65,13 @@ export class JuegoEvaluacionPage implements OnInit {
                   this.equiposJuegoDeEvaluacion = res;
                   this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
                   this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
+                  this.equiposJuegoDeEvaluacion.forEach((equipoRelacion: EquipoJuegoDeEvaluacion) => {
+                      this.peticionesAPI.DameAlumnosEquipo(equipoRelacion.equipoId)
+                          .subscribe((res2: Alumno[]) => {
+                              const obj = {equipoId: equipoRelacion.equipoId, alumnos: res2};
+                              this.alumnosDeEquipo.push(obj);
+                          });
+                  });
               });
           this.peticionesAPI.DameEquiposJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: Equipo[]) => {
@@ -210,8 +219,30 @@ export class JuegoEvaluacionPage implements OnInit {
               }
               return this.CalcularNotaFinal(miRelacion.respuestas);
           } else {
-              let equiposDeMiRelacion = miRelacion.equiposEvaluadoresIds.slice();
-              console.log('equiposDeMiRelacion', equiposDeMiRelacion);
+              const equiposEvaluadores = [];
+              this.alumnosDeEquipo.forEach((item) => {
+                  const alumnosIds = item.alumnos.map(a => a.id);
+                  if (alumnosIds.find(id => alumnosEvaluadores.includes(id)) && !equiposEvaluadores.includes(item.equipoId)) {
+                      equiposEvaluadores.push(item.equipoId);
+                  }
+              });
+              console.log('equipos evaluadores', equiposEvaluadores);
+              const equiposDeMiRelacion = miRelacion.equiposEvaluadoresIds;
+              console.log('equipos de mi relacion', equiposDeMiRelacion);
+              if (this.juego.autoEvaluacion && !equiposDeMiRelacion.includes(this.miEquipo.id)) {
+                  equiposDeMiRelacion.push(this.miEquipo.id);
+                  console.log('equipos de mi relacion', equiposDeMiRelacion);
+              }
+              if (equiposDeMiRelacion.sort().join(',') !== equiposEvaluadores.sort().join(',')) {
+                  console.log('Faltan equipos por evaluarte');
+                  return null;
+              }
+              console.log('Todos los equipos te han evaluado');
+              if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
+                  console.log('Profesor falta por evaluar');
+                  return null;
+              }
+              return this.CalcularNotaFinal(miRelacion.respuestas);
           }
       }
   }
