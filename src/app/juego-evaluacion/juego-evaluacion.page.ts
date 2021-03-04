@@ -5,7 +5,6 @@ import {PeticionesAPIService, SesionService} from '../servicios';
 import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
 import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 import {NavController} from '@ionic/angular';
-import {createConsoleLogger} from '@angular-devkit/core/node';
 
 @Component({
   selector: 'app-juego-evaluacion',
