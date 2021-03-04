@@ -10,8 +10,10 @@
 </ion-header>
 
 <ion-content>
-  <ion-card color="primary">
-    <ion-item>Nota Final {{notaFinal}}</ion-item>
+  <ion-card>
+    <ion-item color="primary">
+      <strong>Nota Final {{notaFinal}}</strong>
+    </ion-item>
   </ion-card>
   <ion-card *ngIf="rubrica">
     <ion-list>
@@ -23,6 +25,7 @@
           <h2>{{criterio.Nombre}}</h2>
         </ion-item>
         <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
+          <ion-badge color="primary" slot="start">11</ion-badge>
           <ion-text>{{elemento}}</ion-text>
         </ion-item>
       </div>

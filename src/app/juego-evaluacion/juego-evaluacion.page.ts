@@ -184,6 +184,7 @@ export class JuegoEvaluacionPage implements OnInit {
               console.log('Profesor falta por evaluar');
               return null;
           }
+          this.sesion.TomaRespuestas(miRelacion.respuestas);
           return this.CalcularNotaFinal(miRelacion.respuestas);
       } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
           miRelacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id);
@@ -217,6 +218,7 @@ export class JuegoEvaluacionPage implements OnInit {
                   console.log('Profesor falta por evaluar');
                   return null;
               }
+              this.sesion.TomaRespuestas(miRelacion.respuestas);
               return this.CalcularNotaFinal(miRelacion.respuestas);
           } else {
               const equiposEvaluadores = [];
@@ -242,6 +244,7 @@ export class JuegoEvaluacionPage implements OnInit {
                   console.log('Profesor falta por evaluar');
                   return null;
               }
+              this.sesion.TomaRespuestas(miRelacion.respuestas);
               return this.CalcularNotaFinal(miRelacion.respuestas);
           }
       }

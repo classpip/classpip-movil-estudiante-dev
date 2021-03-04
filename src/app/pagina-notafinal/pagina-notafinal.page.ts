@@ -3,6 +3,8 @@ import {ActivatedRoute} from '@angular/router';
 import {PeticionesAPIService, SesionService} from '../servicios';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
 import {Rubrica} from '../clases';
+import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
+import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 
 @Component({
   selector: 'app-pagina-notafinal',
@@ -15,6 +17,7 @@ export class PaginaNotafinalPage implements OnInit {
   notaFinal: number;
   juego: JuegoDeEvaluacion;
   rubrica: Rubrica;
+  respuestas: any[];
 
   constructor(
       private route: ActivatedRoute,
@@ -30,6 +33,8 @@ export class PaginaNotafinalPage implements OnInit {
     this.peticionesAPI.DameRubrica(this.juego.rubricaId).subscribe((res: Rubrica) => {
       this.rubrica = res;
     });
+    this.respuestas = this.sesion.DameRespuestas();
+    console.log(this.respuestas);
   }
 
 }
