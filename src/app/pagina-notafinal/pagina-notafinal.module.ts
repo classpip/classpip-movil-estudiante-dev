@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { PaginaNotafinalPage } from './pagina-notafinal.page';
+import {FiltrarComentariosVaciosPipe} from '../pipes/filtrar-comentarios-vacios.pipe';
 
 const routes: Routes = [
   {
@@ -15,12 +16,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [PaginaNotafinalPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RouterModule.forChild(routes),
+    ],
+  declarations: [PaginaNotafinalPage, FiltrarComentariosVaciosPipe]
 })
 export class PaginaNotafinalPageModule {}

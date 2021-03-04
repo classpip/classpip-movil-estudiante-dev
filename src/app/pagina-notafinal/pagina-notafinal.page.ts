@@ -37,4 +37,13 @@ export class PaginaNotafinalPage implements OnInit {
     console.log(this.respuestas);
   }
 
+  ContarPuntuacion(i: number, j: number): number {
+    return this.respuestas.map(item => item.respuesta[i][j]).filter(item => item === true).length;
+  }
+
+  MostrarComentario(i: number): string {
+    // console.log('mostrar comentario', this.respuestas[i].respuesta[this.respuestas[i].respuesta.length - 1]);
+    return this.respuestas[i].respuesta[this.respuestas[i].respuesta.length - 1];
+  }
+
 }
