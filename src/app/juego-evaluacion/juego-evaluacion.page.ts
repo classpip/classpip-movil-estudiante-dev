@@ -55,6 +55,7 @@ export class JuegoEvaluacionPage implements OnInit {
                   this.peticionesAPI.DameAlumnosEquipo(this.miEquipo.id).subscribe((res: Alumno[]) => {
                       this.alumnosDeMiEquipo = res;
                       this.sesion.TomaAlumnosDeMiEquipo(this.alumnosDeMiEquipo);
+                      this.MiNotaFinal();
                   });
               });
           this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
@@ -177,10 +178,41 @@ export class JuegoEvaluacionPage implements OnInit {
           return this.CalcularNotaFinal(miRelacion.respuestas);
       } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
           miRelacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id);
+          console.log('mi relacion', miRelacion);
+          console.log('equipos', this.equipos);
+          console.log('alumnos de mi equipo', this.alumnosDeMiEquipo);
           if (!miRelacion.respuestas) {
               return null;
           }
-          // TODO: Falta terminar
+          alumnosEvaluadores = miRelacion.respuestas.slice().filter(item => !item.profesorId).map(item => item.alumnoId);
+          console.log('alumnosEvaluadores', alumnosEvaluadores);
+          if (miRelacion.alumnosEvaluadoresIds !== null) {
+              // Alumnos evaluan a equipos
+              alumnosDeMiRelacion = miRelacion.alumnosEvaluadoresIds.slice();
+              console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
+              const alumnosDeMiEquipoIds = this.alumnosDeMiEquipo.map(item => item.id);
+              if (this.juego.autoEvaluacion) {
+                  alumnosDeMiEquipoIds.forEach((id: number) => {
+                      if (!alumnosDeMiRelacion.includes(id)) {
+                          alumnosDeMiRelacion.push(id);
+                      }
+                  });
+                  console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
+              }
+              if (alumnosDeMiRelacion.sort().join(',') !== alumnosEvaluadores.sort().join(',')) {
+                  console.log('Faltan alumnos por evaluarte');
+                  return null;
+              }
+              console.log('Todos los alumnos te han evaluado');
+              if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
+                  console.log('Profesor falta por evaluar');
+                  return null;
+              }
+              return this.CalcularNotaFinal(miRelacion.respuestas);
+          } else {
+              let equiposDeMiRelacion = miRelacion.equiposEvaluadoresIds.slice();
+              console.log('equiposDeMiRelacion', equiposDeMiRelacion);
+          }
       }
   }
 
