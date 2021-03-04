@@ -56,7 +56,7 @@ export class JuegoEvaluacionPage implements OnInit {
                   this.peticionesAPI.DameAlumnosEquipo(this.miEquipo.id).subscribe((res: Alumno[]) => {
                       this.alumnosDeMiEquipo = res;
                       this.sesion.TomaAlumnosDeMiEquipo(this.alumnosDeMiEquipo);
-                      setTimeout(() => this.MiNotaFinal(), 1000);
+                      setTimeout(() => this.MiNotaFinal(), 500);
                   });
               });
           this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
@@ -149,6 +149,7 @@ export class JuegoEvaluacionPage implements OnInit {
       }
       console.log('NOTA FINAL', notaFinal);
       this.notaFinal = notaFinal;
+      this.sesion.TomaNotaFinal(notaFinal);
       return this.notaFinal;
   }
 
@@ -268,6 +269,10 @@ export class JuegoEvaluacionPage implements OnInit {
               typeof this.alumnosDeMiEquipo !== 'undefined' &&
               relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId)));
       }
+  }
+
+  VerNotaFinal(id: number) {
+      this.navCtrl.navigateForward('/pagina-notafinal/' + id).then();
   }
 
   VerPaginaEvaluar(id: number) {

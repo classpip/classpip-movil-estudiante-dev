@@ -1,0 +1,41 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Resumen
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card color="primary">
+    <ion-item>Nota Final {{notaFinal}}</ion-item>
+  </ion-card>
+  <ion-card *ngIf="rubrica">
+    <ion-list>
+      <ion-list-header>
+        <h1>{{rubrica.Nombre}}</h1>
+      </ion-list-header>
+      <div *ngFor="let criterio of rubrica.Criterios; let i = index">
+        <ion-item>
+          <h2>{{criterio.Nombre}}</h2>
+        </ion-item>
+        <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
+          <ion-text>{{elemento}}</ion-text>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Observaciones:</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

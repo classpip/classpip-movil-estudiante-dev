@@ -20,7 +20,7 @@
       {{juego.Descripcion}}
     </ion-card-content>
   </ion-card>
-  <ion-button color="primary" expand="block" *ngIf="notaFinal !== -1">
+  <ion-button color="primary" expand="block" *ngIf="notaFinal !== -1" (click)="VerNotaFinal(miAlumno.id)">
     Nota Final {{MiNotaFinal()}}
   </ion-button>
   <!--JUEGO INDIVIDUAL-->

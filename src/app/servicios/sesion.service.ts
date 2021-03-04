@@ -75,6 +75,7 @@ export class SesionService {
   equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[];
   equipos: Equipo[];
   alumnosDeMiEquipo: Alumno[];
+  notaFinal: number;
 
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
@@ -524,6 +525,12 @@ export class SesionService {
   }
   public DameAlumnosDeMiEquipo(): Alumno[] {
     return this.alumnosDeMiEquipo;
+  }
+  public DameNotaFinal(): number {
+    return this.notaFinal;
+  }
+  public TomaNotaFinal(nota: number) {
+    this.notaFinal = nota;
   }
 }
 

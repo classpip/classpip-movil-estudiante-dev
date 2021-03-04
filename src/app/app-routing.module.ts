@@ -41,7 +41,8 @@ const routes: Routes = [
   { path: 'juego-coger-turno-rapido', loadChildren: './juego-coger-turno-rapido/juego-coger-turno-rapido.module#JuegoCogerTurnoRapidoPageModule' },
   { path: 'juego-evaluacion', loadChildren: './juego-evaluacion/juego-evaluacion.module#JuegoEvaluacionPageModule' },
   // tslint:disable-next-line:max-line-length
-  { path: 'pagina-evaluar/:id', loadChildren: './pagina-evaluar/pagina-evaluar.module#PaginaEvaluarPageModule' }
+  { path: 'pagina-evaluar/:id', loadChildren: './pagina-evaluar/pagina-evaluar.module#PaginaEvaluarPageModule' },
+  { path: 'pagina-notafinal/:id', loadChildren: './pagina-notafinal/pagina-notafinal.module#PaginaNotafinalPageModule' }
 
 
 
