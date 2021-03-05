@@ -12,14 +12,71 @@
     <ion-card-header>
       <ion-card-subtitle>Juego de Evaluación</ion-card-subtitle>
       <ion-card-title>{{juego.NombreJuego}}</ion-card-title>
-      <ion-card-subtitle>
-        Modo: <b>{{juego.Modo}}</b>
-      </ion-card-subtitle>
+
+      <ion-item style="width: 100%; margin-top: 5%;" lines = "none">
+        <ion-list>
+          <ion-card-subtitle>
+            Modo: <b>{{juego.Modo}}</b>
+          </ion-card-subtitle>
+          <ion-card-subtitle *ngIf = "juego.rubricaId > 0">
+            Formato: <b>Evaluación con rúbrica</b>
+          </ion-card-subtitle>
+          <ion-card-subtitle *ngIf = "juego.rubricaId === 0">
+            Formato: <b>Solo preguntas abiertas</b>
+          </ion-card-subtitle>
+        </ion-list>
+     
+        <ion-item style= "width:40%; margin-right: -10%;" lines = "none">
+          <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="mostrandoRecibidas" (click)="mostrandoRecibidas = false;">Mostrar <br>evaluaciones <br>a realizar</ion-button>
+          <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="!mostrandoRecibidas" (click)="PrepararRespuestasRecibidas(); mostrandoRecibidas=true;">Mostrar <br>evaluaciones <br>recibidas</ion-button>  
+        </ion-item>
+      </ion-item>
+ 
+      
     </ion-card-header>
     <ion-card-content>
       {{juego.Descripcion}}
+    
     </ion-card-content>
   </ion-card>
+  
+  <div *ngIf ="mostrandoRecibidas">
+ 
+        <ion-item *ngFor = "let pregunta of juego.PreguntasAbiertas; let i = index">
+            <ion-list>
+            <b>{{pregunta}}</b>
+            <ion-item lines = "none" *ngFor = "let respuesta of respuestaEvaluacion; let j = index"> 
+              {{respuestaEvaluacion[j][i]}} 
+  
+              <span *ngIf = "(juego.Modo === 'Individual') && (evaluadores[j].id !== miAlumno.id)" style ="color:green; font-size: x-small"> 
+                ({{evaluadores[j].Nombre}} {{evaluadores[j].PrimerApellido}} {{evaluadores[j].SegundoApellido}})
+              </span>
+              <span *ngIf = "(juego.Modo === 'Individual') && (evaluadores[j].id === miAlumno.id)" style ="color:rgb(104, 15, 15); font-size: x-small"> 
+                (autoevaluación)
+              </span>
+              <!-- Equipos evaluados por equipos. En evaluadores tengo el nombre de los equipos -->
+              <span *ngIf = "juego.Modo === 'Equipos' && equiposJuegoDeEvaluacion[0].alumnosEvaluadoresIds === null && evaluadores[j] === miEquipo.Nombre"  style ="color:rgb(104, 15, 15); font-size: x-small"> 
+                (autoevaluación {{evaluadores[j]}})
+              </span>
+              <span *ngIf = "juego.Modo === 'Equipos' && equiposJuegoDeEvaluacion[0].alumnosEvaluadoresIds === null && evaluadores[j] !== miEquipo.Nombre"  style ="color:green; font-size: x-small"> 
+                ({{evaluadores[j]}})
+              </span>
+              <!-- Equipos evaluados por alumnos. En evaluadores tengo a los alumnos -->
+              <span *ngIf = "juego.Modo === 'Equipos' && equiposJuegoDeEvaluacion[0].alumnosEvaluadoresIds !== null" style ="color:green; font-size: x-small"> 
+                ({{evaluadores[j].Nombre}} {{evaluadores[j].PrimerApellido}} {{evaluadores[j].SegundoApellido}})
+              </span>
+       
+            </ion-item>
+            <ion-item lines = "none" *ngIf = "juego.profesorEvalua && respuestaProfesor">
+              {{respuestaProfesor[i]}} <span style ="color:rgb(31, 47, 194); font-size: x-small"> 
+              (profesor)</span>
+            </ion-item>
+            </ion-list>
+            <br>
+            <br>
+        </ion-item>
+  </div>
+  <div *ngIf ="!mostrandoRecibidas">
   <!--JUEGO INDIVIDUAL-->
   <ion-list *ngIf="juego.Modo === 'Individual' && juego.autoEvaluacion">
     <ion-list-header>
@@ -124,4 +181,5 @@
       <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
+  </div>
 </ion-content>

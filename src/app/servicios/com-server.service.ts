@@ -16,6 +16,7 @@ export class ComServerService {
     this.servidor.emit('alumnoConectado', alumno);
   }
   Desconectar(alumno: Alumno) {
+    console.log ('voy a desconectar');
     this.servidor.emit('alumnoDesconectado', alumno);
     this.servidor.disconnect();
   }
@@ -87,11 +88,15 @@ export class ComServerService {
   }
   public RecordarContrasena(alumno: Alumno) {
     console.log ('dentro del servicio para recordar contraseña');
+    console.log (alumno);
     // Me conecto momentaneamente para enviarle al alumno la contraseña que debe enviar por email
-    this.servidor.connect();
-    this.servidor.emit ('recordarContraseña' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
+   // this.Conectar (alumno);
+    console.log ('conectado');
+    this.servidor.emit ('recordarPassword' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
+    console.log ('emitido');
     // Me desconecto
-    this.servidor.disconnect();
+   // this.Desconectar (alumno);
+    console.log ('desconectado');
   }
 
   //Para la función de avanzar pregunta Kahoot

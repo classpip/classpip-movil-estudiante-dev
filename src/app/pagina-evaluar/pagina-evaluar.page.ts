@@ -27,6 +27,7 @@ export class PaginaEvaluarPage implements OnInit {
   comentario = '';
   forceExit = false;
   estado: boolean;
+  respuestasPreguntasAbiertas = [];
 
   constructor(
       private route: ActivatedRoute,
@@ -43,23 +44,31 @@ export class PaginaEvaluarPage implements OnInit {
     this.juego = this.sesion.DameJuegoEvaluacion();
     this.miAlumno = this.sesion.DameAlumno();
     this.miEquipo = this.sesion.DameEquipo();
-    this.peticionesAPI.DameRubrica(this.juego.rubricaId).subscribe((res: Rubrica) => {
-      this.rubrica = res;
-      this.respuestaEvaluacion = new Array<any>(this.rubrica.Criterios.length);
-      this.rubrica.Criterios.forEach((item, index) => {
-        this.respuestaEvaluacion[index] = new Array<boolean>(this.rubrica.Criterios[index].Elementos.length).fill(false);
-      });
-      this.respuestaEvaluacion.push('');
-      this.allCompleted = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
-      this.indeterminated = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
-      this.estado = this.EstadoEvaluacion();
-    });
     if (this.juego.Modo === 'Individual') {
       this.alumnos = this.sesion.DameAlumnos();
     } else if (this.juego.Modo === 'Equipos') {
       this.equipos = this.sesion.DameEquipos();
       this.alumnosDeMiEquipo = this.sesion.DameAlumnosDeMiEquipo();
     }
+    this.respuestasPreguntasAbiertas = Array(this.juego.PreguntasAbiertas.length).fill(undefined);
+    if (this.juego.rubricaId === 0) {
+      // Es un juego solo con preguntas abiertas
+      this.estado = this.EstadoEvaluacion();
+
+    } else {
+      this.peticionesAPI.DameRubrica(this.juego.rubricaId).subscribe((res: Rubrica) => {
+        this.rubrica = res;
+        this.respuestaEvaluacion = new Array<any>(this.rubrica.Criterios.length);
+        this.rubrica.Criterios.forEach((item, index) => {
+          this.respuestaEvaluacion[index] = new Array<boolean>(this.rubrica.Criterios[index].Elementos.length).fill(false);
+        });
+        this.respuestaEvaluacion.push('');
+        this.allCompleted = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
+        this.indeterminated = new Array<boolean>(this.rubrica.Criterios.length).fill(false);
+        this.estado = this.EstadoEvaluacion();
+      });
+    }
+   
   }
 
   EstadoEvaluacion(): boolean {
@@ -74,10 +83,17 @@ export class PaginaEvaluarPage implements OnInit {
       if (!miRespuesta) {
         return false;
       } else {
-        this.respuestaEvaluacion = miRespuesta.respuesta;
-        this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
-        this.forceExit = true;
-        return true;
+        if (this.juego.rubricaId === 0) {
+          // solo preguntas abiertas
+          this.respuestasPreguntasAbiertas = miRespuesta.respuesta;
+          this.forceExit = true;
+          return true;
+        } else {
+          this.respuestaEvaluacion = miRespuesta.respuesta;
+          this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
+          this.forceExit = true;
+          return true;
+        }
       }
     } else if (this.juego.Modo === 'Equipos' && typeof equiposJuegoDeEvaluacion !== 'undefined') {
       const relacion = equiposJuegoDeEvaluacion.find(item => item.equipoId === this.rutaId);
@@ -85,24 +101,42 @@ export class PaginaEvaluarPage implements OnInit {
         return false;
       }
       const miRespuesta = relacion.respuestas.find(item => item.alumnoId === this.miAlumno.id);
+      console.log ('MI RESPUESTA');
+      console.log (miRespuesta);
       if (miRespuesta) {
-        this.respuestaEvaluacion = miRespuesta.respuesta;
-        this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
-        this.forceExit = true;
-        return true;
+
+        if (this.juego.rubricaId === 0) {
+          // solo preguntas abiertas
+          this.respuestasPreguntasAbiertas = miRespuesta.respuesta;
+          this.forceExit = true;
+          return true;
+        } else {
+          this.respuestaEvaluacion = miRespuesta.respuesta;
+          this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
+          this.forceExit = true;
+          return true;
+        }
       }
+  
       if (relacion.alumnosEvaluadoresIds !== null || typeof this.alumnosDeMiEquipo === 'undefined') {
+
         return false;
       }
-      console.log('relacion', relacion);
-      console.log('alumnos de mi equipo', this.alumnosDeMiEquipo);
+
       const otrasRespuestas = relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId));
-      console.log('otrasRespuestas', otrasRespuestas);
       if (otrasRespuestas) {
-        this.respuestaEvaluacion = otrasRespuestas.respuesta;
-        this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
-        this.forceExit = true;
-        return true;
+        
+        if (this.juego.rubricaId === 0) {
+          // solo preguntas abiertas
+          this.respuestasPreguntasAbiertas = otrasRespuestas.respuesta;
+          this.forceExit = true;
+          return true;
+        } else {
+          this.respuestaEvaluacion = otrasRespuestas.respuesta;
+          this.comentario = this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1];
+          this.forceExit = true;
+          return true;
+        }
       } else {
         return false;
       }
@@ -141,17 +175,28 @@ export class PaginaEvaluarPage implements OnInit {
     if (this.forceExit) {
       return true;
     }
-    // @ts-ignore
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < this.respuestaEvaluacion.length; i++) {
+    if (this.juego.rubricaId === 0) {
+      // si ya hemos contestado a alguna pregunta entonces avisamos al usuario
+
+      if (this.respuestasPreguntasAbiertas.some (respuesta => respuesta !== undefined)) {
+        return false;
+      } else {
+        return true;
+      }
+
+    } else {
+      // @ts-ignore
       // tslint:disable-next-line:prefer-for-of
-      for (let j = 0; j < this.respuestaEvaluacion[i].length; j++) {
-        if (this.respuestaEvaluacion[i][j] === true) {
-          return false;
+      for (let i = 0; i < this.respuestaEvaluacion.length; i++) {
+        // tslint:disable-next-line:prefer-for-of
+        for (let j = 0; j < this.respuestaEvaluacion[i].length; j++) {
+          if (this.respuestaEvaluacion[i][j] === true) {
+            return false;
+          }
         }
       }
+      return this.comentario.length === 0;
     }
-    return this.comentario.length === 0;
   }
 
   SetAll(i: number): void {
@@ -265,29 +310,107 @@ export class PaginaEvaluarPage implements OnInit {
   }
 
   async EnviarRespuesta() {
-    const loading = await this.loadingController.create({
-      message: 'Enviando respuesta...'
-    });
-    await loading.present();
+    let enviar;
+    if ((this.juego.rubricaId === 0) && (this.respuestasPreguntasAbiertas.includes(undefined))) {
+      this.alertController.create({
+        header: '¿Seguro que quieres enviar las respuestas ya?',
+        message: 'No has contestado a todas las preguntas',
+        buttons: [
+          {
+            text: 'SI',
+            handler: async () => {
+              enviar = true;
+            }
+          }, {
+            text: 'NO',
+            role: 'cancel',
+            handler: () => {
+              console.log('No regalo');
+              enviar = false;
+            }
+          }
+        ]
+      }).then (res => res.present());
+    } else {
+      enviar = true;
+    }
 
-    this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1] = this.comentario;
-    console.log(this.respuestaEvaluacion);
-    if (this.juego.Modo === 'Individual') {
-      this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id).subscribe((res) => {
-        const tmp = res.find(item => item.alumnoId === this.rutaId);
-        if (typeof tmp === 'undefined') {
-          this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
-          loading.dismiss();
-          this.presentAlert(false);
-          console.error('no se ha recibido la respuesta esperada', tmp);
-        } else {
+    if (enviar) {
+  
+
+      const loading = await this.loadingController.create({
+        message: 'Enviando respuesta...'
+      });
+      await loading.present();
+      if (this.juego.rubricaId === 0) {
+        this.respuestaEvaluacion = this.respuestasPreguntasAbiertas;
+      } else {
+        this.respuestaEvaluacion[this.respuestaEvaluacion.length - 1] = this.comentario;
+      }
+      console.log ('RESPUESTAS');
+      console.log(this.respuestaEvaluacion);
+      if (this.juego.Modo === 'Individual') {
+        this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id).subscribe((res) => {
+          const tmp = res.find(item => item.alumnoId === this.rutaId);
+          if (typeof tmp === 'undefined') {
+            this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
+            loading.dismiss();
+            this.presentAlert(false);
+            console.error('no se ha recibido la respuesta esperada', tmp);
+          } else {
+            let respuestas: any[];
+            if (tmp.respuestas === null) {
+              respuestas = [];
+            } else {
+              if (tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id)) {
+                console.log('Ya he votado');
+                this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
+                loading.dismiss();
+                this.presentAlert(false, true);
+                return;
+              }
+              respuestas = tmp.respuestas;
+            }
+            respuestas.push({alumnoId: this.miAlumno.id, respuesta: this.respuestaEvaluacion});
+            this.peticionesAPI.EnviarRespuestaAlumnosJuegoDeEvaluacion(tmp.id, {respuestas})
+                .subscribe((res2) => {
+                  console.log(res2);
+                  console.log('Pre-change', res);
+                  res = res.map((item) => item.id === res2.id ? res2 : item);
+                  console.log('Post-change', res);
+                  this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
+                  loading.dismiss();
+                  this.presentAlert(true);
+                });
+          }
+        });
+      } else if (this.juego.Modo === 'Equipos') {
+        this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id).subscribe((res) => {
+          const tmp = res.find(item => item.equipoId === this.rutaId);
+          console.log(tmp);
+          if (typeof tmp === 'undefined') {
+            this.sesion.TomaEquiposJuegoDeEvaluacion(res);
+            loading.dismiss();
+            this.presentAlert(false);
+            console.error('no se ha recibido la respuesta esperada', tmp);
+            return;
+          }
           let respuestas: any[];
           if (tmp.respuestas === null) {
             respuestas = [];
           } else {
             if (tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id)) {
               console.log('Ya he votado');
-              this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
+              this.sesion.TomaEquiposJuegoDeEvaluacion(res);
+              loading.dismiss();
+              this.presentAlert(false, true);
+              return;
+            }
+            if (tmp.alumnosEvaluadoresIds === null &&
+                tmp.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
+            ) {
+              console.log('Uno de mi equipo ya ha votado');
+              this.sesion.TomaEquiposJuegoDeEvaluacion(res);
               loading.dismiss();
               this.presentAlert(false, true);
               return;
@@ -295,63 +418,18 @@ export class PaginaEvaluarPage implements OnInit {
             respuestas = tmp.respuestas;
           }
           respuestas.push({alumnoId: this.miAlumno.id, respuesta: this.respuestaEvaluacion});
-          this.peticionesAPI.EnviarRespuestaAlumnosJuegoDeEvaluacion(tmp.id, {respuestas})
+          this.peticionesAPI.EnviarRespuestaEquiposJuegoDeEvaluacion(tmp.id, {respuestas})
               .subscribe((res2) => {
                 console.log(res2);
                 console.log('Pre-change', res);
                 res = res.map((item) => item.id === res2.id ? res2 : item);
                 console.log('Post-change', res);
-                this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
+                this.sesion.TomaEquiposJuegoDeEvaluacion(res);
                 loading.dismiss();
                 this.presentAlert(true);
               });
-        }
-      });
-    } else if (this.juego.Modo === 'Equipos') {
-      this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id).subscribe((res) => {
-        const tmp = res.find(item => item.equipoId === this.rutaId);
-        console.log(tmp);
-        if (typeof tmp === 'undefined') {
-          this.sesion.TomaEquiposJuegoDeEvaluacion(res);
-          loading.dismiss();
-          this.presentAlert(false);
-          console.error('no se ha recibido la respuesta esperada', tmp);
-          return;
-        }
-        let respuestas: any[];
-        if (tmp.respuestas === null) {
-          respuestas = [];
-        } else {
-          if (tmp.respuestas.find(item => item.alumnoId === this.miAlumno.id)) {
-            console.log('Ya he votado');
-            this.sesion.TomaEquiposJuegoDeEvaluacion(res);
-            loading.dismiss();
-            this.presentAlert(false, true);
-            return;
-          }
-          if (tmp.alumnosEvaluadoresIds === null &&
-              tmp.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId))
-          ) {
-            console.log('Uno de mi equipo ya ha votado');
-            this.sesion.TomaEquiposJuegoDeEvaluacion(res);
-            loading.dismiss();
-            this.presentAlert(false, true);
-            return;
-          }
-          respuestas = tmp.respuestas;
-        }
-        respuestas.push({alumnoId: this.miAlumno.id, respuesta: this.respuestaEvaluacion});
-        this.peticionesAPI.EnviarRespuestaEquiposJuegoDeEvaluacion(tmp.id, {respuestas})
-            .subscribe((res2) => {
-              console.log(res2);
-              console.log('Pre-change', res);
-              res = res.map((item) => item.id === res2.id ? res2 : item);
-              console.log('Post-change', res);
-              this.sesion.TomaEquiposJuegoDeEvaluacion(res);
-              loading.dismiss();
-              this.presentAlert(true);
-            });
-      });
+        });
+      }
     }
   }
 

@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="rubrica">
   <ion-card>
     <ion-item>
       <ion-avatar slot="start">
@@ -21,7 +21,7 @@
       </ion-label>
     </ion-item>
   </ion-card>
-  <ion-card *ngIf="rubrica">
+  <ion-card>
     <ion-list lines="none">
       <ion-list-header>
         <h1>{{rubrica.Nombre}}</h1>
@@ -38,7 +38,8 @@
       </div>
     </ion-list>
   </ion-card>
-  <ion-card>
+
+  <ion-card> 
     <ion-card-header>
       <ion-card-title>Observaciones:</ion-card-title>
       <ion-card-subtitle>Deja alguna observación</ion-card-subtitle>
@@ -49,6 +50,29 @@
       </ion-item>
     </ion-card-content>
   </ion-card>
+
+</ion-content>
+<ion-content  *ngIf="!rubrica">
+  <ion-list style="text-align:center">
+    <ion-label *ngIf = "estado"> 
+      Ya has respondido a las preguntas
+    </ion-label>
+    <ion-label *ngIf = "!estado">
+      Responde a las preguntas siguientes
+    </ion-label>
+  </ion-list>
+  <br>
+   <!-- JUEGO SOLO CON PREGUNTAS ABIERTAS -->
+   <ion-card *ngFor = "let preguntaAbierta of juego.PreguntasAbiertas; let i= index">
+   
+    <ion-card-header>
+      <ion-card-title>{{preguntaAbierta}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-textarea [(ngModel)]="respuestasPreguntasAbiertas[i]" [disabled]="estado"></ion-textarea>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
 <ion-footer>
   <ion-button expand="block" color="success" [disabled]="estado" (click)="EnviarRespuesta()">Enviar</ion-button>
