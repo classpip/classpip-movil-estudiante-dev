@@ -37,41 +37,7 @@
 
 
 
-    
-     <!-- ///////////////////////// -->
-    <!-- <mat-accordion>
-      <mat-expansion-panel *ngFor="let item of data.questionnaire.item;let i = index" hideToggle>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{item.text}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{cont[i]}}
-          </mat-panel-description> 
-        </mat-expansion-panel-header>
-        <ion-list>
-          <ion-item *ngFor="let option of item.options;let j =index">
-              <ion-label style = "color: black;">{{option.value}}</ion-label>
-              <ion-checkbox [(ngModel)]="option.checked" (ionChange)="updateAnswer(i,j,option.value,option.checked)"></ion-checkbox>
-          </ion-item>
-      </ion-list>
-      </mat-expansion-panel> 
-      Esto es una variante -->
-      <!-- <mat-expansion-panel (opened)="panelOpenState = true"
-                           (closed)="panelOpenState = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Self aware panel
-          </mat-panel-title>
-          <mat-panel-description>
-            Currently I am {{panelOpenState ? 'open' : 'closed'}}
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>I'm visible because I am open</p>
-      </mat-expansion-panel>
-    </mat-accordion> 
-    <button type="button" (click)= Resultado() > Listo </button> 
- -->
+ 
 
 
 
@@ -129,6 +95,32 @@
       <br>
       <ion-label  (click)="AccesoRegistro();">Regístrate en Classpip
       </ion-label>
+
+
+
+   
+     <!-- ///////////////////////// -->
+     <!-- <mat-accordion>
+      <mat-expansion-panel *ngFor="let item of data.questionnaire.item;let i = index" hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{item.text}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{cont[i]}}
+          </mat-panel-description> 
+        </mat-expansion-panel-header>
+        <ion-list>
+          <ion-item *ngFor="let option of item.options;let j =index">
+              <ion-label style = "color: black;">{{option.value}}</ion-label>
+              <ion-checkbox [(ngModel)]="option.checked" (ionChange)="updateAnswer(i,j,option.value,option.checked)"></ion-checkbox>
+          </ion-item>
+      </ion-list>
+      </mat-expansion-panel> 
+    </mat-accordion> 
+    <button type="button" (click)= Resultado() > Listo </button> 
+ 
+ -->
 
 
     </div> 

@@ -16,6 +16,7 @@ export class ComServerService {
     this.servidor.emit('alumnoConectado', alumno);
   }
   Desconectar(alumno: Alumno) {
+    console.log ('voy a desconectar');
     this.servidor.emit('alumnoDesconectado', alumno);
     this.servidor.disconnect();
   }
@@ -87,11 +88,15 @@ export class ComServerService {
   }
   public RecordarContrasena(alumno: Alumno) {
     console.log ('dentro del servicio para recordar contraseña');
+    console.log (alumno);
     // Me conecto momentaneamente para enviarle al alumno la contraseña que debe enviar por email
-    this.servidor.connect();
-    this.servidor.emit ('recordarContraseña' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
+   // this.Conectar (alumno);
+    console.log ('conectado');
+    this.servidor.emit ('recordarPassword' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
+    console.log ('emitido');
     // Me desconecto
-    this.servidor.disconnect();
+   // this.Desconectar (alumno);
+    console.log ('desconectado');
   }
 
   //Para la función de avanzar pregunta Kahoot
@@ -120,6 +125,35 @@ export class ComServerService {
     console.log("Envio la conexión del alumno al Server");
     this.servidor.emit('conexionAlumnoKahoot', { alumnoId: alumnoId, profesorId: this.profesorId});
 
+  }
+
+  ConfirmarPreparadoParaKahoot(nick: string) {
+    // Como el alumno no se ha conectado por la via normal, no tenemos guardado el identificador
+    // del profesor. Por eso lo tenemos que recibir como parámetro
+    // tslint:disable-next-line:object-literal-shorthand
+    this.servidor.emit('confirmacionPreparadoParaKahoot', { profesorId: this.profesorId, info: nick});
+  }
+  //Para la función de avanzar pregunta Kahoot
+  public EsperoParaLanzarPregunta(): any {
+    return Observable.create((observer) => {
+        this.servidor.on('lanzarSiguientePregunta', (opcionesDesordenadas) => {
+            observer.next(opcionesDesordenadas);
+        });
+    });
+  }
+
+  public EnviarRespuestaKahootRapido(nickName: string, respuestasAlumno: string[], tiempo: number, puntos:  number){
+    // tslint:disable-next-line:max-line-length
+    this.servidor.emit('respuestaAlumnoKahootRapido', { nick: nickName, respuesta: respuestasAlumno, tiempoRestante: tiempo, puntosObtenidos: puntos, profesorId: this.profesorId});
+
+  }
+  
+  public EsperoResultadoFinalKahoot(): any {
+    return Observable.create((observer) => {
+        this.servidor.on('resultadoFinalKahoot', (resultado) => {
+            observer.next(resultado);
+        });
+    });
   }
 }
 

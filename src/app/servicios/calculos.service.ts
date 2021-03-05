@@ -232,8 +232,8 @@ export class CalculosService {
                                           console.log (lista);
                                           console.log('voy a por los juegos de evaluacion');
                                           this.peticionesAPI.DameJuegosDeEvaluacion(AlumnoId)
-                                              // tslint:disable-next-line:no-shadowed-variable
-                                              .subscribe( lista => {
+                                          // tslint:disable-next-line:no-shadowed-variable
+                                          .subscribe( lista => {
                                                   for (let i = 0; i < (lista.length); i++) {
                                                       if (lista[i].JuegoActivo === true) {
                                                           JuegosActivos.push(lista[i]);

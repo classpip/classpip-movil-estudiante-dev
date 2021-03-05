@@ -5,6 +5,7 @@ import {PeticionesAPIService, SesionService} from '../servicios';
 import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
 import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 import {NavController} from '@ionic/angular';
+import { CompileShallowModuleMetadata } from '@angular/compiler';
 
 @Component({
   selector: 'app-juego-evaluacion',
@@ -12,6 +13,10 @@ import {NavController} from '@ionic/angular';
   styleUrls: ['./juego-evaluacion.page.scss'],
 })
 export class JuegoEvaluacionPage implements OnInit {
+  data: any;
+  respuestaEvaluacion: any;
+  respuestaProfesor: any;
+  evaluadores: any;
 
   juego: JuegoDeEvaluacion;
   miAlumno: Alumno;
@@ -22,8 +27,9 @@ export class JuegoEvaluacionPage implements OnInit {
   equipos: Equipo[] = [];
   alumnosDeMiEquipo: Alumno[];
   equiposPorEquipos: boolean;
-  notaFinal: number;
+  mostrandoRecibidas = false;
   alumnosDeEquipo = [];
+  notaFinal: number;
 
   constructor(
       private sesion: SesionService,
@@ -40,6 +46,8 @@ export class JuegoEvaluacionPage implements OnInit {
           this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: AlumnoJuegoDeEvaluacion[]) => {
                   this.alumnosJuegoDeEvaluacion = res;
+                  console.log ('alumnos');
+                  console.log ((this.alumnosJuegoDeEvaluacion));
                   this.sesion.TomaAlumnosJuegoDeEvaluacion(this.alumnosJuegoDeEvaluacion);
                   this.MiNotaFinal();
               });
@@ -74,8 +82,23 @@ export class JuegoEvaluacionPage implements OnInit {
               });
           this.peticionesAPI.DameEquiposJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: Equipo[]) => {
-                  this.equipos = res;
-                  this.sesion.TomaEquipos(this.equipos);
+                this.equipos = res;
+                this.sesion.TomaEquipos(this.equipos);
+                // me traigo los alumnos de cada equipo
+                this.equipos.forEach((equipo) => {
+                    this.peticionesAPI.DameAlumnosEquipo(equipo.id)
+                    .subscribe((res2: Alumno[]) => {
+                        const obj = {equipoId: equipo.id, alumnos: res2};
+                        this.alumnosDeEquipo.push(obj);
+                    });
+                });
+              });
+       
+        // necesitare los nombres de los alumnmo en el caso de evaluadores individuales
+          this.peticionesAPI.DameAlumnosGrupo(this.juego.grupoId)
+              .subscribe((res: Alumno[]) => {
+                  this.alumnos = res;
+                  this.sesion.TomaAlumnos(this.alumnos);
               });
       }
   }
@@ -255,6 +278,7 @@ export class JuegoEvaluacionPage implements OnInit {
       this.equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();
       if (this.juego.Modo === 'Individual' && typeof this.alumnosJuegoDeEvaluacion !== 'undefined') {
           const relacion = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === id);
+
           if (!relacion || !relacion.respuestas) {
               return false;
           }
@@ -312,6 +336,71 @@ export class JuegoEvaluacionPage implements OnInit {
           return;
       }
       return equipo.FotoEquipo;
+  }
+  PrepararRespuestasRecibidas() {
+    if (this.juego.Modo === 'Individual') {
+        const respuestas = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === this.miAlumno.id).respuestas;
+        console.log ('respuestas a mostrar');
+        console.log (respuestas);
+
+        const respuestasAlumnos = respuestas.filter (item => item.alumnoId);
+        this.respuestaEvaluacion = respuestasAlumnos.map(item => item.respuesta);
+        // puede que haya también respuesta del profeesor
+        const respuestaProfesor = respuestas.filter (item => item.profesorId);
+        this.respuestaProfesor = respuestaProfesor.map(item => item.respuesta);
+          // Eso me da un vector con una sola posición. La respuesta es el contenido de esa posición
+        this.respuestaProfesor =  this.respuestaProfesor [0];
+        // preparo los nombres de los evaluadores
+        let evaluadoresId = respuestas.map(item => item.alumnoId);
+        // Si entre los evaluadores esta el profesor entonces mete un undefined que lo elimino a continuación
+        evaluadoresId = evaluadoresId.filter (evaluador => evaluador !== undefined);
+
+        this.evaluadores = [];
+        evaluadoresId.forEach (id => {
+            this.evaluadores.push (this.alumnos.find (alumno => alumno.id === Number(id)));
+        });
+
+
+      } else if (this.juego.Modo === 'Equipos' ) {
+
+        const respuestas = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id).respuestas;
+
+        const respuestasAlumnos = respuestas.filter (item => item.alumnoId);
+        this.respuestaEvaluacion = respuestasAlumnos.map(item => item.respuesta);
+        // puede que haya también respuesta del profeesor
+        const respuestaProfesor = respuestas.filter (item => item.profesorId);
+        this.respuestaProfesor = respuestaProfesor.map(item => item.respuesta);
+          // Eso me da un vector con una sola posición. La respuesta es el contenido de esa posición
+        this.respuestaProfesor =  this.respuestaProfesor [0];
+        // preparo los nombres de los evaluadores
+        let evaluadoresId = respuestas.map(item => item.alumnoId);
+        // Si entre los evaluadores esta el profesor entonces mete un undefined que lo elimino a continuación
+        evaluadoresId = evaluadoresId.filter (evaluador => evaluador !== undefined);
+
+
+
+        //// ESTO ES LO QUE HAY QUE HACER PARA PREPARAR LOS NOMBRES DE LOS EVALUADORES SI LOS EVALUADORES SON EQUIPOS
+        // A partir de los id de los alumnos evaluadores creo la lista de los nombres de los equipos a los que pertenecen.
+        if (this.equiposJuegoDeEvaluacion[0].alumnosEvaluadoresIds === null) {
+            console.log('Equipos evaluados por equipos');
+            this.evaluadores = [];
+            evaluadoresId.forEach (id => {
+                // averiguar de qué equipo es el alumno
+              const equipoId = this.alumnosDeEquipo.find (equipo => equipo.alumnos.some (alumno => alumno.id === id)).equipoId;
+              const nombreEquipo = this.equipos.find (equipo => equipo.id === equipoId).Nombre;
+              this.evaluadores.push (nombreEquipo);
+            });
+          } else {
+            //// ESTO ES LO QUE HAY QUE HACER PARA PREPARAR LOS NOMBRES DE LOS EVALUADORES SI LOS EVALUADORES SON ALUMNOS
+
+            this.evaluadores = [];
+            evaluadoresId.forEach (id => {
+                this.evaluadores.push (this.alumnos.find (alumno => alumno.id === Number(id)));
+            });
+
+          }
+        }
+
   }
 
 }
