@@ -38,7 +38,7 @@
     <ion-card-content>
       <ion-list>
         <ion-item *ngFor="let respuesta of respuestas | filtrarComentariosVacios; let n = index">
-          {{MostrarComentario(n)}}
+          {{respuesta.respuesta[respuesta.respuesta.length - 1]}}
         </ion-item>
       </ion-list>
     </ion-card-content>
