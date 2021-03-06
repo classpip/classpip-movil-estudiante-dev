@@ -26,7 +26,7 @@
           </ion-card-subtitle>
         </ion-list>
      
-        <ion-item style= "width:40%; margin-right: -10%;" lines = "none">
+        <ion-item *ngIf = "(juego.rubricaId === 0) && hayRespuestas" style= "width:40%; margin-right: -10%;" lines = "none">
           <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="mostrandoRecibidas" (click)="mostrandoRecibidas = false;">Mostrar <br>evaluaciones <br>a realizar</ion-button>
           <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="!mostrandoRecibidas" (click)="PrepararRespuestasRecibidas(); mostrandoRecibidas=true;">Mostrar <br>evaluaciones <br>recibidas</ion-button>  
         </ion-item>
@@ -80,7 +80,7 @@
   </div>
   <div *ngIf ="!mostrandoRecibidas">
 
-  <ion-button color="primary" expand="block" *ngIf="notaFinal !== -1" (click)="VerNotaFinal(miAlumno.id)">
+  <ion-button color="primary" expand="block" *ngIf="(juego.rubricaId > 0) && (notaFinal !== -1)" (click)="VerNotaFinal(miAlumno.id)">
     Nota Final {{MiNotaFinal()}}
   </ion-button>
 

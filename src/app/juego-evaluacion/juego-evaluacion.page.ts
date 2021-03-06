@@ -30,6 +30,7 @@ export class JuegoEvaluacionPage implements OnInit {
   mostrandoRecibidas = false;
   alumnosDeEquipo = [];
   notaFinal: number;
+  hayRespuestas: boolean;
 
   constructor(
       private sesion: SesionService,
@@ -42,12 +43,17 @@ export class JuegoEvaluacionPage implements OnInit {
   ngOnInit() {
       this.juego = this.sesion.DameJuegoEvaluacion();
       this.miAlumno = this.sesion.DameAlumno();
+  
       if (this.juego.Modo === 'Individual') {
           this.peticionesAPI.DameRelacionAlumnosJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: AlumnoJuegoDeEvaluacion[]) => {
                   this.alumnosJuegoDeEvaluacion = res;
                   console.log ('alumnos');
                   console.log ((this.alumnosJuegoDeEvaluacion));
+                  const respuestas = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === this.miAlumno.id).respuestas;
+                  console.log ('respuestas a mostrar');
+                  console.log (respuestas);
+                  this.hayRespuestas = (respuestas !== null);
                   this.sesion.TomaAlumnosJuegoDeEvaluacion(this.alumnosJuegoDeEvaluacion);
                   this.MiNotaFinal();
               });
@@ -70,6 +76,8 @@ export class JuegoEvaluacionPage implements OnInit {
           this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
               .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
                   this.equiposJuegoDeEvaluacion = res;
+                  const respuestas = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id).respuestas;
+                  this.hayRespuestas = (respuestas !== null);
                   this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
                   this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
                   this.equiposJuegoDeEvaluacion.forEach((equipoRelacion: EquipoJuegoDeEvaluacion) => {
@@ -348,6 +356,10 @@ export class JuegoEvaluacionPage implements OnInit {
         // puede que haya también respuesta del profeesor
         const respuestaProfesor = respuestas.filter (item => item.profesorId);
         this.respuestaProfesor = respuestaProfesor.map(item => item.respuesta);
+        console.log ('respuestas compañeros');
+        console.log (this.respuestaEvaluacion);
+        console.log ('respuestas profesor');
+        console.log (respuestaProfesor);
           // Eso me da un vector con una sola posición. La respuesta es el contenido de esa posición
         this.respuestaProfesor =  this.respuestaProfesor [0];
         // preparo los nombres de los evaluadores
