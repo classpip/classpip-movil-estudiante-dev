@@ -46,7 +46,7 @@ export class PeticionesAPIService {
   private APIUrlEquipos = this.base + '3000/api/Equipos';
   private APIUrlLogosEquipos = this.base + '3000/api/imagenes/LogosEquipos';
   private APIUrlPuntosJuego = this.base + '3000/api/AsignacionPuntosJuego';
-  private APIUrlImagenNivel = this.base + '3000/api/imagenes/imagenNivel';
+  private APIUrlImagenNivel = this.base + '3000/api/imagenes/ImagenNivel';
   private APIURLImagenInsignia = this.base + '3000/api/imagenes/ImagenInsignia';
 
   private APIUrlAlumnoJuegoDePuntos = this.base + '3000/api/AlumnoJuegosDePuntos';
