@@ -37,6 +37,48 @@ export class PaginaNotafinalPage implements OnInit {
     console.log(this.respuestas);
   }
 
+  CalcularNotaCriterio(index: number): number {
+    let subNota: number;
+    let notaCriterio = 0;
+    if (this.juego.metodoSubcriterios) {
+      subNota = 0;
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < this.respuestas.length; i++) {
+        for (let j = 1; j < this.juego.Pesos[index].length; j++) {
+          if (this.respuestas[i].respuesta[index][j - 1]) {
+            subNota += this.juego.Pesos[index][j] / 10;
+          }
+          notaCriterio += subNota / this.respuestas.length;
+          subNota = 0;
+        }
+      }
+    } else {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < this.respuestas.length; i++) {
+        subNota = 10;
+        const fallos = this.respuestas[i].respuesta[index].filter(item => item === false).length;
+        if (fallos > 0) {
+          let minimo: number;
+          let rangoMinimo;
+          let maximo: number;
+          minimo = Math.min.apply(Math, this.juego.Penalizacion[index].map(item => item.num));
+          if (fallos >= minimo) {
+            rangoMinimo = this.juego.Penalizacion[index].filter(item => item.num <= fallos);
+            if (rangoMinimo.length === 0) {
+              maximo = Math.max.apply(Math, this.juego.Penalizacion[index].map(item => item.num));
+            } else {
+              maximo = Math.max.apply(Math, rangoMinimo.map(item => item.num));
+            }
+            const penalizacion = this.juego.Penalizacion[index].find(item => item.num === maximo).p;
+            subNota = penalizacion / 10;
+          }
+        }
+        notaCriterio += subNota / this.respuestas.length;
+      }
+    }
+    return Math.round((notaCriterio + Number.EPSILON) * 100) / 100;
+  }
+
   ContarPuntuacion(i: number, j: number): number {
     return this.respuestas.map(item => item.respuesta[i][j]).filter(item => item === true).length;
   }

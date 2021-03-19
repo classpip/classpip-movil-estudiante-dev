@@ -23,9 +23,10 @@
       <div *ngFor="let criterio of rubrica.Criterios; let i = index">
         <ion-item>
           <h2>{{criterio.Nombre}}</h2>
+          <ion-badge slot="end" color="primary">Nota: {{CalcularNotaCriterio(i)}}</ion-badge>
         </ion-item>
         <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
-          <ion-badge color="primary" slot="start">{{ContarPuntuacion(i, j)}}</ion-badge>
+          <ion-badge color="secondary" slot="start">{{ContarPuntuacion(i, j)}}</ion-badge>
           <ion-text>{{elemento}}</ion-text>
         </ion-item>
       </div>
@@ -38,7 +39,7 @@
     <ion-card-content>
       <ion-list>
         <ion-item *ngFor="let respuesta of respuestas | filtrarComentariosVacios; let n = index">
-          {{MostrarComentario(n)}}
+          {{respuesta.respuesta[respuesta.respuesta.length - 1]}}
         </ion-item>
       </ion-list>
     </ion-card-content>
