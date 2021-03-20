@@ -77,6 +77,8 @@ export class SesionService {
   alumnosDeMiEquipo: Alumno[];
   notaFinal: number;
   respuestas: any[];
+  evaluacionesPendientes: number;
+  evaluacionesARecibir: number;
 
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
@@ -538,6 +540,18 @@ export class SesionService {
   }
   public TomaRespuestas(respuestas: any[]) {
     this.respuestas = respuestas;
+  }
+  public TomaEvaluacionesPendientes(evaluacionesPendientes: number) {
+    this.evaluacionesPendientes = evaluacionesPendientes;
+  }
+  public DameEvaluacionesPendientes(): number {
+    return this.evaluacionesPendientes;
+  }
+  public TomaEvaluacionesARecibir(evaluacionesARecibir: number) {
+    this.evaluacionesARecibir = evaluacionesARecibir;
+  }
+  public DameEvaluacionesARecibir(): number {
+    return this.evaluacionesARecibir;
   }
 }
 

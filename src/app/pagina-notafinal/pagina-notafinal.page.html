@@ -11,8 +11,12 @@
 
 <ion-content>
   <ion-card>
-    <ion-item color="primary">
+    <ion-item *ngIf = "evaluacionesPendientes === 0" color="primary">
       <strong>Nota Final {{notaFinal}}</strong>
+    </ion-item>
+    <ion-item *ngIf = "evaluacionesPendientes > 0" color="secondary">
+      <strong>Nota provisional: {{notaFinal}}<br>
+      Evaluaciones pendientes: {{evaluacionesPendientes}} de {{evaluacionesARecibir}}</strong>
     </ion-item>
   </ion-card>
   <ion-card *ngIf="rubrica">
