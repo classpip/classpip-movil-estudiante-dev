@@ -79,9 +79,11 @@
         </ion-item>
   </div>
   <div *ngIf ="!mostrandoRecibidas">
-
-  <ion-button color="primary" expand="block" *ngIf="(juego.rubricaId > 0) && (notaFinal !== -1)" (click)="VerNotaFinal(miAlumno.id)">
+  <ion-button color="primary" expand="block" *ngIf="(juego.rubricaId > 0) && (evaluacionesPendientes === 0)" (click)="VerNotaFinal(miAlumno.id)">
     Nota Final {{MiNotaFinal()}}
+  </ion-button>
+  <ion-button color="secondary" expand="block" *ngIf="(juego.rubricaId > 0) && (evaluacionesPendientes > 0)" (click)="VerNotaFinal(miAlumno.id)">
+    Nota Provisonal {{MiNotaFinal()}}
   </ion-button>
 
   <!--JUEGO INDIVIDUAL-->

@@ -53,6 +53,9 @@ export * from './Pregunta';
 
 export * from './JuegoDeVotacionUnoATodos';
 export * from './AlumnoJuegoDeVotacionUnoATodos';
+export * from './EquipoJuegoDeVotacionUnoATodos';
+
+
 export * from './JuegoDeVotacionTodosAUno';
 export * from './AlumnoJuegoDeVotacionTodosAUno';
 export * from './Criterio';

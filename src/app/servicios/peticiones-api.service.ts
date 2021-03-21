@@ -12,7 +12,7 @@ import {
   MiAlumnoAMostrarJuegoDeGeocaching,
   PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares, JuegoDeVotacionUnoATodos, AlumnoJuegoDeVotacionUnoATodos,
   Rubrica, JuegoDeVotacionTodosAUno, AlumnoJuegoDeVotacionTodosAUno, JuegoDeCuestionarioSatisfaccion, AlumnoJuegoDeCuestionarioSatisfaccion,
-  CuestionarioSatisfaccion, JuegoDeEncuestaRapida
+  CuestionarioSatisfaccion, JuegoDeEncuestaRapida, EquipoJuegoDeVotacionUnoATodos
 
 
 } from '../clases';
@@ -102,6 +102,8 @@ export class PeticionesAPIService {
   private APIUrlFamiliarAvatares = this.base + '3000/api/familiasAvatares';
   private APIUrlAudiosAvatares = this.base + '3000/api/imagenes/AudiosAvatares';
   private APIUrlAlumnoJuegoDeVotacionUnoATodos = this.base + '3000/api/alumnosJuegoDeVotacionUnoATodos';
+  private APIUrlEquipoJuegoDeVotacionUnoATodos = this.base + '3000/api/equiposJuegoDeVotacionUnoATodos';
+
   private APIUrlJuegoDeVotacionUnoATodos = this.base + '3000/api/juegosDeVotacionUnoATodos';
 
   private APIUrlAlumnoJuegoDeVotacionTodosAUno = this.base + '3000/api/alumnosJuegoDeVotacionTodosAUno';
@@ -960,6 +962,10 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     return this.http.get<JuegoDeVotacionUnoATodos[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeVotacionUnoATodos');
   }
 
+  public DameJuegoDeVotacionUnoATodosEquipo(equipoId: number): Observable<JuegoDeVotacionUnoATodos[]> {
+    return this.http.get<JuegoDeVotacionUnoATodos[]>(this.APIUrlEquipos + '/' + equipoId + '/juegoDeVotacionUnoATodos');
+  }
+
 
    // Da la inscripción de un alumno concreto
    public DameInscripcionAlumnoJuegoDeVotacionUnoATodos(juegoId: number, alumnoId: number): Observable<AlumnoJuegoDeVotacionUnoATodos[]> {
@@ -967,15 +973,32 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     + '?filter[where][juegoDeVotacionUnoATodosId]=' + juegoId +  '&filter[where][alumnoId]=' + alumnoId);
   }
 
+  // Da la inscripción de un equipo concreto
+  public DameInscripcionEquipoJuegoDeVotacionUnoATodos(juegoId: number, equipoId: number): Observable<EquipoJuegoDeVotacionUnoATodos[]> {
+      return this.http.get<EquipoJuegoDeVotacionUnoATodos[]>(this.APIUrlEquipoJuegoDeVotacionUnoATodos
+      + '?filter[where][juegoDeVotacionUnoATodosId]=' + juegoId +  '&filter[where][equipoId]=' + equipoId);
+  }
+
   public DameAlumnosJuegoDeVotacionUnoATodos(juegoId: number): Observable<Alumno[]> {
     return this.http.get<Alumno[]>(this.APIUrlJuegoDeVotacionUnoATodos + '/' + juegoId + '/alumnos');
   }
+
+  public DameEquiposJuegoDeVotacionUnoATodos(juegoId: number): Observable<Equipo[]> {
+    return this.http.get<Equipo[]>(this.APIUrlJuegoDeVotacionUnoATodos + '/' + juegoId + '/equipos');
+  }
+
   // Modifica la inscripcion (la votacion) del alumno
   public RegistraVotacion(alumnoJuegoDeVotacionUnoATodos: AlumnoJuegoDeVotacionUnoATodos): Observable<AlumnoJuegoDeVotacionUnoATodos> {
     // tslint:disable-next-line:max-line-length
     return this.http.put<AlumnoJuegoDeVotacionUnoATodos>(this.APIUrlAlumnoJuegoDeVotacionUnoATodos + '/' + alumnoJuegoDeVotacionUnoATodos.id, alumnoJuegoDeVotacionUnoATodos);
   }
 
+   // Modifica la inscripcion (la votacion) del equipo
+  // tslint:disable-next-line:max-line-length
+  public RegistraVotacionEquipo(equipoJuegoDeVotacionUnoATodos: EquipoJuegoDeVotacionUnoATodos): Observable<EquipoJuegoDeVotacionUnoATodos> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<EquipoJuegoDeVotacionUnoATodos>(this.APIUrlEquipoJuegoDeVotacionUnoATodos + '/' + equipoJuegoDeVotacionUnoATodos.id, equipoJuegoDeVotacionUnoATodos);
+  }
 
 
   public DameJuegosDeVotacionTodosAUnoAlumno(alumnoId: number): Observable<JuegoDeVotacionTodosAUno[]> {
@@ -986,6 +1009,8 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     return this.http.get<AlumnoJuegoDeVotacionTodosAUno[]>(this.APIUrlAlumnoJuegoDeVotacionTodosAUno
     + '?filter[where][juegoDeVotacionTodosAUnoId]=' + juegoId +  '&filter[where][alumnoId]=' + alumnoId);
   }
+
+   
 
   public DameAlumnosJuegoDeVotacionTodosAUno(juegoId: number): Observable<Alumno[]> {
     return this.http.get<Alumno[]>(this.APIUrlJuegoDeVotacionTodosAUno + '/' + juegoId + '/alumnos');
