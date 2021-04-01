@@ -96,6 +96,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   clasificacion: any;
   respuestasKahoot: any[] = [];
   styles: any;
+  puntosTotales: number; // acumula los puntos recibidos en el juego Kahoot
+  respuestasPreparadas = false;
 
   @ViewChild(IonSlides, { static: false }) slides: IonSlides;
 
@@ -136,9 +138,19 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   }
 
+  ionViewWillEnter () {
+    console.log ('empezamos por Enter');
+    this.slideActual = 0;
+    this.ngOnInit();
+  }
+
   ngOnInit() {
+
+    // El juego de cuestionario será siempre de grupo porque los juegos rápidos se han movido a ClasspipExpress
+    // El juego puede ser clásico o kahoot
    
     this.juegoSeleccionado = this.sesion.DameJuego();
+    console.log ('empezamos');
 
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
@@ -146,12 +158,16 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
     this.Modalidad = this.juegoSeleccionado.Modalidad;
 
+    // Seguro que la siguiente condición es cierta porque aqui ya no hay juego rápido
+    // De momento lo dejo pero esto tiene que desaparecer
     if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
+      console.log ('juego de cuestionario');
       // Obtenemos la inscripcion del alumno al juego de cuestionario
       this.alumnoId = this.sesion.DameAlumno().id;
       this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
       .subscribe (res => {
         this.alumnoJuegoDeCuestionario = res[0];
+        console.log ('datos del alumno', this.alumnoJuegoDeCuestionario);
   
         if (!this.alumnoJuegoDeCuestionario.Contestado) {
   
@@ -167,11 +183,27 @@ export class JuegoDeCuestionarioPage implements OnInit {
             // tslint:disable-next-line:no-shadowed-variable
             .subscribe(res => {
               this.PreguntasCuestionario = res;
-              this.PrepararPreguntasYRespuestas();
+
+              if (this.juegoSeleccionado.Modalidad === 'Clásico') {
+                this.PrepararPreguntasYRespuestas();
+              }
             });
+            if (this.juegoSeleccionado.Modalidad === 'Kahoot') {
+              // Indico lo que haré cuando reciba los resultados finales del juego en el caso del Kahoot
+              this.comServer.EsperoResultadoFinalKahoot ()
+              .subscribe (resultado => {
+                this.tengoResultadoDelJuego = true;
+                this.clasificacion = resultado;
+                // El resultado final del juego Kahoot es una lista con en la que cada elemento 
+                // tiene: 
+                //    alumno
+                //    puntos
+              });
+            }
            
 
         } else {
+            console.log ('cuestionario contestado', this.alumnoJuegoDeCuestionario);
             // el cuestionario ya ha sido contestado
             this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
             // tslint:disable-next-line:no-shadowed-variable
@@ -197,6 +229,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
                 // de tipo "Cuatro opciones", "Verdadero o falso" o "Respuesta abierta". En el caso de "Emparejamiento" el vector
                 // contiene las partes derechas de los emparejamientos tal y como lo eligió el alumno, o undefined si contestó en blanco)
    
+                console.log ('respuestas ', respuestas);
                 this.RespuestasAlumno = [];
                 this.respuestasEmparejamientos = [];
                 this.imagenesPreguntas = [];
@@ -238,6 +271,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
                   }
                 }
+                this.respuestasPreparadas = true;
               });
             });
             if (this.juegoSeleccionado.JuegoTerminado) {
@@ -247,38 +281,6 @@ export class JuegoDeCuestionarioPage implements OnInit {
         }
 
       });
-    } else {
-        // Se trata de un juego de cuestionario rápido, que puede ser de modalidad "Clásico" o "Kahoot"
-     
-        this.alumnoJuegoDeCuestionario = new AlumnoJuegoDeCuestionario();
-        this.NotaInicial = '0';
-        this.nickName = this.sesion.DameNickName();
-        this.cuestionarioRapido = true;
-          // Obtenemos el cuestionario a realizar
-        this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
-          // tslint:disable-next-line:no-shadowed-variable
-          .subscribe(res => {
-            this.cuestionario = res;
-            this.descripcion = res.Descripcion;
-          });
-      
-        this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
-          // tslint:disable-next-line:no-shadowed-variable
-        .subscribe(res => {
-            this.PreguntasCuestionario = res;
-            this.PrepararPreguntasYRespuestas();
-        });
-        if (this.juegoSeleccionado.Modalidad === 'Kahoot') {
-          this.comServer.EsperoResultadoFinalKahoot ()
-          .subscribe (resultado => {
-            this.tengoResultadoDelJuego = true;
-            this.clasificacion = resultado;
-            // El resultado final del juego Kahoot es una lista con en la que cada elemento 
-            // tiene: 
-            //    nickName
-            //    puntos
-          });
-        }
     }
   }
 
@@ -347,7 +349,6 @@ export class JuegoDeCuestionarioPage implements OnInit {
     }
 
   }
-
   DesordenarPreguntas () {
     this.DesordenarVector (this.preguntasYRespuestas);
   }
@@ -358,12 +359,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
       }
     });
   }
-
-
   DesordenarPreguntasYRespuestas () {
     this.DesordenarPreguntas();
     this.DesordenarRespuestas();
   }
+
+
   
 
   radioGroupChange(event, i) {
@@ -390,7 +391,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
         {
           text: 'SI',
           handler: () => {
-          this.registrarNota();
+          this.RegistrarNota();
 
           }
         }, {
@@ -405,7 +406,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   // Funcion para establecer la nota y guardar respuestas en el caso de juego de cuestionario normal
-  registrarNota() {
+  RegistrarNota() {
     // paramos el timer si está activo
 
     if (this.contar) {
@@ -563,9 +564,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   IniciarTimer() {
-    if (this.juegoSeleccionado.Modalidad === 'Clásico') {
-      if (this.tiempoLimite !== 0) {
-      // el timer solo se activa si se ha establecido un tiempo limite
+    if (this.tiempoLimite !== 0) {
+      // este timer solo se activa en el modo clásico si se ha establecido un tiempo limite
       this.contar = true; // para que se muestre la cuenta atrás
       this.tiempoRestante = this.tiempoLimite;
       this.timer = setInterval(async () => {
@@ -583,12 +583,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
                     role: 'cancel',
                     handler: () => {
                       this.registrado = true;
-                      if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
-
-                        this.registrarNota();
-                      } else {
-                        this.EnviarRespuesta();
-                      }
+                      this.RegistrarNota();
                       this.slides.slideTo ( this.PreguntasCuestionario.length + 2);
                     }
                   }
@@ -599,218 +594,212 @@ export class JuegoDeCuestionarioPage implements OnInit {
             }
 
       }, 1000);
-      }
-    } else if(this.juegoSeleccionado.Modalidad === 'Kahoot'){
-
-      this.comServer.EsperoAvanzarPregunta()
-      .subscribe((mensaje) => {
-        this.stepper.next();
-      });
-      console.log("LLAMAMOS A EnviarConexionAlumnoKahoot");
-      this.EnviarConexionAlumnoKahoot(this.alumnoId);
     }
   }
 
 
-  async EnviarRespuesta() {
-    /* Preparamos un mensaje con la siguiente informacion:
-        Nota
-        Tiempo empleado
-        Id de las preguntas del cuestionario
-        Respuestas
-    */
+  // async EnviarRespuesta() {
+  //   /* Preparamos un mensaje con la siguiente informacion:
+  //       Nota
+  //       Tiempo empleado
+  //       Id de las preguntas del cuestionario
+  //       Respuestas
+  //   */
 
 
 
-    // paramos el timer si está activo
-    if (this.contar) {
-      clearInterval(this.timer);
-      this.contar = false;
-    }
-    this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
-    console.log ('Respuestas');
-    console.log (this.RespuestasAlumno);
+  //   // paramos el timer si está activo
+  //   if (this.contar) {
+  //     clearInterval(this.timer);
+  //     this.contar = false;
+  //   }
+  //   this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
+  //   console.log ('Respuestas');
+  //   console.log (this.RespuestasAlumno);
 
-    // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
-    // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
+  //   // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
+  //   // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
    
-    // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
-    // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
-    for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
-        const final = this.preguntasYRespuestas[i].pregunta.Emparejamientos.length;
-        if (!this.contestar[i]) {
-          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+  //   // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
+  //   // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
+  //   for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
+  //     if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+  //       const final = this.preguntasYRespuestas[i].pregunta.Emparejamientos.length;
+  //       if (!this.contestar[i]) {
+  //         this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
 
-        } else {
-          // tslint:disable-next-line:no-shadowed-variable
-          let cont = 0;
-          for (let j = 0; j < this.preguntasYRespuestas[i].pregunta.Emparejamientos.length; j++) {
-            if (this.preguntasYRespuestas[i].pregunta.Emparejamientos[j].r === this.preguntasYRespuestas[i].respuestas[j]) {
-              cont++;
-            }
-          }
-          if (cont === this.preguntasYRespuestas[i].pregunta.Emparejamientos.length) {
-            this.Nota = this.Nota + this.puntuacionCorrecta;
-            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
-          } else {
-            this.Nota = this.Nota - this.puntuacionIncorrecta;
-            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
-          }
-        }
-      } else {
-        if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
-          console.log ('respuesta a la pregunta ' + i + ' es correcta');
-          console.log (this.preguntasYRespuestas[i].pregunta);
-          this.Nota = this.Nota + this.puntuacionCorrecta;
-          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
-        } else if (this.RespuestasAlumno[i] === undefined) {
-          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
-        } else {
-          console.log ('respuesta a la pregunta ' + i + ' es incorrecta');
-          console.log (this.preguntasYRespuestas[i].pregunta);
-          this.Nota = this.Nota - this.puntuacionIncorrecta;
-          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
-        }
-      }
-    }
+  //       } else {
+  //         // tslint:disable-next-line:no-shadowed-variable
+  //         let cont = 0;
+  //         for (let j = 0; j < this.preguntasYRespuestas[i].pregunta.Emparejamientos.length; j++) {
+  //           if (this.preguntasYRespuestas[i].pregunta.Emparejamientos[j].r === this.preguntasYRespuestas[i].respuestas[j]) {
+  //             cont++;
+  //           }
+  //         }
+  //         if (cont === this.preguntasYRespuestas[i].pregunta.Emparejamientos.length) {
+  //           this.Nota = this.Nota + this.puntuacionCorrecta;
+  //           this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+  //         } else {
+  //           this.Nota = this.Nota - this.puntuacionIncorrecta;
+  //           this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+  //         }
+  //       }
+  //     } else {
+  //       if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+  //         console.log ('respuesta a la pregunta ' + i + ' es correcta');
+  //         console.log (this.preguntasYRespuestas[i].pregunta);
+  //         this.Nota = this.Nota + this.puntuacionCorrecta;
+  //         this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+  //       } else if (this.RespuestasAlumno[i] === undefined) {
+  //         this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+  //       } else {
+  //         console.log ('respuesta a la pregunta ' + i + ' es incorrecta');
+  //         console.log (this.preguntasYRespuestas[i].pregunta);
+  //         this.Nota = this.Nota - this.puntuacionIncorrecta;
+  //         this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+  //       }
+  //     }
+  //   }
 
-    // for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-    //   if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+  //   // for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
+  //   //   if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
 
-    //     this.Nota = this.Nota + this.puntuacionCorrecta;
-    //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
-    //   } else {
+  //   //     this.Nota = this.Nota + this.puntuacionCorrecta;
+  //   //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+  //   //   } else {
 
-    //     this.Nota = this.Nota - this.puntuacionIncorrecta;
-    //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+  //   //     this.Nota = this.Nota - this.puntuacionIncorrecta;
+  //   //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
 
-    //   }
-    // }
-    if (this.Nota <= 0) {
-      this.Nota = 0;
-    }
+  //   //   }
+  //   // }
+  //   if (this.Nota <= 0) {
+  //     this.Nota = 0;
+  //   }
 
-    const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
+  //   const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
 
-    // Marcamos con '-' las respuestas que han quedado en blanco
-    // for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
-    //   console.log ('respuesta a la pregunta ' + i);
-    //   console.log (this.RespuestasAlumno[i]);
-    //   if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
-    //     this.RespuestasAlumno[i] = '-';
-    //   }
-    // }
-
-
-
-    const todasLasRespuestas: any [] = [];
-    for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-      console.log ('respuesta a la pregunta ' + i);
-      console.log (this.RespuestasAlumno[i]);
-      if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
-        this.RespuestasAlumno[i] = '-';
-      }
-      let respuestas;
-      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
-        if (this.contestar[i]) {
-          respuestas = this.preguntasYRespuestas[i].respuestas;
-        } else {
-          respuestas = undefined;
-        }
-      } else {
-        respuestas = [];
-        respuestas [0] = this.RespuestasAlumno[i];
-      }
-      todasLasRespuestas.push (respuestas);
-      // // tslint:disable-next-line:max-line-length
-      // this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
-      //   .subscribe(res => {
-      //     console.log ('ya he guardado respuesta');
-      //     console.log(res);
-      //     cont++;
-      //     if (cont === this.PreguntasCuestionario.length)  {
-      //       this.registrado = true;
-      //       // Notificamos respuesta al servidor
-      //       this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota, tiempo: tiempoEmpleado});
-      //       console.log ('vamos a la pantalla de resultado');
-      //       this.slides.slideTo (this.PreguntasCuestionario.length + 2);
-      //     }
-      //   });
-    }
+  //   // Marcamos con '-' las respuestas que han quedado en blanco
+  //   // for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+  //   //   console.log ('respuesta a la pregunta ' + i);
+  //   //   console.log (this.RespuestasAlumno[i]);
+  //   //   if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
+  //   //     this.RespuestasAlumno[i] = '-';
+  //   //   }
+  //   // }
 
 
+
+  //   const todasLasRespuestas: any [] = [];
+  //   for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
+  //     console.log ('respuesta a la pregunta ' + i);
+  //     console.log (this.RespuestasAlumno[i]);
+  //     if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
+  //       this.RespuestasAlumno[i] = '-';
+  //     }
+  //     let respuestas;
+  //     if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+  //       if (this.contestar[i]) {
+  //         respuestas = this.preguntasYRespuestas[i].respuestas;
+  //       } else {
+  //         respuestas = undefined;
+  //       }
+  //     } else {
+  //       respuestas = [];
+  //       respuestas [0] = this.RespuestasAlumno[i];
+  //     }
+  //     todasLasRespuestas.push (respuestas);
+  //     // // tslint:disable-next-line:max-line-length
+  //     // this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
+  //     //   .subscribe(res => {
+  //     //     console.log ('ya he guardado respuesta');
+  //     //     console.log(res);
+  //     //     cont++;
+  //     //     if (cont === this.PreguntasCuestionario.length)  {
+  //     //       this.registrado = true;
+  //     //       // Notificamos respuesta al servidor
+  //     //       this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota, tiempo: tiempoEmpleado});
+  //     //       console.log ('vamos a la pantalla de resultado');
+  //     //       this.slides.slideTo (this.PreguntasCuestionario.length + 2);
+  //     //     }
+  //     //   });
+  //   }
 
 
 
 
-    const preguntas: number[] = [];
-    this.preguntasYRespuestas.forEach (item => preguntas.push (item.pregunta.id));
-    let respuesta: any = [];
-    respuesta = {
-      Nota: this.Nota,
-      Tiempo: tiempoEmpleado,
-      Preguntas: preguntas,
-      Respuestas: todasLasRespuestas
-    };
 
-    this.comServer.Emitir ('respuestaCuestionarioRapido',
-      { nick: this.nickName,
-        respuestas: respuesta
-      }
-    );
-     // Ahora añado la respuesta a los datos del juego para guardarlo en la base de datos
-    // Asi las respuestas no se perderán si el dashboard no está conectado al juego
-    // Pero primero me traigo de nuevo el juego por si ha habido respuestas despues de que
-    // me lo traje
-    this.peticionesAPI.DameJuegoDeCuestionarioRapido (this.juegoSeleccionado.Clave)
-    .subscribe ( juego => {
-      juego[0].Respuestas.push (
-        { nick: this.nickName,
-          respuestas: respuesta
-      });
-      console.log ('ya he preparado las respuestas');
-      console.log (juego[0]);
-      this.peticionesAPI.ModificarJuegoDeCuestionarioRapido (juego[0]).subscribe();
-    });
-    this.registrado = true;
 
-    const confirm = await this.alertCtrl.create({
-      header: 'Respuestas enviadas con éxito',
-      message: 'Gracias por contestar el cuestionario',
-      buttons: [
-          {
-          text: 'OK',
-          role: 'cancel',
-          handler: () => {
+  //   const preguntas: number[] = [];
+  //   this.preguntasYRespuestas.forEach (item => preguntas.push (item.pregunta.id));
+  //   let respuesta: any = [];
+  //   respuesta = {
+  //     Nota: this.Nota,
+  //     Tiempo: tiempoEmpleado,
+  //     Preguntas: preguntas,
+  //     Respuestas: todasLasRespuestas
+  //   };
 
-          }
-        }
-      ]
-    });
-    await confirm.present();
-  }
+  //   this.comServer.Emitir ('respuestaCuestionarioRapido',
+  //     { nick: this.nickName,
+  //       respuestas: respuesta
+  //     }
+  //   );
+  //    // Ahora añado la respuesta a los datos del juego para guardarlo en la base de datos
+  //   // Asi las respuestas no se perderán si el dashboard no está conectado al juego
+  //   // Pero primero me traigo de nuevo el juego por si ha habido respuestas despues de que
+  //   // me lo traje
+  //   this.peticionesAPI.DameJuegoDeCuestionarioRapido (this.juegoSeleccionado.Clave)
+  //   .subscribe ( juego => {
+  //     juego[0].Respuestas.push (
+  //       { nick: this.nickName,
+  //         respuestas: respuesta
+  //     });
+  //     console.log ('ya he preparado las respuestas');
+  //     console.log (juego[0]);
+  //     this.peticionesAPI.ModificarJuegoDeCuestionarioRapido (juego[0]).subscribe();
+  //   });
+  //   this.registrado = true;
+
+  //   const confirm = await this.alertCtrl.create({
+  //     header: 'Respuestas enviadas con éxito',
+  //     message: 'Gracias por contestar el cuestionario',
+  //     buttons: [
+  //         {
+  //         text: 'OK',
+  //         role: 'cancel',
+  //         handler: () => {
+
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await confirm.present();
+  // }
+
+
+
+
 
   Cerrar() {
     this.cuentaAtras2 = 0;
     this.cuentaAtras = 0;
     this.siguiente = 0;
     this.empezado = false;
-    this.comServer.DesconectarJuegoRapido();
-    this.route.navigateByUrl('/home');
+    this.route.navigateByUrl('/inici');
   }
 
 
   //PARA LA MODALIDAD KAHOOT
 
-  EnviarRespuestaKahoot(){
-    this.comServer.EnviarRespuestaKahoot(this.alumnoId, this.RespuestaEscogida);
-  }
+  // EnviarRespuestaKahoot(){
+  //   this.comServer.EnviarRespuestaKahoot(this.alumnoId, this.RespuestaEscogida);
+  // }
 
-  EnviarConexionAlumnoKahoot(alumnoId: number) {
-    // Cuando el alumno pulse el botón de empezar se enviará esta notificación que hará que el dash ponga el nombre del alumno en verde
-    this.comServer.EnviarConexionAlumnoKahoot(alumnoId);
-  }
+  // EnviarConexionAlumnoKahoot(alumnoId: number) {
+  //   // Cuando el alumno pulse el botón de empezar se enviará esta notificación que hará que el dash ponga el nombre del alumno en verde
+  //   this.comServer.EnviarConexionAlumnoKahoot(alumnoId);
+  // }
 
   Volver() {
   
@@ -827,23 +816,30 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   doCheck() {
-    
-    if ((this.juegoSeleccionado.Tipo === 'Juego De Cuestionario Rápido') && (this.juegoSeleccionado.Modalidad === 'Kahoot')) {
-      this.slides.getActiveIndex().then(index => {
-        if (index === 0 && this.empezado) {
-          // no podemos retroceder
-          this.slides.slideTo (1);
+    if (this.juegoSeleccionado.Modalidad === 'Kahoot') {
+      console.log ('estamos en do check');
+      if (!this.alumnoJuegoDeCuestionario.Contestado) {
 
-        } else if (index === 1 && !this.empezado) {
-          // Solo podemos empezar si pulsamos el botón
-          this.slides.slideTo(0);
-        } else if (index === 2 && !this.finDelJuego) {
-           // no podemos avanzar hasta que acabe el juevo
-           this.slides.slideTo (1);
-        } else {
+        this.slides.getActiveIndex().then(index => {
+          if (index === 0 && this.empezado) {
+            // no podemos retroceder
+            this.slides.slideTo (1);
+
+          } else if (index === 1 && !this.empezado) {
+            // Solo podemos empezar si pulsamos el botón
+            this.slides.slideTo(0);
+          } else if (index === 2 && !this.finDelJuego) {
+            // no podemos avanzar hasta que acabe el juevo
+            this.slides.slideTo (1);
+          } else {
+            this.slideActual = index;
+          }
+        });
+      } else {
+        this.slides.getActiveIndex().then(index => {
           this.slideActual = index;
-        }
-      });
+        });
+      }
 
     } else {
   
@@ -952,15 +948,23 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   }
 
+  // Aqui venimos cuando el alumno participa en un juego modo Kahoot
   ConfirmarPreparado() {
     this.empezado = true;
-    this.comServer.ConfirmarPreparadoParaKahoot (this.nickName);
+    // if (this.juegoSeleccionado.Modalidad === 'Clásico') {
+    // this.comServer.ConfirmarPreparadoParaKahoot (this.nickName);
+    // } else {
+    //   console.log ('confirmo preparado');
+    //   this.comServer.ConfirmarPreparadoParaKahoot (this.alumnoId);
+    // }
+    this.comServer.ConfirmarPreparadoParaKahoot (this.alumnoId);
     this.EsperarYMostrarSiguientePregunta();
 
   }
   EsperarYMostrarSiguientePregunta () {
     this.siguiente = 0;
     this.imagenesPreguntas = [];
+    this.puntosTotales = 0;
 
 
     this.comServer.EsperoParaLanzarPregunta ()
@@ -996,11 +1000,21 @@ export class JuegoDeCuestionarioPage implements OnInit {
                   if (this.cuentaAtras2 === 0) {
                         clearInterval(this.interval2);
                         // Se acabó el tiempo
+                        console.log ('se acabo el tiempo');
                         this.CalcularPuntosYEnviar();
+                        console.log ('Ya he enviado ', this.siguiente);
                         if (this.siguiente ===  this.PreguntasCuestionario.length) {
+                          console.log ('Ya no hay mas');
                           // Ya no hay más preguntas
                           this.finDelJuego = true;
                           this.preguntaAMostrar = undefined;
+                       
+                          // tslint:disable-next-line:max-line-length
+                          const registro = new AlumnoJuegoDeCuestionario ( this.puntosTotales, true, this.juegoSeleccionado.id, this.alumnoId, 0);
+                          console.log ('actualizo el resultado en la base de datos ', registro);
+                          // tslint:disable-next-line:max-line-length
+                          this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(registro, this.alumnoJuegoDeCuestionario.id)
+                          .subscribe();
                         }
                   }
                 }, 1000);
@@ -1054,18 +1068,35 @@ export class JuegoDeCuestionarioPage implements OnInit {
         }
         // Guardo las respuestas para poder mostrarlas al alumno al final, junto con los feedbacks
         this.respuestasKahoot.push (this.RespuestasAlumno);
+        this.puntosTotales = this.puntosTotales + puntos;
 
-        this.EnviarRespuestaKahootRapido (puntos);
+        this.EnviarRespuestaKahoot (puntos);
 
   }
-  EnviarRespuestaKahootRapido(puntos: number) {
+  EnviarRespuestaKahoot(puntos: number) {
 
     clearInterval(this.interval2);
 
-    this.comServer.EnviarRespuestaKahootRapido(this.nickName, this.RespuestasAlumno, this.cuentaAtras2, puntos);
+    // tslint:disable-next-line:max-line-length
+    this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntaAMostrar.id, this.RespuestasAlumno))
+    .subscribe();
+
+    this.comServer.EnviarRespuestaKahootGrupo(this.alumnoId, this.RespuestasAlumno, this.cuentaAtras2, puntos);
     if (this.siguiente ===  this.PreguntasCuestionario.length) {
+      console.log ('Ya no hay mas');
+      // Ya no hay más preguntas
       this.finDelJuego = true;
+
+   
+      // tslint:disable-next-line:max-line-length
+      const registro = new AlumnoJuegoDeCuestionario ( this.puntosTotales, true, this.juegoSeleccionado.id, this.alumnoId, 0);
+      console.log ('actualizo el resultado en la base de datos ', registro);
+      // tslint:disable-next-line:max-line-length
+      this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(registro, this.alumnoJuegoDeCuestionario.id)
+      .subscribe();
     }
+
+    
     this.preguntaAMostrar = undefined;
     this.RespuestasAlumno = [];
   }
