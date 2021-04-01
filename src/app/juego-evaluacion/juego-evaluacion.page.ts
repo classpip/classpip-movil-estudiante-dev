@@ -189,10 +189,12 @@ export class JuegoEvaluacionPage implements OnInit {
       }
 
       this.sesion.TomaNotaFinal(notaFinal);
-      return this.notaFinal;
+ 
+      return notaFinal;
   }
 
   MiNotaFinal(): number {
+      console.log ('estoy en MiNotaFinal', this.notaFinal);
       if (this.notaFinal !== -1) {
           return this.notaFinal;
       }
@@ -243,6 +245,7 @@ export class JuegoEvaluacionPage implements OnInit {
         //       return null;
         //   }
           this.sesion.TomaRespuestas(miRelacion.respuestas);
+          console.log ('voy a calcular la nota');
           return this.CalcularNotaFinal(miRelacion.respuestas);
       } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
           miRelacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id);
