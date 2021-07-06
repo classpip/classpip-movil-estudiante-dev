@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {PeticionesAPIService, SesionService} from '../servicios';
+import {ComServerService, PeticionesAPIService, SesionService} from '../servicios';
 import {Alumno, Equipo, Rubrica} from '../clases';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
 import {AlertController, LoadingController, NavController} from '@ionic/angular';
@@ -35,7 +35,8 @@ export class PaginaEvaluarPage implements OnInit {
       private sesion: SesionService,
       private loadingController: LoadingController,
       public alertController: AlertController,
-      private navCtrl: NavController
+      private navCtrl: NavController,
+      private comServer: ComServerService
   ) {
     this.rutaId = parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
@@ -68,7 +69,7 @@ export class PaginaEvaluarPage implements OnInit {
         this.estado = this.EstadoEvaluacion();
       });
     }
-   
+
   }
 
   EstadoEvaluacion(): boolean {
@@ -117,7 +118,7 @@ export class PaginaEvaluarPage implements OnInit {
           return true;
         }
       }
-  
+
       if (relacion.alumnosEvaluadoresIds !== null || typeof this.alumnosDeMiEquipo === 'undefined') {
 
         return false;
@@ -125,7 +126,7 @@ export class PaginaEvaluarPage implements OnInit {
 
       const otrasRespuestas = relacion.respuestas.find(item => this.alumnosDeMiEquipo.map(a => a.id).includes(item.alumnoId));
       if (otrasRespuestas) {
-        
+
         if (this.juego.rubricaId === 0) {
           // solo preguntas abiertas
           this.respuestasPreguntasAbiertas = otrasRespuestas.respuesta;
@@ -336,7 +337,7 @@ export class PaginaEvaluarPage implements OnInit {
     }
 
     if (enviar) {
-  
+
 
       const loading = await this.loadingController.create({
         message: 'Enviando respuesta...'
@@ -380,6 +381,8 @@ export class PaginaEvaluarPage implements OnInit {
                   console.log('Post-change', res);
                   this.sesion.TomaAlumnosJuegoDeEvaluacion(res);
                   loading.dismiss();
+                  // tslint:disable-next-line:max-line-length
+                  this.comServer.EnviarResultadoEvaluacion(this.miAlumno.id, this.juego.profesorId, this.juego.id, res2.alumnoId, this.respuestaEvaluacion);
                   this.presentAlert(true);
                 });
           }
@@ -426,6 +429,8 @@ export class PaginaEvaluarPage implements OnInit {
                 console.log('Post-change', res);
                 this.sesion.TomaEquiposJuegoDeEvaluacion(res);
                 loading.dismiss();
+                // tslint:disable-next-line:max-line-length
+                this.comServer.EnviarResultadoEvaluacion(this.miAlumno.id, this.juego.profesorId, this.juego.id, res2.equipoId, this.respuestaEvaluacion);
                 this.presentAlert(true);
               });
         });

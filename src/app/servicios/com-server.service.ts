@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ComServerService {
   profesorId: number;
- 
+
   constructor(private servidor: Socket) { }
   Conectar(alumno: Alumno) {
     this.profesorId = alumno.profesorId;
@@ -137,6 +137,7 @@ export class ComServerService {
     this.servidor.emit('respuestaAlumnoKahootRapido', { nick: nickName, respuesta: respuestasAlumno, tiempoRestante: tiempo, puntosObtenidos: puntos, profesorId: this.profesorId});
 
   }
+
   public EnviarRespuestaKahootGrupo(alId: number, respuestasAlumno: string[], tiempo: number, puntos:  number){
     // tslint:disable-next-line:max-line-length
     this.servidor.emit('respuestaAlumnoKahootGrupo', { alumnoId: alId, respuesta: respuestasAlumno, tiempoRestante: tiempo, puntosObtenidos: puntos, profesorId: this.profesorId});
@@ -149,6 +150,10 @@ export class ComServerService {
             observer.next(resultado);
         });
     });
+  }
+
+  public EnviarResultadoEvaluacion(alumnoId: number, profesorId: number, juegoId: number, evaluadoId: number, respuesta: any): any {
+      this.servidor.emit('respuestaEvaluacion', {alumnoId, profesorId, juegoId, evaluadoId, respuesta});
   }
 }
 
