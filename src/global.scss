@@ -145,7 +145,8 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
     width: 100%;
     margin-bottom: 25px;
     .logo {
-      content: url('../src/assets/Login/login-logo-theme2.svg');
+      // content: url('../src/assets/Login/login-logo-theme2.svg');
+      content: url('../src/assets/icon/classpip1.png');
     }
   }
 
@@ -211,7 +212,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   .login-credentials {
     position: absolute;
     display: block;
-    top: 60%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 75%;
@@ -258,13 +259,14 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   .login-logo {
     position: absolute;
     display: block;
-    top: 10%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
     margin-bottom: 25px;
     .logo {
-      content: url('../src/assets/Login/login-logo-theme2.svg');
+      //content: url('../src/assets/Login/login-logo-theme2.svg');
+      content: url('../src/assets/icon/classpip1.png');
     }
   }
 

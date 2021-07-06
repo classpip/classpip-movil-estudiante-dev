@@ -32,6 +32,11 @@ export class JuegoEvaluacionPage implements OnInit {
   notaFinal: number;
   hayRespuestas: boolean;
 
+
+  evaluacionesPendientes: number;
+  evaluacionesARecibir: number;
+  evaluacionesRecibidas: number;
+
   constructor(
       private sesion: SesionService,
       private peticionesAPI: PeticionesAPIService,
@@ -72,22 +77,24 @@ export class JuegoEvaluacionPage implements OnInit {
                       this.sesion.TomaAlumnosDeMiEquipo(this.alumnosDeMiEquipo);
                       setTimeout(() => this.MiNotaFinal(), 500);
                   });
-              });
-          this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
-              .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
-                  this.equiposJuegoDeEvaluacion = res;
-                  const respuestas = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id).respuestas;
-                  this.hayRespuestas = (respuestas !== null);
-                  this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
-                  this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
-                  this.equiposJuegoDeEvaluacion.forEach((equipoRelacion: EquipoJuegoDeEvaluacion) => {
-                      this.peticionesAPI.DameAlumnosEquipo(equipoRelacion.equipoId)
-                          .subscribe((res2: Alumno[]) => {
-                              const obj = {equipoId: equipoRelacion.equipoId, alumnos: res2};
-                              this.alumnosDeEquipo.push(obj);
-                          });
+
+                  this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
+                    .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
+                        this.equiposJuegoDeEvaluacion = res;
+                        const respuestas = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id).respuestas;
+                        this.hayRespuestas = (respuestas !== null);
+                        this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
+                        this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
+                        this.equiposJuegoDeEvaluacion.forEach((equipoRelacion: EquipoJuegoDeEvaluacion) => {
+                            this.peticionesAPI.DameAlumnosEquipo(equipoRelacion.equipoId)
+                                .subscribe((res2: Alumno[]) => {
+                                    const obj = {equipoId: equipoRelacion.equipoId, alumnos: res2};
+                                    this.alumnosDeEquipo.push(obj);
+                                });
+                        });
                   });
-              });
+            });
+          
           this.peticionesAPI.DameEquiposJuegoDeEvaluacion(this.juego.id)
               .subscribe((res: Equipo[]) => {
                 this.equipos = res;
@@ -171,20 +178,23 @@ export class JuegoEvaluacionPage implements OnInit {
               }
           }
       }
-      if (!this.juego.profesorEvalua) {
+
+      // Si el profesor no evalua o todavía no ha evaluado
+      if (!this.juego.profesorEvalua || notaProfesor === undefined) {
           notaFinal = Math.round(((media / evaluadores) + Number.EPSILON) * 100) / 100;
       } else if (this.juego.profesorEvalua && this.juego.notaProfesorNormal) {
           notaFinal = Math.round((((media + notaProfesor) / (evaluadores + 1)) + Number.EPSILON) * 100) / 100;
       } else if (this.juego.profesorEvalua && !this.juego.notaProfesorNormal) {
           notaFinal = Math.round(((((media / evaluadores) + notaProfesor) / 2) + Number.EPSILON) * 100) / 100;
       }
-      console.log('NOTA FINAL', notaFinal);
-      this.notaFinal = notaFinal;
+
       this.sesion.TomaNotaFinal(notaFinal);
-      return this.notaFinal;
+ 
+      return notaFinal;
   }
 
   MiNotaFinal(): number {
+      console.log ('estoy en MiNotaFinal', this.notaFinal);
       if (this.notaFinal !== -1) {
           return this.notaFinal;
       }
@@ -195,27 +205,47 @@ export class JuegoEvaluacionPage implements OnInit {
       this.alumnosJuegoDeEvaluacion = this.sesion.DameAlumnosJuegoDeEvaluacion();
       this.equiposJuegoDeEvaluacion = this.sesion.DameEquiposJuegoDeEvaluacion();
       if (this.juego.Modo === 'Individual' && typeof this.alumnosJuegoDeEvaluacion !== 'undefined') {
+
           miRelacion = this.alumnosJuegoDeEvaluacion.find(item => item.alumnoId === this.miAlumno.id);
+
           if (!miRelacion.respuestas) {
               return null;
           }
+          // vamos a ver si aun quedan evaluaciones por hacer
+          this.evaluacionesRecibidas = miRelacion.respuestas.length;
+     
+
           alumnosEvaluadores = miRelacion.respuestas.slice().filter(item => !item.profesorId).map(item => item.alumnoId);
           console.log('alumnosEvaluadores', alumnosEvaluadores);
+          this.evaluacionesARecibir = miRelacion.alumnosEvaluadoresIds.length;
+          if (this.juego.profesorEvalua) {
+              this.evaluacionesARecibir ++;
+          }
+          if (this.juego.autoEvaluacion) {
+            this.evaluacionesARecibir ++;
+          }
+
+
+          this.evaluacionesPendientes = this.evaluacionesARecibir - this.evaluacionesRecibidas;
+
           alumnosDeMiRelacion = miRelacion.alumnosEvaluadoresIds.slice();
           console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
           if (this.juego.autoEvaluacion && !alumnosDeMiRelacion.includes(this.miAlumno.id)) {
               alumnosDeMiRelacion.push(this.miAlumno.id);
           }
-          if (alumnosDeMiRelacion.sort().join(',') !== alumnosEvaluadores.sort().join(',')) {
-              console.log('Faltan alumnos por evaluarte');
-              return null;
-          }
-          console.log('Todos los alumnos te han evaluado');
-          if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
-              console.log('Profesor falta por evaluar');
-              return null;
-          }
+        // Esto lo quito para poder ver las evaluaciones recibidas aunque no estén todas
+
+        //   if (alumnosDeMiRelacion.sort().join(',') !== alumnosEvaluadores.sort().join(',')) {
+        //       console.log('Faltan alumnos por evaluarte');
+        //       return null;
+        //   }
+        //   console.log('Todos los alumnos te han evaluado');
+        //   if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
+        //       console.log('Profesor falta por evaluar');
+        //       return null;
+        //   }
           this.sesion.TomaRespuestas(miRelacion.respuestas);
+          console.log ('voy a calcular la nota');
           return this.CalcularNotaFinal(miRelacion.respuestas);
       } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
           miRelacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id);
@@ -225,10 +255,22 @@ export class JuegoEvaluacionPage implements OnInit {
           if (!miRelacion.respuestas) {
               return null;
           }
+          this.evaluacionesRecibidas = miRelacion.respuestas.length;
+
           alumnosEvaluadores = miRelacion.respuestas.slice().filter(item => !item.profesorId).map(item => item.alumnoId);
           console.log('alumnosEvaluadores', alumnosEvaluadores);
           if (miRelacion.alumnosEvaluadoresIds !== null) {
               // Alumnos evaluan a equipos
+              this.evaluacionesARecibir = miRelacion.alumnosEvaluadoresIds.length;
+              if (this.juego.profesorEvalua) {
+                this.evaluacionesARecibir ++;
+              }
+              if (this.juego.autoEvaluacion) {
+                this.evaluacionesARecibir ++;
+              }
+              
+              this.evaluacionesPendientes = this.evaluacionesARecibir - this.evaluacionesRecibidas;
+              
               alumnosDeMiRelacion = miRelacion.alumnosEvaluadoresIds.slice();
               console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
               const alumnosDeMiEquipoIds = this.alumnosDeMiEquipo.map(item => item.id);
@@ -252,6 +294,16 @@ export class JuegoEvaluacionPage implements OnInit {
               this.sesion.TomaRespuestas(miRelacion.respuestas);
               return this.CalcularNotaFinal(miRelacion.respuestas);
           } else {
+              this.evaluacionesARecibir = miRelacion.equiposEvaluadoresIds.length;
+              if (this.juego.profesorEvalua) {
+                this.evaluacionesARecibir ++;
+              }
+              if (this.juego.autoEvaluacion) {
+                this.evaluacionesARecibir ++;
+              }
+              
+              this.evaluacionesPendientes = this.evaluacionesARecibir - this.evaluacionesRecibidas;
+              
               const equiposEvaluadores = [];
               this.alumnosDeEquipo.forEach((item) => {
                   const alumnosIds = item.alumnos.map(a => a.id);
@@ -266,15 +318,16 @@ export class JuegoEvaluacionPage implements OnInit {
                   equiposDeMiRelacion.push(this.miEquipo.id);
                   console.log('equipos de mi relacion', equiposDeMiRelacion);
               }
-              if (equiposDeMiRelacion.sort().join(',') !== equiposEvaluadores.sort().join(',')) {
-                  console.log('Faltan equipos por evaluarte');
-                  return null;
-              }
-              console.log('Todos los equipos te han evaluado');
-              if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
-                  console.log('Profesor falta por evaluar');
-                  return null;
-              }
+                 // Esto lo quito para poder ver las evaluaciones recibidas aunque no estén todas
+            //   if (equiposDeMiRelacion.sort().join(',') !== equiposEvaluadores.sort().join(',')) {
+            //       console.log('Faltan equipos por evaluarte');
+            //       return null;
+            //   }
+            //   console.log('Todos los equipos te han evaluado');
+            //   if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
+            //       console.log('Profesor falta por evaluar');
+            //       return null;
+            //   }
               this.sesion.TomaRespuestas(miRelacion.respuestas);
               return this.CalcularNotaFinal(miRelacion.respuestas);
           }
@@ -307,10 +360,15 @@ export class JuegoEvaluacionPage implements OnInit {
   }
 
   VerNotaFinal(id: number) {
-      this.navCtrl.navigateForward('/pagina-notafinal/' + id).then();
+    console.log ('envio evaluaciones pendientes');
+    console.log (this.evaluacionesPendientes);
+    this.sesion.TomaEvaluacionesPendientes (this.evaluacionesPendientes);
+    this.sesion.TomaEvaluacionesARecibir (this.evaluacionesARecibir);
+    this.navCtrl.navigateForward('/pagina-notafinal/' + id).then();
   }
 
   VerPaginaEvaluar(id: number) {
+     
       this.navCtrl.navigateForward('/pagina-evaluar/' + id).then();
   }
 

@@ -18,6 +18,8 @@ export class PaginaNotafinalPage implements OnInit {
   juego: JuegoDeEvaluacion;
   rubrica: Rubrica;
   respuestas: any[];
+  evaluacionesPendientes: number;
+  evaluacionesARecibir: number;
 
   constructor(
       private route: ActivatedRoute,
@@ -30,6 +32,10 @@ export class PaginaNotafinalPage implements OnInit {
   ngOnInit() {
     this.notaFinal = this.sesion.DameNotaFinal();
     this.juego = this.sesion.DameJuegoEvaluacion();
+    this.evaluacionesPendientes = this.sesion.DameEvaluacionesPendientes();
+    this.evaluacionesARecibir = this.sesion.DameEvaluacionesARecibir();
+    console.log ('evaluacioens pendientes');
+    console.log (this.evaluacionesPendientes);
     this.peticionesAPI.DameRubrica(this.juego.rubricaId).subscribe((res: Rubrica) => {
       this.rubrica = res;
     });

@@ -87,16 +87,7 @@ export class ComServerService {
     });
   }
   public RecordarContrasena(alumno: Alumno) {
-    console.log ('dentro del servicio para recordar contraseña');
-    console.log (alumno);
-    // Me conecto momentaneamente para enviarle al alumno la contraseña que debe enviar por email
-   // this.Conectar (alumno);
-    console.log ('conectado');
     this.servidor.emit ('recordarPassword' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
-    console.log ('emitido');
-    // Me desconecto
-   // this.Desconectar (alumno);
-    console.log ('desconectado');
   }
 
   //Para la función de avanzar pregunta Kahoot
@@ -127,11 +118,10 @@ export class ComServerService {
 
   }
 
-  ConfirmarPreparadoParaKahoot(nick: string) {
-    // Como el alumno no se ha conectado por la via normal, no tenemos guardado el identificador
-    // del profesor. Por eso lo tenemos que recibir como parámetro
+  ConfirmarPreparadoParaKahoot(id: any) {
+    // Si el juego es rápido el id es el nickname pero si es juego normal entonces el id es el id del alumno
     // tslint:disable-next-line:object-literal-shorthand
-    this.servidor.emit('confirmacionPreparadoParaKahoot', { profesorId: this.profesorId, info: nick});
+    this.servidor.emit('confirmacionPreparadoParaKahoot', { profesorId: this.profesorId, info: id});
   }
   //Para la función de avanzar pregunta Kahoot
   public EsperoParaLanzarPregunta(): any {
@@ -148,6 +138,12 @@ export class ComServerService {
 
   }
 
+  public EnviarRespuestaKahootGrupo(alId: number, respuestasAlumno: string[], tiempo: number, puntos:  number){
+    // tslint:disable-next-line:max-line-length
+    this.servidor.emit('respuestaAlumnoKahootGrupo', { alumnoId: alId, respuesta: respuestasAlumno, tiempoRestante: tiempo, puntosObtenidos: puntos, profesorId: this.profesorId});
+
+  }
+  
   public EsperoResultadoFinalKahoot(): any {
     return Observable.create((observer) => {
         this.servidor.on('resultadoFinalKahoot', (resultado) => {
