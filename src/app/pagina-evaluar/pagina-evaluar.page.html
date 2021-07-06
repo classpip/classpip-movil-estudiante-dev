@@ -27,9 +27,9 @@
         <h1>{{rubrica.Nombre}}</h1>
       </ion-list-header>
       <div *ngFor="let criterio of rubrica.Criterios; let i = index">
-        <ion-item>
+        <ion-item lines="full">
           <h2>{{criterio.Nombre}}</h2>
-          <ion-checkbox slot="end" color="primary" [(ngModel)]="allCompleted[i]" [indeterminate]="indeterminated[i]" [disabled]="estado" (click)="SetAll(i)"></ion-checkbox>
+          <ion-checkbox id="checkboxmaster" slot="end" color="primary" [(ngModel)]="allCompleted[i]" [indeterminate]="indeterminated[i]" [disabled]="estado" (click)="SetAll(i)"></ion-checkbox>
         </ion-item>
         <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
           <ion-text>{{elemento}}</ion-text>
@@ -39,7 +39,7 @@
     </ion-list>
   </ion-card>
 
-  <ion-card> 
+  <ion-card>
     <ion-card-header>
       <ion-card-title>Observaciones:</ion-card-title>
       <ion-card-subtitle>Deja alguna observación</ion-card-subtitle>
@@ -54,7 +54,7 @@
 </ion-content>
 <ion-content  *ngIf="!rubrica">
   <ion-list style="text-align:center">
-    <ion-label *ngIf = "estado"> 
+    <ion-label *ngIf = "estado">
       Ya has respondido a las preguntas
     </ion-label>
     <ion-label *ngIf = "!estado">
@@ -64,7 +64,7 @@
   <br>
    <!-- JUEGO SOLO CON PREGUNTAS ABIERTAS -->
    <ion-card *ngFor = "let preguntaAbierta of juego.PreguntasAbiertas; let i= index">
-   
+
     <ion-card-header>
       <ion-card-title>{{preguntaAbierta}}</ion-card-title>
     </ion-card-header>
