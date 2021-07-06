@@ -1,0 +1,79 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Evaluar
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="rubrica">
+  <ion-card>
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="{{DameImagenEvaluado()}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{DameNombreEvaluado()}}</h2>
+        <h3>{{juego.NombreJuego}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-card>
+  <ion-card>
+    <ion-list lines="none">
+      <ion-list-header>
+        <h1>{{rubrica.Nombre}}</h1>
+      </ion-list-header>
+      <div *ngFor="let criterio of rubrica.Criterios; let i = index">
+        <ion-item lines="full">
+          <h2>{{criterio.Nombre}}</h2>
+          <ion-checkbox id="checkboxmaster" slot="end" color="primary" [(ngModel)]="allCompleted[i]" [indeterminate]="indeterminated[i]" [disabled]="estado" (click)="SetAll(i)"></ion-checkbox>
+        </ion-item>
+        <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
+          <ion-text>{{elemento}}</ion-text>
+          <ion-checkbox slot="end" color="success" [(ngModel)]="respuestaEvaluacion[i][j]" [disabled]="estado" (ionChange)="CheckboxChanged(i)"></ion-checkbox>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Observaciones:</ion-card-title>
+      <ion-card-subtitle>Deja alguna observación</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-textarea [(ngModel)]="comentario" [disabled]="estado"></ion-textarea>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+<ion-content  *ngIf="!rubrica">
+  <ion-list style="text-align:center">
+    <ion-label *ngIf = "estado">
+      Ya has respondido a las preguntas
+    </ion-label>
+    <ion-label *ngIf = "!estado">
+      Responde a las preguntas siguientes
+    </ion-label>
+  </ion-list>
+  <br>
+   <!-- JUEGO SOLO CON PREGUNTAS ABIERTAS -->
+   <ion-card *ngFor = "let preguntaAbierta of juego.PreguntasAbiertas; let i= index">
+
+    <ion-card-header>
+      <ion-card-title>{{preguntaAbierta}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-textarea [(ngModel)]="respuestasPreguntasAbiertas[i]" [disabled]="estado"></ion-textarea>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+<ion-footer>
+  <ion-button expand="block" color="success" [disabled]="estado" (click)="EnviarRespuesta()">Enviar</ion-button>
+</ion-footer>

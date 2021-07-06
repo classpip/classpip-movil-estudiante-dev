@@ -1,0 +1,47 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Resumen
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item color="primary">
+      <strong>Nota Final {{notaFinal}}</strong>
+    </ion-item>
+  </ion-card>
+  <ion-card *ngIf="rubrica">
+    <ion-list>
+      <ion-list-header>
+        <h1>{{rubrica.Nombre}}</h1>
+      </ion-list-header>
+      <div *ngFor="let criterio of rubrica.Criterios; let i = index">
+        <ion-item>
+          <h2>{{criterio.Nombre}}</h2>
+          <ion-badge slot="end" color="primary">Nota: {{CalcularNotaCriterio(i)}}</ion-badge>
+        </ion-item>
+        <ion-item *ngFor="let elemento of criterio.Elementos; let j = index">
+          <ion-badge color="secondary" slot="start">{{ContarPuntuacion(i, j)}}</ion-badge>
+          <ion-text>{{elemento}}</ion-text>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Observaciones:</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let respuesta of respuestas | filtrarComentariosVacios; let n = index">
+          {{respuesta.respuesta[respuesta.respuesta.length - 1]}}
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -3,6 +3,9 @@ import { Profesor, Grupo, Juego, Equipo, Alumno, Coleccion, Cromo, Punto, Insign
          TablaJornadas, Jornada, TablaEquipoJuegoDeCompeticion, JuegoDeAvatar } from '../clases';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { ReplaySubject } from 'rxjs';
+import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
+import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
+import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +18,7 @@ export class SesionService {
   grupo: Grupo;
   juego: Juego;
   juegodeAvatar: JuegoDeAvatar;
+  juegoDeEvaluacion: JuegoDeEvaluacion;
   equipo: Equipo;
   alumnosEquipo: Alumno[];
   alumnosGrupo: Alumno[];
@@ -65,6 +69,14 @@ export class SesionService {
   cromosQueNoTengoImagenDelante;
   cromosQueNoTengoImagenDetras;
   nickName;
+
+  alumnosJuegoDeEvaluacion: AlumnoJuegoDeEvaluacion[];
+  alumnos: Alumno[];
+  equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[];
+  equipos: Equipo[];
+  alumnosDeMiEquipo: Alumno[];
+  notaFinal: number;
+  respuestas: any[];
 
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
@@ -132,10 +144,10 @@ export class SesionService {
   }
   public TomaJuegoAvatar(juego: JuegoDeAvatar) {
     this.juegodeAvatar = juego;
-  }  
+  }
   public DameJuegoAvatar() {
     return this.juegodeAvatar;
-  }  
+  }
   public TomaEquipo(equipo: Equipo) {
     this.equipo = equipo;
   }
@@ -380,7 +392,7 @@ export class SesionService {
   public TomaTablaAlumnoJuegoDeCompeticion(Tabla: TablaAlumnoJuegoDeCompeticion[]) {
     this.TablaAlumnoJuegoDeCompeticion = Tabla;
   }
-  
+
   public DameTablaAlumnoJuegoDeCompeticion(): TablaAlumnoJuegoDeCompeticion[] {
     const Tabla = this.TablaAlumnoJuegoDeCompeticion;
     return Tabla;
@@ -414,7 +426,7 @@ export class SesionService {
   public TomaTablaEquipoJuegoDeCompeticion(Tabla: TablaEquipoJuegoDeCompeticion[]) {
     this.TablaEquipoJuegoDeCompeticion = Tabla;
   }
-  
+
   public DameTablaEquipoJuegoDeCompeticion(): TablaEquipoJuegoDeCompeticion[] {
     const Tabla = this.TablaEquipoJuegoDeCompeticion;
     return Tabla;
@@ -479,7 +491,54 @@ export class SesionService {
     return this.nickName;
   }
 
-
+  public TomaJuegoEvaluacion(juegoDeEvaluacion: JuegoDeEvaluacion) {
+    this.juegoDeEvaluacion = juegoDeEvaluacion;
+  }
+  public DameJuegoEvaluacion(): JuegoDeEvaluacion {
+    return this.juegoDeEvaluacion;
+  }
+  public TomaAlumnosJuegoDeEvaluacion(alumnosJuegoDeEvaluacion: AlumnoJuegoDeEvaluacion[]) {
+    this.alumnosJuegoDeEvaluacion = alumnosJuegoDeEvaluacion;
+  }
+  public DameAlumnosJuegoDeEvaluacion(): AlumnoJuegoDeEvaluacion[] {
+    return this.alumnosJuegoDeEvaluacion;
+  }
+  public TomaEquiposJuegoDeEvaluacion(equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[]) {
+    this.equiposJuegoDeEvaluacion = equiposJuegoDeEvaluacion;
+  }
+  public DameEquiposJuegoDeEvaluacion(): EquipoJuegoDeEvaluacion[] {
+    return this.equiposJuegoDeEvaluacion;
+  }
+  public TomaAlumnos(alumnos: Alumno[]): void {
+    this.alumnos = alumnos;
+  }
+  public DameAlumnos(): Alumno[] {
+    return this.alumnos;
+  }
+  public TomaEquipos(equipos: Equipo[]): void {
+    this.equipos = equipos;
+  }
+  public DameEquipos(): Equipo[] {
+    return this.equipos;
+  }
+  public TomaAlumnosDeMiEquipo(alumnos: Alumno[]): void {
+    this.alumnosDeMiEquipo = alumnos;
+  }
+  public DameAlumnosDeMiEquipo(): Alumno[] {
+    return this.alumnosDeMiEquipo;
+  }
+  public DameNotaFinal(): number {
+    return this.notaFinal;
+  }
+  public TomaNotaFinal(nota: number) {
+    this.notaFinal = nota;
+  }
+  public DameRespuestas(): any[] {
+    return this.respuestas;
+  }
+  public TomaRespuestas(respuestas: any[]) {
+    this.respuestas = respuestas;
+  }
 }
 
 

@@ -38,7 +38,7 @@ export class IniciPage implements OnInit {
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService
   ) { }
-  
+
 
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
@@ -71,7 +71,10 @@ export class IniciPage implements OnInit {
     } else if (juego.Tipo === 'Juego De Votación Todos A Uno') {
       this.navCtrl.navigateForward('/juego-votacion-todos-auno');
     } else if (juego.Tipo === 'Juego De Cuestionario de Satisfacción') {
-        this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
+      this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
+    } else if (juego.Tipo === 'Evaluacion') {
+      this.sesion.TomaJuegoEvaluacion(juego);
+      this.navCtrl.navigateForward('/juego-evaluacion');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }
@@ -80,7 +83,7 @@ export class IniciPage implements OnInit {
     // Para decidir si hay que mostrar los botones de previo o siguiente slide
     const prom1 = this.slides.isBeginning();
     const prom2 = this.slides.isEnd();
-  
+
     Promise.all([prom1, prom2]).then((data) => {
       data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
       data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;

@@ -10,8 +10,10 @@ import { Router } from '@angular/router';
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 import { RespuestaJuegoDeCuestionario } from '../clases/RespuestaJuegoDeCuestionario';
 import {MatStepper} from '@angular/material';
+
 import * as URL from '../URLs/urls';
 import { Observable } from 'rxjs';
+
 
 
 @Component({
@@ -38,6 +40,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   puntuacionMaxima = 0;
   NotaInicial = '';
   feedbacks: string[] = [];
+  Modalidad: string;
 
   // Con este array establecemos la posicion donde estara colocada la respuesta correcta en cada una de las preguntas
   ordenRespuestaCorrecta: number[] = [2, 3, 0, 1, 2, 0, 3, 1, 1, 0, 2];
@@ -61,7 +64,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   nickName: string;
   cuestionarioRapido = false;
   seleccion: boolean[][];
-  imagenesPreguntas: string [];
+  imagenesPreguntas: string [] = [];
+
 
   slideActual = 0;
   registrado = false;
@@ -73,6 +77,26 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   disablePrevBtn = true;
   disableNextBtn = false;
+
+  contestar: boolean[] = [];
+  respuestasEmparejamientos: any[];
+  preguntaAMostrar: Pregunta;
+  imagenPreguntaAMostrar: string;
+  cuentaAtras: number;
+  interval;
+
+  cuentaAtras2: number;
+  interval2;
+  finDelJuego = false;
+  siguiente: number;
+  tengoResultadoDelJuego = false;
+  resultadoJuego: string;
+  opcionesDesordenadas: any[];
+  contestarEmparejamiento = true;
+  clasificacion: any;
+  respuestasKahoot: any[] = [];
+  styles: any;
+
   @ViewChild(IonSlides, { static: false }) slides: IonSlides;
 
 
@@ -90,19 +114,38 @@ export class JuegoDeCuestionarioPage implements OnInit {
     private platform: Platform,
     private comServer: ComServerService
   ) {
+    platform.ready().then(() => {
+      console.log('Width: ' + platform.width());
+      console.log('Height: ' + platform.height());
+      this.styles = {
+        height : this.platform.height(),
+        width : this.platform.width()
+      };
+    });
   }
 
+  // esto es pasa asignar el tamaño del slide dinamicamente, segun la plataforma en la que se ejecuta
+  // el código
+  // Parece que funciona porque se adapta tanto al simulador web como al acceso web desde el movil
+  // pero al descargar la app sobre el movil no puedo entrar (debe dar un error)
+  // la verdad es que no tengo claro que funcione.
 
+  getStyles(): any {
+    console.log ('cojo estilos');
+    return this.styles;
 
+  }
 
   ngOnInit() {
-
+   
     this.juegoSeleccionado = this.sesion.DameJuego();
+
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
     this.tiempoLimite = this.juegoSeleccionado.TiempoLimite;
-    console.log ('ya tengo juego');
-    console.log (this.juegoSeleccionado);
+
+    this.Modalidad = this.juegoSeleccionado.Modalidad;
+
     if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
       // Obtenemos la inscripcion del alumno al juego de cuestionario
       this.alumnoId = this.sesion.DameAlumno().id;
@@ -123,34 +166,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
             this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
             // tslint:disable-next-line:no-shadowed-variable
             .subscribe(res => {
-              this.seleccion = [];
               this.PreguntasCuestionario = res;
-
-              this.preguntasYRespuestas = [];
-              this.PreguntasCuestionario.forEach (p => {
-                // tslint:disable-next-line:max-line-length
-                const r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
-                this.preguntasYRespuestas.push ({
-                  pregunta: p,
-                  respuestas: r,
-                });
-              });
-              if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
-                this.DesordenarRespuestas ();
-              } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
-                this.DesordenarPreguntas ();
-              } else {
-                console.log ('preguntas y respuestas desordenadas');
-                this.DesordenarPreguntasYRespuestas ();
-              }
-              this.imagenesPreguntas = [];
-              for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-                  this.seleccion[i] = [];
-                  for (let j = 0; j < 4; j++) {
-                      this.seleccion[i][j] = false;
-                  }
-                  this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.preguntasYRespuestas[i].pregunta.Imagen;
-              }
+              this.PrepararPreguntasYRespuestas();
             });
            
 
@@ -173,36 +190,70 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
               this.peticionesAPI.DameRespuestasAlumnoJuegoDeCuestionario (this.alumnoJuegoDeCuestionario.id)
               .subscribe (respuestas => {
-                console.log ('ya tengo las respuestas');
-                console.log (respuestas);
+                // respuestas es un vector en el que casa posición tiene la respuesta a una de las preguntas.
+                // La estructura de cada respuesta es la siguiente:
+                //    preguntaId
+                //    Respuesta     (un vector que contiene en la posición 0 la respuesta del alumno en el caso de preguntas
+                // de tipo "Cuatro opciones", "Verdadero o falso" o "Respuesta abierta". En el caso de "Emparejamiento" el vector
+                // contiene las partes derechas de los emparejamientos tal y como lo eligió el alumno, o undefined si contestó en blanco)
+   
                 this.RespuestasAlumno = [];
+                this.respuestasEmparejamientos = [];
                 this.imagenesPreguntas = [];
+                this.contestar = [];
                 for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
                   this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.PreguntasCuestionario[i].Imagen;
-          
-                  // tslint:disable-next-line:max-line-length
-                  this.RespuestasAlumno[i] = respuestas.filter (respuesta => respuesta.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta;
-                  if (this.RespuestasAlumno[i] ===  this.PreguntasCuestionario[i].RespuestaCorrecta) {
-                    this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                  if (this.PreguntasCuestionario[i].Tipo === 'Emparejamiento') {
+                    // tslint:disable-next-line:max-line-length
+                    this.respuestasEmparejamientos[i] = respuestas.filter (r => r.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta;
+                    if (this.respuestasEmparejamientos[i] === undefined) {
+                      this.contestar[i] = false;
+                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+
+                    } else {
+                      this.contestar[i] = true;
+                      // Vamos a ver si a respuesta es correcta
+                      let cont = 0;
+                      for (let j = 0; j < this.PreguntasCuestionario[i].Emparejamientos.length; j++) {
+                        if (this.PreguntasCuestionario[i].Emparejamientos[j].r === this.respuestasEmparejamientos[i][j]) {
+                          cont++;
+                        }
+                      }
+                      if (cont === this.PreguntasCuestionario[i].Emparejamientos.length) {
+                        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                      } else {
+                        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                      }
+
+                    }
+
                   } else {
-                    this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                    // tslint:disable-next-line:max-line-length
+                    this.RespuestasAlumno[i] = respuestas.filter (respuesta => respuesta.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta[0];
+                    if (this.RespuestasAlumno[i] ===  this.PreguntasCuestionario[i].RespuestaCorrecta) {
+                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                    } else {
+                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                    }
+
                   }
                 }
               });
             });
             if (this.juegoSeleccionado.JuegoTerminado) {
+              // traigo la información de todos los alumnos del grupo para presentar la clasificación final
               this.AlumnosDelJuego();
             }
         }
 
       });
     } else {
-        // es un juego de cuestionario rápido
+        // Se trata de un juego de cuestionario rápido, que puede ser de modalidad "Clásico" o "Kahoot"
+     
         this.alumnoJuegoDeCuestionario = new AlumnoJuegoDeCuestionario();
         this.NotaInicial = '0';
         this.nickName = this.sesion.DameNickName();
         this.cuestionarioRapido = true;
-  
           // Obtenemos el cuestionario a realizar
         this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
           // tslint:disable-next-line:no-shadowed-variable
@@ -210,44 +261,76 @@ export class JuegoDeCuestionarioPage implements OnInit {
             this.cuestionario = res;
             this.descripcion = res.Descripcion;
           });
-          // Obtenemos las preguntas del cuestionario y ordenamos preguntas/respuestas en funcion a lo establecido en el cuestionario
+      
         this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
           // tslint:disable-next-line:no-shadowed-variable
-          .subscribe(res => {
-            this.seleccion = [];
+        .subscribe(res => {
             this.PreguntasCuestionario = res;
-
-            this.preguntasYRespuestas = [];
-            this.PreguntasCuestionario.forEach (p => {
-              // tslint:disable-next-line:max-line-length
-              const r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
-              this.preguntasYRespuestas.push ({
-                pregunta: p,
-                respuestas: r,
-              });
-            });
-            if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
-              this.DesordenarRespuestas ();
-            } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
-              this.DesordenarPreguntas ();
-            } else {
-              console.log ('preguntas y respuestas desordenadas');
-              this.DesordenarPreguntasYRespuestas ();
-            }
-            this.imagenesPreguntas = [];
-            for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-                this.seleccion[i] = [];
-                for (let j = 0; j < 4; j++) {
-                    this.seleccion[i][j] = false;
-                }
-                this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.preguntasYRespuestas[i].pregunta.Imagen;
-            }
+            this.PrepararPreguntasYRespuestas();
+        });
+        if (this.juegoSeleccionado.Modalidad === 'Kahoot') {
+          this.comServer.EsperoResultadoFinalKahoot ()
+          .subscribe (resultado => {
+            this.tengoResultadoDelJuego = true;
+            this.clasificacion = resultado;
+            // El resultado final del juego Kahoot es una lista con en la que cada elemento 
+            // tiene: 
+            //    nickName
+            //    puntos
           });
+        }
     }
   }
 
+  PrepararPreguntasYRespuestas() {
+    // Aqui preparamos una lista con las preguntas, las opciones de respuesta y  un vector de imágenes de las preguntas
+    this.seleccion = [];
+    this.contestar = Array(this.PreguntasCuestionario.length).fill (true);
+
+    // En esta lista vamos a guardar las preguntas con las opciones de respuesta de cada una de ellas, si las hay
+    // Eso nos permitirá desordenar las opciones de respuestas, si hay que hacerlo
+    this.preguntasYRespuestas = [];
+    this.PreguntasCuestionario.forEach (p => {
+      let r: any;
+      if (p.Tipo === 'Cuatro opciones') {
+      // tslint:disable-next-line:max-line-length
+        // este es el vector de posibles respuestas
+        r = [p.RespuestaCorrecta, p.RespuestaIncorrecta1, p.RespuestaIncorrecta2, p.RespuestaIncorrecta3];
+      } else if (p.Tipo === 'Emparejamiento') {
+        r = [];
+        // guardamos las opciones de respuesta
+        p.Emparejamientos.forEach (pareja => r.push (pareja.r));
+      }
+      // aquí guardamos la pregunta y las opciones de respuesta para poder desordenarlas si hace falta
+      this.preguntasYRespuestas.push ({
+        pregunta: p,
+        respuestas: r,
+      });
+    });
+
+    if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
+      this.DesordenarRespuestas ();
+    } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
+      this.DesordenarPreguntas ();
+    } else {
+      this.DesordenarPreguntasYRespuestas ();
+    }
+
+    // Preparamos el vector con las imagenes de las preguntas e inicializamos la matriz que controla la selección de opciones
+
+    this.imagenesPreguntas = [];
+    for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
+        this.seleccion[i] = [];
+        for (let j = 0; j < 4; j++) {
+            this.seleccion[i][j] = false;
+        }
+        this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.preguntasYRespuestas[i].pregunta.Imagen;
+    }
+
+  }
   DesordenarVector(vector: any[]) {
     // genera una permutación aleatoria de los elementos del vector
+
 
     let currentIndex = vector.length;
     let temporaryValue;
@@ -262,14 +345,17 @@ export class JuegoDeCuestionarioPage implements OnInit {
       vector[currentIndex] = vector[randomIndex];
       vector[randomIndex] = temporaryValue;
     }
+
   }
 
   DesordenarPreguntas () {
     this.DesordenarVector (this.preguntasYRespuestas);
   }
   DesordenarRespuestas() {
-    this.preguntasYRespuestas.forEach (pregunta => {
-      this.DesordenarVector (pregunta.respuestas);
+    this.preguntasYRespuestas.forEach (item => {
+      if (item.pregunta.Tipo === 'Cuatro opciones' || item.pregunta.Tipo === 'Emparejamiento') {
+        this.DesordenarVector (item.respuestas);
+      }
     });
   }
 
@@ -284,12 +370,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // ha elegido la respuesta j
 
     const j = event.detail.value;
-    console.log (j);
     this.RespuestasAlumno[i] = this.preguntasYRespuestas[i].respuestas[j];
 
   }
   radioSelect(event, i, j) {
-
+    // Tengo que poner a false todas las opciones de la pregunta i, menos la opción
+    // elegida, que es la j, en la que tengo que poner la negación de lo que había
     const valor = this.seleccion [i][j];
     this.seleccion[i].fill(false);
     this.seleccion [i][j] = !valor;
@@ -297,6 +383,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
 
   ponerNota() {
+ 
     this.alertCtrl.create({
       header: '¿Seguro que quieres enviar ya tus respuestas?',
       buttons: [
@@ -317,15 +404,13 @@ export class JuegoDeCuestionarioPage implements OnInit {
     }).then (res => res.present());
   }
 
-  // Funcion para establecer la nota y guardar respuestas
+  // Funcion para establecer la nota y guardar respuestas en el caso de juego de cuestionario normal
   registrarNota() {
     // paramos el timer si está activo
-    console.log ('vamos a poner nota');
 
     if (this.contar) {
       clearInterval(this.timer);
       this.contar = false;
-      console.log ('paro el contador de tiempo');
     }
     this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
 
@@ -333,20 +418,43 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
     // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
     for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-      if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
-        console.log ('respuesta a la pregunta ' + i + ' es correcta');
-        console.log (this.preguntasYRespuestas[i].pregunta);
-        this.Nota = this.Nota + this.puntuacionCorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
-      // } else if (this.RespuestasAlumno[i] === undefined) {
-      //   this.feedbacks.push(' ');
-      //   this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
-      } else {
-        console.log ('respuesta a la pregunta ' + i + ' es incorrecta');
-        console.log (this.preguntasYRespuestas[i].pregunta);
-        this.Nota = this.Nota - this.puntuacionIncorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        const final = this.preguntasYRespuestas[i].pregunta.Emparejamientos.length;
+        // En el vector contestar registré si la pregunta se dejó en blanco
+        if (!this.contestar[i]) {
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
 
+        } else {
+          // El alumno contestó a la pregunta de emparejamiento. En ese caso, su respuesta está en el propio
+          // vector de preguntas y respuestas. Alli quedaron las partes derechas de los emparejamientos tal y como los
+          // ha dejado el alumno
+          // tslint:disable-next-line:no-shadowed-variable
+          let cont = 0;
+          for (let j = 0; j < this.preguntasYRespuestas[i].pregunta.Emparejamientos.length; j++) {
+            if (this.preguntasYRespuestas[i].pregunta.Emparejamientos[j].r === this.preguntasYRespuestas[i].respuestas[j]) {
+              cont++;
+            }
+          }
+          if (cont === this.preguntasYRespuestas[i].pregunta.Emparejamientos.length) {
+            this.Nota = this.Nota + this.puntuacionCorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+          } else {
+            this.Nota = this.Nota - this.puntuacionIncorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+          }
+        }
+      } else {
+        // Para cualquier otro tipo de pregunta, la respuesta está en el vector RespuestasAlumno
+        // Si en ese vector hay un undefined es que la respuesta quedó en blanco
+        if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+          this.Nota = this.Nota + this.puntuacionCorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+        } else if (this.RespuestasAlumno[i] === undefined) {
+          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+        } else {
+          this.Nota = this.Nota - this.puntuacionIncorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+        }
       }
     }
     if (this.Nota <= 0) {
@@ -356,72 +464,45 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // tslint:disable-next-line:max-line-length
     this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId, tiempoEmpleado), this.alumnoJuegoDeCuestionario.id)
       .subscribe(res => {
-        console.log ('ya he puesto nota');
-        console.log(res);
-      });
 
-    console.log ('vamos a registrar las respuestas');
+    });
+
     // Aqui guardamos las respuestas del alumno
     let cont = 0;
     for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-      console.log ('respuesta a la pregunta ' + i);
-      console.log (this.RespuestasAlumno[i]);
+      // para cada pregunta preparo en el vector respuestas la respuesta del alumno para guardarla en la base de datos
+
       if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
         this.RespuestasAlumno[i] = '-';
       }
+      let respuestas;
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        // la respuesta es undefined si quedó en blanco o la lista de partes derechas de emparejamientos tal y como las dejó el alumno
+        if (this.contestar[i]) {
+          respuestas = this.preguntasYRespuestas[i].respuestas;
+        } else {
+          respuestas = undefined;
+        }
+      } else {
+        // En cualquier otro caso, la respuesta está en RespuestasALumno y se guarda en la posición 0 del vector respuestas
+        respuestas = [];
+        respuestas [0] = this.RespuestasAlumno[i];
+      }
       // tslint:disable-next-line:max-line-length
-      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id,
-        this.RespuestasAlumno[i]))
+      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
         .subscribe(res => {
-          console.log ('ya he guardado respuesta');
-          console.log(res);
+
           cont++;
           if (cont === this.PreguntasCuestionario.length)  {
             this.registrado = true;
             // Notificamos respuesta al servidor
             this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota, tiempo: tiempoEmpleado});
-            console.log ('vamos a la pantalla de resultado');
+            // vamos a la pantalla que muestra el resultado final
             this.slides.slideTo (this.PreguntasCuestionario.length + 2);
           }
         });
     }
   }
-
-  // En el caso de que el alumno le de al boton de salir despues de haber empezado el cuestionario
-  // se activa esta funcion y en el caso de que acepte salir del cuestionario, se le pondrá un 0 en el examen
-  // ionViewWillLeave() {
-  //   if (this.contar && !this.registrado) {
-
-  //     this.alertCtrl.create({
-  //       header: '¿Seguro que quieres salir?',
-  //       message: 'Si sales sacaras un 0',
-  //       buttons: [
-  //         {
-  //           text: 'SI',
-  //           handler: () => {
-  //             this.Nota = 0;
-  //             // tslint:disable-next-line:max-line-length
-  //             this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId ), this.alumnoJuegoDeCuestionario.id)
-  //               .subscribe(res => {
-  //                 console.log(res);
-  //                 this.comServer.Emitir('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota});
-  //               });
-  //             this.route.navigateByUrl('tabs/inici');
-  //           }
-  //         }, {
-  //           text: 'NO',
-  //           role: 'cancel',
-  //           handler: () => {
-  //             console.log('NO, ME QUEDO');
-  //           }
-  //         }
-  //       ]
-  //     }).then (res => res.present());
-  //   }
-
-  // }
-
-
     
   canExit(): Observable <boolean> {
     // esta función se llamará cada vez que quedamos salir de la página
@@ -482,7 +563,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   IniciarTimer() {
-    if (this.tiempoLimite !== 0) {
+    if (this.juegoSeleccionado.Modalidad === 'Clásico') {
+      if (this.tiempoLimite !== 0) {
       // el timer solo se activa si se ha establecido un tiempo limite
       this.contar = true; // para que se muestre la cuenta atrás
       this.tiempoRestante = this.tiempoLimite;
@@ -491,6 +573,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
             if (this.tiempoRestante === 0) {
               // salto al paso de cuestionario concluido
               clearInterval(this.timer);
+              console.log ('Fin del tiempo');
               const confirm = await this.alertCtrl.create({
                 header: 'Se te acabó el tiempo',
                 message: 'Vamos a enviar tus respuestas',
@@ -500,8 +583,9 @@ export class JuegoDeCuestionarioPage implements OnInit {
                     role: 'cancel',
                     handler: () => {
                       this.registrado = true;
-                      if (this.juegoSeleccionado.Tipo === 'Juego de Cuestionario') {
-                        this.ponerNota();
+                      if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
+
+                        this.registrarNota();
                       } else {
                         this.EnviarRespuesta();
                       }
@@ -515,6 +599,15 @@ export class JuegoDeCuestionarioPage implements OnInit {
             }
 
       }, 1000);
+      }
+    } else if(this.juegoSeleccionado.Modalidad === 'Kahoot'){
+
+      this.comServer.EsperoAvanzarPregunta()
+      .subscribe((mensaje) => {
+        this.stepper.next();
+      });
+      console.log("LLAMAMOS A EnviarConexionAlumnoKahoot");
+      this.EnviarConexionAlumnoKahoot(this.alumnoId);
     }
   }
 
@@ -541,19 +634,59 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
     // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
    
-
+    // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
+    // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta
     for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
-      if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        const final = this.preguntasYRespuestas[i].pregunta.Emparejamientos.length;
+        if (!this.contestar[i]) {
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
 
-        this.Nota = this.Nota + this.puntuacionCorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+        } else {
+          // tslint:disable-next-line:no-shadowed-variable
+          let cont = 0;
+          for (let j = 0; j < this.preguntasYRespuestas[i].pregunta.Emparejamientos.length; j++) {
+            if (this.preguntasYRespuestas[i].pregunta.Emparejamientos[j].r === this.preguntasYRespuestas[i].respuestas[j]) {
+              cont++;
+            }
+          }
+          if (cont === this.preguntasYRespuestas[i].pregunta.Emparejamientos.length) {
+            this.Nota = this.Nota + this.puntuacionCorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+          } else {
+            this.Nota = this.Nota - this.puntuacionIncorrecta;
+            this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+          }
+        }
       } else {
-
-        this.Nota = this.Nota - this.puntuacionIncorrecta;
-        this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
-
+        if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+          console.log ('respuesta a la pregunta ' + i + ' es correcta');
+          console.log (this.preguntasYRespuestas[i].pregunta);
+          this.Nota = this.Nota + this.puntuacionCorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+        } else if (this.RespuestasAlumno[i] === undefined) {
+          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+        } else {
+          console.log ('respuesta a la pregunta ' + i + ' es incorrecta');
+          console.log (this.preguntasYRespuestas[i].pregunta);
+          this.Nota = this.Nota - this.puntuacionIncorrecta;
+          this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+        }
       }
     }
+
+    // for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
+    //   if (this.RespuestasAlumno[i] === this.preguntasYRespuestas[i].pregunta.RespuestaCorrecta) {
+
+    //     this.Nota = this.Nota + this.puntuacionCorrecta;
+    //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackCorrecto);
+    //   } else {
+
+    //     this.Nota = this.Nota - this.puntuacionIncorrecta;
+    //     this.feedbacks.push(this.preguntasYRespuestas[i].pregunta.FeedbackIncorrecto);
+
+    //   }
+    // }
     if (this.Nota <= 0) {
       this.Nota = 0;
     }
@@ -561,13 +694,55 @@ export class JuegoDeCuestionarioPage implements OnInit {
     const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
 
     // Marcamos con '-' las respuestas que han quedado en blanco
-    for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+    // for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+    //   console.log ('respuesta a la pregunta ' + i);
+    //   console.log (this.RespuestasAlumno[i]);
+    //   if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
+    //     this.RespuestasAlumno[i] = '-';
+    //   }
+    // }
+
+
+
+    const todasLasRespuestas: any [] = [];
+    for (let i = 0; i < this.preguntasYRespuestas.length; i++) {
       console.log ('respuesta a la pregunta ' + i);
       console.log (this.RespuestasAlumno[i]);
       if ((this.RespuestasAlumno[i] === '') || (this.RespuestasAlumno[i] === undefined)) {
         this.RespuestasAlumno[i] = '-';
       }
+      let respuestas;
+      if (this.preguntasYRespuestas[i].pregunta.Tipo === 'Emparejamiento') {
+        if (this.contestar[i]) {
+          respuestas = this.preguntasYRespuestas[i].respuestas;
+        } else {
+          respuestas = undefined;
+        }
+      } else {
+        respuestas = [];
+        respuestas [0] = this.RespuestasAlumno[i];
+      }
+      todasLasRespuestas.push (respuestas);
+      // // tslint:disable-next-line:max-line-length
+      // this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
+      //   .subscribe(res => {
+      //     console.log ('ya he guardado respuesta');
+      //     console.log(res);
+      //     cont++;
+      //     if (cont === this.PreguntasCuestionario.length)  {
+      //       this.registrado = true;
+      //       // Notificamos respuesta al servidor
+      //       this.comServer.Emitir ('respuestaJuegoDeCuestionario', { id: this.alumnoId, nota: this.Nota, tiempo: tiempoEmpleado});
+      //       console.log ('vamos a la pantalla de resultado');
+      //       this.slides.slideTo (this.PreguntasCuestionario.length + 2);
+      //     }
+      //   });
     }
+
+
+
+
+
 
     const preguntas: number[] = [];
     this.preguntasYRespuestas.forEach (item => preguntas.push (item.pregunta.id));
@@ -576,7 +751,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
       Nota: this.Nota,
       Tiempo: tiempoEmpleado,
       Preguntas: preguntas,
-      Respuestas: this.RespuestasAlumno
+      Respuestas: todasLasRespuestas
     };
 
     this.comServer.Emitir ('respuestaCuestionarioRapido',
@@ -608,8 +783,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
           text: 'OK',
           role: 'cancel',
           handler: () => {
-          
-       
+
           }
         }
       ]
@@ -618,9 +792,31 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   Cerrar() {
+    this.cuentaAtras2 = 0;
+    this.cuentaAtras = 0;
+    this.siguiente = 0;
+    this.empezado = false;
     this.comServer.DesconectarJuegoRapido();
     this.route.navigateByUrl('/home');
   }
+
+
+  //PARA LA MODALIDAD KAHOOT
+
+  EnviarRespuestaKahoot(){
+    this.comServer.EnviarRespuestaKahoot(this.alumnoId, this.RespuestaEscogida);
+  }
+
+  EnviarConexionAlumnoKahoot(alumnoId: number) {
+    // Cuando el alumno pulse el botón de empezar se enviará esta notificación que hará que el dash ponga el nombre del alumno en verde
+    this.comServer.EnviarConexionAlumnoKahoot(alumnoId);
+  }
+
+  Volver() {
+  
+    this.route.navigateByUrl('/inici');
+  }
+
 
   EstoyConPregunta() {
     if ((this.slideActual >= 1) && (this.slideActual <= this.PreguntasCuestionario.length)) {
@@ -631,31 +827,49 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
   doCheck() {
- 
-    if (this.registrado) {
-      console.log ('vamos al ultimo slide');
-      this.slides.slideTo (this.PreguntasCuestionario.length + 2);
-      this.slideActual = this.PreguntasCuestionario.length + 2;
+    
+    if ((this.juegoSeleccionado.Tipo === 'Juego De Cuestionario Rápido') && (this.juegoSeleccionado.Modalidad === 'Kahoot')) {
+      this.slides.getActiveIndex().then(index => {
+        if (index === 0 && this.empezado) {
+          // no podemos retroceder
+          this.slides.slideTo (1);
+
+        } else if (index === 1 && !this.empezado) {
+          // Solo podemos empezar si pulsamos el botón
+          this.slides.slideTo(0);
+        } else if (index === 2 && !this.finDelJuego) {
+           // no podemos avanzar hasta que acabe el juevo
+           this.slides.slideTo (1);
+        } else {
+          this.slideActual = index;
+        }
+      });
 
     } else {
-      this.slides.getActiveIndex().then(index => {
+  
+      if (this.registrado) {
+        // al registrar la respuesta nos vamos a la pantalla para mostrar resultados
+        this.slides.slideTo (this.PreguntasCuestionario.length + 2);
+        this.slideActual = this.PreguntasCuestionario.length + 2;
 
-        console.log ('estamos en el slide ' + index);
-        if (!this.registrado && index === this.PreguntasCuestionario.length + 2) {
-          // pretende ir a la pantalla de resultado sin haber regitrado las respuestas
-          console.log ('me quedo en el mismo slide');
-          this.slides.slideTo (index - 1);
-        } else if ((this.slideActual < index) && (index < this.PreguntasCuestionario.length + 1 )) {
-            console.log ('voy a cambio respuestas siguiente');
-           // this.cambioRespuestasSiguiente(index - 2);
-        } else if ((this.slideActual > index) && (index > 0)) {
-            console.log ('voy a cambio respuestas anterior');
-          //  this.cambioRespuestasAnterior(index);
-        }
-        this.slideActual = index;
+      } else {
+        this.slides.getActiveIndex().then(index => {
+
+          if (!this.registrado && index === this.PreguntasCuestionario.length + 2) {
+            // pretende ir a la pantalla de resultado sin haber regitrado las respuestas
+            this.slides.slideTo (index - 1);
+          // } else if ((this.slideActual < index) && (index < this.PreguntasCuestionario.length + 1 )) {
+          //     console.log ('voy a cambio respuestas siguiente');
+          //   // this.cambioRespuestasSiguiente(index - 2);
+          // } else if ((this.slideActual > index) && (index > 0)) {
+          //     console.log ('voy a cambio respuestas anterior');
+          //   //  this.cambioRespuestasAnterior(index);
+          }
+          this.slideActual = index;
 
 
-      });
+        });
+      }
     }
   }
 
@@ -704,5 +918,168 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   }
 
+ // Esta función se ejecuta cuando movemos a los conceptos de sitio
+ reorderItems(event, i) {
+    console.log ('voy a mover');
+    console.log (this.preguntasYRespuestas[i].respuestas);
+    const itemMove = this.preguntasYRespuestas[i].respuestas.splice(event.detail.from, 1)[0];
+    console.log ('from ' + event.detail.from);
+    
+    console.log ('item ' + itemMove);
+    console.log ('to ' + event.detail.to);
+    this.preguntasYRespuestas[i].respuestas.splice(event.detail.to, 0, itemMove);
+    console.log (this.preguntasYRespuestas[i].respuestas);
+    event.detail.complete();
+  }
+  MarcarVerdaderoOFalso(event, i) {
+    // ha elegido la respuesta j
+
+    console.log ('item marcado');
+    console.log (event.detail.value);
+    const j = Number(event.detail.value);
+    if (j === 0) {
+      this.RespuestasAlumno[i] = 'verdadero';
+      this.seleccion[i][0] = true;
+      this.seleccion[i][1] = false;
+      console.log ('marco verdadero');
+
+    } else {
+      this.RespuestasAlumno[i] = 'falso';
+      this.seleccion[i][0] = false;
+      this.seleccion[i][1] = true;
+      console.log ('marco falso');
+    }
+
+  }
+
+  ConfirmarPreparado() {
+    this.empezado = true;
+    this.comServer.ConfirmarPreparadoParaKahoot (this.nickName);
+    this.EsperarYMostrarSiguientePregunta();
+
+  }
+  EsperarYMostrarSiguientePregunta () {
+    this.siguiente = 0;
+    this.imagenesPreguntas = [];
+
+
+    this.comServer.EsperoParaLanzarPregunta ()
+      .subscribe ( (opcionesDesordenadas) => {
+        // cuando el dash indica que hay que avanzar a la pregunta siguiente nos envía el orden en que hay que mostrar
+        // las opciones de respuesta
+        this.RespuestasAlumno = [];
+        this.contestarEmparejamiento = true;
+        this.cuentaAtras = 3;
+        // preparamos las varables con las que mostraremos las opciones de respuesta
+        if (this.PreguntasCuestionario[this.siguiente].Tipo === 'Emparejamiento') {
+          this.RespuestasAlumno = opcionesDesordenadas;
+        } else {
+          this.opcionesDesordenadas = opcionesDesordenadas;
+        }
+
+        this.interval = setInterval(() => {
+     
+          this.cuentaAtras--;
+
+          if (this.cuentaAtras === 0) {
+                clearInterval(this.interval);
+                // Es el momento de mostrar la pregunta
+                this.preguntaAMostrar = this.PreguntasCuestionario[this.siguiente];
+                this.imagenPreguntaAMostrar =  URL.ImagenesPregunta + this.preguntaAMostrar.Imagen;
+                // Guardamos la imagen para cuando haya que mostrar los resultados al alumno
+                this.imagenesPreguntas.push (this.imagenPreguntaAMostrar);
+                this.siguiente++;
+                this.cuentaAtras2 = this.juegoSeleccionado.TiempoLimite;
+                // ponemos el timer para contar tiempo de respuesta
+                this.interval2 = setInterval(() => {
+                  this.cuentaAtras2--;
+                  if (this.cuentaAtras2 === 0) {
+                        clearInterval(this.interval2);
+                        // Se acabó el tiempo
+                        this.CalcularPuntosYEnviar();
+                        if (this.siguiente ===  this.PreguntasCuestionario.length) {
+                          // Ya no hay más preguntas
+                          this.finDelJuego = true;
+                          this.preguntaAMostrar = undefined;
+                        }
+                  }
+                }, 1000);
+          }
+        }, 1000);
+    });
+  }
+  CalcularPuntosYEnviar () {
+        // Calculo los puntos que obtiene el alumno con esta respuesta
+        let puntos;
+        // Los puntos se calculan en una escala del 0 al 10 en proporción al número de segundos sobrantes.
+        puntos = Math.round( (this.cuentaAtras2 * 10) / this.juegoSeleccionado.TiempoLimite);
+
+        if (this.preguntaAMostrar.Tipo === 'Emparejamiento') {
+          const final = this.preguntaAMostrar.Emparejamientos.length;
+          if (!this.contestarEmparejamiento) {
+            // La respuesta ha quedado en blanco
+            this.feedbacks.push(this.preguntaAMostrar.FeedbackIncorrecto);
+            this.RespuestasAlumno = undefined;
+            puntos = 0;
+    
+          } else {
+            // tslint:disable-next-line:no-shadowed-variable
+            let cont = 0;
+            for (let j = 0; j < this.preguntaAMostrar.Emparejamientos.length; j++) {
+              if (this.preguntaAMostrar.Emparejamientos[j].r === this.RespuestasAlumno[j]) {
+                cont++;
+              }
+            }
+            if (cont === this.preguntaAMostrar.Emparejamientos.length) {
+              puntos = this.cuentaAtras2; // los puntos son los segundos que le quedaban
+              this.feedbacks.push(this.preguntaAMostrar.FeedbackCorrecto);
+            } else {
+              puntos = 0;
+              this.feedbacks.push(this.preguntaAMostrar.FeedbackIncorrecto);
+            }
+          }
+        } else {
+          if (this.RespuestasAlumno[0] === this.preguntaAMostrar.RespuestaCorrecta) {
+            puntos = this.cuentaAtras2; // los puntos son los segundos que le quedaban
+            this.feedbacks.push(this.preguntaAMostrar.FeedbackCorrecto);
+          } else {
+            puntos = 0;
+            this.feedbacks.push(this.preguntaAMostrar.FeedbackIncorrecto);
+          }
+        }
+        if (this.preguntaAMostrar.Tipo === 'Emparejamiento') {
+          this.contestar.push(this.contestarEmparejamiento);
+        } else {
+          this.contestar.push (undefined);
+        }
+        // Guardo las respuestas para poder mostrarlas al alumno al final, junto con los feedbacks
+        this.respuestasKahoot.push (this.RespuestasAlumno);
+
+        this.EnviarRespuestaKahootRapido (puntos);
+
+  }
+  EnviarRespuestaKahootRapido(puntos: number) {
+
+    clearInterval(this.interval2);
+
+    this.comServer.EnviarRespuestaKahootRapido(this.nickName, this.RespuestasAlumno, this.cuentaAtras2, puntos);
+    if (this.siguiente ===  this.PreguntasCuestionario.length) {
+      this.finDelJuego = true;
+    }
+    this.preguntaAMostrar = undefined;
+    this.RespuestasAlumno = [];
+  }
+
+  GuardarRespuesta (respuesta) {
+    this.RespuestasAlumno[0] = respuesta;
+    this.CalcularPuntosYEnviar();
+
+  }
+  ReordenarRespuestas(event) {
+    const itemMove = this.RespuestasAlumno.splice(event.detail.from, 1)[0];
+    this.RespuestasAlumno.splice(event.detail.to, 0, itemMove);
+    event.detail.complete();
+  }
+  
 
 }

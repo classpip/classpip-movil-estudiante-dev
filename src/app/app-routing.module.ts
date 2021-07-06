@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
@@ -23,7 +22,7 @@ const routes: Routes = [
   { path: 'juego-colleccion', loadChildren: './juego-colleccion/juego-colleccion.module#JuegoColleccionPageModule' },
   { path: 'juego-avatar', loadChildren: './juego-avatar/juego-avatar.module#JuegoAvatarPageModule' },
   { path: 'avatar-editor', loadChildren: './avatar-editor/avatar-editor.module#AvatarEditorPageModule' },
-  
+
   { path: 'juego-puntos', loadChildren: './juego-puntos/juego-puntos.module#JuegoPuntosPageModule' },
   { path: 'album-alumno', loadChildren: './album-alumno/album-alumno.module#AlbumAlumnoPageModule' },
 
@@ -40,6 +39,10 @@ const routes: Routes = [
   { path: 'mis-juegos-inactivos', loadChildren: './mis-juegos-inactivos/mis-juegos-inactivos.module#MisJuegosInactivosPageModule' },
   // tslint:disable-next-line:max-line-length
   { path: 'juego-coger-turno-rapido', loadChildren: './juego-coger-turno-rapido/juego-coger-turno-rapido.module#JuegoCogerTurnoRapidoPageModule' },
+  { path: 'juego-evaluacion', loadChildren: './juego-evaluacion/juego-evaluacion.module#JuegoEvaluacionPageModule' },
+  // tslint:disable-next-line:max-line-length
+  { path: 'pagina-evaluar/:id', loadChildren: './pagina-evaluar/pagina-evaluar.module#PaginaEvaluarPageModule' },
+  { path: 'pagina-notafinal/:id', loadChildren: './pagina-notafinal/pagina-notafinal.module#PaginaNotafinalPageModule' }
 
 
 

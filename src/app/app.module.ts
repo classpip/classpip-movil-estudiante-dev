@@ -67,14 +67,11 @@ import {DatePipe} from '@angular/common';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     LongPressModule,
-
-
     SocketIoModule.forRoot(config),
     IntercambiarCromosPageModule,
     AvatarEditorPageModule
-    
   ],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
     StatusBar,
     SplashScreen,
@@ -85,9 +82,9 @@ import {DatePipe} from '@angular/common';
     LocalNotifications,
     DatePipe,
     Media,
-    { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig},
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: DateAdapter, useClass: CustomDateAdapter}
+    {provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig},
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+    {provide: DateAdapter, useClass: CustomDateAdapter}
   ],
   bootstrap: [AppComponent]
 })
