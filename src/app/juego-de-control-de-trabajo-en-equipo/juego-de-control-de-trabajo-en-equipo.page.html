@@ -1,0 +1,144 @@
+
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Control de trabajo en equipo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Esta es la primera pantalla que se muestra
+Se ve la lista de controles (hechos, el que hay que hacer y los que quedan por hacer) -->
+<ion-content *ngIf = "mostrarControles && juegoSeleccionado">
+  <br>
+  <!-- controles ya realizados -->
+  <div *ngFor="let e of [].constructor(numeroControlesRealizados); let i = index" >
+    <ion-button  icon-end color="light" expand="block" (click) = "VerPuntuaciones(i)">Control {{i+1}} <ion-icon style = "color:green;" name="checkmark"></ion-icon></ion-button>
+    <br>
+  </div>
+  <div *ngIf = "numeroControlesRealizados < juegoSeleccionado.numeroDeControles">
+    <!-- control que hay que realizar ahora -->
+    <ion-button  icon-end color="light" expand="block" (click) = "MostrarFormulario(numeroControlesRealizados)">Control {{numeroControlesRealizados+1}} <ion-icon style = "color:red;" name="arrow-back"></ion-icon></ion-button>
+    <br>
+    <!-- controles que faltan -->
+    <div *ngFor="let e of [].constructor(controlesRestantes); let i = index" >
+      <ion-button  icon-end color="light" expand="block">Control {{numeroControlesRealizados + i+2}} </ion-button>
+      <br>
+    </div>
+  </div>
+</ion-content>
+
+
+<!-- Pantalla para realizar el control -->
+<ion-content *ngIf = "mostrarFormulario">
+  <h1 style="text-align: center; color:red">Control #{{numeroDeControl}}</h1>
+  
+  <br>
+  <ion-list style="text-align:center">
+    <ion-label align = "center">
+    <span  style = "font-size: 2em;">Reparte </span>  
+    <span  style = "font-size: 3em; color: red">{{puntosARepartir}}</span>   
+    <span  style = "font-size: 2em;">  puntos </span>
+    </ion-label>
+  </ion-list>
+  <br>
+  <ion-item *ngFor="let alumno of alumnosEquipo; let i=index">
+    
+    <ion-label>
+        {{alumno.Nombre}} {{alumno.PrimerApellido}} {{alumno.SegundoApellido}}
+    </ion-label>
+
+    <ion-label style="text-align: right;">
+      <span (click)="Decrementar (i)" style = "color: red" class="material-icons"> remove_circle_outline</span>
+      <span style = "font-size: 2em"> {{puntos[i]}} </span>
+      <span (click)="Incrementar (i)" style = "color: green" class="material-icons"> add_circle_outline</span>
+      </ion-label>
+  </ion-item>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Observaciones:</ion-card-title>
+      <ion-card-subtitle>Deja alguna observación</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-textarea [(ngModel)]="comentario"></ion-textarea>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-list style="text-align:center">
+    <ion-button *ngIf = 'puntosARepartir === 0' class="ranking-btn-rojo" (click)="Enviar()"> Envía tu valoración </ion-button>  
+    <ion-button class="ranking-btn" (click)="Volver();">Volver</ion-button> 
+  </ion-list>
+
+
+</ion-content>
+
+
+<!-- Pantalla para mostrar un control realizado -->
+<ion-content *ngIf = "mostrarPuntuaciones">
+  <div>
+    <h1 style="text-align: center; color: green">Control #{{numeroDeControl}}</h1>
+    <h4 style="text-align: center;">Esta ha sido tu puntuación en este control</h4>
+    <ion-list>
+        <ion-item *ngFor="let puntuacion of resultado.puntuaciones; let i=index">
+          <ion-item>
+          <ion-label >
+            {{nombresAlumnos[i].Nombre}} {{nombresAlumnos[i].PrimerApellido}} {{nombresAlumnos[i].SegundoApellido}}
+          </ion-label>
+          </ion-item>
+          <ion-label style="font-size: large; color: green; text-align: right;">
+            {{puntuacion.puntos}}
+          </ion-label>
+        </ion-item>
+    </ion-list>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Observaciones:</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-textarea  [disabled]="true" [(ngModel)]="comentario"></ion-textarea>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  
+    <br>
+    <div *ngIf = "controlCompleto">
+      <h4 style="text-align: center;">El control está completo</h4>
+      <h4 style="text-align: center;">Estos son los resultados acumulados</h4>
+      <ion-list>
+        <ion-item *ngFor="let puntos of puntosEquipo; let i=index">
+          <ion-item>
+          <ion-label >
+            {{nombresAlumnos[i].Nombre}} {{nombresAlumnos[i].PrimerApellido}} {{nombresAlumnos[i].SegundoApellido}}
+          </ion-label>
+          </ion-item>
+          <ion-label style="font-size: large; color: green; text-align: right;">
+            {{puntos}}
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Observaciones:</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item *ngFor = "let comentario of comentariosEquipo ">
+            <ion-textarea  [disabled]="true" [(ngModel)]="comentario"></ion-textarea>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <div *ngIf = "!controlCompleto">
+      <h4 style="text-align: center;">Aún faltan compañeros de equipo por contestar este control</h4>
+    </div>
+    <br>
+    <ion-list style="text-align:center">
+      <ion-button class="ranking-btn" (click)="Volver();">Volver</ion-button> 
+    </ion-list>
+  
+  </div>
+</ion-content>

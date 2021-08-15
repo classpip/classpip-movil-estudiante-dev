@@ -46,6 +46,7 @@ export class IniciPage implements OnInit {
     this.calculos.DameJuegosAlumno(this.id)
       .subscribe(listas => {
         this.JuegosActivos = listas.activos;
+        console.log ('ya tengo los juegos ', this.JuegosActivos);
     });
   }
 
@@ -75,6 +76,8 @@ export class IniciPage implements OnInit {
     } else if (juego.Tipo === 'Evaluacion') {
       this.sesion.TomaJuegoEvaluacion(juego);
       this.navCtrl.navigateForward('/juego-evaluacion');
+    } else if (juego.Tipo === 'Control de trabajo en equipo') {
+      this.navCtrl.navigateForward('/juego-de-control-de-trabajo-en-equipo');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }

@@ -12,7 +12,7 @@ import {
   MiAlumnoAMostrarJuegoDeGeocaching,
   PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares, JuegoDeVotacionUnoATodos, AlumnoJuegoDeVotacionUnoATodos,
   Rubrica, JuegoDeVotacionTodosAUno, AlumnoJuegoDeVotacionTodosAUno, JuegoDeCuestionarioSatisfaccion, AlumnoJuegoDeCuestionarioSatisfaccion,
-  CuestionarioSatisfaccion, JuegoDeEncuestaRapida, EquipoJuegoDeVotacionUnoATodos
+  CuestionarioSatisfaccion, JuegoDeEncuestaRapida, EquipoJuegoDeVotacionUnoATodos, JuegoDeControlDeTrabajoEnEquipo, AlumnoJuegoDeControlDeTrabajoEnEquipo
 
 
 } from '../clases';
@@ -117,6 +117,9 @@ export class PeticionesAPIService {
   private APIUrlJuegoDeCuestionarioRapido = this.base + '3000/api/juegosDeCuestionarioRapido';
 
   private APIUrlJuegoDeCogerTurnoRapido = this.base + '3000/api/juegosDeCogerTurnoRapido';
+
+  private APIUrlAlumnoJuegoDeControlDeTrabajoEnEquipo = this.base + '3000/api/alumnosJuegoDeControlDeTrabajoEnEquipo';
+
 
   constructor(
     private http: HttpClient,
@@ -1135,5 +1138,20 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   }
   public DameEquipoDeAlumno(grupoId: number, alumnoId: number): Observable<Equipo[]> {
     return this.http.get<Equipo[]>(this.APIUrlAlumnos + '/' + alumnoId + '/equipos?filter[where][grupoId]=' + grupoId);
+  }
+
+   //////////////////////////// JUEGO DE CONTROL DE TRABAJO EN EQUIPO//////////////////////////////////
+   public DameJuegosDeControlDeTrabajoEnEquipo(alumnoId: number): Observable<JuegoDeControlDeTrabajoEnEquipo[]> {
+    return this.http.get<JuegoDeControlDeTrabajoEnEquipo[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeControlDeTrabajoEnEquipo');
+  }
+
+  // tslint:disable-next-line:max-line-length
+  public DameInscripcionAlumnoJuegoDeControlDeTrabajoEnEquipo(juegoId: number, alumnoId: number): Observable<AlumnoJuegoDeControlDeTrabajoEnEquipo[]> {
+    return this.http.get<AlumnoJuegoDeControlDeTrabajoEnEquipo[]>(this.APIUrlAlumnoJuegoDeControlDeTrabajoEnEquipo
+        + '?filter[where][juegoDeControlDeTrabajoEnEquipoId]=' + juegoId +  '&filter[where][alumnoId]=' + alumnoId);
+  }
+  public ModificaInscripcionAlumnoJuegoDeControlDeTrabajoEnEquipo(inscripcion: AlumnoJuegoDeControlDeTrabajoEnEquipo): Observable<AlumnoJuegoDeControlDeTrabajoEnEquipo> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<AlumnoJuegoDeControlDeTrabajoEnEquipo>(this.APIUrlAlumnoJuegoDeControlDeTrabajoEnEquipo + '/' + inscripcion.id, inscripcion);
   }
 }
