@@ -43,10 +43,18 @@ export class IniciPage implements OnInit {
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
     console.log('Este es el id del alumno que se ha logado: ' + this.id);
-    this.calculos.DameJuegosAlumno(this.id)
-      .subscribe(listas => {
-        this.JuegosActivos = listas.activos;
-    });
+    this.DameJuegosAlumno (this.id);
+    // this.calculos.DameJuegosAlumno_back(this.id)
+    //   .subscribe(listas => {
+    //     this.JuegosActivos = listas.activos;
+    //     console.log ('ya tengo los juegos ', this.JuegosActivos);
+    // });
+  }
+
+  async DameJuegosAlumno (id) {
+    const listas =  await this.calculos.DameJuegosAlumno(id);
+    this.JuegosActivos = listas.activos;
+
   }
 
 
@@ -75,6 +83,8 @@ export class IniciPage implements OnInit {
     } else if (juego.Tipo === 'Evaluacion') {
       this.sesion.TomaJuegoEvaluacion(juego);
       this.navCtrl.navigateForward('/juego-evaluacion');
+    } else if (juego.Tipo === 'Control de trabajo en equipo') {
+      this.navCtrl.navigateForward('/juego-de-control-de-trabajo-en-equipo');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }

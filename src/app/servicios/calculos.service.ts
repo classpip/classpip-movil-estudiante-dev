@@ -92,7 +92,7 @@ export class CalculosService {
       });
   }
 
-  public DameJuegosAlumno(AlumnoId: number): any {
+ /*  public DameJuegosAlumno_back(AlumnoId: number): any {
     const Observables = new Observable(obs => {
       console.log('ya estoy dentro de dame juegos alumno');
       const JuegosActivos: any[] = [];
@@ -244,41 +244,41 @@ export class CalculosService {
                                                       }
                                                   }
                                                   console.log('ya tengo los juegos de evaluacion', lista);
+                                                  console.log('voy a por los juegos de control de trabajo en equipo');
+                                                  this.peticionesAPI.DameJuegosDeControlDeTrabajoEnEquipo(AlumnoId)
+                                                  // tslint:disable-next-line:no-shadowed-variable
+                                                  .subscribe( lista => {
+                                                 
+                                                          for (let i = 0; i < (lista.length); i++) {
+                                                              if (lista[i].JuegoActivo === true) {
+                                                                  JuegosActivos.push(lista[i]);
+                                                              } else {
+                                                                  JuegosInactivos.push(lista[i]);
+                                                              }
+                                                          }
+                                                          console.log('ya tengo los juegos de control de trabajo en equipo', lista);
 
 
-                                                  console.log('vamos a por los equipos');
-                                                  this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
-                                                      // tslint:disable-next-line:no-shadowed-variable
-                                                      .subscribe(lista => {
-                                                          this.equipos = lista;
-                                                          console.log('yasta la lista de equipos');
-                                                          console.log(this.equipos);
-                                                          if (this.equipos.length === 0) {
-                                                              // No hay equipos. Ya puedo retornar las listas de juegos
-                                                              const MisObservables = {activos: JuegosActivos, inactivos: JuegosInactivos};
-                                                              obs.next(MisObservables);
-                                                          } else {
-                                                              let cont = 0;
-                                                              for (let i = 0; i < (this.equipos.length); i++) {
-                                                                  // tslint:disable-next-line:max-line-length
-                                                                  console.log('voy a por los juegos de puntos del equipo ' + this.equipos[i].id);
-                                                                  this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id)
-                                                                      // tslint:disable-next-line:no-shadowed-variable
-                                                                      .subscribe(lista => {
-                                                                          console.log('ya tengo los juegos de puntos del equipo ');
-                                                                          console.log(lista);
-                                                                          for (let j = 0; j < (lista.length); j++) {
-                                                                              if (lista[j].JuegoActivo === true) {
-                                                                                  JuegosActivos.push(lista[j]);
-                                                                              } else {
-                                                                                  JuegosInactivos.push(lista[j]);
-                                                                              }
-                                                                          }
-                                                                          console.log('voy a por los juegos de coleccion del euqioi ' + this.equipos[i].id);
-                                                                          this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id)
+                                                          console.log('vamos a por los equipos');
+                                                          this.peticionesAPI.DameEquiposDelAlumno(AlumnoId)
+                                                              // tslint:disable-next-line:no-shadowed-variable
+                                                              .subscribe(lista => {
+                                                                  this.equipos = lista;
+                                                                  console.log('yasta la lista de equipos');
+                                                                  console.log(this.equipos);
+                                                                  if (this.equipos.length === 0) {
+                                                                      // No hay equipos. Ya puedo retornar las listas de juegos
+                                                                      const MisObservables = {activos: JuegosActivos, inactivos: JuegosInactivos};
+                                                                      obs.next(MisObservables);
+                                                                  } else {
+                                                                      let cont = 0;
+                                                                      for (let i = 0; i < (this.equipos.length); i++) {
+                                                                          // tslint:disable-next-line:max-line-length
+                                                                          console.log('voy a por los juegos de puntos del equipo ' + this.equipos[i].id);
+                                                                          this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id)
                                                                               // tslint:disable-next-line:no-shadowed-variable
                                                                               .subscribe(lista => {
-                                                                                  console.log('ya tengo los juegos de coleccion del equipo ');
+                                                                                  console.log('ya tengo los juegos de puntos del equipo ');
                                                                                   console.log(lista);
                                                                                   for (let j = 0; j < (lista.length); j++) {
                                                                                       if (lista[j].JuegoActivo === true) {
@@ -287,11 +287,11 @@ export class CalculosService {
                                                                                           JuegosInactivos.push(lista[j]);
                                                                                       }
                                                                                   }
-                                                                                  console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
-                                                                                  this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id)
+                                                                                  console.log('voy a por los juegos de coleccion del euqioi ' + this.equipos[i].id);
+                                                                                  this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id)
                                                                                       // tslint:disable-next-line:no-shadowed-variable
                                                                                       .subscribe(lista => {
-                                                                                          console.log('ya tengo los juegos de F1 del equipo');
+                                                                                          console.log('ya tengo los juegos de coleccion del equipo ');
                                                                                           console.log(lista);
                                                                                           for (let j = 0; j < (lista.length); j++) {
                                                                                               if (lista[j].JuegoActivo === true) {
@@ -300,11 +300,11 @@ export class CalculosService {
                                                                                                   JuegosInactivos.push(lista[j]);
                                                                                               }
                                                                                           }
-                                                                                          console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
-                                                                                          this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id)
+                                                                                          console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
+                                                                                          this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id)
                                                                                               // tslint:disable-next-line:no-shadowed-variable
                                                                                               .subscribe(lista => {
-                                                                                                  console.log('ya tengo los juegos de liga del equipo');
+                                                                                                  console.log('ya tengo los juegos de F1 del equipo');
                                                                                                   console.log(lista);
                                                                                                   for (let j = 0; j < (lista.length); j++) {
                                                                                                       if (lista[j].JuegoActivo === true) {
@@ -313,11 +313,11 @@ export class CalculosService {
                                                                                                           JuegosInactivos.push(lista[j]);
                                                                                                       }
                                                                                                   }
-                                                                                                  console.log('voy a por los juegos de votacion uno a todos del equipo' + this.equipos[i].id);
-                                                                                                  this.peticionesAPI.DameJuegoDeVotacionUnoATodosEquipo(this.equipos[i].id)
+                                                                                                  console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
+                                                                                                  this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id)
                                                                                                       // tslint:disable-next-line:no-shadowed-variable
                                                                                                       .subscribe(lista => {
-                                                                                                          console.log('ya tengo los juegos de votacion uno a todos');
+                                                                                                          console.log('ya tengo los juegos de liga del equipo');
                                                                                                           console.log(lista);
                                                                                                           for (let j = 0; j < (lista.length); j++) {
                                                                                                               if (lista[j].JuegoActivo === true) {
@@ -326,12 +326,12 @@ export class CalculosService {
                                                                                                                   JuegosInactivos.push(lista[j]);
                                                                                                               }
                                                                                                           }
-
-                                                                                                          console.log('voy a por los juegos de evaluacion del equipo ' + this.equipos[i].id);
-                                                                                                          this.peticionesAPI.DameJuegoDeEvaluacionEquipo(this.equipos[i].id)
+                                                                                                          console.log('voy a por los juegos de votacion uno a todos del equipo' + this.equipos[i].id);
+                                                                                                          this.peticionesAPI.DameJuegoDeVotacionUnoATodosEquipo(this.equipos[i].id)
                                                                                                               // tslint:disable-next-line:no-shadowed-variable
-                                                                                                          .subscribe(lista => {
-                                                                                                                  console.log('ya tengo los juegos de evaluacion del equipo ', lista);
+                                                                                                              .subscribe(lista => {
+                                                                                                                  console.log('ya tengo los juegos de votacion uno a todos');
+                                                                                                                  console.log(lista);
                                                                                                                   for (let j = 0; j < (lista.length); j++) {
                                                                                                                       if (lista[j].JuegoActivo === true) {
                                                                                                                           JuegosActivos.push(lista[j]);
@@ -340,25 +340,39 @@ export class CalculosService {
                                                                                                                       }
                                                                                                                   }
 
+                                                                                                                  console.log('voy a por los juegos de evaluacion del equipo ' + this.equipos[i].id);
+                                                                                                                  this.peticionesAPI.DameJuegoDeEvaluacionEquipo(this.equipos[i].id)
+                                                                                                                      // tslint:disable-next-line:no-shadowed-variable
+                                                                                                                  .subscribe(lista => {
+                                                                                                                          console.log('ya tengo los juegos de evaluacion del equipo ', lista);
+                                                                                                                          for (let j = 0; j < (lista.length); j++) {
+                                                                                                                              if (lista[j].JuegoActivo === true) {
+                                                                                                                                  JuegosActivos.push(lista[j]);
+                                                                                                                              } else {
+                                                                                                                                  JuegosInactivos.push(lista[j]);
+                                                                                                                              }
+                                                                                                                          }
 
-                                                                                                                  // vemos si hemos acabado de recogar los juegos de todos los equipos
-                                                                                                                  cont = cont + 1;
-                                                                                                                  if (cont === this.equipos.length) {
-                                                                                                                      const MisObservables = {
-                                                                                                                          activos: JuegosActivos,
-                                                                                                                          inactivos: JuegosInactivos
-                                                                                                                      };
-                                                                                                                      obs.next(MisObservables);
-                                                                                                                  }
-                                                                                                          }); // juegos de evaluacion de equipo
-                                                                                                      }); // Jueos de votación uno a todos de equipo
-                                                                                              }); // juegos de liga del equipo
-                                                                                      }); // juegos de F1 del equipo
-                                                                              }); // juegos de coleccion del equipo
-                                                                      }); // juegos de puntos del equipo
-                                                              } // fin bucle for equipos
-                                                          } // else de la pregunta de si hay equipos
-                                                      }); // equipos del alumno
+
+                                                                                                                          // vemos si hemos acabado de recogar los juegos de todos los equipos
+                                                                                                                          cont = cont + 1;
+                                                                                                                          if (cont === this.equipos.length) {
+                                                                                                                              const MisObservables = {
+                                                                                                                                  activos: JuegosActivos,
+                                                                                                                                  inactivos: JuegosInactivos
+                                                                                                                              };
+                                                                                                                              obs.next(MisObservables);
+                                                                                                                          }
+                                                                                                                  }); // juegos de evaluacion de equipo
+                                                                                                              }); // Jueos de votación uno a todos de equipo
+                                                                                                      }); // juegos de liga del equipo
+                                                                                              }); // juegos de F1 del equipo
+                                                                                      }); // juegos de coleccion del equipo
+                                                                              }); // juegos de puntos del equipo
+                                                                      } // fin bucle for equipos
+                                                                  } // else de la pregunta de si hay equipos
+                                                          }); // equipos del alumno
+                                                  }); // juegos de control de trabajo en equipo
                                             }); // juegos de evaluacion
                               }); // juegos de cuestionario de satisfaccion
                             }); // juegos de votacion todos a uno
@@ -375,6 +389,201 @@ export class CalculosService {
       }); // juegos de puntos
     }); // observable
     return Observables;
+  }
+ */
+  public async DameJuegosAlumno(AlumnoId: number): Promise<any> {
+      const JuegosActivos: any[] = [];
+      const JuegosInactivos: any[] = [];
+      let lista = [];
+      console.log('* voy a por los juegos de puntos del alumno');
+      lista = await this.peticionesAPI.DameJuegoDePuntosAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+      console.log('* voy a por los juegos de colecciones del alumno');
+      lista = await this.peticionesAPI.DameJuegoDeColeccionesAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+      console.log('voy a por los juegos de geocaching');
+      lista = await this.peticionesAPI.DameJuegoDeGeocachingAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          lista[i].Tipo = 'Juego De Geocaching';
+          JuegosActivos.push(lista[i]);
+        } else if (lista[i].JuegoTerminado === true) {
+          lista[i].Tipo = 'Juego De Geocaching';
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+
+      console.log('voy a por los juegos de F1 del alumno');
+      lista = await this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId).toPromise();
+
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+
+      console.log('voy a por los juegos de liga del alumno');
+      lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+
+      console.log('voy a por los juegos de cuestionario del alumno');
+      lista = await this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < lista.length; i++) {
+        if (lista[i].JuegoActivo === true) {
+            // Esto lo hago porque la lista que viene de la API es de objetos de tipo JuegoDeCuestionario
+            // que no tienen el campo tipo de juego. Tengo que añadirselo yo.
+            lista[i].Tipo = 'Juego De Cuestionario';
+            JuegosActivos.push(lista[i]);
+        } else if (lista[i].JuegoTerminado === true) {
+            lista[i].Tipo = 'Juego De Cuestionario';
+            JuegosInactivos.push(lista[i]);
+        }
+      }
+
+      console.log('voy a por los juegos de avatar');
+      lista = await this.peticionesAPI.DameJuegoDeAvatarAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+      
+      console.log('voy a por los juegos de votacion uno a todos');
+      lista = await this.peticionesAPI.DameJuegosDeVotacionUnoATodosAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+      
+      console.log('voy a por los juegos de votacion todos a uno');
+      lista = await this.peticionesAPI.DameJuegosDeVotacionTodosAUnoAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+
+      console.log('voy a por los juegos de cuestionario de satisfaccion');
+      lista = await this.peticionesAPI.DameJuegosDeCuestiinarioSatisfaccionAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+      console.log('voy a por los juegos de evaluacion');
+      lista = await this.peticionesAPI.DameJuegosDeEvaluacion(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+      console.log('voy a por los juegos de control de trabajo en equipo');
+      lista = await this.peticionesAPI.DameJuegosDeControlDeTrabajoEnEquipo(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+
+      console.log('vamos a por los equipos');
+      this.equipos = await this.peticionesAPI.DameEquiposDelAlumno(AlumnoId).toPromise();                                                            
+      for (let i = 0; i < (this.equipos.length); i++) {
+                                                                          // tslint:disable-next-line:max-line-length
+        console.log('voy a por los juegos de puntos del equipo ' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        }                                                                         
+        console.log('voy a por los juegos de coleccion del equipo ' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        }                                                                                
+        console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        } 
+                                                                            
+        console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        }                                                                                             
+        console.log('voy a por los juegos de votacion uno a todos del equipo' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDeVotacionUnoATodosEquipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        }    
+
+        console.log('voy a por los juegos de evaluacion del equipo ' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDeEvaluacionEquipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        }   
+      }
+      const juegos  = {
+          activos: JuegosActivos,
+          inactivos: JuegosInactivos
+      }
+      return juegos;
   }
 
   public DameAlumnosJuegoPuntos(juegoId: number) {
@@ -400,8 +609,8 @@ export class CalculosService {
         // tslint:disable-next-line:only-arrow-functions
         InformacionAlumno = InformacionAlumno.sort(function(obj1, obj2) {
           return obj2.PuntosTotalesAlumno - obj1.PuntosTotalesAlumno;
-        });
-      });
+        }); 
+      }); 
     return InformacionAlumno;
   }
 

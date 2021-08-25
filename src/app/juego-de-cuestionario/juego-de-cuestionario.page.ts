@@ -568,6 +568,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
       // este timer solo se activa en el modo clásico si se ha establecido un tiempo limite
       this.contar = true; // para que se muestre la cuenta atrás
       this.tiempoRestante = this.tiempoLimite;
+      this.empezado = true;
       this.timer = setInterval(async () => {
             this.tiempoRestante = this.tiempoRestante - 1;
             if (this.tiempoRestante === 0) {
@@ -850,6 +851,10 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
       } else {
         this.slides.getActiveIndex().then(index => {
+          if (index === 1 && !this.empezado) {
+            // Solo podemos empezar si pulsamos el botón
+            this.slides.slideTo(0);
+          }
 
           if (!this.registrado && index === this.PreguntasCuestionario.length + 2) {
             // pretende ir a la pantalla de resultado sin haber regitrado las respuestas

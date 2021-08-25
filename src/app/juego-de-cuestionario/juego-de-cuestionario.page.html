@@ -15,8 +15,8 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
 <ion-content *ngIf = "juegoSeleccionado && juegoSeleccionado.Tipo === 'Juego De Cuestionario' && juegoSeleccionado.JuegoActivo && alumnoJuegoDeCuestionario">
     <!-- El alumno no ha contestado el cuestionario de tipo Clasico aun -->
     <div *ngIf="!alumnoJuegoDeCuestionario.Contestado && juegoSeleccionado.Modalidad === 'Clásico'; ">
-        <ion-list *ngIf ="contar" style="text-align:right">
-          <ion-label   style = "text-align: right; color: red; font-size: xx-large;">{{tiempoRestante}}</ion-label>    
+        <ion-list *ngIf ="contar" style="text-align:center; height: 45px;">
+          <ion-label   style = " color: red; font-size:xx-large;">{{tiempoRestante}}</ion-label>    
         </ion-list>
 
         <!-- Indicamos los botones de navegación para cada slide -->
@@ -43,7 +43,7 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
       
      
       
-      <ion-slides  #slides (ionSlideWillChange)="doCheck()" >
+      <ion-slides style = "margin-top: 18%;" #slides (ionSlideWillChange)="doCheck()" >
         <!-- Slide 0: presentación del juego -->
         <ion-slide>
           <ion-list   style="text-align: center;">
@@ -98,7 +98,7 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
             </div>
             
             <div *ngIf ="item.pregunta.Tipo === 'Cuatro opciones'">
-              <label align = "center"><h1 style="color:rgb(109, 11, 19)"><strong>Elije la opción correcta</strong></h1></label>
+              <label align = "center"><h1 style="color:rgb(109, 11, 19);"><strong>Elije la opción correcta</strong></h1></label>
               <br>
               <img *ngIf = "item.pregunta.Imagen" style = "width: 250px; height: 250px" [src]="imagenesPreguntas[i]" >
               <p style="font-size: 18px;">{{item.pregunta.Pregunta}}</p>
@@ -276,7 +276,7 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
        
     
         
-        <ion-slides  #slides (ionSlideWillChange)="doCheck()" >
+        <ion-slides style = "margin-top: 18%;" #slides (ionSlideWillChange)="doCheck()" >
           <!-- En el slide 0 hay información del juego -->
           <ion-slide>
             <ion-list   style="text-align: center;">
@@ -527,14 +527,14 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
   
       <!-- Indico los botones de navegación de cada slide -->
       <div *ngIf = "slideActual === 0">
-        <button class = "siguiente" style = "width: 150px" mat-raised-button  (click)="next()">Ver tus respuestas</button>
+        <button class = "siguiente" style = "width: 150px" mat-raised-button  (click)="next(); empezado=true">Ver tus respuestas</button>
       </div>
       <div *ngIf = "slideActual === 1">
         <button  class = "anterior" (click) = "prev()" mat-raised-button>Anterior</button>
         <button (click) = "GoMisJuegos()" class = "siguiente">Cerrar</button>
       </div>
       
-      <ion-slides  #slides (ionSlideWillChange)="doCheck()" >
+      <ion-slides style = "margin-top: 18%;"  #slides (ionSlideWillChange)="doCheck()" >
         <!-- Slide 0 con información del juego -->
         <ion-slide>
           <ion-list   style="text-align: center;">
@@ -642,7 +642,7 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
         <button (click) = "GoMisJuegos()" class = "siguiente">Cerrar</button>
       </div>
       
-      <ion-slides  #slides (ionSlideWillChange)="doCheck()" >
+      <ion-slides style = "margin-top: 18%;" #slides (ionSlideWillChange)="doCheck()" >
         <!-- Slide 0 con información del juego -->
         <ion-slide>
           <ion-list   style="text-align: center;">
@@ -757,7 +757,7 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
       <button (click) = "Volver()" class = "siguiente">Cerrar</button>
     </div>
     
-    <ion-slides  #slides (ionSlideWillChange)="doCheck()" >
+    <ion-slides style = "margin-top: 18%;" #slides (ionSlideWillChange)="doCheck()" >
       <!-- Slide 0: datos del juego -->
       <ion-slide>
         <ion-list *ngIf="juegoSeleccionado.Modalidad === 'Clásico' "  style="text-align: center;">
