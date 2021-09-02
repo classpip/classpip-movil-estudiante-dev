@@ -115,13 +115,20 @@ export class MisGruposPage implements OnInit {
     console.log ('voy a traer los alumnos del equipo');
     console.log (equipo);
     this.peticionesAPI.DameAlumnosEquipo (equipo.id)
-    .subscribe (alumnos => this.alumnosEquipo = alumnos);
-    this.accordion.closeAll();
+    .subscribe (alumnos => {
+      this.alumnosEquipo = alumnos;
+      console.log ('ya tengo los alumnos del equipo ', this.alumnosEquipo)
+    });
+    // this.accordion.closeAll();
   }
 
-  TraeEquiposGrupo (nombreGrupo) {
-    const grupoId = this.Grupos.find (grupo => grupo.Nombre = nombreGrupo).id;
-    this.peticionesAPI.DameEquiposDelGrupo (grupoId)
+  TraeEquiposGrupo (grupo) {
+    console.log ('Busco equipos del grupo ', grupo);
+    this.mostrarEquipos = false;
+    // console.log ('en la lista ', this.Grupos);
+    // const grupoId = this.Grupos.find (g => g.id = grupo.id).id;
+    // console.log ('voy a traer los equipos del grupo ', grupoId);
+    this.peticionesAPI.DameEquiposDelGrupo (grupo.id)
     .subscribe (equipos => {
       this.equiposDelGrupo = equipos;
       console.log ('equipos del grupo');

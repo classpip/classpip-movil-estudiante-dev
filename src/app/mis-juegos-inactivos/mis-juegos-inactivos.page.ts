@@ -38,10 +38,12 @@ export class MisJuegosInactivosPage implements OnInit {
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
     console.log('Este es el id del alumno que se ha logado: ' + this.id);
-    this.calculos.DameJuegosAlumno(this.id)
-      .subscribe(listas => {
-        this.JuegosInactivos = listas.inactivos;
-      });
+    this.DameJuegosAlumno(this.id);
+   
+  }
+  async DameJuegosAlumno (id) {
+    const listas =  await this.calculos.DameJuegosAlumno(id);
+    this.JuegosInactivos = listas.inactivos;
   }
 
   

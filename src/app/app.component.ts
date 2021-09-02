@@ -38,7 +38,9 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       this.sesion.EnviameAlumno().subscribe ((alumno) => {
+        
         this.MiAlumno = alumno;
+        console.log ('ya tengo alumno ', this.MiAlumno);
       //  this.imagenPerfil = URL.ImagenesPerfil + this.MiAlumno.ImagenPerfil;
       });
     });

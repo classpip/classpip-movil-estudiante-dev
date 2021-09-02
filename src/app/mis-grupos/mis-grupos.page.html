@@ -23,12 +23,12 @@
 <!-- 
   <div [ngSwitch]="Tipo"> -->
   <mat-accordion  [multi]="false">
-    <div *ngFor="let elem of listaGruposYAlumnos;let i = index">
+    <div *ngFor="let grupo of Grupos;let i = index">
       <ion-row style="height: 5px"></ion-row>
       <!-- <ng-container *ngSwitchCase="'Alumnos'"> -->
-      <mat-expansion-panel   (opened) =  "TraeEquiposGrupo (listaGruposYAlumnos[i].Grupo); mostrarAlumnos = true">
+      <mat-expansion-panel   (opened) =  "TraeEquiposGrupo (grupo); mostrarAlumnos = true">
           <mat-expansion-panel-header >
-            <b>{{elem.Grupo}}</b>
+            <b>{{grupo.Nombre}}</b>
           </mat-expansion-panel-header>
           <ion-list style="text-align:center">
             <ion-button class="ranking-btn" (click)="mostrarAlumnos = true; mostrarEquipos = false">Ver alumnos</ion-button> 

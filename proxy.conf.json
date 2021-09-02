@@ -1,0 +1,14 @@
+{
+    "*/api/*":{
+        "target":"http://147.83.118.92:3000",
+        "secure": false,
+        "logLevel": "debug"
+    },
+    
+    "http://147.83.118.92:8200/socket.io/*": {
+          "target": "http://147.83.118.92:8200/socket.io",
+          "secure": false,
+          "ws":true,
+          "logLevel": "debug"
+    }
+}

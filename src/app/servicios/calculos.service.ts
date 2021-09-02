@@ -10,7 +10,7 @@ import {
   EquipoJuegoDeColeccion, AlbumEquipo, Cromo, Jornada, MiAlumnoAMostrarJuegoDePuntos, MiEquipoAMostrarJuegoDePuntos,
   // tslint:disable-next-line:max-line-length
   EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion, EquipoJuegoDeCompeticionLiga, InformacionPartidosLiga, TablaJornadas, TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionFormulaUno,
-  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta, TablaAlumnoJuegoDeCuestionario
+  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta, TablaAlumnoJuegoDeCuestionario, EquipoJuegoDeCuestionario
 } from '../clases/index';
 // import { MatTableDataSource } from '@angular/material/table';
 // import { MiAlumnoAMostrarJuegoDePuntos } from '../clases/MiAlumnoAMostrarJuegoDePuntos';
@@ -22,6 +22,7 @@ import { connectableObservableDescriptor } from 'rxjs/internal/observable/Connec
 import { MiAlumnoAMostrarJuegoDeCuestionario } from '../clases/MiAlumnoAMostrarJuegoDeCuestionario';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import * as URL from '../URLs/urls';
+import { TablaEquipoJuegoDeCuestionario } from '../clases/TablaEquipoJuegoDeCuestionario';
 
 @Injectable({
   providedIn: 'root'
@@ -248,7 +249,7 @@ export class CalculosService {
                                                   this.peticionesAPI.DameJuegosDeControlDeTrabajoEnEquipo(AlumnoId)
                                                   // tslint:disable-next-line:no-shadowed-variable
                                                   .subscribe( lista => {
-                                                 
+
                                                           for (let i = 0; i < (lista.length); i++) {
                                                               if (lista[i].JuegoActivo === true) {
                                                                   JuegosActivos.push(lista[i]);
@@ -469,7 +470,7 @@ export class CalculosService {
           JuegosInactivos.push(lista[i]);
         }
       }
-      
+
       console.log('voy a por los juegos de votacion uno a todos');
       lista = await this.peticionesAPI.DameJuegosDeVotacionUnoATodosAlumno(AlumnoId).toPromise();
       for (let i = 0; i < (lista.length); i++) {
@@ -479,7 +480,7 @@ export class CalculosService {
           JuegosInactivos.push(lista[i]);
         }
       }
-      
+
       console.log('voy a por los juegos de votacion todos a uno');
       lista = await this.peticionesAPI.DameJuegosDeVotacionTodosAUnoAlumno(AlumnoId).toPromise();
       for (let i = 0; i < (lista.length); i++) {
@@ -519,7 +520,7 @@ export class CalculosService {
       }
 
       console.log('vamos a por los equipos');
-      this.equipos = await this.peticionesAPI.DameEquiposDelAlumno(AlumnoId).toPromise();                                                            
+      this.equipos = await this.peticionesAPI.DameEquiposDelAlumno(AlumnoId).toPromise();
       for (let i = 0; i < (this.equipos.length); i++) {
                                                                           // tslint:disable-next-line:max-line-length
         console.log('voy a por los juegos de puntos del equipo ' + this.equipos[i].id);
@@ -530,7 +531,7 @@ export class CalculosService {
           } else {
               JuegosInactivos.push(lista[j]);
           }
-        }                                                                         
+        }
         console.log('voy a por los juegos de coleccion del equipo ' + this.equipos[i].id);
         lista = await this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).toPromise();
         for (let j = 0; j < (lista.length); j++) {
@@ -539,7 +540,7 @@ export class CalculosService {
           } else {
               JuegosInactivos.push(lista[j]);
           }
-        }                                                                                
+        }
         console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
         lista = await this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id).toPromise();
         for (let j = 0; j < (lista.length); j++) {
@@ -548,8 +549,8 @@ export class CalculosService {
           } else {
               JuegosInactivos.push(lista[j]);
           }
-        } 
-                                                                            
+        }
+
         console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
         lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).toPromise();
         for (let j = 0; j < (lista.length); j++) {
@@ -558,7 +559,7 @@ export class CalculosService {
           } else {
               JuegosInactivos.push(lista[j]);
           }
-        }                                                                                             
+        }
         console.log('voy a por los juegos de votacion uno a todos del equipo' + this.equipos[i].id);
         lista = await this.peticionesAPI.DameJuegoDeVotacionUnoATodosEquipo(this.equipos[i].id).toPromise();
         for (let j = 0; j < (lista.length); j++) {
@@ -567,7 +568,7 @@ export class CalculosService {
           } else {
               JuegosInactivos.push(lista[j]);
           }
-        }    
+        }
 
         console.log('voy a por los juegos de evaluacion del equipo ' + this.equipos[i].id);
         lista = await this.peticionesAPI.DameJuegoDeEvaluacionEquipo(this.equipos[i].id).toPromise();
@@ -577,12 +578,21 @@ export class CalculosService {
           } else {
               JuegosInactivos.push(lista[j]);
           }
-        }   
+        }
+        console.log('voy a por los juegos de cuestionario del equipo ' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDeCuestionarioEquipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        }
       }
       const juegos  = {
           activos: JuegosActivos,
           inactivos: JuegosInactivos
-      }
+      };
       return juegos;
   }
 
@@ -609,8 +619,8 @@ export class CalculosService {
         // tslint:disable-next-line:only-arrow-functions
         InformacionAlumno = InformacionAlumno.sort(function(obj1, obj2) {
           return obj2.PuntosTotalesAlumno - obj1.PuntosTotalesAlumno;
-        }); 
-      }); 
+        });
+      });
     return InformacionAlumno;
   }
 
@@ -752,10 +762,10 @@ export class CalculosService {
   public VisualizarLosCromosDelante(listaCromos: any[]) {
     const imagenesCromo: string[] = [];
     console.log(listaCromos.length);
-    for (let i = 0; i < listaCromos.length; i++ ) { 
+    for (let i = 0; i < listaCromos.length; i++ ) {
       if (listaCromos[i].cromo.ImagenDelante !== undefined) {
         this.https.get(URL.ImagenesCromo + listaCromos[i].cromo.ImagenDelante,
-      
+
         // this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + listaCromos[i].cromo.ImagenDelante,
           { responseType: ResponseContentType.Blob }).subscribe(
             response => {
@@ -780,8 +790,8 @@ export class CalculosService {
     for (let i = 0; i < (listaCromos.length); i++) {
       if (listaCromos[i].cromo.ImagenDetras !== undefined) {
         this.https.get(URL.ImagenesCromo + listaCromos[i].cromo.ImagenDetras,
-      
-        //this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + listaCromos[i].cromo.ImagenDetras,
+
+        // this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + listaCromos[i].cromo.ImagenDetras,
           { responseType: ResponseContentType.Blob }).subscribe(
             response => {
               const blob = new Blob([response.blob()], { type: 'image/jpg' });
@@ -804,8 +814,8 @@ export class CalculosService {
   public DameImagenCromo(cromo: any) {
     if (cromo.cromo.Imagen !== undefined) {
       this.https.get(URL.ImagenesCromo + cromo.cromo.Imagen,
-     
-      //this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + cromo.cromo.Imagen,
+
+      // this.https.get('http://localhost:3000/api/imagenes/ImagenCromo/download/' + cromo.cromo.Imagen,
         { responseType: ResponseContentType.Blob }).subscribe(
           response => {
             const blob = new Blob([response.blob()], { type: 'image/jpg' });
@@ -826,8 +836,8 @@ export class CalculosService {
     const ImagenAlumno: string[] = [];
     if (MiImagen !== undefined) {
       this.https.get(URL.ImagenesCromo + MiImagen,
-     
-      //this.https.get('http://localhost:3000/api/imagenes/ImagenAlumno/download/' + MiImagen,
+
+      // this.https.get('http://localhost:3000/api/imagenes/ImagenAlumno/download/' + MiImagen,
         { responseType: ResponseContentType.Blob }).subscribe(
           response => {
             const blob = new Blob([response.blob()], { type: 'image/jpg' });
@@ -2476,6 +2486,47 @@ export class CalculosService {
         console.log (rankingJuegoDeCompeticion[i]);
       }
       return rankingJuegoDeCompeticion;
+  }
+  public PrepararTablaRankingEquiposCuestionario(listaEquiposOrdenadaPorPuntos: EquipoJuegoDeCuestionario[],
+                                                 equiposDelJuego: Equipo[]): TablaEquipoJuegoDeCuestionario[] {
+    const rankingJuegoDeCuestionario: TablaEquipoJuegoDeCuestionario [] = [];
+    // tslint:disable-next-line:prefer-for-oF
+    for (let i = 0; i < listaEquiposOrdenadaPorPuntos.length; i++) {
+      let equipo: Equipo;
+      const equipoId = listaEquiposOrdenadaPorPuntos[i].equipoId;
+      equipo = equiposDelJuego.filter(res => res.id === equipoId)[0];
+      // tslint:disable-next-line:max-line-length
+      rankingJuegoDeCuestionario[i] = new TablaEquipoJuegoDeCuestionario(equipo.Nombre, listaEquiposOrdenadaPorPuntos[i].Nota, listaEquiposOrdenadaPorPuntos[i].Contestado, equipoId, listaEquiposOrdenadaPorPuntos[i].TiempoEmpleado);
+    }
+    return rankingJuegoDeCuestionario;
+  }
+
+
+
+  public DameEquipoAlumnoEnJuegoDeCuestionario(alumnoId: number, juegoId: number): any {
+    const equipoObservable = new Observable(obs => {
+      console.log ('voy a por el equipo de este alumno en el juego');
+      // primero traigo los equipos que participan en el juego
+      this.peticionesAPI.DameEquiposJuegoDeCuestionario (juegoId)
+      .subscribe (equiposJuego => {
+        console.log ('equipos del juego');
+        console.log (equiposJuego);
+        // ahora traigo los equipos a los que pertenece el alumno
+        this.peticionesAPI.DameEquiposDelAlumno (alumnoId)
+        .subscribe (equiposAlumno => {
+          console.log ('equipos del alumno');
+          console.log (equiposAlumno);
+          // ahora miro cual es el equipo que está en ambas listas
+          const equipo = equiposAlumno.filter(e => equiposJuego.some(a => a.id === e.id))[0];
+          console.log ('interseccion');
+          console.log (equipo);
+          obs.next (equipo);
+        });
+
+      });
+
+    });
+    return equipoObservable;
   }
 
 }

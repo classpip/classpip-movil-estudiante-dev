@@ -44,6 +44,7 @@ export * from './AlumnoJuegoDeAvatar';
 export * from './JuegoDeAvatar';
 export * from './FamiliaAvatares';
 export * from './RespuestaJuegoDeCuestionario';
+export * from './RespuestaEquipoJuegoDeCuestionario';
 export * from './ParaAlbum';
 export * from './AlumnoJuegoDeGeocaching';
 export * from './Escenario';
@@ -67,6 +68,8 @@ export * from './JuegoDeEncuestaRapida';
 export * from './TablaAlumnoJuegoDeCuestionario';
 export * from './JuegoDeControlDeTrabajoEnEquipo';
 export * from './AlumnoJuegoDeControlDeTrabajoEnEquipo';
+export * from './AlumnoJuegoDeCuestionario';
+export * from './EquipoJuegoDeCuestionario';
 
 
 
