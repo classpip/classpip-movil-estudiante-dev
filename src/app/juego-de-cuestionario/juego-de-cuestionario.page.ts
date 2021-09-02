@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SesionService, PeticionesAPIService } from '../servicios';
 import { NavController, AlertController, Platform, IonSlides } from '@ionic/angular';
 import { CalculosService, ComServerService } from '../servicios';
-import { Alumno, Juego, TablaAlumnoJuegoDeCuestionario } from '../clases';
+import { Alumno, Equipo, EquipoJuegoDeCuestionario, Juego, RespuestaEquipoJuegoDeCuestionario, TablaAlumnoJuegoDeCuestionario } from '../clases';
 import { Cuestionario } from '../clases/Cuestionario';
 import { Pregunta } from '../clases/Pregunta';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
@@ -13,6 +13,7 @@ import {MatStepper} from '@angular/material';
 
 import * as URL from '../URLs/urls';
 import { Observable } from 'rxjs';
+import { TablaEquipoJuegoDeCuestionario } from '../clases/TablaEquipoJuegoDeCuestionario';
 
 
 
@@ -27,6 +28,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   alumnoId: number;
   alumnoJuegoDeCuestionario: AlumnoJuegoDeCuestionario;
+  equipoJuegoDeCuestionario: EquipoJuegoDeCuestionario;
   juegoSeleccionado: any;
   cuestionario: Cuestionario;
   PreguntasCuestionario: Pregunta[] = [];
@@ -71,8 +73,12 @@ export class JuegoDeCuestionarioPage implements OnInit {
   registrado = false;
   preguntasYRespuestas: any[];
   alumnosDelJuego: Alumno[];
+  equiposDelJuego: Equipo[];
   listaAlumnosOrdenadaPorNota: AlumnoJuegoDeCuestionario[];
   rankingAlumnosPorNota: TablaAlumnoJuegoDeCuestionario[];
+
+  listaEquiposOrdenadaPorNota: EquipoJuegoDeCuestionario[];
+  rankingEquiposPorNota: TablaEquipoJuegoDeCuestionario[];
 
 
   disablePrevBtn = true;
@@ -98,6 +104,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   styles: any;
   puntosTotales: number; // acumula los puntos recibidos en el juego Kahoot
   respuestasPreparadas = false;
+  equipo: Equipo;
 
   @ViewChild(IonSlides, { static: false }) slides: IonSlides;
 
@@ -158,129 +165,253 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
     this.Modalidad = this.juegoSeleccionado.Modalidad;
 
-    // Seguro que la siguiente condición es cierta porque aqui ya no hay juego rápido
-    // De momento lo dejo pero esto tiene que desaparecer
-    if (this.juegoSeleccionado.Tipo === 'Juego De Cuestionario') {
-      console.log ('juego de cuestionario');
-      // Obtenemos la inscripcion del alumno al juego de cuestionario
-      this.alumnoId = this.sesion.DameAlumno().id;
-      this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
-      .subscribe (res => {
-        this.alumnoJuegoDeCuestionario = res[0];
-        console.log ('datos del alumno', this.alumnoJuegoDeCuestionario);
-  
-        if (!this.alumnoJuegoDeCuestionario.Contestado) {
-  
-            // Obtenemos el cuestionario a realizar
-            this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
-            // tslint:disable-next-line:no-shadowed-variable
-            .subscribe(res => {
-              this.cuestionario = res;
-              this.descripcion = res.Descripcion;
-            });
-            // Obtenemos las preguntas del cuestionario y ordenamos preguntas/respuestas en funcion a lo establecido en el cuestionario
-            this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
-            // tslint:disable-next-line:no-shadowed-variable
-            .subscribe(res => {
-              this.PreguntasCuestionario = res;
+    if (this.juegoSeleccionado.Modo === 'Individual') {
+        console.log ('juego de cuestionario');
+        // Obtenemos la inscripcion del alumno al juego de cuestionario
+        this.alumnoId = this.sesion.DameAlumno().id;
+        this.peticionesAPI.DameInscripcionAlumnoJuegoDeCuestionario(this.alumnoId, this.juegoSeleccionado.id)
+        .subscribe (res => {
+          this.alumnoJuegoDeCuestionario = res[0];
+ 
+          if (!this.alumnoJuegoDeCuestionario.Contestado) {
+                // Obtenemos el cuestionario a realizar
+                this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
+                // tslint:disable-next-line:no-shadowed-variable
+                .subscribe(res => {
+                  this.cuestionario = res;
+                  this.descripcion = res.Descripcion;
+                });
+                // Obtenemos las preguntas del cuestionario y ordenamos preguntas/respuestas en funcion a lo establecido en el cuestionario
+                this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
+                // tslint:disable-next-line:no-shadowed-variable
+                .subscribe(res => {
+                  this.PreguntasCuestionario = res;
 
-              if (this.juegoSeleccionado.Modalidad === 'Clásico') {
-                this.PrepararPreguntasYRespuestas();
-              }
-            });
-            if (this.juegoSeleccionado.Modalidad === 'Kahoot') {
-              // Indico lo que haré cuando reciba los resultados finales del juego en el caso del Kahoot
-              this.comServer.EsperoResultadoFinalKahoot ()
-              .subscribe (resultado => {
-                this.tengoResultadoDelJuego = true;
-                this.clasificacion = resultado;
-                // El resultado final del juego Kahoot es una lista con en la que cada elemento 
-                // tiene: 
-                //    alumno
-                //    puntos
-              });
-            }
-           
+                  if (this.juegoSeleccionado.Modalidad === 'Clásico') {
+                    this.PrepararPreguntasYRespuestas();
+                  }
+                });
+                if (this.juegoSeleccionado.Modalidad === 'Kahoot') {
+                  // Indico lo que haré cuando reciba los resultados finales del juego en el caso del Kahoot
+                  this.comServer.EsperoResultadoFinalKahoot ()
+                  .subscribe (resultado => {
+                    this.tengoResultadoDelJuego = true;
+                    this.clasificacion = resultado;
+                    // El resultado final del juego Kahoot es una lista con en la que cada elemento 
+                    // tiene: 
+                    //    alumno
+                    //    puntos
+                  });
+                }
+                if (this.juegoSeleccionado.JuegoTerminado) {
+                  // traigo la información de todos los alumnos del grupo para presentar la clasificación final
+                  this.AlumnosDelJuego();
+                }
+          } else {
+                console.log ('cuestionario contestado', this.alumnoJuegoDeCuestionario);
+                // el cuestionario ya ha sido contestado
+                this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
+                // tslint:disable-next-line:no-shadowed-variable
+                .subscribe(res => {
+                  this.cuestionario = res;
+                  this.descripcion = res.Descripcion;
+                });
+                this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
+                // tslint:disable-next-line:no-shadowed-variable
+                .subscribe(res => {
+                  this.seleccion = [];
+        
+                  this.PreguntasCuestionario = res;
+                  if (this.juegoSeleccionado.Modalidad === 'Clásico') {
+                    this.PrepararPreguntasYRespuestas();
+                  }
+          
+                  this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
 
-        } else {
-            console.log ('cuestionario contestado', this.alumnoJuegoDeCuestionario);
-            // el cuestionario ya ha sido contestado
-            this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
-            // tslint:disable-next-line:no-shadowed-variable
-            .subscribe(res => {
-              this.cuestionario = res;
-              this.descripcion = res.Descripcion;
-            });
-            this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
-            // tslint:disable-next-line:no-shadowed-variable
-            .subscribe(res => {
-              this.seleccion = [];
-     
-              this.PreguntasCuestionario = res;
-       
-              this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
+                  this.peticionesAPI.DameRespuestasAlumnoJuegoDeCuestionario (this.alumnoJuegoDeCuestionario.id)
+                  .subscribe (respuestas => {
+                    // respuestas es un vector en el que casa posición tiene la respuesta a una de las preguntas.
+                    // La estructura de cada respuesta es la siguiente:
+                    //    preguntaId
+                    //    Respuesta     (un vector que contiene en la posición 0 la respuesta del alumno en el caso de preguntas
+                    // de tipo "Cuatro opciones", "Verdadero o falso" o "Respuesta abierta". En el caso de "Emparejamiento" el vector
+                    // contiene las partes derechas de los emparejamientos tal y como lo eligió el alumno, o undefined si contestó en blanco)
+      
+                    console.log ('respuestas ', respuestas);
+                    this.RespuestasAlumno = [];
+                    this.respuestasEmparejamientos = [];
+                    this.imagenesPreguntas = [];
+                    this.contestar = [];
+                    for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+                      this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.PreguntasCuestionario[i].Imagen;
+                      if (this.PreguntasCuestionario[i].Tipo === 'Emparejamiento') {
+                        // tslint:disable-next-line:max-line-length
+                        this.respuestasEmparejamientos[i] = respuestas.filter (r => r.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta;
+                        if (this.respuestasEmparejamientos[i] === undefined) {
+                          this.contestar[i] = false;
+                          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
 
-              this.peticionesAPI.DameRespuestasAlumnoJuegoDeCuestionario (this.alumnoJuegoDeCuestionario.id)
-              .subscribe (respuestas => {
-                // respuestas es un vector en el que casa posición tiene la respuesta a una de las preguntas.
-                // La estructura de cada respuesta es la siguiente:
-                //    preguntaId
-                //    Respuesta     (un vector que contiene en la posición 0 la respuesta del alumno en el caso de preguntas
-                // de tipo "Cuatro opciones", "Verdadero o falso" o "Respuesta abierta". En el caso de "Emparejamiento" el vector
-                // contiene las partes derechas de los emparejamientos tal y como lo eligió el alumno, o undefined si contestó en blanco)
-   
-                console.log ('respuestas ', respuestas);
-                this.RespuestasAlumno = [];
-                this.respuestasEmparejamientos = [];
-                this.imagenesPreguntas = [];
-                this.contestar = [];
-                for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
-                  this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.PreguntasCuestionario[i].Imagen;
-                  if (this.PreguntasCuestionario[i].Tipo === 'Emparejamiento') {
-                    // tslint:disable-next-line:max-line-length
-                    this.respuestasEmparejamientos[i] = respuestas.filter (r => r.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta;
-                    if (this.respuestasEmparejamientos[i] === undefined) {
-                      this.contestar[i] = false;
-                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                        } else {
+                          this.contestar[i] = true;
+                          // Vamos a ver si a respuesta es correcta
+                          let cont = 0;
+                          for (let j = 0; j < this.PreguntasCuestionario[i].Emparejamientos.length; j++) {
+                            if (this.PreguntasCuestionario[i].Emparejamientos[j].r === this.respuestasEmparejamientos[i][j]) {
+                              cont++;
+                            }
+                          }
+                          if (cont === this.PreguntasCuestionario[i].Emparejamientos.length) {
+                            this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                          } else {
+                            this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                          }
 
-                    } else {
-                      this.contestar[i] = true;
-                      // Vamos a ver si a respuesta es correcta
-                      let cont = 0;
-                      for (let j = 0; j < this.PreguntasCuestionario[i].Emparejamientos.length; j++) {
-                        if (this.PreguntasCuestionario[i].Emparejamientos[j].r === this.respuestasEmparejamientos[i][j]) {
-                          cont++;
+                        }
+
+                      } else {
+                        
+                        // tslint:disable-next-line:max-line-length
+                        this.RespuestasAlumno[i] = respuestas.filter (respuesta => respuesta.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta[0];
+                        console.log ('Comparamos alumno ', this.RespuestasAlumno[i]);
+                        console.log ('Con respuesta correcta ', this.PreguntasCuestionario[i].RespuestaCorrecta);
+                        if (this.RespuestasAlumno[i] ===  this.PreguntasCuestionario[i].RespuestaCorrecta) {
+                          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                        } else {
+                          this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                        }
+
+                      }
+                    }
+                    this.respuestasPreparadas = true;
+                  });
+                });
+                if (this.juegoSeleccionado.JuegoTerminado) {
+                  // traigo la información de todos los alumnos del grupo para presentar la clasificación final
+                  this.AlumnosDelJuego();
+                }
+          }
+
+        });
+    } else {
+        // es un juego en equipo
+        // Tenemos que obtener el equipo al que pertenece el alumno
+        this.alumnoId = this.sesion.DameAlumno().id;
+        this.calculos.DameEquipoAlumnoEnJuegoDeCuestionario (this.alumnoId, this.juegoSeleccionado.id)
+        .subscribe (equipo => {
+            this.equipo = equipo;
+            console.log ('ya tengo equipo ', this.equipo);
+            this.peticionesAPI.DameInscripcionEquipoJuegoDeCuestionario(this.equipo.id, this.juegoSeleccionado.id)
+            .subscribe (res => {
+              this.equipoJuegoDeCuestionario = res[0];
+            
+              if (!this.equipoJuegoDeCuestionario.Contestado) {
+      
+                // Obtenemos el cuestionario a realizar
+                this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
+                // tslint:disable-next-line:no-shadowed-variable
+                .subscribe(res => {
+                  this.cuestionario = res;
+                  this.descripcion = res.Descripcion;
+                });
+                // Obtenemos las preguntas del cuestionario 
+                // Siendo en equipo, no hay que desordenar ni preguntas ni respuestas
+                this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
+                // tslint:disable-next-line:no-shadowed-variable
+                .subscribe(res => {
+                  this.PreguntasCuestionario = res;
+                  this.PreguntasCuestionario = res;
+                  if (this.juegoSeleccionado.Modalidad === 'Clásico') {
+                    this.PrepararPreguntasYRespuestas();
+                  }
+                });
+                if (this.juegoSeleccionado.JuegoTerminado) {
+                  // traigo la información de todos los equipos del grupo para presentar la clasificación final
+                  this.EquiposDelJuego();
+                }
+    
+              } else {
+                  // el cuestionario ya ha sido contestado
+                  console.log ('cuestionario contestado ');
+                  this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
+                  // tslint:disable-next-line:no-shadowed-variable
+                  .subscribe(res => {
+                    this.cuestionario = res;
+                    this.descripcion = res.Descripcion;
+                  });
+                  this.peticionesAPI.DamePreguntasCuestionario(this.juegoSeleccionado.cuestionarioId)
+                  // tslint:disable-next-line:no-shadowed-variable
+                  .subscribe(res => {
+                    this.seleccion = [];
+            
+                    this.PreguntasCuestionario = res;
+              
+                    this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
+      
+                    this.peticionesAPI.DameRespuestasEquipoJuegoDeCuestionario (this.equipoJuegoDeCuestionario.id)
+                    .subscribe (respuestas => {
+                      // respuestas es un vector en el que casa posición tiene la respuesta a una de las preguntas.
+                      // La estructura de cada respuesta es la siguiente:
+                      //    preguntaId
+                      //    Respuesta     (un vector que contiene en la posición 0 la respuesta del equipo en el caso de preguntas
+                      // de tipo "Cuatro opciones", "Verdadero o falso" o "Respuesta abierta". En el caso de "Emparejamiento" el vector
+                      // contiene las partes derechas de los emparejamientos tal y como lo eligió el equipo, o undefined si contestó en blanco)
+          
+                      console.log ('respuestas ', respuestas);
+                      console.log ('preguntas ', this.PreguntasCuestionario);
+                      this.RespuestasAlumno = [];
+                      this.respuestasEmparejamientos = [];
+                      this.imagenesPreguntas = [];
+                      this.contestar = [];
+                      for (let i = 0; i < this.PreguntasCuestionario.length; i++) {
+                        this.imagenesPreguntas [i] = URL.ImagenesPregunta + this.PreguntasCuestionario[i].Imagen;
+                        if (this.PreguntasCuestionario[i].Tipo === 'Emparejamiento') {
+                          // tslint:disable-next-line:max-line-length
+                          this.respuestasEmparejamientos[i] = respuestas.filter (r => r.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta;
+                          if (this.respuestasEmparejamientos[i] === undefined) {
+                            this.contestar[i] = false;
+                            this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+      
+                          } else {
+                            this.contestar[i] = true;
+                            // Vamos a ver si a respuesta es correcta
+                            let cont = 0;
+                            for (let j = 0; j < this.PreguntasCuestionario[i].Emparejamientos.length; j++) {
+                              if (this.PreguntasCuestionario[i].Emparejamientos[j].r === this.respuestasEmparejamientos[i][j]) {
+                                cont++;
+                              }
+                            }
+                            if (cont === this.PreguntasCuestionario[i].Emparejamientos.length) {
+                              this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                            } else {
+                              this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                            }
+      
+                          }
+      
+                        } else {
+                          
+                            // tslint:disable-next-line:max-line-length
+                          this.RespuestasAlumno[i] = respuestas.filter (respuesta => respuesta.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta[0];
+                          if (this.RespuestasAlumno[i] ===  this.PreguntasCuestionario[i].RespuestaCorrecta) {
+                            this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
+                          } else {
+                            this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
+                          }
+      
                         }
                       }
-                      if (cont === this.PreguntasCuestionario[i].Emparejamientos.length) {
-                        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
-                      } else {
-                        this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
-                      }
-
-                    }
-
-                  } else {
-                    // tslint:disable-next-line:max-line-length
-                    this.RespuestasAlumno[i] = respuestas.filter (respuesta => respuesta.preguntaId === this.PreguntasCuestionario[i].id)[0].Respuesta[0];
-                    if (this.RespuestasAlumno[i] ===  this.PreguntasCuestionario[i].RespuestaCorrecta) {
-                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackCorrecto);
-                    } else {
-                      this.feedbacks.push(this.PreguntasCuestionario[i].FeedbackIncorrecto);
-                    }
-
+                      this.respuestasPreparadas = true;
+                      console.log ('respuestas procesadas ', this.RespuestasAlumno);
+                    });
+                  });
+                  if (this.juegoSeleccionado.JuegoTerminado) {
+                    // traigo la información de todos los equipos del grupo para presentar la clasificación final
+                    this.EquiposDelJuego();
                   }
-                }
-                this.respuestasPreparadas = true;
-              });
+              }
             });
-            if (this.juegoSeleccionado.JuegoTerminado) {
-              // traigo la información de todos los alumnos del grupo para presentar la clasificación final
-              this.AlumnosDelJuego();
-            }
-        }
+          });
 
-      });
     }
   }
 
@@ -310,12 +441,16 @@ export class JuegoDeCuestionarioPage implements OnInit {
       });
     });
 
-    if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
-      this.DesordenarRespuestas ();
-    } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
-      this.DesordenarPreguntas ();
-    } else {
-      this.DesordenarPreguntasYRespuestas ();
+    if (this.juegoSeleccionado.Modo === 'Individual') {
+      // Solo hay que desordenar en caso de juego individual
+
+      if (this.juegoSeleccionado.Presentacion === 'Mismo orden para todos') {
+        this.DesordenarRespuestas ();
+      } else if (this.juegoSeleccionado.Presentacion === 'Preguntas desordenadas') {
+        this.DesordenarPreguntas ();
+      } else {
+        this.DesordenarPreguntasYRespuestas ();
+      }
     }
 
     // Preparamos el vector con las imagenes de las preguntas e inicializamos la matriz que controla la selección de opciones
@@ -383,26 +518,77 @@ export class JuegoDeCuestionarioPage implements OnInit {
   }
 
 
-  ponerNota() {
+  async ponerNota() {
+    if (this.juegoSeleccionado.Modo === 'Individual') {
  
-    this.alertCtrl.create({
-      header: '¿Seguro que quieres enviar ya tus respuestas?',
-      buttons: [
-        {
-          text: 'SI',
-          handler: () => {
-          this.RegistrarNota();
+      this.alertCtrl.create({
+        header: '¿Seguro que quieres enviar ya tus respuestas?',
+        buttons: [
+          {
+            text: 'SI',
+            handler: () => {
+            this.RegistrarNota();
 
+            }
+          }, {
+            text: 'NO',
+            role: 'cancel',
+            handler: () => {
+              console.log('NO, ME QUEDO');
+            }
           }
-        }, {
-          text: 'NO',
-          role: 'cancel',
-          handler: () => {
-            console.log('NO, ME QUEDO');
-          }
-        }
-      ]
-    }).then (res => res.present());
+        ]
+      }).then (res => res.present());
+    } else {
+      // Miro si algun compañero de equipo ya ha contestado el cuestionario, en cuyo caso no se envía 
+      // la respuesta de este alumno
+      // tslint:disable-next-line:max-line-length
+      const inscripcion = await this.peticionesAPI.DameInscripcionEquipoJuegoDeCuestionario(this.equipo.id, this.juegoSeleccionado.id).toPromise();
+      if (inscripcion[0].Contestado) {
+        const confirm = await this.alertCtrl.create({
+          header: 'Alguno de tus compañeros de equipo ya ha contestado el cuestionario',
+          buttons: [
+              {
+              text: 'OK',
+              role: 'cancel',
+              handler: () => {
+                if (this.contar) {
+                  clearInterval(this.timer);
+                  this.contar = false;
+                }
+                this.slideActual = 0;
+                this.ngOnInit();
+              }
+            }
+          ]
+        });
+        await confirm.present();
+
+      } else {
+        this.alertCtrl.create({
+          header: '¿Seguro que quieres enviar ya tus respuestas?',
+          message: 'Tu respuesta será ignorada si alguno de tus compañeros de equipo ha contestado ya',
+          buttons: [
+            {
+              text: 'SI',
+              handler: () => {
+              this.RegistrarNota();
+  
+              }
+            }, {
+              text: 'NO',
+              role: 'cancel',
+              handler: () => {
+                console.log('NO, ME QUEDO');
+              }
+            }
+          ]
+        }).then (res => res.present());
+
+      }
+
+    }
+
   }
 
   // Funcion para establecer la nota y guardar respuestas en el caso de juego de cuestionario normal
@@ -462,11 +648,21 @@ export class JuegoDeCuestionarioPage implements OnInit {
       this.Nota = 0;
     }
     const tiempoEmpleado = this.tiempoLimite - this.tiempoRestante;
-    // tslint:disable-next-line:max-line-length
-    this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId, tiempoEmpleado), this.alumnoJuegoDeCuestionario.id)
-      .subscribe(res => {
+   
+    if (this.juegoSeleccionado.Modo === 'Individual') {
+      // tslint:disable-next-line:max-line-length
+      this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(new AlumnoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.alumnoId, tiempoEmpleado), this.alumnoJuegoDeCuestionario.id)
+        .subscribe(res => {
 
-    });
+      });
+    } else {
+         // tslint:disable-next-line:max-line-length
+         this.peticionesAPI.PonerNotaEquipoJuegoDeCuestionario(new EquipoJuegoDeCuestionario ( this.Nota, true, this.juegoSeleccionado.id, this.equipo.id, tiempoEmpleado), this.equipoJuegoDeCuestionario.id)
+         .subscribe(res => {
+ 
+       });
+
+    }
 
     // Aqui guardamos las respuestas del alumno
     let cont = 0;
@@ -489,9 +685,11 @@ export class JuegoDeCuestionarioPage implements OnInit {
         respuestas = [];
         respuestas [0] = this.RespuestasAlumno[i];
       }
-      // tslint:disable-next-line:max-line-length
-      this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
-        .subscribe(res => {
+
+      if (this.juegoSeleccionado.Modo === 'Individual') {
+        // tslint:disable-next-line:max-line-length
+        this.peticionesAPI.GuardarRespuestaAlumnoJuegoDeCuestionario(new RespuestaJuegoDeCuestionario(this.alumnoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
+          .subscribe(res => {
 
           cont++;
           if (cont === this.PreguntasCuestionario.length)  {
@@ -502,6 +700,23 @@ export class JuegoDeCuestionarioPage implements OnInit {
             this.slides.slideTo (this.PreguntasCuestionario.length + 2);
           }
         });
+
+      } else {
+
+        // tslint:disable-next-line:max-line-length
+        this.peticionesAPI.GuardarRespuestaEquipoJuegoDeCuestionario(new RespuestaEquipoJuegoDeCuestionario(this.equipoJuegoDeCuestionario.id, this.preguntasYRespuestas[i].pregunta.id, respuestas))
+        .subscribe(res => {
+
+          cont++;
+          if (cont === this.PreguntasCuestionario.length)  {
+            this.registrado = true;
+            // Notificamos respuesta al servidor
+            this.comServer.Emitir ('respuestaEquipoJuegoDeCuestionario', { id: this.equipo.id, nota: this.Nota, tiempo: tiempoEmpleado});
+            // vamos a la pantalla que muestra el resultado final
+            this.slides.slideTo (this.PreguntasCuestionario.length + 2);
+          }
+        });
+      }
     }
   }
     
@@ -565,6 +780,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
   IniciarTimer() {
     if (this.tiempoLimite !== 0) {
+      console.log ('empezamos a contar');
       // este timer solo se activa en el modo clásico si se ha establecido un tiempo limite
       this.contar = true; // para que se muestre la cuenta atrás
       this.tiempoRestante = this.tiempoLimite;
@@ -851,22 +1067,29 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
       } else {
         this.slides.getActiveIndex().then(index => {
-          if (index === 1 && !this.empezado) {
-            // Solo podemos empezar si pulsamos el botón
-            this.slides.slideTo(0);
-          }
+          console.log ('slide actual ', index);
+          console.log ('juego ', this.juegoSeleccionado);
+          if (!this.juegoSeleccionado.JuegoTerminado) {
+            if (index === 1 && !this.empezado) {
+              // Solo podemos empezar si pulsamos el botón
+              this.slides.slideTo(0);
+            }
 
-          if (!this.registrado && index === this.PreguntasCuestionario.length + 2) {
-            // pretende ir a la pantalla de resultado sin haber regitrado las respuestas
-            this.slides.slideTo (index - 1);
-          // } else if ((this.slideActual < index) && (index < this.PreguntasCuestionario.length + 1 )) {
-          //     console.log ('voy a cambio respuestas siguiente');
-          //   // this.cambioRespuestasSiguiente(index - 2);
-          // } else if ((this.slideActual > index) && (index > 0)) {
-          //     console.log ('voy a cambio respuestas anterior');
-          //   //  this.cambioRespuestasAnterior(index);
+            if (!this.registrado && index === this.PreguntasCuestionario.length + 2) {
+              // pretende ir a la pantalla de resultado sin haber regitrado las respuestas
+              this.slides.slideTo (index - 1);
+            // } else if ((this.slideActual < index) && (index < this.PreguntasCuestionario.length + 1 )) {
+            //     console.log ('voy a cambio respuestas siguiente');
+            //   // this.cambioRespuestasSiguiente(index - 2);
+            // } else if ((this.slideActual > index) && (index > 0)) {
+            //     console.log ('voy a cambio respuestas anterior');
+            //   //  this.cambioRespuestasAnterior(index);
+            }
+            this.slideActual = index;
+          } else {
+            this.slideActual = index;
+            console.log ('juego terminado. mostrar resultados')
           }
-          this.slideActual = index;
 
 
         });
@@ -876,6 +1099,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
 
   next() {
+    console.log ('PREGUNTAS Y RESPUESTAS ', this.preguntasYRespuestas)
     this.slides.slideNext();
   }
 
@@ -916,6 +1140,39 @@ export class JuegoDeCuestionarioPage implements OnInit {
       this.alumnosDelJuego);
     console.log ('tengo el ranking');
     console.log (this.rankingAlumnosPorNota);
+
+  }
+
+  EquiposDelJuego() {
+    this.peticionesAPI.DameEquiposJuegoDeCuestionario(this.juegoSeleccionado.id)
+    .subscribe(equiposJuego => {
+      this.equiposDelJuego = equiposJuego;
+      this.RecuperarInscripcionesEquipoJuego();
+    });
+  }
+
+  RecuperarInscripcionesEquipoJuego() {
+    this.peticionesAPI.DameInscripcionesEquipoJuegoDeCuestionario(this.juegoSeleccionado.id)
+    .subscribe(inscripciones => {
+      this.listaEquiposOrdenadaPorNota = inscripciones;
+      // tslint:disable-next-line:only-arrow-functions
+      this.listaEquiposOrdenadaPorNota = this.listaEquiposOrdenadaPorNota.sort(function(a, b) {
+        if (b.Nota !== a.Nota) {
+          return b.Nota - a.Nota;
+        } else {
+          // en caso de empate en la nota, gana el que empleó menos tiempo
+          return a.TiempoEmpleado - b.TiempoEmpleado;
+        }
+      });
+      this.TablaClasificacionTotalEquipos();
+    });
+  }
+
+  TablaClasificacionTotalEquipos() {
+    this.rankingEquiposPorNota = this.calculos.PrepararTablaRankingEquiposCuestionario(this.listaEquiposOrdenadaPorNota,
+      this.equiposDelJuego);
+    console.log ('tengo el ranking');
+    console.log (this.rankingEquiposPorNota);
 
   }
 

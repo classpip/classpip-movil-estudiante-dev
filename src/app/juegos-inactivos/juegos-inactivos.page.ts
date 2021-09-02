@@ -26,18 +26,11 @@ export class JuegosInactivosPage implements OnInit {
 
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
-    this.calculos.DameJuegosAlumno(this.id)
-    .subscribe ( listas => {
-            this.JuegosInactivos = listas.inactivos;
-            console.log('Muestro los Juegos pero luego me da que el length es 0??????');
-            console.log(this.JuegosInactivos);
-            console.log(this.JuegosInactivos.length);
-            // Si la lista aun esta vacia la dejo como indefinida para que me
-            // salga el mensaje de que aun no hay juegos
-
-    });
-    console.log ('Ya he traido los juegos Inactivos');
-
+    this.DameJuegosAlumno(this.id);
+  }
+  async DameJuegosAlumno (id) {
+    const listas =  await this.calculos.DameJuegosAlumno(id);
+    this.JuegosInactivos = listas.inactivos;
   }
 
 }
