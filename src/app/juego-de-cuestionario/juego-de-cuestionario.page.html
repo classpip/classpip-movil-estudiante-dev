@@ -53,7 +53,9 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
             <br>
       
             <p><b>Descripción: </b>{{descripcion}}</p>
-            <p><b>Tipo: </b>Clásico</p>
+            <p *ngIf = "juegoSeleccionado.Modo === 'Individual'"><b>Tipo: </b>Clásico Individual</p>
+            <p *ngIf = "(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')"><b>Tipo: </b>Clásico en Equipo</p>
+            <p *ngIf = "(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')"><b>Modo de puntuación: </b>Puntua la MEDIA DE TODOS los miembros del equipo</p>
             <p><b>Número de preguntas: </b>{{PreguntasCuestionario.length}}</p>
             <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
             <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
@@ -544,7 +546,10 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
             <br>
       
             <p><b>Descripción: </b>{{descripcion}}</p>
-            <p><b>Tipo: </b>Clásico</p>
+            <p *ngIf = "juegoSeleccionado.Modo === 'Individual'"><b>Tipo: </b>Clásico Individual</p>
+            <p *ngIf = "(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')"><b>Tipo: </b>Clásico en Equipo</p>
+            <p *ngIf = "(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')"><b>Modo de puntuación: </b>Puntua la MEDIA DE TODOS los miembros del equipo</p>
+           
             <p><b>Número de preguntas: </b>{{PreguntasCuestionario.length}}</p>
             <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
             <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
@@ -767,7 +772,10 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
           <br>
     
           <p><b>Descripción: </b>{{descripcion}}</p>
-          <p><b>Tipo: </b>Clásico</p>
+          <p *ngIf = "juegoSeleccionado.Modo === 'Individual'"><b>Tipo: </b>Clásico Individual</p>
+          <p *ngIf = "(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')"><b>Tipo: </b>Clásico en Equipo</p>
+          <p *ngIf = "(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')"><b>Modo de puntuación: </b>Puntua la MEDIA DE TODOS los miembros del equipo</p>
+           
           <p><b>Número de preguntas: </b>{{PreguntasCuestionario.length}}</p>
           <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
           <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
@@ -801,8 +809,8 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
         <ion-list style="text-align:center">
             <label align = "center"><h1 style="color:rgb(109, 11, 19)"><strong>Clasificación final</strong></h1></label>
             <br>
-            
-            <ion-list>
+            <!-- El juego puede ser individual o en equipo puntuando la media -->
+            <ion-list *ngIf ="juegoSeleccionado.Modo === 'Individual'">
               <ion-item  lines = "none"*ngFor="let alum of rankingAlumnosPorNota">
                 <ion-item lines = "none" style = "width: 20%">
                   <img  *ngIf = "alum.imagenPerfil" style = "width:40px; height: 40px;" [src]="alum.imagenPerfil"> 
@@ -816,6 +824,20 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
               </ion-item>
             </ion-list>
 
+            <ion-list *ngIf ="(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')">
+                  aaaaaaa
+              <ion-item  lines = "none"*ngFor="let equipo of rankingEquiposPorNota">
+                <ion-item lines = "none" style = "width: 20%">
+                  <img  *ngIf = "equipo.imagenPerfil" style = "width:40px; height: 40px;" [src]="equipo.imagenPerfil"> 
+                </ion-item>
+                <ion-item lines = "none" style = "width: 60%">
+                  <ion-label > {{equipo.nombre}}</ion-label>
+                </ion-item>
+                <ion-item lines = "none" style = "text-align:rigth">
+                  <ion-label style= " color: green"> {{equipo.nota}}</ion-label>
+                </ion-item>
+              </ion-item>
+            </ion-list>
 
         </ion-list>
       </ion-slide>
@@ -939,7 +961,9 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
           <br>
     
           <p><b>Descripción: </b>{{descripcion}}</p>
-          <p><b>Tipo: </b>Clásico, en EQUIPO</p>
+          <p><b>Tipo: </b>Clásico, en equipo </p>
+          <p><b>Modo de puntuación: </b>Puntua el PRIMERO del equipo que responda</p>
+           
           <p><b>Número de preguntas: </b>{{PreguntasCuestionario.length}}</p>
           <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
           <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
@@ -1431,7 +1455,8 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
           <br>
     
           <p><b>Descripción: </b>{{descripcion}}</p>
-          <p><b>Tipo: </b>Clásico, en EQUIPO</p>
+          <p><b>Tipo: </b>Clásico, en equipo</p>
+          <p><b>Modo de puntuación: </b>Puntua el PRIMERO del equipo que responda</p>
           <p><b>Número de preguntas: </b>{{PreguntasCuestionario.length}}</p>
           <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
           <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
@@ -1655,6 +1680,8 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
   
         <p><b>Descripción: </b>{{descripcion}}</p>
         <p><b>Tipo: </b>Clásico, en equipo</p>
+        <p><b>Modo de puntuación: </b>Puntua el PRIMERO del equipo que responda</p>
+           
         <p><b>Número de preguntas: </b>{{PreguntasCuestionario.length}}</p>
         <p><b>Puntuación por respuesta correcta: </b>{{puntuacionCorrecta}}</p>
         <p><b>Penalización por respuesta incorrecta: </b>{{puntuacionIncorrecta}}</p>
