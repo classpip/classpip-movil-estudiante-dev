@@ -228,6 +228,9 @@ export class PeticionesAPIService {
   public DameEquiposDelAlumno(alumnoId: number): Observable<Equipo[]> {
     return this.http.get<Equipo[]>(this.APIUrlAlumnos + '/' + alumnoId + '/equipos');
   }
+  public DameEquipoConAlumnos(equipoId: number): Observable<Alumno[]> {
+    return this.http.get<Alumno[]>(this.APIUrlEquipos + '/' + equipoId + '/Alumnos');
+  }
 
   // DEVUELVE LOS JUEGOS DE PUNTOS DEL GRUPO QUE PASAMOS COMO PARÁMETRO
   public DameJuegoDePuntosEquipo(equipoId: number): Observable<Juego[]> {
