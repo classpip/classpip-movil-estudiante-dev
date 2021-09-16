@@ -4,6 +4,8 @@ import { Profesor, Grupo, Juego, Equipo, Alumno, Coleccion, Cromo, Punto, Insign
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { ReplaySubject } from 'rxjs';
 import {JuegoDeEvaluacion} from '../clases/JuegoDeEvaluacion';
+import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
+import {EquipoJuegoDeEvaluacion} from '../clases/EquipoJuegoDeEvaluacion';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +69,16 @@ export class SesionService {
   cromosQueNoTengoImagenDelante;
   cromosQueNoTengoImagenDetras;
   nickName;
+
+  alumnosJuegoDeEvaluacion: AlumnoJuegoDeEvaluacion[];
+  alumnos: Alumno[];
+  equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[];
+  equipos: Equipo[];
+  alumnosDeMiEquipo: Alumno[];
+  notaFinal: number;
+  respuestas: any[];
+  evaluacionesPendientes: number;
+  evaluacionesARecibir: number;
 
   constructor() { }
   public TomaProfesor(profesor: Profesor) {
@@ -486,6 +498,60 @@ export class SesionService {
   }
   public DameJuegoEvaluacion(): JuegoDeEvaluacion {
     return this.juegoDeEvaluacion;
+  }
+  public TomaAlumnosJuegoDeEvaluacion(alumnosJuegoDeEvaluacion: AlumnoJuegoDeEvaluacion[]) {
+    this.alumnosJuegoDeEvaluacion = alumnosJuegoDeEvaluacion;
+  }
+  public DameAlumnosJuegoDeEvaluacion(): AlumnoJuegoDeEvaluacion[] {
+    return this.alumnosJuegoDeEvaluacion;
+  }
+  public TomaEquiposJuegoDeEvaluacion(equiposJuegoDeEvaluacion: EquipoJuegoDeEvaluacion[]) {
+    this.equiposJuegoDeEvaluacion = equiposJuegoDeEvaluacion;
+  }
+  public DameEquiposJuegoDeEvaluacion(): EquipoJuegoDeEvaluacion[] {
+    return this.equiposJuegoDeEvaluacion;
+  }
+  public TomaAlumnos(alumnos: Alumno[]): void {
+    this.alumnos = alumnos;
+  }
+  public DameAlumnos(): Alumno[] {
+    return this.alumnos;
+  }
+  public TomaEquipos(equipos: Equipo[]): void {
+    this.equipos = equipos;
+  }
+  public DameEquipos(): Equipo[] {
+    return this.equipos;
+  }
+  public TomaAlumnosDeMiEquipo(alumnos: Alumno[]): void {
+    this.alumnosDeMiEquipo = alumnos;
+  }
+  public DameAlumnosDeMiEquipo(): Alumno[] {
+    return this.alumnosDeMiEquipo;
+  }
+  public DameNotaFinal(): number {
+    return this.notaFinal;
+  }
+  public TomaNotaFinal(nota: number) {
+    this.notaFinal = nota;
+  }
+  public DameRespuestas(): any[] {
+    return this.respuestas;
+  }
+  public TomaRespuestas(respuestas: any[]) {
+    this.respuestas = respuestas;
+  }
+  public TomaEvaluacionesPendientes(evaluacionesPendientes: number) {
+    this.evaluacionesPendientes = evaluacionesPendientes;
+  }
+  public DameEvaluacionesPendientes(): number {
+    return this.evaluacionesPendientes;
+  }
+  public TomaEvaluacionesARecibir(evaluacionesARecibir: number) {
+    this.evaluacionesARecibir = evaluacionesARecibir;
+  }
+  public DameEvaluacionesARecibir(): number {
+    return this.evaluacionesARecibir;
   }
 }
 

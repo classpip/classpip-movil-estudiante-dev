@@ -27,7 +27,7 @@
 
 
 
-/* AQUÍ VAN TODOS LOS ESTILOS QUE ENGLOBAN LA APLICACIÓN. PONEMOS A DISPOSICIÓN DEL 
+/* AQUÍ VAN TODOS LOS ESTILOS QUE ENGLOBAN LA APLICACIÓN. PONEMOS A DISPOSICIÓN DEL
 USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
 
 
@@ -41,9 +41,10 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   padding: 10px;
   border-radius: 50px;
   position: absolute;
-  right: 25px; 
-  width: 100px;
-  bottom: 10px;
+  right: 25px;
+  width: 80px;
+  height: 45px;
+  top: 25px;
 }
 
 
@@ -54,9 +55,10 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   padding: 10px;
   border-radius: 50px;
   position: absolute;
-  right: 25px; 
-  width: 100px;
-  bottom: 10px;
+  right: 25px;
+  width: 80px;
+  height: 45px;
+  top: 25px;
   opacity: 0.5;
 }
 
@@ -68,9 +70,10 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   padding: 10px;
   border-radius: 50px;
   position: absolute;
-  left: 25px; 
-  width: 100px;
-  bottom: 10px
+  left: 25px;
+  width: 80px;
+  height: 45px;
+  top: 25px
 }
 /* BOTONES GENERALES */
 .ranking-btn {
@@ -135,7 +138,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   --overflow: hidden;
   --background: linear-gradient(to top right, #929e92 -20%, #042204 100%);
   text-align: center;
-  
+
   .login-logo {
     position: absolute;
     display: block;
@@ -145,7 +148,8 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
     width: 100%;
     margin-bottom: 25px;
     .logo {
-      content: url('../src/assets/Login/login-logo-theme2.svg');
+      // content: url('../src/assets/Login/login-logo-theme2.svg');
+      content: url('../src/assets/icon/classpip1.png');
     }
   }
 
@@ -170,7 +174,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
         color: #ffffff;
     }
     }
-  
+
     .user-input-logo {
       content: url('../src/assets/Login/login-usericon-theme2.svg');
     }
@@ -178,7 +182,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
       content: url('../src/assets/Login/login-lockicon-theme2.svg');
     }
   }
-  
+
   .login-btn {
     margin-top: 40px;
     width: 180px;
@@ -194,7 +198,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   --overflow: hidden;
   --background: linear-gradient(to top right, #aac2c5 -20%, #1e4449 100%);
   text-align: center;
-  
+
   .login-logo {
     position: absolute;
     display: block;
@@ -211,7 +215,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
   .login-credentials {
     position: absolute;
     display: block;
-    top: 60%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 75%;
@@ -229,7 +233,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
         color: #ffffff;
     }
     }
-  
+
     .user-input-logo {
       content: url('../src/assets/Login/login-usericon-theme2.svg');
     }
@@ -237,7 +241,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
       content: url('../src/assets/Login/login-lockicon-theme2.svg');
     }
   }
-  
+
   .login-btn {
     margin-top: 40px;
     width: 180px;
@@ -252,19 +256,20 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
 .login-content {
   --overflow: hidden;
   --background: linear-gradient(to top right, #000066 -20%, #ff9999 100%);
-  
+
   text-align: center;
-  
+
   .login-logo {
     position: absolute;
     display: block;
-    top: 10%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
     margin-bottom: 25px;
     .logo {
-      content: url('../src/assets/Login/login-logo-theme2.svg');
+      //content: url('../src/assets/Login/login-logo-theme2.svg');
+      content: url('../src/assets/icon/classpip1.png');
     }
   }
 
@@ -289,7 +294,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
         color: #ffffff;
     }
     }
-  
+
     .user-input-logo {
       content: url('../src/assets/Login/login-usericon-theme2.svg');
     }
@@ -297,7 +302,7 @@ USUARIO 3 POSIBLES PLANTILLAS ENTRE LAS QUE ESCOGER */
       content: url('../src/assets/Login/login-lockicon-theme2.svg');
     }
   }
-  
+
   .login-btn {
     margin-top: 40px;
     width: 180px;
@@ -614,11 +619,11 @@ ion-tab-bar, ion-tab-button{
     p {
       color:white;
     }
-  
+
     &.active {
       height: calc(100% - 100px);
     }
-  
+
     .toggle-text {
       color: white;
       font-size: 15px;
@@ -631,7 +636,7 @@ ion-tab-bar, ion-tab-button{
         color: white;
       }
     }
-  
+
     .infopuntos {
       margin-top: 5%;
       display: block;
@@ -691,7 +696,7 @@ ion-tab-bar, ion-tab-button{
         }
       }
   }
-  
+
   .sidemenu-items {
     --background: transparent;
     font-size: 15px;
@@ -905,14 +910,14 @@ ion-tab-bar, ion-tab-button{
     .card-content-md {
       padding-left: unset;
       padding-right: unset;
-      -webkit-padding-start: unset; 
-      padding-inline-start: unset; 
-      -webkit-padding-end: unset; 
-      padding-inline-end: unset; 
+      -webkit-padding-start: unset;
+      padding-inline-start: unset;
+      -webkit-padding-end: unset;
+      padding-inline-end: unset;
       padding-left: 0px;
       padding-right: 0px;
-      padding-top: 0px; 
-      padding-bottom: 0px; 
+      padding-top: 0px;
+      padding-bottom: 0px;
     }
   }
 
@@ -1199,7 +1204,7 @@ ion-tab-bar, ion-tab-button{
     }
   }
       // para mostrar los alumnos de cada grupo
-          
+
 }
 /* +++++++++++++++++++++++++ 2.10 INFOR JORNADAS +++++++++++++++++++++++++ */
 .infojornadas-content {
@@ -1341,10 +1346,10 @@ ion-tab-bar, ion-tab-button{
           color: black;
           border-bottom: 2px solid #cac9c9;
           h2{
-           margin: auto;   
+           margin: auto;
           }
       }
-      
+
       .privilegio-activo {
           --background: lightgreen;
       }
@@ -1398,18 +1403,18 @@ ion-tab-bar, ion-tab-button{
 /* .slider-bullets {
   --bullet-background: grey;
   --bullet-background-active: #8890B2;
-} 
+}
 
 h3 {
   color: #17447eff;
-} 
+}
 */
 
 /* .login-content {
   --overflow: hidden;
   --background: url('../src/assets/Login/login-bg-theme4.svg') no-repeat center center / cover;
   text-align: center;
-} 
+}
 
 .login-logo {
   position: absolute;

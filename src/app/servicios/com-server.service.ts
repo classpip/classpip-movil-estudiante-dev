@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ComServerService {
   profesorId: number;
- 
+
   constructor(private servidor: Socket) { }
   Conectar(alumno: Alumno) {
     this.profesorId = alumno.profesorId;
@@ -16,6 +16,7 @@ export class ComServerService {
     this.servidor.emit('alumnoConectado', alumno);
   }
   Desconectar(alumno: Alumno) {
+    console.log ('voy a desconectar');
     this.servidor.emit('alumnoDesconectado', alumno);
     this.servidor.disconnect();
   }
@@ -102,12 +103,7 @@ export class ComServerService {
   }
   
   public RecordarContrasena(alumno: Alumno) {
-    console.log ('dentro del servicio para recordar contraseña');
-    // Me conecto momentaneamente para enviarle al alumno la contraseña que debe enviar por email
-    this.servidor.connect();
-    this.servidor.emit ('recordarContraseña' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
-    // Me desconecto
-    this.servidor.disconnect();
+    this.servidor.emit ('recordarPassword' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
   }
 
   //Para la función de avanzar pregunta Kahoot
@@ -136,6 +132,44 @@ export class ComServerService {
     console.log("Envio la conexión del alumno al Server");
     this.servidor.emit('conexionAlumnoKahoot', { alumnoId: alumnoId, profesorId: this.profesorId});
 
+  }
+
+  ConfirmarPreparadoParaKahoot(id: any) {
+    // Si el juego es rápido el id es el nickname pero si es juego normal entonces el id es el id del alumno
+    // tslint:disable-next-line:object-literal-shorthand
+    this.servidor.emit('confirmacionPreparadoParaKahoot', { profesorId: this.profesorId, info: id});
+  }
+  //Para la función de avanzar pregunta Kahoot
+  public EsperoParaLanzarPregunta(): any {
+    return Observable.create((observer) => {
+        this.servidor.on('lanzarSiguientePregunta', (opcionesDesordenadas) => {
+            observer.next(opcionesDesordenadas);
+        });
+    });
+  }
+
+  public EnviarRespuestaKahootRapido(nickName: string, respuestasAlumno: string[], tiempo: number, puntos:  number){
+    // tslint:disable-next-line:max-line-length
+    this.servidor.emit('respuestaAlumnoKahootRapido', { nick: nickName, respuesta: respuestasAlumno, tiempoRestante: tiempo, puntosObtenidos: puntos, profesorId: this.profesorId});
+
+  }
+
+  public EnviarRespuestaKahootGrupo(alId: number, respuestasAlumno: string[], tiempo: number, puntos:  number){
+    // tslint:disable-next-line:max-line-length
+    this.servidor.emit('respuestaAlumnoKahootGrupo', { alumnoId: alId, respuesta: respuestasAlumno, tiempoRestante: tiempo, puntosObtenidos: puntos, profesorId: this.profesorId});
+
+  }
+  
+  public EsperoResultadoFinalKahoot(): any {
+    return Observable.create((observer) => {
+        this.servidor.on('resultadoFinalKahoot', (resultado) => {
+            observer.next(resultado);
+        });
+    });
+  }
+
+  public EnviarResultadoEvaluacion(alumnoId: number, profesorId: number, juegoId: number, evaluadoId: number, respuesta: any): any {
+      this.servidor.emit('respuestaEvaluacion', {alumnoId, profesorId, juegoId, evaluadoId, respuesta});
   }
 }
 

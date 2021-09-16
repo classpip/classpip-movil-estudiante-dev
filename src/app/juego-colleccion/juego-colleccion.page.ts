@@ -87,6 +87,7 @@ export class JuegoColleccionPage implements OnInit {
     this.peticionesAPI.DameColeccionPromise(this.juegoSeleccionado.coleccionId)
     .then (coleccion => this.coleccion = coleccion);
     this.equipo = this.sesion.DameEquipo();
+    console.log ('ya tengo equipo ', this.equipo);
     if (this.juegoSeleccionado.Modo === 'Individual') {
 
       this.DameLosCromosDelAlumno();

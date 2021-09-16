@@ -3,36 +3,192 @@
     <ion-buttons slot="start">
       <ion-back-button class="menu-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title>Evaluación</ion-title>
+    <ion-title>Juego de Evaluación</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{juego.NombreJuego}}</ion-card-title>
+
+
+      <ion-item style="width: 100%; margin-top: 5%;" lines = "none">
+        <ion-list>
+          <ion-card-subtitle>
+            Modo: <b>{{juego.Modo}}</b>
+          </ion-card-subtitle>
+          <ion-card-subtitle *ngIf = "juego.rubricaId > 0">
+            Formato: <b>Evaluación con rúbrica</b>
+          </ion-card-subtitle>
+          <ion-card-subtitle *ngIf = "juego.rubricaId === 0">
+            Formato: <b>Solo preguntas abiertas</b>
+          </ion-card-subtitle>
+        </ion-list>
+     
+        <ion-item *ngIf = "(juego.rubricaId === 0) && hayRespuestas" style= "width:40%; margin-right: -10%;" lines = "none">
+          <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="mostrandoRecibidas" (click)="mostrandoRecibidas = false;">Mostrar <br>evaluaciones <br>a realizar</ion-button>
+          <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="!mostrandoRecibidas" (click)="PrepararRespuestasRecibidas(); mostrandoRecibidas=true;">Mostrar <br>evaluaciones <br>recibidas</ion-button>  
+        </ion-item>
+      </ion-item>
+ 
+      
+
+    </ion-card-header>
+    <ion-card-content>
+      <ion-textarea>{{juego.Descripcion}} </ion-textarea>
+    
+    </ion-card-content>
+  </ion-card>
+
+  
+  <div *ngIf ="mostrandoRecibidas">
+ 
+        <ion-item *ngFor = "let pregunta of juego.PreguntasAbiertas; let i = index">
+            <ion-list>
+            <b>{{pregunta}}</b>
+            <ion-item lines = "none" *ngFor = "let respuesta of respuestaEvaluacion; let j = index"> 
+              {{respuestaEvaluacion[j][i]}} 
+  
+              <span *ngIf = "(juego.Modo === 'Individual') && (evaluadores[j].id !== miAlumno.id)" style ="color:green; font-size: x-small"> 
+                ({{evaluadores[j].Nombre}} {{evaluadores[j].PrimerApellido}} {{evaluadores[j].SegundoApellido}})
+              </span>
+              <span *ngIf = "(juego.Modo === 'Individual') && (evaluadores[j].id === miAlumno.id)" style ="color:rgb(104, 15, 15); font-size: x-small"> 
+                (autoevaluación)
+              </span>
+              <!-- Equipos evaluados por equipos. En evaluadores tengo el nombre de los equipos -->
+              <span *ngIf = "juego.Modo === 'Equipos' && equiposJuegoDeEvaluacion[0].alumnosEvaluadoresIds === null && evaluadores[j] === miEquipo.Nombre"  style ="color:rgb(104, 15, 15); font-size: x-small"> 
+                (autoevaluación {{evaluadores[j]}})
+              </span>
+              <span *ngIf = "juego.Modo === 'Equipos' && equiposJuegoDeEvaluacion[0].alumnosEvaluadoresIds === null && evaluadores[j] !== miEquipo.Nombre"  style ="color:green; font-size: x-small"> 
+                ({{evaluadores[j]}})
+              </span>
+              <!-- Equipos evaluados por alumnos. En evaluadores tengo a los alumnos -->
+              <span *ngIf = "juego.Modo === 'Equipos' && equiposJuegoDeEvaluacion[0].alumnosEvaluadoresIds !== null" style ="color:green; font-size: x-small"> 
+                ({{evaluadores[j].Nombre}} {{evaluadores[j].PrimerApellido}} {{evaluadores[j].SegundoApellido}})
+              </span>
+       
+            </ion-item>
+            <ion-item lines = "none" *ngIf = "juego.profesorEvalua && respuestaProfesor">
+              {{respuestaProfesor[i]}} <span style ="color:rgb(31, 47, 194); font-size: x-small"> 
+              (profesor)</span>
+            </ion-item>
+            </ion-list>
+            <br>
+            <br>
+        </ion-item>
+  </div>
+  <div *ngIf ="!mostrandoRecibidas">
+  <ion-button color="primary" expand="block" *ngIf="(juego.rubricaId > 0) && (evaluacionesPendientes === 0)" (click)="VerNotaFinal(miAlumno.id)">
+    Nota Final {{MiNotaFinal()}}
+  </ion-button>
+  <ion-button color="secondary" expand="block" *ngIf="(juego.rubricaId > 0) && (evaluacionesPendientes > 0)" (click)="VerNotaFinal(miAlumno.id)">
+    Nota Provisonal {{MiNotaFinal()}}
+  </ion-button>
+
   <!--JUEGO INDIVIDUAL-->
-  <ion-list *ngIf="juego.Modo === 'Individual'">
-    <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>{{miAlumno.Nombre}} {{miAlumno.PrimerApellido}} {{miAlumno.SegundoApellido}}</ion-label>
+  <ion-list *ngIf="juego.Modo === 'Individual' && juego.autoEvaluacion">
+    <ion-list-header>
+      <h1>Autoevaluación</h1>
+    </ion-list-header>
+    <ion-item (click)="VerPaginaEvaluar(miAlumno.id)">
+      <ion-avatar slot="start">
+        <img src="{{miAlumno.ImagenPerfil}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{miAlumno.Nombre}} {{miAlumno.PrimerApellido}} {{miAlumno.SegundoApellido}}</h2>
+        <ion-text *ngIf="!EstadoEvaluacion(miAlumno.id)" color="danger">
+          <h3><i>Aún no te has autoevaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(miAlumno.id)" color="success">
+          <h3>Ya te has autoevaluado</h3>
+        </ion-text>
+      </ion-label>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
-    <ion-item *ngFor="let alumno of alumnosJuegoEvaluado | filtrarAlumnoEvaluador:miAlumno.id">
-      <ion-label>{{DameNombreCompleto(alumno.alumnoEvaluadoId)}}</ion-label>
+  </ion-list>
+  <ion-list *ngIf="juego.Modo === 'Individual'">
+    <ion-list-header>
+      <h1>A evaluar</h1>
+    </ion-list-header>
+    <ion-item *ngFor="let alumno of alumnosJuegoDeEvaluacion | filtrarAlumnoEvaluador:miAlumno.id" (click)="VerPaginaEvaluar(alumno.alumnoId)">
+      <ion-avatar slot="start">
+        <img src="{{DameUrlImagenPerfil(alumno.alumnoId)}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{DameNombreCompleto(alumno.alumnoId)}}</h2>
+        <ion-text *ngIf="!EstadoEvaluacion(alumno.alumnoId)" color="danger">
+          <h3><i>Aún no has evaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(alumno.alumnoId)" color="success">
+          <h3>Ya has evaluado</h3>
+        </ion-text>
+      </ion-label>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
+    </ion-item>
+  </ion-list>
+  <!--JUEGO EQUIPOS AUTOEVALUACION-->
+  <ion-list *ngIf="miEquipo && juego.Modo === 'Equipos' && juego.autoEvaluacion">
+    <ion-list-header>
+      <h1>Autoevaluación</h1>
+    </ion-list-header>
+    <ion-item (click)="VerPaginaEvaluar(miEquipo.id)">
+      <ion-avatar slot="start">
+        <img src="{{miEquipo.FotoEquipo}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{miEquipo.Nombre}}</h2>
+        <ion-text *ngIf="!EstadoEvaluacion(miEquipo.id)" color="danger">
+          <h3><i>Aún no te has autoevaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(miEquipo.id)" color="success">
+          <h3>Ya os habéis autoevaluado</h3>
+        </ion-text>
+      </ion-label>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
   <!--JUEGO EQUIPOS EVALUADOS POR ALUMNOS -->
-  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == false">
-    <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
-    </ion-item>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}">
-      <ion-label>{{DameNombreEquipo(equipo.id)}}</ion-label>
+  <ion-list *ngIf="miEquipo && juego.Modo === 'Equipos' && equiposPorEquipos == false">
+    <ion-list-header>
+      <h1>A evaluar</h1>
+    </ion-list-header>
+    <ion-item *ngFor="let equipo of equiposJuegoDeEvaluacion | filtrarEquipoEvaluador:{alumnoId:miAlumno.id, equipoId:null}" (click)="VerPaginaEvaluar(equipo.equipoId)">
+      <ion-avatar slot="start">
+        <img src="{{DameFotoEquipo(equipo.equipoId)}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
+        <ion-text *ngIf="!EstadoEvaluacion(equipo.equipoId)" color="danger">
+          <h3><i>Aún no has evaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(equipo.equipoId)" color="success">
+          <h3>Ya has evaluado</h3>
+        </ion-text>
+      </ion-label>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
   <!--JUEGO EQUIPOS EVALUADOS POR EQUIPOS -->
-  <ion-list *ngIf="juego.Modo === 'Equipos' && equiposPorEquipos == true">
-    <ion-item *ngIf="juego.autoEvaluacion">
-      <ion-label>Mi Equipo {{miEquipo.Nombre}}</ion-label>
-    </ion-item>
-    <ion-item *ngFor="let equipo of equiposJuegoEvaluado | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}">
-      <ion-label>{{DameNombreEquipo(equipo.id)}}</ion-label>
+  <ion-list *ngIf="miEquipo && juego.Modo === 'Equipos' && equiposPorEquipos == true">
+    <ion-list-header>
+      <h1>A evaluar</h1>
+    </ion-list-header>
+    <ion-item *ngFor="let equipo of equiposJuegoDeEvaluacion | filtrarEquipoEvaluador:{alumnoId:null, equipoId: miEquipo.id}" (click)="VerPaginaEvaluar(equipo.equipoId)">
+      <ion-avatar slot="start">
+        <img src="{{DameFotoEquipo(equipo.equipoId)}}" alt="profile">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{DameNombreEquipo(equipo.equipoId)}}</h2>
+        <ion-text *ngIf="!EstadoEvaluacion(equipo.equipoId)" color="danger">
+          <h3><i>Aún no habéis evaluado...</i></h3>
+        </ion-text>
+        <ion-text *ngIf="EstadoEvaluacion(equipo.equipoId)" color="success">
+          <h3>Ya habéis evaluado</h3>
+        </ion-text>
+      </ion-label>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
+  </div>
 </ion-content>

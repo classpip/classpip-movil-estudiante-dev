@@ -37,41 +37,7 @@
 
 
 
-    
-     <!-- ///////////////////////// -->
-    <!-- <mat-accordion>
-      <mat-expansion-panel *ngFor="let item of data.questionnaire.item;let i = index" hideToggle>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{item.text}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{cont[i]}}
-          </mat-panel-description> 
-        </mat-expansion-panel-header>
-        <ion-list>
-          <ion-item *ngFor="let option of item.options;let j =index">
-              <ion-label style = "color: black;">{{option.value}}</ion-label>
-              <ion-checkbox [(ngModel)]="option.checked" (ionChange)="updateAnswer(i,j,option.value,option.checked)"></ion-checkbox>
-          </ion-item>
-      </ion-list>
-      </mat-expansion-panel> 
-      Esto es una variante -->
-      <!-- <mat-expansion-panel (opened)="panelOpenState = true"
-                           (closed)="panelOpenState = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Self aware panel
-          </mat-panel-title>
-          <mat-panel-description>
-            Currently I am {{panelOpenState ? 'open' : 'closed'}}
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>I'm visible because I am open</p>
-      </mat-expansion-panel>
-    </mat-accordion> 
-    <button type="button" (click)= Resultado() > Listo </button> 
- -->
+ 
 
 
 
@@ -96,19 +62,22 @@
 
 
      <div class="login-logo">
-      <img class="logo" width="100" height="100">
+      <img width="300"  src="../../assets/icon/classpip2.png">  
+      <!-- <img class="logo" width="200" height="200"> -->
     </div>  
 
     <div class="login-credentials">
       <ion-item  lines="none">
         <ion-input type="text" value="" name="User" placeholder="Nombre de usuario" requiered [(ngModel)]="username"></ion-input>
-        <img class="user-input-logo" width="21" height="21" slot="end">
+        <!-- <img class="user-input-logo" width="21" height="21" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
 
       <ion-item lines="none">
         <ion-input type="password" name="password" placeholder="Contraseña" requiered [(ngModel)]="password"></ion-input>
-        <img class="pass-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="pass-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-lockicon-theme2.svg">  
       </ion-item>
 
   
@@ -120,15 +89,41 @@
       <ion-label  (click)="EnviarContrasena();">¿Olvidaste tu contraseña?
       </ion-label>
 
-   
+<!--    
       <ion-button  *ngIf ="!juegoRapido" (click)="AccesoJuegoRapido();" class="login-btn">Juego Rápido
-      </ion-button>
+      </ion-button> -->
 
       <br>
       <br>
       <br>
       <ion-label  (click)="AccesoRegistro();">Regístrate en Classpip
       </ion-label>
+
+
+
+   
+     <!-- ///////////////////////// -->
+     <!-- <mat-accordion>
+      <mat-expansion-panel *ngFor="let item of data.questionnaire.item;let i = index" hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{item.text}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{cont[i]}}
+          </mat-panel-description> 
+        </mat-expansion-panel-header>
+        <ion-list>
+          <ion-item *ngFor="let option of item.options;let j =index">
+              <ion-label style = "color: black;">{{option.value}}</ion-label>
+              <ion-checkbox [(ngModel)]="option.checked" (ionChange)="updateAnswer(i,j,option.value,option.checked)"></ion-checkbox>
+          </ion-item>
+      </ion-list>
+      </mat-expansion-panel> 
+    </mat-accordion> 
+    <button type="button" (click)= Resultado() > Listo </button> 
+ 
+ -->
 
 
     </div> 
@@ -176,45 +171,53 @@
     <div class="login-credentials">
       <ion-item lines="none">
         <ion-input type="text" value="" name="nombre" placeholder="Nombre" requiered [(ngModel)]="nombre"></ion-input>
-        <img class="user-input-logo" width="21" height="21" slot="end">
+        <!-- <img class="user-input-logo" width="21" height="21" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
 
       <ion-item lines="none">
         <ion-input type="text" name="primerApellido" placeholder="Primer apellido" requiered [(ngModel)]="primerApellido"></ion-input>
-        <img class="user-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="user-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
 
       <ion-item lines="none">
         <ion-input type="text" name="segundoApellido" placeholder="Segundo apellido" requiered [(ngModel)]="segundoApellido"></ion-input>
-        <img class="user-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="user-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
 
       <ion-item lines="none">
         <ion-input type="text" name="username" placeholder="Nombre de usuario" requiered [(ngModel)]="username"></ion-input>
-        <img class="user-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="user-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
       <ion-item lines="none">
         <ion-input type="text" name="email" placeholder="email" requiered [(ngModel)]="email"></ion-input>
-        <img class="user-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="user-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
       <ion-item lines="none">
         <ion-input type="text" name="contrasena" placeholder="Contraseña" requiered [(ngModel)]="contrasena"></ion-input>
-        <img class="pass-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="pass-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-lockicon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
       <ion-item lines="none">
         <ion-input type="text" name="contrasenaRep" placeholder="Repite la contraseña" requiered [(ngModel)]="contrasenaRep"></ion-input>
-        <img class="pass-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="pass-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-lockicon-theme2.svg">  
       </ion-item>
       <ion-row style="height: 5px"></ion-row>
       <ion-item lines="none">
         <ion-input type="text" name="identificador" placeholder="Identificador" requiered [(ngModel)]="identificador"></ion-input>
-        <img class="user-input-logo" width="20" height="20" slot="end">
+        <!-- <img class="user-input-logo" width="20" height="20" slot="end"> -->
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
 
       <ion-button (click)="Registro();" class="login-btn">REGISTRAR

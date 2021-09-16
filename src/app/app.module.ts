@@ -48,7 +48,7 @@ import { IonicGestureConfig } from '../ionicGestureConfig';
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 
 import { DateAdapter } from '@angular/material';
-import { CustomDateAdapter } from './CustomDataAdapter';
+import { CustomDateAdapter } from './customDataAdapter';
 import {DatePipe} from '@angular/common';
 
 @NgModule({
@@ -68,12 +68,9 @@ import {DatePipe} from '@angular/common';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     LongPressModule,
-
-
     SocketIoModule.forRoot(config),
     IntercambiarCromosPageModule,
     AvatarEditorPageModule
-
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [

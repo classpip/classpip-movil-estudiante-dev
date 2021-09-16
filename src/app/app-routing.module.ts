@@ -1,9 +1,9 @@
-
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'slides', pathMatch: 'full' },
+  //{ path: '', redirectTo: 'slides', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
   { path: 'inici', loadChildren: './inici/inici.module#IniciPageModule' },
   { path: 'juego-seleccionado', loadChildren: './juego-seleccionado/juego-seleccionado.module#JuegoSeleccionadoPageModule' },
@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'juego-colleccion', loadChildren: './juego-colleccion/juego-colleccion.module#JuegoColleccionPageModule' },
   { path: 'juego-avatar', loadChildren: './juego-avatar/juego-avatar.module#JuegoAvatarPageModule' },
   { path: 'avatar-editor', loadChildren: './avatar-editor/avatar-editor.module#AvatarEditorPageModule' },
-  
+
   { path: 'juego-puntos', loadChildren: './juego-puntos/juego-puntos.module#JuegoPuntosPageModule' },
   { path: 'album-alumno', loadChildren: './album-alumno/album-alumno.module#AlbumAlumnoPageModule' },
 
@@ -41,6 +41,12 @@ const routes: Routes = [
   // tslint:disable-next-line:max-line-length
   { path: 'juego-coger-turno-rapido', loadChildren: './juego-coger-turno-rapido/juego-coger-turno-rapido.module#JuegoCogerTurnoRapidoPageModule' },
   { path: 'juego-evaluacion', loadChildren: './juego-evaluacion/juego-evaluacion.module#JuegoEvaluacionPageModule' },
+  // tslint:disable-next-line:max-line-length
+  { path: 'pagina-evaluar/:id', loadChildren: './pagina-evaluar/pagina-evaluar.module#PaginaEvaluarPageModule' },
+  { path: 'pagina-notafinal/:id', loadChildren: './pagina-notafinal/pagina-notafinal.module#PaginaNotafinalPageModule' },
+  // tslint:disable-next-line:max-line-length
+  { path: 'juego-de-control-de-trabajo-en-equipo', loadChildren: './juego-de-control-de-trabajo-en-equipo/juego-de-control-de-trabajo-en-equipo.module#JuegoDeControlDeTrabajoEnEquipoPageModule' }
+
 
 
 

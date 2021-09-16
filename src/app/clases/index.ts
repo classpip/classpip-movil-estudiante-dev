@@ -44,6 +44,7 @@ export * from './AlumnoJuegoDeAvatar';
 export * from './JuegoDeAvatar';
 export * from './FamiliaAvatares';
 export * from './RespuestaJuegoDeCuestionario';
+export * from './RespuestaEquipoJuegoDeCuestionario';
 export * from './ParaAlbum';
 export * from './AlumnoJuegoDeGeocaching';
 export * from './Escenario';
@@ -53,6 +54,9 @@ export * from './Pregunta';
 
 export * from './JuegoDeVotacionUnoATodos';
 export * from './AlumnoJuegoDeVotacionUnoATodos';
+export * from './EquipoJuegoDeVotacionUnoATodos';
+
+
 export * from './JuegoDeVotacionTodosAUno';
 export * from './AlumnoJuegoDeVotacionTodosAUno';
 export * from './Criterio';
@@ -62,6 +66,10 @@ export * from './AlumnoJuegoDeCuestionarioSatisfaccion';
 export * from './CuestionarioSatisfaccion';
 export * from './JuegoDeEncuestaRapida';
 export * from './TablaAlumnoJuegoDeCuestionario';
+export * from './JuegoDeControlDeTrabajoEnEquipo';
+export * from './AlumnoJuegoDeControlDeTrabajoEnEquipo';
+export * from './AlumnoJuegoDeCuestionario';
+export * from './EquipoJuegoDeCuestionario';
 
 export * from './Evento';
 

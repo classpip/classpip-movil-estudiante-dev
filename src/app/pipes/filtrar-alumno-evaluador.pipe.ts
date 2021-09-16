@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
+import {AlumnoJuegoDeEvaluacion} from '../clases/AlumnoJuegoDeEvaluacion';
 
 @Pipe({
   name: 'filtrarAlumnoEvaluador'
@@ -7,9 +7,9 @@ import {AlumnoJuegoEvaluado} from '../clases/AlumnoJuegoEvaluado';
 export class FiltrarAlumnoEvaluadorPipe implements PipeTransform {
 
   transform(
-      alumnos: AlumnoJuegoEvaluado[],
+      alumnos: AlumnoJuegoDeEvaluacion[],
       evaluadorId: number
-      ): AlumnoJuegoEvaluado[] {
+      ): AlumnoJuegoDeEvaluacion[] {
     if (!alumnos || !evaluadorId) {
       return alumnos;
     }

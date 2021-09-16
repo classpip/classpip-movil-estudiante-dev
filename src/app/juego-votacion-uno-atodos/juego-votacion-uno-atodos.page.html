@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf = 'inscripcionAlumnoJuegoDeVotacionUnoATodos && inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos'>
+<ion-content *ngIf = "juegoSeleccionado.Modo === 'Individual' && inscripcionAlumnoJuegoDeVotacionUnoATodos && inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos">
  <!-- Ya ha votado -->
  <div>
   <h2 style="text-align: center;">Esta ha sido tu votación</h2>
@@ -27,7 +27,27 @@
 </div>
 </ion-content>
 
-<ion-content *ngIf = "juegoSeleccionado.ModoReparto !== 'Reparto libre'">
+<ion-content *ngIf = "juegoSeleccionado.Modo === 'Equipos' && inscripcionEquipoJuegoDeVotacionUnoATodos && inscripcionEquipoJuegoDeVotacionUnoATodos.Votos">
+  <!-- Ya ha votado -->
+  <div>
+   <h2 style="text-align: center;">Esta ha sido vuestra votación</h2>
+   <!-- Solo muestro los equipos que recibieron votos -->
+   <ion-list *ngIf = 'equiposVotados'>
+       <ion-item *ngFor="let equipo of equiposVotados; let i=index">
+         <ion-item>
+         <ion-label >
+           {{equipo.eq.Nombre}}
+         </ion-label>
+         </ion-item>
+         <ion-label style="font-size: large; color: green; text-align: right;">
+           {{equipo.puntos}}
+         </ion-label>
+       </ion-item>
+   </ion-list>
+ </div>
+ </ion-content>
+
+<ion-content *ngIf = "juegoSeleccionado.Modo === 'Individual' && juegoSeleccionado.ModoReparto !== 'Reparto libre'">
   <!-- Si aun no ha votado y el reparto es fijo-->
   <div *ngIf = 'inscripcionAlumnoJuegoDeVotacionUnoATodos && !inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos'>
     <div style="text-align:center; margin-top: 10%;">  
@@ -53,7 +73,33 @@
   </div>
 </ion-content>
 
-<ion-content *ngIf = "juegoSeleccionado.ModoReparto === 'Reparto libre'">
+<ion-content *ngIf = "juegoSeleccionado.Modo === 'Equipos' && juegoSeleccionado.ModoReparto !== 'Reparto libre'">
+  <!-- Si aun no han votado y el reparto es fijo-->
+  <div *ngIf = 'inscripcionEquipoJuegoDeVotacionUnoATodos && !inscripcionEquipoJuegoDeVotacionUnoATodos.Votos'>
+    <div style="text-align:center; margin-top: 10%;">  
+      <ion-button class="ranking-btn" (click)="Enviar()"> Envía vuestra votación </ion-button>  
+    </div> 
+    <ion-list *ngIf = 'equipos'>
+      <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false">
+
+        <ion-item *ngFor="let equipo of equipos; let i=index">
+          <ion-item>
+          <ion-label>
+            {{equipo.Nombre}}
+          </ion-label>
+          </ion-item>
+          <!-- En el caso de que estemos en una de las posiciones que recibe puntos, muestro los puntos que le corresponden -->
+          <ion-label *ngIf = 'i < juegoSeleccionado.Puntos.length' style="font-size: large; color: red; text-align: right;">
+          {{juegoSeleccionado.Puntos[i]}}
+          </ion-label>
+          <ion-reorder slot="end"></ion-reorder>
+        </ion-item>
+      </ion-reorder-group>
+    </ion-list>
+  </div>
+</ion-content>
+
+<ion-content *ngIf = "juegoSeleccionado.Modo === 'Individual' && juegoSeleccionado.ModoReparto === 'Reparto libre'">
    <!-- Si aun no ha votado y el reparto es libre-->
   <div *ngIf = 'inscripcionAlumnoJuegoDeVotacionUnoATodos && !inscripcionAlumnoJuegoDeVotacionUnoATodos.Votos'>
     <div *ngIf = 'puntosARepartir === 0' style="text-align:center; margin-top: 10%;">  
@@ -81,4 +127,34 @@
         </ion-label>
     </ion-item>
   </div>
+</ion-content> 
+
+<ion-content *ngIf = "juegoSeleccionado.Modo === 'Equipos' && juegoSeleccionado.ModoReparto === 'Reparto libre'">
+  <!-- Si aun no han votado y el reparto es libre-->
+ <div *ngIf = 'inscripcionEquipoJuegoDeVotacionUnoATodos && !inscripcionEquipoJuegoDeVotacionUnoATodos.Votos'>
+   <div *ngIf = 'puntosARepartir === 0' style="text-align:center; margin-top: 10%;">  
+     <ion-button class="ranking-btn" (click)="Enviar()"> Envía vuestra votación </ion-button>  
+   </div> 
+   <br>
+   <ion-list style="text-align:center">
+     <ion-label align = "center">
+     <span  style = "font-size: 2em;">Reparte </span>  
+     <span  style = "font-size: 3em; color: red">{{puntosARepartir}}</span>   
+     <span  style = "font-size: 2em;">  puntos </span>
+     </ion-label>
+   </ion-list>
+   <br>
+   <ion-item *ngFor="let item of equiposConPuntos; let i=index">
+     
+     <ion-label>
+         {{item.eq.Nombre}}
+     </ion-label>
+
+     <ion-label style="text-align: right;">
+       <span (click)="Decrementar (i)" style = "color: red" class="material-icons"> remove_circle_outline</span>
+       <span style = "font-size: 2em"> {{item.puntos}} </span>
+       <span (click)="Incrementar (i)" style = "color: green" class="material-icons"> add_circle_outline</span>
+       </ion-label>
+   </ion-item>
+ </div>
 </ion-content> 
