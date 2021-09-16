@@ -25,6 +25,7 @@ import * as URL from './URLs/urls';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Network } from '@ionic-native/network/ngx';
 
 //const config: SocketIoConfig = { url: 'http://localhost:8080', options: {} };
 // const config: SocketIoConfig = { url: 'http://147.83.118.92:8080', options: {} };
@@ -82,6 +83,7 @@ import {DatePipe} from '@angular/common';
     LocalNotifications,
     DatePipe,
     Media,
+    Network,
     {provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig},
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: DateAdapter, useClass: CustomDateAdapter}

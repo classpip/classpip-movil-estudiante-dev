@@ -12,9 +12,7 @@ import {
   MiAlumnoAMostrarJuegoDeGeocaching,
   PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares, JuegoDeVotacionUnoATodos, AlumnoJuegoDeVotacionUnoATodos,
   Rubrica, JuegoDeVotacionTodosAUno, AlumnoJuegoDeVotacionTodosAUno, JuegoDeCuestionarioSatisfaccion, AlumnoJuegoDeCuestionarioSatisfaccion,
-  CuestionarioSatisfaccion, JuegoDeEncuestaRapida, EquipoJuegoDeVotacionUnoATodos, JuegoDeControlDeTrabajoEnEquipo, AlumnoJuegoDeControlDeTrabajoEnEquipo, EquipoJuegoDeCuestionario, RespuestaEquipoJuegoDeCuestionario
-
-
+  CuestionarioSatisfaccion, JuegoDeEncuestaRapida, EquipoJuegoDeVotacionUnoATodos, JuegoDeControlDeTrabajoEnEquipo, AlumnoJuegoDeControlDeTrabajoEnEquipo, EquipoJuegoDeCuestionario, RespuestaEquipoJuegoDeCuestionario, Evento
 } from '../clases';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Cuestionario } from '../clases/Cuestionario';
@@ -120,8 +118,8 @@ export class PeticionesAPIService {
 
   private APIUrlJuegoDeCogerTurnoRapido = this.base + '3000/api/juegosDeCogerTurnoRapido';
 
+  private APIUrlEventos = this.base + '3000/api/Eventos';
   private APIUrlAlumnoJuegoDeControlDeTrabajoEnEquipo = this.base + '3000/api/alumnosJuegoDeControlDeTrabajoEnEquipo';
-
 
   constructor(
     private http: HttpClient,
@@ -666,6 +664,10 @@ export class PeticionesAPIService {
     return this.http.get<Album>(this.APIRUrlAlbum + '?filter[where][cromoId]=' + cromoId + '&filter[where][alumnoJuegoDeColeccionId]=' + alumnoJuegoDeColeccionId);
   }
 
+  public DameAlbumesAlumno(alumnoJuegoDeColeccionId: number): Observable<Album[]> {
+    return this.http.get<Album[]>(this.APIRUrlAlbum + '?filter[where][alumnoJuegoDeColeccionId]=' + alumnoJuegoDeColeccionId);
+  }
+
   public BorrarAlbumAlumno(AlbumId: number) {
     return this.http.delete<Album>(this.APIRUrlAlbum + '/' + AlbumId);
   }
@@ -674,6 +676,10 @@ export class PeticionesAPIService {
   public DameAlbumEquipo(cromoId: number, equipoJuegoDeColeccionId: number): Observable<Album> {
     // tslint:disable-next-line:max-line-length
     return this.http.get<Album>(this.APIRUrlAlbumEquipo + '?filter[where][cromoId]=' + cromoId + '&filter[where][equipoJuegoDeColeccionId]=' + equipoJuegoDeColeccionId);
+  }
+
+  public DameAlbumesEquipo(equipoJuegoDeColeccionId: number): Observable<Album[]> {
+    return this.http.get<Album[]>(this.APIRUrlAlbumEquipo + '?filter[where][equipoJuegoDeColeccionId]=' + equipoJuegoDeColeccionId);
   }
 
   public BorrarAlbumEquipo(AlbumEquipoId: number) {
@@ -1193,4 +1199,30 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
     // tslint:disable-next-line:max-line-length
     return this.http.put<AlumnoJuegoDeControlDeTrabajoEnEquipo>(this.APIUrlAlumnoJuegoDeControlDeTrabajoEnEquipo + '/' + inscripcion.id, inscripcion);
   }
+
+
+  //---------------  GESTIÓN DE REGISTRO DE ACTIVIDAD (EVENTOS) ---------------//
+  public DameEvento(eventoID: number): Observable<Evento> {
+    return this.http.get<Evento>(this.APIUrlEventos + '/' + eventoID);
+  }
+
+  public DameEventos(): Observable<Evento[]> {
+    return this.http.get<Evento[]>(this.APIUrlEventos);
+  }
+
+  public DameEventosFiltrados(filtros: string): Observable<Evento[]> {
+    return this.http.get<Evento[]>(this.APIUrlEventos + '/' + filtros);
+  }
+
+  public CreaEvento(evento: Evento): Observable<Evento> {
+    return this.http.post<Evento>(this.APIUrlEventos, evento);
+  }
+
+  /* public ModificaEvento(evento: Evento): Observable<Evento> {
+    return this.http.put<Evento>();
+  }
+
+  public BorraEvento(eventoID: number): Observable<Evento> {
+    return this.http.delete<Evento>();
+  } */
 }

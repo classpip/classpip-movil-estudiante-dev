@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PeticionesAPIService, SesionService, ComServerService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import { NavController, AlertController } from '@ionic/angular';
-import { Alumno, JuegoDeAvatar, AlumnoJuegoDeAvatar } from '../clases/index';
+import { Alumno, JuegoDeAvatar, AlumnoJuegoDeAvatar, Evento } from '../clases/index';
 
 import * as URL from '../URLs/urls';
 import { ModalController } from '@ionic/angular';
@@ -88,6 +88,19 @@ export class JuegoAvatarPage implements OnInit {
     if (data.hayCambio) {
       this.tieneAvatar = true;
       this.inscripcionAlumnoJuegoAvatar = data.inscripcion;
+
+      //Registrar la Modificación del Avatar
+      this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
+
+        let evento: Evento = new Evento(32, new Date(), grupo.profesorId, this.sesion.DameAlumno().id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, this.juegoSeleccionado.Tipo);
+        this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
+          console.log("Registrado evento: ", res);
+        }, (err) => { 
+          console.log(err); 
+        });
+      }, (err) => {
+        console.log(err); 
+      });
     }
   }
 

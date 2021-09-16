@@ -86,6 +86,22 @@ export class ComServerService {
         });
     });
   }
+
+  public EnviarNotificacionIndividual(alumnoDestinatarioId: number, mensajeAEnviar: string) {
+    console.log ('dentro del servicio para enviar notificación al alumno');
+    this.servidor.emit ('notificacionIndividual' , {alumnoId: alumnoDestinatarioId, mensaje: mensajeAEnviar});
+  }
+
+  public EnviarNotificacionEquipo(equipoDestinatarioId: number, mensajeAEnviar: string) {
+    console.log ('dentro del servicio para enviar notificación al equipo');
+    this.servidor.emit ('notificacionEquipo' , {equipoId: equipoDestinatarioId, mensaje: mensajeAEnviar});
+  }
+
+  public EnviarNotificacionGrupo(grupoDestinatarioId: number, mensajeAEnviar: string) {
+    console.log ('dentro del servicio para enviar notificación al grupo');
+    this.servidor.emit ('notificacionGrupo' , {grupoId: grupoDestinatarioId, mensaje: mensajeAEnviar});
+  }
+  
   public RecordarContrasena(alumno: Alumno) {
     this.servidor.emit ('recordarPassword' , {email: alumno.Email, nombre: alumno.Username, contrasena: alumno.Password});
   }

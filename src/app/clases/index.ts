@@ -71,5 +71,5 @@ export * from './AlumnoJuegoDeControlDeTrabajoEnEquipo';
 export * from './AlumnoJuegoDeCuestionario';
 export * from './EquipoJuegoDeCuestionario';
 
-
+export * from './Evento';
 

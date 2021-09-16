@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, AlertController, AngularDelegate } from '@ionic/angular';
+import { NavController, LoadingController, AlertController, AngularDelegate, Platform } from '@ionic/angular';
 // import { HttpClient } from '@angular/common/http';
 import { Alumno } from '../clases';
 import { IniciPage } from '../inici/inici.page';
@@ -19,8 +19,7 @@ import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-import { Platform } from '@ionic/angular';
-
+import { Network } from '@ionic-native/network/ngx';
 
 @Component({
   selector: 'app-home',
@@ -89,8 +88,8 @@ export class HomePage {
     private comServer: ComServerService,
     private selector: WheelSelector,
     private localNotifications: LocalNotifications,
-    platform: Platform
-   
+    public platform: Platform,
+    private network: Network
     //private transfer: Transfer,
    // private camera: Camera
 
@@ -591,38 +590,41 @@ replay() {
     }
 
     Autentificar() {
-       
-        this.presentLoading();
-        this.peticionesAPI.DameAlumno(this.username, this.password)
-        .subscribe( (res) => {
-          if (res[0] !== undefined) {
-            this.alumno = res[0];
-            this.sesion.TomaAlumno(this.alumno);
-            console.log('bien logado');
-            this.comServer.Conectar(this.alumno);
-     
-
-            this.comServer.EsperarNotificaciones()
-            .subscribe((notificacion: any) => {
-              console.log ('Pongo notificacion:  ' + notificacion );
-              this.localNotifications.schedule({
-                id: ++this.contNotif,
-                text: notificacion,
-              });
-
-            });
-
-            setTimeout(() => {
-              this.route.navigateByUrl('/tabs/inici');
-            }, 1500);
-          } else {
-            // Aqui habría que mostrar alguna alerta al usuario
-            setTimeout(() => {
-              this.presentAlert();
-            }, 1500);
-            console.log('alumno no existe');
-          }
+      if(!this.platform.is('mobileweb')) { //Para evitar posibles errores
+        this.network.onDisconnect().subscribe(() => { //Nos suscribimos por si cae la conexión y así poder reconectar el socket
+          console.log('Se ha perdido la conexión');
+          this.comServer.Conectar(this.alumno);
         });
+      }
+       
+      this.presentLoading();
+      this.peticionesAPI.DameAlumno(this.username, this.password).subscribe((res) => {
+        if (res[0] !== undefined) {
+          this.alumno = res[0];
+          this.sesion.TomaAlumno(this.alumno);
+          console.log('bien logado');
+          this.comServer.Conectar(this.alumno);
+
+          this.comServer.EsperarNotificaciones().subscribe(async (notificacion: any) => {
+            console.log ('Pongo notificacion:  ' + notificacion);
+            this.contNotif = this.contNotif + 1;
+            this.localNotifications.schedule({
+              id: this.contNotif,
+              text: notificacion,
+            });
+          });
+
+          setTimeout(() => {
+            this.route.navigateByUrl('/tabs/inici');
+          }, 1500);
+        } else {
+          // Aqui habría que mostrar alguna alerta al usuario
+          setTimeout(() => {
+            this.presentAlert();
+          }, 1500);
+          console.log('alumno no existe');
+        }
+      });
     }
 
     AccesoJuegoRapido() {
