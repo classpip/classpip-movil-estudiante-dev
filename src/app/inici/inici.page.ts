@@ -3,7 +3,7 @@ import { SesionService } from '../servicios/sesion.service';
 import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { PeticionesAPIService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
-import { Juego, Equipo } from '../clases/index';
+import { Juego, Equipo, Evento } from '../clases/index';
 import { Router } from '@angular/router';
 import { JuegoSeleccionadoPage } from '../juego-seleccionado/juego-seleccionado.page';
 import { IonSlides } from '@ionic/angular';
@@ -51,6 +51,18 @@ export class IniciPage implements OnInit {
 
 
   JuegoSeleccionado(juego: any) {
+    //Registrar el Acceso al Juego
+    this.peticionesAPI.DameGrupo(juego.grupoId).subscribe((grupo) => {
+      
+      let evento: Evento = new Evento(2, new Date(), grupo.profesorId, this.sesion.DameAlumno().id, undefined, juego.id, juego.NombreJuego, juego.Tipo);
+      this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
+        console.log("Registrado evento: ", res);
+      }, (err) => { 
+        console.log(err); 
+      });
+    }, (err) => {
+      console.log(err); 
+    });
 
     this.sesion.TomaJuego(juego);
     if (juego.Tipo === 'Juego De Puntos') {
@@ -79,6 +91,7 @@ export class IniciPage implements OnInit {
       this.navCtrl.navigateForward('/juego-colleccion');
     }
   }
+
   doCheck() {
     // Para decidir si hay que mostrar los botones de previo o siguiente slide
     const prom1 = this.slides.isBeginning();

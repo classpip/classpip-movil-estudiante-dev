@@ -63,5 +63,5 @@ export * from './CuestionarioSatisfaccion';
 export * from './JuegoDeEncuestaRapida';
 export * from './TablaAlumnoJuegoDeCuestionario';
 
-
+export * from './Evento';
 

@@ -85,6 +85,22 @@ export class ComServerService {
         });
     });
   }
+
+  public EnviarNotificacionIndividual(alumnoDestinatarioId: number, mensajeAEnviar: string) {
+    console.log ('dentro del servicio para enviar notificación al alumno');
+    this.servidor.emit ('notificacionIndividual' , {alumnoId: alumnoDestinatarioId, mensaje: mensajeAEnviar});
+  }
+
+  public EnviarNotificacionEquipo(equipoDestinatarioId: number, mensajeAEnviar: string) {
+    console.log ('dentro del servicio para enviar notificación al equipo');
+    this.servidor.emit ('notificacionEquipo' , {equipoId: equipoDestinatarioId, mensaje: mensajeAEnviar});
+  }
+
+  public EnviarNotificacionGrupo(grupoDestinatarioId: number, mensajeAEnviar: string) {
+    console.log ('dentro del servicio para enviar notificación al grupo');
+    this.servidor.emit ('notificacionGrupo' , {grupoId: grupoDestinatarioId, mensaje: mensajeAEnviar});
+  }
+  
   public RecordarContrasena(alumno: Alumno) {
     console.log ('dentro del servicio para recordar contraseña');
     // Me conecto momentaneamente para enviarle al alumno la contraseña que debe enviar por email

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SesionService } from '../servicios/sesion.service';
 import { NavController, IonContent, LoadingController, AlertController } from '@ionic/angular';
-import { PeticionesAPIService } from '../servicios/index';
+import { PeticionesAPIService, ComServerService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {
   Juego, Equipo, Alumno, MiAlumnoAMostrarJuegoDePuntos, Grupo,
-  MiEquipoAMostrarJuegoDePuntos, Cromo, Coleccion
+  MiEquipoAMostrarJuegoDePuntos, Cromo, Coleccion, Profesor, Evento, AlumnoJuegoDeColeccion, EquipoJuegoDeColeccion
 } from '../clases/index';
 
 import { ModalController } from '@ionic/angular';
@@ -33,7 +33,8 @@ export class JuegoColleccionPage implements OnInit {
     private alertCtrl: AlertController,
     private peticionesAPI: PeticionesAPIService,
     private calculos: CalculosService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public comService: ComServerService
   ) { }
 
   juegoSeleccionado: Juego;
@@ -179,14 +180,63 @@ export class JuegoColleccionPage implements OnInit {
                 text: 'Ok',
                 handler: async (destinatarioId) => {
                   // recibo el id del alumno destinatorio del cromo
-                  this.calculos.RegalaCromoAlumnos(cromo, destinatarioId, this.alumno.id, this.juegoSeleccionado);
-                  const alert2 = await this.alertCtrl.create({
-                      cssClass: 'my-custom-class',
-                      header: 'Cromo regalado con éxito',
-                      buttons: ['OK']
-                  }).then (res => res.present());
-                  // resuelvo indicando que si se ha hecho el regalo
-                  resolve (true);
+
+                  this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, destinatarioId).subscribe(async (alumnosJDC) => {
+                    //console.log(alumnosJDC);
+                    let alumnoJDC: AlumnoJuegoDeColeccion = alumnosJDC[0];
+
+                    //Comprobamos si se ha completado la Colección antes de haber regalado el Cromo
+                    this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, alumnoJDC.id, undefined).subscribe(async (finalizacionAntes) => {
+
+                      this.calculos.RegalaCromoAlumnos(cromo, destinatarioId, this.alumno.id, this.juegoSeleccionado);
+                      const alert2 = await this.alertCtrl.create({
+                          cssClass: 'my-custom-class',
+                          header: 'Cromo regalado con éxito',
+                          buttons: ['OK']
+                      }).then (res => res.present());
+                      // resuelvo indicando que si se ha hecho el regalo
+                      resolve (true);
+
+                      //Registrar el Regalo del Cromo
+                      this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
+                        let eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, this.alumno.id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección", undefined, undefined, undefined, undefined, destinatarioId, undefined);
+                        this.peticionesAPI.CreaEvento(eventoRegalarCromo).subscribe((res) => {
+                          console.log("Registrado evento: ", res);
+                        }, (err) => { 
+                          console.log(err); 
+                        });
+
+                        //Notificar al Alumno
+                        let nombreCompletoAlumnoEmisor: string = `${this.alumno.Nombre} ${this.alumno.PrimerApellido} ${this.alumno.SegundoApellido}`;
+                        this.comService.EnviarNotificacionIndividual(destinatarioId, `El Alumno ${nombreCompletoAlumnoEmisor} te ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+
+                        //Comprobamos si se ha completado la Colección tras haber regalado el Cromo
+                        this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, alumnoJDC.id, undefined).subscribe((finalizacionDespues) => {
+                          if ((finalizacionAntes == false) && (finalizacionDespues == true)) {
+                            //Registrar la Finalización de la Colección
+                            let eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, destinatarioId, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección");
+                            this.peticionesAPI.CreaEvento(eventoFinalizacionColeccion).subscribe((res) => {
+                              console.log("Registrado evento: ", res);
+                            }, (err) => { 
+                              console.log(err); 
+                            });
+    
+                            //Notificar al Alumno
+                            this.comService.EnviarNotificacionIndividual(destinatarioId, `¡Enhorabuena! Has completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                          }
+                        }, (err) => {
+                          console.log(err); 
+                        });
+
+                      }, (err) => {
+                        console.log(err); 
+                      });
+                    }, (err) => {
+                      console.log(err); 
+                    });
+                  }, (err) => {
+                    console.log(err); 
+                  });
                 }
               }
             ]
@@ -222,13 +272,61 @@ export class JuegoColleccionPage implements OnInit {
                 text: 'Ok',
                 handler: async (destinatarioId) => {
                   // recibo el id del alumno destinatorio del cromo
-                  this.calculos.RegalaCromoEquipos(cromo, destinatarioId, this.equipo.id, this.juegoSeleccionado);
-                  this.alertCtrl.create({
-                      cssClass: 'my-custom-class',
-                      header: 'Cromo regalado con éxito',
-                      buttons: ['OK']
-                  }).then (res => res.present());
-                  resolve (true);
+
+                  this.peticionesAPI.DameInscripcionEquipoJuegoDeColeccion(this.juegoSeleccionado.id, destinatarioId).subscribe(async (equiposJDC) => {
+                    //console.log(equiposJDC);
+                    let equipoJDC: EquipoJuegoDeColeccion = equiposJDC[0];
+
+                    //Comprobamos si se ha completado la Colección antes de haber regalado el Cromo
+                    this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, undefined, equipoJDC.id).subscribe(async (finalizacionAntes) => {
+
+                      this.calculos.RegalaCromoEquipos(cromo, destinatarioId, this.equipo.id, this.juegoSeleccionado);
+                      this.alertCtrl.create({
+                          cssClass: 'my-custom-class',
+                          header: 'Cromo regalado con éxito',
+                          buttons: ['OK']
+                      }).then (res => res.present());
+                      resolve (true);
+
+                      //Registrar el Regalo del Cromo
+                      this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
+                        let eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, undefined, this.equipo.id, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección", undefined, undefined, undefined, undefined, undefined, destinatarioId);
+                        this.peticionesAPI.CreaEvento(eventoRegalarCromo).subscribe((res) => {
+                          console.log("Registrado evento: ", res);
+                        }, (err) => { 
+                          console.log(err); 
+                        });
+
+                        //Notificar a los Alumnos del Equipo
+                        this.comService.EnviarNotificacionEquipo(destinatarioId, `El Equipo ${this.equipo.Nombre} os ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+
+                        //Comprobamos si se ha completado la Colección tras haber regalado el Cromo
+                        this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, undefined, equipoJDC.id).subscribe((finalizacionDespues) => {
+                          if ((finalizacionAntes == false) && (finalizacionDespues == true)) {
+                            //Registrar la Finalización de la Colección
+                            let eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, undefined, destinatarioId, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección");
+                            this.peticionesAPI.CreaEvento(eventoFinalizacionColeccion).subscribe((res) => {
+                              console.log("Registrado evento: ", res);
+                            }, (err) => { 
+                              console.log(err); 
+                            });
+
+                            //Notificar a los Alumnos del Equipo
+                            let nombreEquipoDestinatario: string = this.equiposJuegoDeColeccion.filter((equipo) => equipo.id === destinatarioId)[0].Nombre;
+                            this.comService.EnviarNotificacionEquipo(destinatarioId, `¡Enhorabuena! Tu Equipo ${nombreEquipoDestinatario} ha completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                          }
+                        }, (err) => {
+                          console.log(err); 
+                        });
+                      }, (err) => {
+                        console.log(err); 
+                      });
+                    }, (err) => {
+                      console.log(err); 
+                    });
+                  }, (err) => {
+                    console.log(err); 
+                  });
                 }
               }
             ]
@@ -254,35 +352,80 @@ export class JuegoColleccionPage implements OnInit {
             header: 'Elige a quién quieres regalar el cromo',
             inputs : misInputs,
             buttons: [
-                      {
-                        text: 'Cancelar',
-                        role: 'cancel',
-                        cssClass: 'secondary',
-                        handler: () => {
-                          console.log('Me arrepiento');
-                          resolve (false);
-                        }
-                      }, {
-                        text: 'Ok',
-                        handler: async (destinatarioId) => {
-                          // recibo el id del alumno destinatorio del cromo
-                          this.calculos.RegalaCromoAlumnoEquipo(cromo, destinatarioId, this.alumno.id, this.juegoSeleccionado);
-                          this.alertCtrl.create({
-                              cssClass: 'my-custom-class',
-                              header: 'Cromo regalado con éxito',
-                              buttons: ['OK']
-                          }).then (res => res.present());
-                          resolve (true);
-                        }
-                      }
-                    ]
+              {
+                text: 'Cancelar',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {
+                  console.log('Me arrepiento');
+                  resolve (false);
+                }
+              }, {
+                text: 'Ok',
+                handler: async (destinatarioId) => {
+                  // recibo el id del alumno destinatorio del cromo
+
+                  this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, destinatarioId).subscribe(async (alumnosJDC) => {
+                    //console.log(alumnosJDC);
+                    let alumnoJDC: AlumnoJuegoDeColeccion = alumnosJDC[0];
+
+                    //Comprobamos si se ha completado la Colección antes de haber regalado el Cromo
+                    this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, alumnoJDC.id, undefined).subscribe(async (finalizacionAntes) => {
+
+                      this.calculos.RegalaCromoAlumnoEquipo(cromo, destinatarioId, this.alumno.id, this.juegoSeleccionado);
+                      this.alertCtrl.create({
+                          cssClass: 'my-custom-class',
+                          header: 'Cromo regalado con éxito',
+                          buttons: ['OK']
+                      }).then (res => res.present());
+                      resolve (true);
+
+                      //Registrar el Regalo del Cromo
+                      this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
+                        let eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, this.alumno.id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección", undefined, undefined, undefined, undefined, destinatarioId, undefined);
+                        this.peticionesAPI.CreaEvento(eventoRegalarCromo).subscribe((res) => {
+                          console.log("Registrado evento: ", res);
+                        }, (err) => { 
+                          console.log(err); 
+                        });
+
+                        //Notificar al Alumno
+                        let nombreCompletoAlumnoEmisor: string = `${this.alumno.Nombre} ${this.alumno.PrimerApellido} ${this.alumno.SegundoApellido}`;
+                        this.comService.EnviarNotificacionIndividual(destinatarioId, `El Alumno ${nombreCompletoAlumnoEmisor} te ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+
+                        //Comprobamos si se ha completado la Colección tras haber regalado el Cromo
+                        this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, alumnoJDC.id, undefined).subscribe((finalizacionDespues) => {
+                          if ((finalizacionAntes == false) && (finalizacionDespues == true)) {
+                            //Registrar la Finalización de la Colección
+                            let eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, destinatarioId, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección");
+                            this.peticionesAPI.CreaEvento(eventoFinalizacionColeccion).subscribe((res) => {
+                              console.log("Registrado evento: ", res);
+                            }, (err) => { 
+                              console.log(err); 
+                            });
+
+                            //Notificar al Alumno
+                            this.comService.EnviarNotificacionIndividual(destinatarioId, `¡Enhorabuena! Has completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                          }
+                        }, (err) => {
+                          console.log(err); 
+                        });
+                      }, (err) => {
+                        console.log(err); 
+                      });
+                    }, (err) => {
+                      console.log(err); 
+                    });
+                  }, (err) => {
+                    console.log(err); 
+                  });
+                }
+              }
+            ]
           }).then (res => res.present());
         }
-
       });
     };
-
-
   }
  // Interval function
 

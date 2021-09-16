@@ -1495,6 +1495,61 @@ export class CalculosService {
     return CromosQueNoTengo;
   }
 
+  //Comprueba si se ha completado la Colección del Alumno/Equipo del JDC
+  public CompruebaFinalizacionColeccion(coleccionID: number, alumnoJDCid?: number, equipoJDCid?: number): Observable<boolean> {
+    const comprobanteObservable: Observable<boolean> = new Observable((obs) => {
+      this.peticionesAPI.DameCromosColeccion(coleccionID).subscribe((cromos) => {
+        //console.log(cromos);
+        let cromosAsignadosDiferentes: number[] = [];
+        if(alumnoJDCid != undefined){
+          this.peticionesAPI.DameAlbumesAlumno(alumnoJDCid).subscribe((albumes) => {
+            //console.log(albumes);
+            albumes.forEach((album) => {
+              if(!cromosAsignadosDiferentes.includes(album.cromoId)){
+                cromosAsignadosDiferentes.push(album.cromoId);
+              }
+            });
+            if(cromosAsignadosDiferentes.length == cromos.length){
+              obs.next(true);
+            }
+            else{
+              obs.next(false);
+            }
+          }, (err) => {
+            console.log(err);
+            obs.next(false);
+          });
+        }
+        else if(equipoJDCid != undefined){
+          this.peticionesAPI.DameAlbumesEquipo(equipoJDCid).subscribe((albumes) => {
+            //console.log(albumes);
+            albumes.forEach((album) => {
+              if(!cromosAsignadosDiferentes.includes(album.cromoId)){
+                cromosAsignadosDiferentes.push(album.cromoId);
+              }
+            });
+            if(cromosAsignadosDiferentes.length == cromos.length){
+              obs.next(true);
+            }
+            else{
+              obs.next(false);
+            }
+          }, (err) => {
+            console.log(err);
+            obs.next(false);
+          });
+        }
+        else{
+          obs.next(false);
+        }
+      }, (err) => {
+        console.log(err); 
+        obs.next(false);
+      });
+    });
+    return comprobanteObservable;
+  }
+
   /* competicion liga */
 
   public PrepararTablaRankingIndividualLigaMiAlumno(listaAlumnosOrdenadaPorPuntos: AlumnoJuegoDeCompeticionLiga[],

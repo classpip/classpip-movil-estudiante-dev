@@ -46,6 +46,7 @@ export class AppComponent {
 
   GoOut() {
     this.comServer.Desconectar(this.MiAlumno);
+    //this.comServer.EsperarNotificaciones().unsubscribe();
     this.route.navigateByUrl('/home');
   }
 
