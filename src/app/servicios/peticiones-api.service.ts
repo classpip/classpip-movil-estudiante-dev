@@ -142,6 +142,12 @@ export class PeticionesAPIService {
     return this.http.get<Profesor>(this.APIUrlProfesores + '?filter[where][Identificador]=' + identificador);
   }
 
+  
+  public DameProfesorPorId(profesorId: number): Observable<Profesor> {
+    return this.http.get<Profesor>(this.APIUrlProfesores + '/' + profesorId);
+  }
+
+
   public DameAlumno(nombreUsuario: string, password: string): Observable<Alumno> {
 
     return this.http.get<Alumno>(this.APIUrlAlumnos + '?filter[where][Username]=' + nombreUsuario

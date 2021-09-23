@@ -37,7 +37,8 @@ export class JuegoAvatarPage implements OnInit {
     private peticionesAPI: PeticionesAPIService,
     public modalController: ModalController,
     public alertController: AlertController,
-    private comServer: ComServerService
+    private comServer: ComServerService,
+    private calculos: CalculosService
   ) { }
 
   ngOnInit() {
@@ -92,12 +93,10 @@ export class JuegoAvatarPage implements OnInit {
       //Registrar la Modificación del Avatar
       this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
 
-        let evento: Evento = new Evento(32, new Date(), grupo.profesorId, this.sesion.DameAlumno().id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, this.juegoSeleccionado.Tipo);
-        this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
-          console.log("Registrado evento: ", res);
-        }, (err) => { 
-          console.log(err); 
-        });
+        // tslint:disable-next-line:max-line-length
+        const evento: Evento = new Evento(32, new Date(), grupo.profesorId, this.sesion.DameAlumno().id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, this.juegoSeleccionado.Tipo);
+        this.calculos.RegistrarEvento (evento);
+       
       }, (err) => {
         console.log(err); 
       });

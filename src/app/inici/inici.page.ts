@@ -59,15 +59,17 @@ export class IniciPage implements OnInit {
 
 
   JuegoSeleccionado(juego: any) {
-    //Registrar el Acceso al Juego
+    // Registrar el Acceso al Juego
     this.peticionesAPI.DameGrupo(juego.grupoId).subscribe((grupo) => {
       
-      let evento: Evento = new Evento(2, new Date(), grupo.profesorId, this.sesion.DameAlumno().id, undefined, juego.id, juego.NombreJuego, juego.Tipo);
-      this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
-        console.log("Registrado evento: ", res);
-      }, (err) => { 
-        console.log(err); 
-      });
+      // tslint:disable-next-line:max-line-length
+      const evento: Evento = new Evento(2, new Date(), grupo.profesorId, this.sesion.DameAlumno().id, undefined, juego.id, juego.NombreJuego, juego.Tipo);
+      this.calculos.RegistrarEvento(evento);
+      // this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
+      //   console.log("Registrado evento: ", res);
+      // }, (err) => { 
+      //   console.log(err); 
+      // });
     }, (err) => {
       console.log(err); 
     });

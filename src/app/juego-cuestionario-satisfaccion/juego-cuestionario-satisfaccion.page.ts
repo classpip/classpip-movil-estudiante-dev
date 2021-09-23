@@ -142,6 +142,7 @@ export class JuegoCuestionarioSatisfaccionPage implements OnInit {
   async next() {
     // const indice = await this.slides.getActiveIndex();
     // this.Avanzar (indice);
+    this.empezado = true;
     this.slides.slideNext();
   }
 
@@ -220,11 +221,16 @@ export class JuegoCuestionarioSatisfaccionPage implements OnInit {
             text: 'OK',
             role: 'cancel',
             handler: () => {
+              this.empezado = false;
+              this.disablePrevBtn = true;
+              this.disableNextBtn = false;
+              // this.route.navigateByUrl('/inici');
             }
           }
         ]
       });
       await confirm.present();
+    
     });
 
   }
