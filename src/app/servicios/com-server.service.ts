@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Alumno, AlumnoJuegoDeCompeticionFormulaUno } from '../clases/index';
 import { Observable } from 'rxjs';
+import { PeticionesAPIService } from '.';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { Observable } from 'rxjs';
 export class ComServerService {
   profesorId: number;
 
-  constructor(private servidor: Socket) { }
+  constructor(  private servidor: Socket,
+                private peticionesAPI: PeticionesAPIService) { }
   Conectar(alumno: Alumno) {
     this.profesorId = alumno.profesorId;
     this.servidor.connect();
@@ -87,14 +89,23 @@ export class ComServerService {
     });
   }
 
-  public EnviarNotificacionIndividual(alumnoDestinatarioId: number, mensajeAEnviar: string) {
-    console.log ('dentro del servicio para enviar notificación al alumno');
-    this.servidor.emit ('notificacionIndividual' , {alumnoId: alumnoDestinatarioId, mensaje: mensajeAEnviar});
+  public async EnviarNotificacionIndividual(tipoEvento: number, profesorId: number, alumnoDestinatarioId: number, mensajeAEnviar: string) {
+    const profesor = await this.peticionesAPI.DameProfesorPorId (profesorId).toPromise();
+  
+    // juego de coleccion (regalar)
+    if ((tipoEvento === 21) && (profesor.configuracionEventos[2][1])) {
+      this.servidor.emit ('notificacionIndividual' , {alumnoId: alumnoDestinatarioId, mensaje: mensajeAEnviar});
+    }
   }
 
-  public EnviarNotificacionEquipo(equipoDestinatarioId: number, mensajeAEnviar: string) {
-    console.log ('dentro del servicio para enviar notificación al equipo');
-    this.servidor.emit ('notificacionEquipo' , {equipoId: equipoDestinatarioId, mensaje: mensajeAEnviar});
+  public async EnviarNotificacionEquipo(tipoEvento: number, profesorId: number, equipoDestinatarioId: number, mensajeAEnviar: string) {
+    console.log ('voy a por el profesor ', profesorId);
+    const profesor = await this.peticionesAPI.DameProfesorPorId (profesorId).toPromise();
+  
+    // juego de coleccion (regalar)
+    if ((tipoEvento === 21) && (profesor.configuracionEventos[2][1])) {
+      this.servidor.emit ('notificacionEquipo' , {equipoId: equipoDestinatarioId, mensaje: mensajeAEnviar});
+    }
   }
 
   public EnviarNotificacionGrupo(grupoDestinatarioId: number, mensajeAEnviar: string) {

@@ -606,7 +606,7 @@ replay() {
           this.comServer.Conectar(this.alumno);
 
           this.comServer.EsperarNotificaciones().subscribe(async (notificacion: any) => {
-            console.log ('Pongo notificacion:  ' + notificacion);
+            console.log ('He recibido notificación:  ' + notificacion);
             this.contNotif = this.contNotif + 1;
             this.localNotifications.schedule({
               id: this.contNotif,

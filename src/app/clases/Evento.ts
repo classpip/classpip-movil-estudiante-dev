@@ -1,4 +1,5 @@
 export class Evento {
+    id: number;
     TipoEvento: number; //Required
     FechayHora: Date; //Required
     ProfesorID: number; //Required

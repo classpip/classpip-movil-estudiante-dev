@@ -181,7 +181,7 @@ export class JuegoColleccionPage implements OnInit {
                 text: 'Ok',
                 handler: async (destinatarioId) => {
                   // recibo el id del alumno destinatorio del cromo
-
+                  console.log (' voy a regalar a ', destinatarioId);
                   this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, destinatarioId).subscribe(async (alumnosJDC) => {
                     //console.log(alumnosJDC);
                     let alumnoJDC: AlumnoJuegoDeColeccion = alumnosJDC[0];
@@ -200,30 +200,33 @@ export class JuegoColleccionPage implements OnInit {
 
                       //Registrar el Regalo del Cromo
                       this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
-                        let eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, this.alumno.id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección", undefined, undefined, undefined, undefined, destinatarioId, undefined);
-                        this.peticionesAPI.CreaEvento(eventoRegalarCromo).subscribe((res) => {
-                          console.log("Registrado evento: ", res);
-                        }, (err) => { 
-                          console.log(err); 
-                        });
+                        // tslint:disable-next-line:max-line-length
+                        const eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, this.alumno.id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, 'Juego De Colección', undefined, undefined, undefined, undefined, destinatarioId, undefined);
+                        console.log ('voy aa registrar el evento');
+                        this.calculos.RegistrarEvento (eventoRegalarCromo);
+                   
 
-                        //Notificar al Alumno
-                        let nombreCompletoAlumnoEmisor: string = `${this.alumno.Nombre} ${this.alumno.PrimerApellido} ${this.alumno.SegundoApellido}`;
-                        this.comService.EnviarNotificacionIndividual(destinatarioId, `El Alumno ${nombreCompletoAlumnoEmisor} te ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                        // Notificar al Alumno
+                        // tslint:disable-next-line:max-line-length
+                        const nombreCompletoAlumnoEmisor: string = `${this.alumno.Nombre} ${this.alumno.PrimerApellido} ${this.alumno.SegundoApellido}`;
+                        console.log ('llamo a enviar notificación individual ', this.juegoSeleccionado);
+                        // tslint:disable-next-line:max-line-length
+                        this.comService.EnviarNotificacionIndividual(21, this.alumno.profesorId, destinatarioId, `El Alumno ${nombreCompletoAlumnoEmisor} te ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
 
                         //Comprobamos si se ha completado la Colección tras haber regalado el Cromo
+                        // NO ENTIENDO COMO PUEDE COMPLETAR DESPUES DE REGALAR UN CROMO
+                        // tslint:disable-next-line:max-line-length
                         this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, alumnoJDC.id, undefined).subscribe((finalizacionDespues) => {
-                          if ((finalizacionAntes == false) && (finalizacionDespues == true)) {
-                            //Registrar la Finalización de la Colección
-                            let eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, destinatarioId, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección");
-                            this.peticionesAPI.CreaEvento(eventoFinalizacionColeccion).subscribe((res) => {
-                              console.log("Registrado evento: ", res);
-                            }, (err) => { 
-                              console.log(err); 
-                            });
+                          if ((finalizacionAntes === false) && (finalizacionDespues === true)) {
+                            // Registrar la Finalización de la Colección
+                            // tslint:disable-next-line:max-line-length
+                            const eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, destinatarioId, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, 'Juego De Colección');
+                            this.calculos.RegistrarEvento (eventoFinalizacionColeccion);
+                    
     
-                            //Notificar al Alumno
-                            this.comService.EnviarNotificacionIndividual(destinatarioId, `¡Enhorabuena! Has completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                            // Notificar al Alumno
+                            // tslint:disable-next-line:max-line-length
+                            this.comService.EnviarNotificacionIndividual(22, this.alumno.profesorId, destinatarioId, `¡Enhorabuena! Has completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
                           }
                         }, (err) => {
                           console.log(err); 
@@ -291,30 +294,29 @@ export class JuegoColleccionPage implements OnInit {
 
                       //Registrar el Regalo del Cromo
                       this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
-                        let eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, undefined, this.equipo.id, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección", undefined, undefined, undefined, undefined, undefined, destinatarioId);
-                        this.peticionesAPI.CreaEvento(eventoRegalarCromo).subscribe((res) => {
-                          console.log("Registrado evento: ", res);
-                        }, (err) => { 
-                          console.log(err); 
-                        });
+                        // tslint:disable-next-line:max-line-length
+                        const eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, undefined, this.equipo.id, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, 'Juego De Colección', undefined, undefined, undefined, undefined, undefined, destinatarioId);
+                        this.calculos.RegistrarEvento(eventoRegalarCromo);
+                      
 
                         //Notificar a los Alumnos del Equipo
-                        this.comService.EnviarNotificacionEquipo(destinatarioId, `El Equipo ${this.equipo.Nombre} os ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                        // tslint:disable-next-line:max-line-length
+                        this.comService.EnviarNotificacionEquipo(21, this.juegoSeleccionado.profesorId, destinatarioId, `El Equipo ${this.equipo.Nombre} os ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
 
                         //Comprobamos si se ha completado la Colección tras haber regalado el Cromo
+                       
+                        // tslint:disable-next-line:max-line-length
                         this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, undefined, equipoJDC.id).subscribe((finalizacionDespues) => {
-                          if ((finalizacionAntes == false) && (finalizacionDespues == true)) {
-                            //Registrar la Finalización de la Colección
-                            let eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, undefined, destinatarioId, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección");
-                            this.peticionesAPI.CreaEvento(eventoFinalizacionColeccion).subscribe((res) => {
-                              console.log("Registrado evento: ", res);
-                            }, (err) => { 
-                              console.log(err); 
-                            });
-
-                            //Notificar a los Alumnos del Equipo
-                            let nombreEquipoDestinatario: string = this.equiposJuegoDeColeccion.filter((equipo) => equipo.id === destinatarioId)[0].Nombre;
-                            this.comService.EnviarNotificacionEquipo(destinatarioId, `¡Enhorabuena! Tu Equipo ${nombreEquipoDestinatario} ha completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                          if ((finalizacionAntes === false) && (finalizacionDespues === true)) {
+                            // Registrar la Finalización de la Colección
+                            // tslint:disable-next-line:max-line-length
+                            const eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, undefined, destinatarioId, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, 'Juego De Colección');
+                            this.calculos.RegistrarEvento(eventoFinalizacionColeccion);
+                            // Notificar a los Alumnos del Equipo
+                            // tslint:disable-next-line:max-line-length
+                            const nombreEquipoDestinatario: string = this.equiposJuegoDeColeccion.filter((equipo) => equipo.id === destinatarioId)[0].Nombre;
+                            // tslint:disable-next-line:max-line-length
+                            this.comService.EnviarNotificacionEquipo(22, this.alumno.profesorId, destinatarioId, `¡Enhorabuena! Tu Equipo ${nombreEquipoDestinatario} ha completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
                           }
                         }, (err) => {
                           console.log(err); 
@@ -383,30 +385,29 @@ export class JuegoColleccionPage implements OnInit {
 
                       //Registrar el Regalo del Cromo
                       this.peticionesAPI.DameGrupo(this.juegoSeleccionado.grupoId).subscribe((grupo) => {
-                        let eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, this.alumno.id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección", undefined, undefined, undefined, undefined, destinatarioId, undefined);
-                        this.peticionesAPI.CreaEvento(eventoRegalarCromo).subscribe((res) => {
-                          console.log("Registrado evento: ", res);
-                        }, (err) => { 
-                          console.log(err); 
-                        });
+                        // tslint:disable-next-line:max-line-length
+                        const eventoRegalarCromo: Evento = new Evento(21, new Date(), grupo.profesorId, this.alumno.id, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, 'Juego De Colección', undefined, undefined, undefined, undefined, destinatarioId, undefined);
+                        this.calculos.RegistrarEvento(eventoRegalarCromo);
 
+                      
                         //Notificar al Alumno
-                        let nombreCompletoAlumnoEmisor: string = `${this.alumno.Nombre} ${this.alumno.PrimerApellido} ${this.alumno.SegundoApellido}`;
-                        this.comService.EnviarNotificacionIndividual(destinatarioId, `El Alumno ${nombreCompletoAlumnoEmisor} te ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                        // tslint:disable-next-line:max-line-length
+                        const nombreCompletoAlumnoEmisor: string = `${this.alumno.Nombre} ${this.alumno.PrimerApellido} ${this.alumno.SegundoApellido}`;
+                        // tslint:disable-next-line:max-line-length
+                        this.comService.EnviarNotificacionIndividual(21, this.alumno.profesorId, destinatarioId, `El Alumno ${nombreCompletoAlumnoEmisor} te ha regalado un cromo en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
 
                         //Comprobamos si se ha completado la Colección tras haber regalado el Cromo
+                      
+                        // tslint:disable-next-line:max-line-length
                         this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, alumnoJDC.id, undefined).subscribe((finalizacionDespues) => {
-                          if ((finalizacionAntes == false) && (finalizacionDespues == true)) {
-                            //Registrar la Finalización de la Colección
-                            let eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, destinatarioId, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, "Juego De Colección");
-                            this.peticionesAPI.CreaEvento(eventoFinalizacionColeccion).subscribe((res) => {
-                              console.log("Registrado evento: ", res);
-                            }, (err) => { 
-                              console.log(err); 
-                            });
-
-                            //Notificar al Alumno
-                            this.comService.EnviarNotificacionIndividual(destinatarioId, `¡Enhorabuena! Has completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
+                          if ((finalizacionAntes === false) && (finalizacionDespues === true)) {
+                            // Registrar la Finalización de la Colección
+                            // tslint:disable-next-line:max-line-length
+                            const eventoFinalizacionColeccion: Evento = new Evento(22, new Date(), grupo.profesorId, destinatarioId, undefined, this.juegoSeleccionado.id, this.juegoSeleccionado.NombreJuego, 'Juego De Colección');
+                            this.calculos.RegistrarEvento (eventoRegalarCromo);
+                            // Notificar al Alumno
+                            // tslint:disable-next-line:max-line-length
+                            this.comService.EnviarNotificacionIndividual(22, this.alumno.profesorId, destinatarioId, `¡Enhorabuena! Has completado la colección de cromos en el Juego de Colección ${this.juegoSeleccionado.NombreJuego}`);
                           }
                         }, (err) => {
                           console.log(err); 
@@ -480,7 +481,7 @@ export class JuegoColleccionPage implements OnInit {
             handler: async () => {
               //aqui es donde hago la llamada a la promise y le indico lo que quiero hacer cuando 
               // se resuelva. El resultado que me emitirá es un booleano que indica si el regalo se ha hecho o no.
-
+              console.log ('voy a regalar cromo');
               this.ElegirYRegalarCromo(elem.cromo).then (regalado => {
                 if (regalado) {
                   // Como ha regalado el cromo y era la única copia que tenía de ese cromo

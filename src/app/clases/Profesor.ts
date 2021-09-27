@@ -3,6 +3,7 @@ export class Profesor {
   Apellido: string;
   ImagenPerfil: string;
   id: number;
+  configuracionEventos: any;
 
   constructor(nombre?: string, apellido?: string, imagenPerfil?: string, id?: number) {
 

@@ -10,7 +10,7 @@ import {
   EquipoJuegoDeColeccion, AlbumEquipo, Cromo, Jornada, MiAlumnoAMostrarJuegoDePuntos, MiEquipoAMostrarJuegoDePuntos,
   // tslint:disable-next-line:max-line-length
   EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion, EquipoJuegoDeCompeticionLiga, InformacionPartidosLiga, TablaJornadas, TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionFormulaUno,
-  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta, TablaAlumnoJuegoDeCuestionario, EquipoJuegoDeCuestionario
+  EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta, TablaAlumnoJuegoDeCuestionario, EquipoJuegoDeCuestionario, Evento
 } from '../clases/index';
 // import { MatTableDataSource } from '@angular/material/table';
 // import { MiAlumnoAMostrarJuegoDePuntos } from '../clases/MiAlumnoAMostrarJuegoDePuntos';
@@ -2582,6 +2582,41 @@ export class CalculosService {
 
     });
     return equipoObservable;
+  }
+
+  
+   public async RegistrarEvento (evento: Evento) {
+    const profesor = await this.peticionesAPI.DameProfesorPorId (evento.ProfesorID).toPromise();
+ 
+    // la configuración de eventos que trae el profesor tiene las siguientes filas
+    //  0: creación y acceso a juegos
+    //  1: juego de puntos
+    //  2: juego de colección
+
+    // Para cada fila, la primera columna indica si hay que registrar el evento o no
+    // y la segunda si hay que notificarlo
+
+    // acceso a un juego
+    if ((evento.TipoEvento === 2) && (profesor.configuracionEventos[0][0])) {
+      this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
+      }, (err) => { 
+        console.log(err); 
+      });
+    }
+    // juego de colección (regalar o completar)
+    if (((evento.TipoEvento === 21) || (evento.TipoEvento === 22)) && (profesor.configuracionEventos[2][0])) {
+      this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
+      }, (err) => { 
+        console.log(err); 
+      });
+    }
+    // juego de avatar (modificar)
+    if ((evento.TipoEvento === 32) && (profesor.configuracionEventos[3][0])) {
+      this.peticionesAPI.CreaEvento(evento).subscribe((res) => {
+      }, (err) => { 
+        console.log(err); 
+      });
+    }
   }
 
 }
