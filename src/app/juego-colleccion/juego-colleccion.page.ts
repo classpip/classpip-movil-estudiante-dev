@@ -50,6 +50,9 @@ export class JuegoColleccionPage implements OnInit {
   alumno: Alumno;
   equipo: Equipo;
   alumnosJuegoDeColeccion: Alumno[] = [];
+  alumnoJuegoDeColeccion: AlumnoJuegoDeColeccion;
+  equipoJuegoDeColeccion: EquipoJuegoDeColeccion;
+
   equiposJuegoDeColeccion: Equipo[] = [];
 
   sliderConfig: any;
@@ -281,7 +284,7 @@ export class JuegoColleccionPage implements OnInit {
                     //console.log(equiposJDC);
                     let equipoJDC: EquipoJuegoDeColeccion = equiposJDC[0];
 
-                    //Comprobamos si se ha completado la Colección antes de haber regalado el Cromo
+                    //Comprobamos si se ha completado la ColeFcción antes de haber regalado el Cromo
                     this.calculos.CompruebaFinalizacionColeccion(this.juegoSeleccionado.coleccionId, undefined, equipoJDC.id).subscribe(async (finalizacionAntes) => {
 
                       this.calculos.RegalaCromoEquipos(cromo, destinatarioId, this.equipo.id, this.juegoSeleccionado);
@@ -465,6 +468,10 @@ export class JuegoColleccionPage implements OnInit {
   MostrarAlbum() {
     this.sesion.TomaColeccion (this.coleccion);
     this.sesion.TomaCromos (this.cromosQueTengo);
+    this.sesion.TomaInscripcionAlumno (this.alumnoJuegoDeColeccion);
+    this.sesion.TomaInscripcionEquipo (this.equipoJuegoDeColeccion);
+
+
     this.navCtrl.navigateForward('/album-alumno');
   }
 
@@ -553,8 +560,9 @@ export class JuegoColleccionPage implements OnInit {
       // Ahora traigo la inscripcion del equipo en el juego
       this.peticionesAPI.DameInscripcionEquipoJuegoDeColeccion(this.juegoSeleccionado.id, equipo.id)
       .subscribe(inscripcionEquipo => {
+        this.equipoJuegoDeColeccion = inscripcionEquipo[0];
         // Y ahora me traigo los cromos del equipo
-        this.peticionesAPI.DameCromosEquipo(inscripcionEquipo[0].id)
+        this.peticionesAPI.DameCromosEquipo(this.equipoJuegoDeColeccion.id)
         .subscribe(CromosEquipo => {
             console.log('aquí están los cromos: ');
             console.log(CromosEquipo);
@@ -591,7 +599,8 @@ export class JuegoColleccionPage implements OnInit {
   DameLosCromosDelAlumno() {
     this.peticionesAPI.DameInscripcionAlumnoJuegoDeColeccion(this.juegoSeleccionado.id, this.alumno.id).subscribe(
         InscripcionAlumno => {
-          this.peticionesAPI.DameCromosAlumno(InscripcionAlumno[0].id).subscribe(
+          this.alumnoJuegoDeColeccion = InscripcionAlumno[0];
+          this.peticionesAPI.DameCromosAlumno(this.alumnoJuegoDeColeccion.id).subscribe(
             CromosAlumno => {
               console.log('aquí están los cromos: ');
               console.log(CromosAlumno);

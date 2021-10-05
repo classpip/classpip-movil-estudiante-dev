@@ -7,6 +7,7 @@ import {
 } from '../clases/index';
 
 import * as URL from '../URLs/urls';
+import { NoopAnimationPlayer } from '@angular/animations';
 
 @Component({
   selector: 'app-album-alumno',
@@ -25,17 +26,36 @@ export class AlbumAlumnoPage implements OnInit {
   tengoCromo: boolean[] = [];
   cromo: Cromo;
   voltear = false;
+  juegoSeleccionado: Juego;
+  idParticipante: Number;
+  alumno: Alumno;
+  equipo: Equipo;
+  coleccionCompleta = false;
 
   constructor(
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
+    private calculos: CalculosService
 
   ) { }
 
   ngOnInit() {
+    // Hay que comprobar si el album esta completo. Hay una funion que lo dice
+    // si esta completa entonces se habilita el boton de dar la vuelta a todos
     this.coleccion = this.sesion.DameColeccion();
     this.cromosAlumno = this.sesion.DameCromos();
     this.CromosDeLaColeccion(this.coleccion);
+    this.juegoSeleccionado = this.sesion.DameJuego();
+    if (this.juegoSeleccionado.Modo === 'Individual') {
+      this.calculos.CompruebaFinalizacionColeccion (this.coleccion.id, this.sesion.DameInscripcionAlumno().id, undefined )
+      .subscribe (res => {
+        console.log ('Coleccion completa ', res);
+        this.coleccionCompleta = res;
+      });
+    } else {
+      this.calculos.CompruebaFinalizacionColeccion (this.coleccion.id,undefined, this.sesion.DameInscripcionEquipo().id )
+      .subscribe (res => this.coleccionCompleta = res);
+    }
   }
 
 
