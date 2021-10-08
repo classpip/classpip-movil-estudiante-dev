@@ -1741,16 +1741,19 @@ export class CalculosService {
   public CompruebaFinalizacionColeccion(coleccionID: number, alumnoJDCid?: number, equipoJDCid?: number): Observable<boolean> {
     const comprobanteObservable: Observable<boolean> = new Observable((obs) => {
       this.peticionesAPI.DameCromosColeccion(coleccionID).subscribe((cromos) => {
-        //console.log(cromos);
+        console.log(' Cromos de la colección ', cromos);
         let cromosAsignadosDiferentes: number[] = [];
         if(alumnoJDCid != undefined){
           this.peticionesAPI.DameAlbumesAlumno(alumnoJDCid).subscribe((albumes) => {
-            //console.log(albumes);
+            console.log('Cromos del alumno', albumes);
             albumes.forEach((album) => {
               if(!cromosAsignadosDiferentes.includes(album.cromoId)){
+                console.log ('otro');
                 cromosAsignadosDiferentes.push(album.cromoId);
               }
             });
+            console.log(' Cromos asignados ', cromosAsignadosDiferentes);
+        
             if(cromosAsignadosDiferentes.length == cromos.length){
               obs.next(true);
             }
