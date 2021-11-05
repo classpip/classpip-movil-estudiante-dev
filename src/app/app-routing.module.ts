@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: 'juego-de-cuestionario', loadChildren: './juego-de-cuestionario/juego-de-cuestionario.module#JuegoDeCuestionarioPageModule'},
   { path: 'juego-competicion-f1', loadChildren: './juego-competicion-f1/juego-competicion-f1.module#JuegoCompeticionF1PageModule' },
   { path: 'juego-competicion-liga', loadChildren: './juego-competicion-liga/juego-competicion-liga.module#JuegoCompeticionLigaPageModule' },
+  { path: 'juego-competicion-torneo', loadChildren: './juego-competicion-torneo/juego-competicion-torneo.module#JuegoCompeticionTorneoPageModule' },
   { path: 'informacion-jornadas', loadChildren: './informacion-jornadas/informacion-jornadas.module#InformacionJornadasPageModule' },
   { path: 'juego-colleccion', loadChildren: './juego-colleccion/juego-colleccion.module#JuegoColleccionPageModule' },
   { path: 'juego-avatar', loadChildren: './juego-avatar/juego-avatar.module#JuegoAvatarPageModule' },

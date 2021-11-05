@@ -1,0 +1,62 @@
+<ion-header class="juegos-header">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button class="menu-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Competición Torneo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="juegocomptorneo-content" #content>
+  <img class="logo-liga" style="position: relative; left: 93px;" src="../../assets/img/torneoicon.webp" width="100px">
+  
+  <!-- ////////////////////////////////////// CUADRO TORNEO ////////////////////////////////////////////////////-->
+  
+  <br>
+  <b><div  class="subtitulo"style="font-size: 120%; color: black;position: relative; left: 40px;">Enfrentamientos Torneo</div></b>
+  <br><br>
+  <div  class="subtitulo"style="font-size: 120%; color: black;">Desliza para ver las diferentes fases del torneo</div>
+  <br>
+  
+    <ion-slides [options]="sliderConfig">
+      <ion-slide *ngFor="let participantes of enfrentamientosDelJuego; let i=index">
+        <div>
+          <div *ngIf="participantes.length == 0" >
+            <div  class="subtitulo" style="font-size: 120%; color: red;">Aun no se ha disputado la jornada</div>
+          </div>
+          <div *ngIf="participantes.length == 1" >
+            <div  class="subtitulo" style="font-size: 120%; color: red;">Final</div>
+          </div>
+          <div *ngIf="participantes.length == 2" >
+            <div  class="subtitulo" style="font-size: 120%; color: red;">SemiFinal</div>
+          </div>
+          <div *ngIf="participantes.length == 4" >
+            <div  class="subtitulo" style="font-size: 120%; color: red;">4tos de Final</div>
+          </div>
+          <div *ngIf="participantes.length == 8" >
+            <div  class="subtitulo" style="font-size: 120%; color: red;">8avos de Final</div>
+          </div>
+          <div *ngIf="participantes.length == 16" >
+            <div  class="subtitulo" style="font-size: 120%; color: red;">16avos de Final</div>
+          </div>
+          <div *ngIf="participantes.length == 32" >
+            <div  class="subtitulo" style="font-size: 120%; color: red;">32avos de Final</div>
+          </div>
+
+        
+
+          <ion-card class="enfrentamiento-card-mialumno" style="color: black;" *ngFor="let participante of participantes; let i=index">
+            
+            <h3>{{participante.nombreJugadorUno}}</h3>
+            <img class="versus-icon" width="80px" src="../../assets/img/versus.svg">
+            <h3>{{participante.nombreJugadorDos}}</h3>
+            
+            <h3><b>Ganador: {{participante.nombreGanador}} </b> </h3>
+
+          </ion-card>
+
+        </div>
+      </ion-slide>
+    </ion-slides>
+    <ion-button class="ranking-btn" (click)="InformacionJornadas();"style="position: relative; left: 93px;">Jornadas</ion-button>
+</ion-content>

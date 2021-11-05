@@ -81,6 +81,8 @@ export class IniciPage implements OnInit {
       this.navCtrl.navigateForward('/juego-competicion-liga');
     } else if (juego.Tipo === 'Juego De Competición Fórmula Uno') {
       this.navCtrl.navigateForward('/juego-competicion-f1');
+    } else if (juego.Tipo === 'Juego De Competición Torneo') {
+      this.navCtrl.navigateForward('/juego-competicion-torneo');
     } else if (juego.Tipo === 'Juego De Cuestionario') {
       this.navCtrl.navigateForward('/juego-de-cuestionario');
     } else if (juego.Tipo === 'Juego De Geocaching') {

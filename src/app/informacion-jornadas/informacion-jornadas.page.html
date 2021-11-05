@@ -16,7 +16,10 @@
     <img class="logo-liga" src="../../assets/img/jornadasf1icon.svg" width="100px">
     <p>Resultados de cada jornada</p>  
   </div>
-  
+  <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Torneo'">
+    <img class="logo-liga" src="../../assets/img/jornadastorneoicon.png" width="100px">
+    <p>Resultados de cada jornada</p>  
+  </div>
 
   <mat-accordion *ngIf="numeroTotalJornadas!==0">
     <div *ngFor="let jornada of JornadasCompeticion; let i=index">
@@ -99,6 +102,43 @@
 
           </div>
 
+        </div>
+
+        <div *ngIf="juegoSeleccionado.Tipo === 'Juego De Competición Torneo'">
+          <p *ngIf="jornada.Fecha != undefined"><b>Fecha</b>: {{jornada.Fecha | date: 'dd-MM-yyyy'}}</p>
+          <p *ngIf="jornada.Fecha === undefined"><b>Fecha</b>: Sin especificar</p>
+          <p><b>Criterio</b>: {{jornada.CriterioGanador}}</p>
+          <ion-slides [options]="sliderConfig">
+            <ion-slide *ngFor="let enfrentamiento of EnfrentamientosJornadaSeleccionadaTorneo">
+              <div>
+                <!-- Si el enfrentamiento es de mi alumno o equipo-->
+                <ion-card class="enfrentamiento-card-mialumno" *ngIf= "ImplicadoEnEnfrentamiento (enfrentamiento)">
+                    <h2> Enfrentamiento </h2>
+                    <h3>{{enfrentamiento.nombreJugadorUno}}</h3>
+                    <img class="versus-icon" width="80px" src="../../assets/img/versus.svg">
+                    <h3>{{enfrentamiento.nombreJugadorDos}}</h3>
+                    
+                    <h3><b>Ganador: {{enfrentamiento.nombreGanador}} </b> </h3>
+                
+               
+                </ion-card>
+             
+                <!-- Si el enfrentamiento es de otros alumnos  o equipos-->
+                
+                <ion-card class="enfrentamiento-card" *ngIf= "!ImplicadoEnEnfrentamiento (enfrentamiento)">
+                  
+                    <h2> Enfrentamiento </h2>
+                    <h3>{{enfrentamiento.nombreJugadorUno}}</h3>
+                    <img class="versus-icon" width="80px" src="../../assets/img/versus2.svg">
+                    <h3>{{enfrentamiento.nombreJugadorDos}}</h3>
+                    
+                    <h3><b>Ganador: {{enfrentamiento.nombreGanador}} </b> </h3>
+             
+                 
+                </ion-card>
+              </div>
+            </ion-slide>
+          </ion-slides>
         </div>
       </mat-expansion-panel>
     </div>

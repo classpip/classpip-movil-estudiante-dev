@@ -55,6 +55,8 @@ export class SesionService {
 
   TablaAlumnoJuegoDeCompeticion: TablaAlumnoJuegoDeCompeticion[];
   TablaEquipoJuegoDeCompeticion: TablaEquipoJuegoDeCompeticion[];
+  AlumnoJuegoDeCompeticionTorneo: Alumno[];
+  EquipoJuegoDeCompeticionTorneo: Equipo[];
   jornadas: any;
   JornadasCompeticion: any;
 
@@ -399,7 +401,21 @@ export class SesionService {
     const Tabla = this.TablaAlumnoJuegoDeCompeticion;
     return Tabla;
   }
-
+  public TomaAlumnoJuegoDeCompeticionTorneo(Tabla: Alumno[]) {
+    this.AlumnoJuegoDeCompeticionTorneo = Tabla;
+  }
+  public TomaEquipoJuegoDeCompeticionTorneo(Tabla: Equipo[]) {
+    this.EquipoJuegoDeCompeticionTorneo = Tabla;
+  }
+  public DameAlumnoJuegoDeCompeticionTorneo(): Alumno[] {
+    const Tabla = this.AlumnoJuegoDeCompeticionTorneo;
+    return Tabla;
+  }
+  
+  public DameEquipoJuegoDeCompeticionTorneo(): Equipo[] {
+    const Tabla = this.EquipoJuegoDeCompeticionTorneo;
+    return Tabla;
+  }
   public TomaDatosJornadas(
     jornadas: Jornada[],
     JornadasCompeticion: TablaJornadas[]

@@ -9,7 +9,7 @@ import {
   HistorialPuntosEquipo, EquipoJuegoDePuntos, TablaHistorialPuntosEquipo, AlumnoJuegoDeColeccion, AlumnoJuegoDeCompeticionLiga, Album,
   EquipoJuegoDeColeccion, AlbumEquipo, Cromo, Jornada, MiAlumnoAMostrarJuegoDePuntos, MiEquipoAMostrarJuegoDePuntos,
   // tslint:disable-next-line:max-line-length
-  EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion, EquipoJuegoDeCompeticionLiga, InformacionPartidosLiga, TablaJornadas, TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionFormulaUno,
+  EnfrentamientoLiga,EnfrentamientoTorneo, TablaAlumnoJuegoDeCompeticion, EquipoJuegoDeCompeticionLiga, InformacionPartidosLiga, TablaJornadas, TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionFormulaUno,
   EquipoJuegoDeCompeticionFormulaUno, TablaClasificacionJornada, AlumnoJuegoDeGeocaching, Escenario, MiAlumnoAMostrarJuegoDeGeocaching, PuntoGeolocalizable, Pregunta, TablaAlumnoJuegoDeCuestionario, EquipoJuegoDeCuestionario, Evento
 } from '../clases/index';
 // import { MatTableDataSource } from '@angular/material/table';
@@ -447,6 +447,15 @@ export class CalculosService {
         }
       }
 
+      console.log('voy a por los juegos de torneo del alumno');
+      lista = await this.peticionesAPI.DameJuegoDeCompeticionTorneoAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
       console.log('voy a por los juegos de cuestionario del alumno');
       lista = await this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).toPromise();
       for (let i = 0; i < lista.length; i++) {
@@ -553,6 +562,16 @@ export class CalculosService {
 
         console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
         lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).toPromise();
+        for (let j = 0; j < (lista.length); j++) {
+          if (lista[j].JuegoActivo === true) {
+              JuegosActivos.push(lista[j]);
+          } else {
+              JuegosInactivos.push(lista[j]);
+          }
+        }
+
+        console.log('voy a por los juegos de torneo del equipo' + this.equipos[i].id);
+        lista = await this.peticionesAPI.DameJuegoDeCompeticionTorneoEquipo(this.equipos[i].id).toPromise();
         for (let j = 0; j < (lista.length); j++) {
           if (lista[j].JuegoActivo === true) {
               JuegosActivos.push(lista[j]);
@@ -2419,6 +2438,143 @@ export class CalculosService {
       return GanadoresFormulaUno;
     }
   }
+
+   //////////////////////////////////////// JUEGO DE COMPETICIÓN TORNEO ///////////////////////////////////
+
+   public GenerarTablaJornadasTorneo(juegoSeleccionado, jornadas, enfrentamientosJuego: EnfrentamientoTorneo[][]) {
+    const TablaJornada: TablaJornadas [] = [];
+    console.log('juego seleccionado:');
+    console.log(juegoSeleccionado);
+    for (let i = 0; i < jornadas.length; i++) {
+      let jornada: Jornada;
+      const jornadaId = jornadas[i].id;
+      
+        jornada = jornadas.filter(res => res.id === jornadaId)[0];
+        const enfrentamientosJornada: EnfrentamientoTorneo[] = [];
+        enfrentamientosJuego[i].forEach(enfrentamientoDeLaJornada => {
+        console.log ('%%%%%%%%%%');
+        console.log (enfrentamientoDeLaJornada);
+        if (enfrentamientoDeLaJornada.JornadaDeCompeticionTorneoId === jornadaId) {
+          enfrentamientosJornada.push(enfrentamientoDeLaJornada);
+        }
+      
+        });
+        console.log('Los enfrentamientosJornada con id ' + jornadaId + ' son:');
+        console.log(enfrentamientosJornada);
+        const Disputada: boolean = this.JornadaFinalizadaTorneo(jornada, enfrentamientosJornada);
+        TablaJornada[i] = new TablaJornadas (i + 1, jornada.Fecha, jornada.CriterioGanador, jornada.id, undefined, undefined, Disputada);
+     
+    }
+    return TablaJornada;
+  }
+  public JornadaFinalizadaTorneo(jornadaSeleccionada: Jornada, EnfrentamientosJornada: EnfrentamientoTorneo[]) {
+    let HayGanador = true;
+    let jornadaFinalizada = true;
+      if (EnfrentamientosJornada.length === 0) {
+        console.log('La jornada con id' + jornadaSeleccionada.id + 'aun no tiene enfrentamientos');
+        jornadaFinalizada = false;
+      }
+      else if (jornadaSeleccionada.id === EnfrentamientosJornada[0].JornadaDeCompeticionTorneoId) {
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < EnfrentamientosJornada.length; i++) {
+          if (EnfrentamientosJornada[i].Ganador === undefined) {
+           HayGanador = false;
+          }
+        }
+       if (HayGanador === false) {
+          jornadaFinalizada = false;
+       }
+      }
+    
+    
+    return jornadaFinalizada;
+  }
+  public  ConstruirTablaEnfrentamientosTorneo(EnfrentamientosJornadaSeleccionada: EnfrentamientoTorneo[],
+    listaAlumnos: Alumno[],
+    listaEquipos: Equipo[],
+    juegoSeleccionado: Juego) {
+console.log ('Aquí tendré la tabla de enfrentamientos, los enfrentamientos son:');
+console.log(EnfrentamientosJornadaSeleccionada);
+console.log('Distinción entre Individual y equipos');
+if (juegoSeleccionado.Modo === 'Individual') {
+// tslint:disable-next-line:prefer-for-of
+for (let i = 0; i < EnfrentamientosJornadaSeleccionada.length; i++) {
+// tslint:disable-next-line:prefer-for-of
+for (let j = 0; j < listaAlumnos.length; j++) {
+if (EnfrentamientosJornadaSeleccionada[i].JugadorUno === 0) {
+  EnfrentamientosJornadaSeleccionada[i].nombreJugadorUno = 'Jugador Fantasma';
+}
+if (EnfrentamientosJornadaSeleccionada[i].JugadorUno === listaAlumnos[j].id) {
+EnfrentamientosJornadaSeleccionada[i].nombreJugadorUno = listaAlumnos[j].Nombre + ' ' +
+listaAlumnos[j].PrimerApellido + ' ' +
+listaAlumnos[j].SegundoApellido;
+if (EnfrentamientosJornadaSeleccionada[i].Ganador === listaAlumnos[j].id) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = listaAlumnos[j].Nombre + ' ' +
+listaAlumnos[j].PrimerApellido + ' ' +
+listaAlumnos[j].SegundoApellido;
+} 
+else if (EnfrentamientosJornadaSeleccionada[i].Ganador === undefined) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = '-';
+}
+} 
+if (EnfrentamientosJornadaSeleccionada[i].JugadorDos === 0) {
+  EnfrentamientosJornadaSeleccionada[i].nombreJugadorDos = 'Jugador Fantasma';
+}
+else if (EnfrentamientosJornadaSeleccionada[i].JugadorDos === listaAlumnos[j].id) {
+EnfrentamientosJornadaSeleccionada[i].nombreJugadorDos = listaAlumnos[j].Nombre + ' ' +
+listaAlumnos[j].PrimerApellido + ' ' +
+listaAlumnos[j].SegundoApellido;
+if (EnfrentamientosJornadaSeleccionada[i].Ganador === listaAlumnos[j].id) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = listaAlumnos[j].Nombre + ' ' +
+listaAlumnos[j].PrimerApellido + ' ' +
+listaAlumnos[j].SegundoApellido;
+
+} else if (EnfrentamientosJornadaSeleccionada[i].Ganador === undefined) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = '-';
+}
+}
+}
+}
+
+} else {
+console.log('Estoy en ConstruirTablaEnfrentamientos() equipos');
+// tslint:disable-next-line:prefer-for-of
+for (let i = 0; i < EnfrentamientosJornadaSeleccionada.length; i++) {
+// tslint:disable-next-line:prefer-for-of
+for (let j = 0; j < listaEquipos.length; j++) {
+  if (EnfrentamientosJornadaSeleccionada[i].JugadorUno === 0) {
+    EnfrentamientosJornadaSeleccionada[i].nombreJugadorUno = 'Equipo Fantasma';
+  }
+  if (EnfrentamientosJornadaSeleccionada[i].JugadorUno === listaEquipos[j].id) {
+  EnfrentamientosJornadaSeleccionada[i].nombreJugadorUno = listaEquipos[j].Nombre;
+if (EnfrentamientosJornadaSeleccionada[i].Ganador === listaEquipos[j].id) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = listaEquipos[j].Nombre;
+
+} else if (EnfrentamientosJornadaSeleccionada[i].Ganador === undefined) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = '-';
+}
+} 
+if (EnfrentamientosJornadaSeleccionada[i].JugadorDos === 0) {
+  EnfrentamientosJornadaSeleccionada[i].nombreJugadorDos = 'Equipo Fantasma';
+}
+
+else if (EnfrentamientosJornadaSeleccionada[i].JugadorDos === listaEquipos[j].id) {
+EnfrentamientosJornadaSeleccionada[i].nombreJugadorDos = listaEquipos[j].Nombre;
+if (EnfrentamientosJornadaSeleccionada[i].Ganador === listaEquipos[j].id) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = listaEquipos[j].Nombre;
+
+} else if (EnfrentamientosJornadaSeleccionada[i].Ganador === undefined) {
+EnfrentamientosJornadaSeleccionada[i].nombreGanador = '-';
+}
+}
+}
+}
+}
+return EnfrentamientosJornadaSeleccionada;
+}
+
+   //////////////////////////////////////// JUEGO DE GEOCACHING ///////////////////////////////////
+
   public DameAlumnosJuegoDeGeocaching(juegoId: number): MiAlumnoAMostrarJuegoDeGeocaching[] {
     let InformacionAlumno: MiAlumnoAMostrarJuegoDeGeocaching[] = [];
     this.peticionesAPI.DameAlumnosJuegoDeGeocaching(juegoId).subscribe(
