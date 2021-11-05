@@ -3,7 +3,7 @@ import { NavController, LoadingController, AlertController } from '@ionic/angula
 import { PeticionesAPIService } from '../servicios/index';
 import { CalculosService } from '../servicios/calculos.service';
 import {
-  Alumno, Juego, Jornada, TablaJornadas, EnfrentamientoLiga, TablaAlumnoJuegoDeCompeticion,
+  Alumno, Juego, Jornada, TablaJornadas, EnfrentamientoLiga,EnfrentamientoTorneo, TablaAlumnoJuegoDeCompeticion,
 
   TablaEquipoJuegoDeCompeticion, AlumnoJuegoDeCompeticionLiga, TablaClasificacionJornada, Equipo
 
@@ -45,6 +45,11 @@ export class InformacionJornadasPage implements OnInit {
   GanadoresJornadaF1: TablaClasificacionJornada[];
   imagenesDePerfil: string[];
 
+   //TORNEO
+   EnfrentamientosJornadaSeleccionadaTorneo: EnfrentamientoTorneo[] = [];
+   listaAlumnos: Alumno[] = [];
+   listaEquipos: Equipo[] = [];
+ 
   constructor(
     private sesion: SesionService,
     public navCtrl: NavController,
@@ -68,6 +73,9 @@ export class InformacionJornadasPage implements OnInit {
     console.log(this.listaAlumnosClasificacion);
     this.peticionesAPI.DameAlumnosGrupo (this.juegoSeleccionado.grupoId)
     .subscribe (alumnos => this.alumnosDelGrupo = alumnos);
+    this.listaAlumnos = this.sesion.DameAlumnoJuegoDeCompeticionTorneo();
+    console.log(this.listaAlumnos);
+    this.listaEquipos = this.sesion.DameEquipoJuegoDeCompeticionTorneo();
   }
 
   
@@ -153,7 +161,30 @@ export class InformacionJornadasPage implements OnInit {
 
     }
   }
+// Para Competicion Torneo:
+ConstruirTablaEnfrentamientosTorneo() {
+  console.log ('Aquí tendré la tabla de enfrentamientos, los enfrentamientos sonc:');
+  console.log(this.EnfrentamientosJornadaSeleccionadaTorneo);
+  console.log('Distinción entre Individual y equipos');
+  if (this.juegoSeleccionado.Modo === 'Individual') {
+    this.EnfrentamientosJornadaSeleccionadaTorneo = this.calculos.ConstruirTablaEnfrentamientosTorneo(this.EnfrentamientosJornadaSeleccionadaTorneo,
+                                                                                          this.listaAlumnos,
+                                                                                          this.listaEquipos,
+                                                                                          this.juegoSeleccionado);
+    
+    console.log('La tabla de enfrentamientos individual queda: ');
+    console.log(this.EnfrentamientosJornadaSeleccionadaTorneo);
 
+  } else {
+    this.EnfrentamientosJornadaSeleccionadaTorneo = this.calculos.ConstruirTablaEnfrentamientosTorneo(this.EnfrentamientosJornadaSeleccionadaTorneo,
+                                                                                          this.listaAlumnos,
+                                                                                          this.listaEquipos,
+                                                                                          this.juegoSeleccionado);
+    console.log('La tabla de enfrentamientos por equipos queda: ');
+    console.log(this.EnfrentamientosJornadaSeleccionadaTorneo);
+
+  }
+}
 
   JornadaFinalizada(jornadaSeleccionada: TablaJornadas) {
     const jornadaFinalizada = this.calculos.JornadaFinalizada(this.juegoSeleccionado, jornadaSeleccionada);
