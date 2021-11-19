@@ -616,6 +616,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     }
     this.puntuacionMaxima = this.puntuacionCorrecta * this.PreguntasCuestionario.length;
 
+    this.Nota = 0;
 
     // Para calcular la nota comprobamos el vector de respuestas con el de preguntas (mirando la respuesta correcta)
     // si es correcta sumamos, si es incorrecta restamos y en el caso de que la haya dejado en blanco ni suma ni resta

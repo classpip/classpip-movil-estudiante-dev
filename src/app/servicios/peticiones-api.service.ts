@@ -913,6 +913,7 @@ public DameEquiposJuegoDeCompeticionTorneo(juegoDeCompeticionTorneoId: number): 
   return this.http.get<Equipo[]>(this.APIUrlJuegoDeCompeticionTorneo + '/' + juegoDeCompeticionTorneoId + '/equipos');
 }
 public DameJuegoDeCompeticionTorneoEquipo(equipoId: number): Observable<Juego[]> {
+  // return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionLiga');
   return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionTorneo');
 }
   // Gestion del juego de competicion formula uno, individual
