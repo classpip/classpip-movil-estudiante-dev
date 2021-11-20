@@ -500,6 +500,16 @@ export class CalculosService {
         }
       }
 
+      console.log('voy a por los juegos de votacion a opciones');
+      lista = await this.peticionesAPI.DameJuegosDeVotacionAOpcionesAlumno(AlumnoId).toPromise();
+      for (let i = 0; i < (lista.length); i++) {
+        if (lista[i].JuegoActivo === true) {
+          JuegosActivos.push(lista[i]);
+        } else {
+          JuegosInactivos.push(lista[i]);
+        }
+      }
+      
       console.log('voy a por los juegos de cuestionario de satisfaccion');
       lista = await this.peticionesAPI.DameJuegosDeCuestiinarioSatisfaccionAlumno(AlumnoId).toPromise();
       for (let i = 0; i < (lista.length); i++) {

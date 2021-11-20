@@ -76,3 +76,6 @@ export * from './EquipoJuegoDeCuestionario';
 
 export * from './Evento';
 
+export * from './AlumnoJuegoDeVotacionAOpciones';
+export * from './JuegoDeVotacionAOpciones';
+

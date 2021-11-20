@@ -46,7 +46,8 @@ const routes: Routes = [
   { path: 'pagina-evaluar/:id', loadChildren: './pagina-evaluar/pagina-evaluar.module#PaginaEvaluarPageModule' },
   { path: 'pagina-notafinal/:id', loadChildren: './pagina-notafinal/pagina-notafinal.module#PaginaNotafinalPageModule' },
   // tslint:disable-next-line:max-line-length
-  { path: 'juego-de-control-de-trabajo-en-equipo', loadChildren: './juego-de-control-de-trabajo-en-equipo/juego-de-control-de-trabajo-en-equipo.module#JuegoDeControlDeTrabajoEnEquipoPageModule' }
+  { path: 'juego-de-control-de-trabajo-en-equipo', loadChildren: './juego-de-control-de-trabajo-en-equipo/juego-de-control-de-trabajo-en-equipo.module#JuegoDeControlDeTrabajoEnEquipoPageModule' },  { path: 'juego-votacion-aopciones', loadChildren: './juego-votacion-aopciones/juego-votacion-aopciones.module#JuegoVotacionAOpcionesPageModule' }
+
 
 
 
