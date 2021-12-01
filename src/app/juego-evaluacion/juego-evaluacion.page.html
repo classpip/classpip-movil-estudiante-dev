@@ -26,12 +26,10 @@
           </ion-card-subtitle>
         </ion-list>
      
-        <ion-item *ngIf = "(juego.rubricaId === 0) && hayRespuestas" style= "width:40%; margin-right: -10%;" lines = "none">
-          <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="mostrandoRecibidas" (click)="mostrandoRecibidas = false;">Mostrar <br>evaluaciones <br>a realizar</ion-button>
-          <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="!mostrandoRecibidas" (click)="PrepararRespuestasRecibidas(); mostrandoRecibidas=true;">Mostrar <br>evaluaciones <br>recibidas</ion-button>  
-        </ion-item>
+       
       </ion-item>
  
+   
       
 
     </ion-card-header>
@@ -40,12 +38,22 @@
     
     </ion-card-content>
   </ion-card>
-
+  <div *ngIf = "(juego.rubricaId === 0) && hayRespuestas">
+    <!-- <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="mostrandoRecibidas" (click)="mostrandoRecibidas = false;">Mostrar <br>evaluaciones <br>a realizar</ion-button>
+    <ion-button style= "width:100%; height: 50px" class="ranking-btn-rojo" *ngIf="!mostrandoRecibidas" (click)="PrepararRespuestasRecibidas(); mostrandoRecibidas=true;">Mostrar <br>evaluaciones <br>recibidas</ion-button>   -->
+    <ion-button color="success" expand="block" *ngIf="mostrandoRecibidas" (click)="mostrandoRecibidas = false;">
+      Mostrar evaluaciones a realizar
+    </ion-button>
+    <ion-button color="primary" expand="block" *ngIf="!mostrandoRecibidas" (click)="PrepararRespuestasRecibidas(); mostrandoRecibidas=true;">
+      Mostrar evaluaciones recibidas ( {{evaluacionesARecibir - evaluacionesPendientes}} de {{evaluacionesARecibir}})
+    </ion-button>
+   
+  
+  </div>
   
   <div *ngIf ="mostrandoRecibidas">
- 
         <ion-item *ngFor = "let pregunta of juego.PreguntasAbiertas; let i = index">
-            <ion-list>
+            <ion-list *ngIf = "juego.ModoVistaEvaluado === 'todo'">
             <b>{{pregunta}}</b>
             <ion-item lines = "none" *ngFor = "let respuesta of respuestaEvaluacion; let j = index"> 
               {{respuestaEvaluacion[j][i]}} 
@@ -73,6 +81,16 @@
               {{respuestaProfesor[i]}} <span style ="color:rgb(31, 47, 194); font-size: x-small"> 
               (profesor)</span>
             </ion-item>
+            </ion-list>
+            <ion-list *ngIf = "juego.ModoVistaEvaluado === 'soloGlobal'">
+              <b>{{pregunta}}</b>
+              <ion-item lines = "none" *ngFor = "let respuesta of respuestaEvaluacion; let j = index"> 
+                {{respuestaEvaluacion[j][i]}} 
+         
+              </ion-item>
+              <ion-item lines = "none" *ngIf = "juego.profesorEvalua && respuestaProfesor">
+                {{respuestaProfesor[i]}} 
+              </ion-item>
             </ion-list>
             <br>
             <br>

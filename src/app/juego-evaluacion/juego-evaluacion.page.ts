@@ -31,6 +31,7 @@ export class JuegoEvaluacionPage implements OnInit {
   alumnosDeEquipo = [];
   notaFinal: number;
   hayRespuestas: boolean;
+  respuestas: any[];
 
 
   evaluacionesPendientes: number;
@@ -47,6 +48,7 @@ export class JuegoEvaluacionPage implements OnInit {
 
   ngOnInit() {
       this.juego = this.sesion.DameJuegoEvaluacion();
+      console.log ('JUEGO ', this.juego);
       this.miAlumno = this.sesion.DameAlumno();
   
       if (this.juego.Modo === 'Individual') {
@@ -81,9 +83,13 @@ export class JuegoEvaluacionPage implements OnInit {
                   this.peticionesAPI.DameRelacionEquiposJuegoEvaluado(this.juego.id)
                     .subscribe((res: EquipoJuegoDeEvaluacion[]) => {
                         this.equiposJuegoDeEvaluacion = res;
-                        const respuestas = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id).respuestas;
-                        this.hayRespuestas = (respuestas !== null);
+                        this.respuestas = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id).respuestas;
+                        this.hayRespuestas = (this.respuestas !== null);
                         this.equiposPorEquipos = res[0].alumnosEvaluadoresIds === null;
+                        if (!this.equiposPorEquipos) {
+                            console.log ('EQUIPOS CON EVALUACION INDIVIDUAL');
+                            console.log ('repsuestas de momento ', this.respuestas);
+                        }
                         this.sesion.TomaEquiposJuegoDeEvaluacion(this.equiposJuegoDeEvaluacion);
                         this.equiposJuegoDeEvaluacion.forEach((equipoRelacion: EquipoJuegoDeEvaluacion) => {
                             this.peticionesAPI.DameAlumnosEquipo(equipoRelacion.equipoId)
@@ -195,9 +201,11 @@ export class JuegoEvaluacionPage implements OnInit {
 
   MiNotaFinal(): number {
       console.log ('estoy en MiNotaFinal', this.notaFinal);
+     
       if (this.notaFinal !== -1) {
           return this.notaFinal;
       }
+      console.log ('CALCULO NOTA FINAL');
       let miRelacion: any;
       let alumnosDeMiRelacion: number[] = [];
       let alumnosEvaluadores: number[] = [];
@@ -227,6 +235,7 @@ export class JuegoEvaluacionPage implements OnInit {
 
 
           this.evaluacionesPendientes = this.evaluacionesARecibir - this.evaluacionesRecibidas;
+          console.log ('EVALUACIONES PENDIENTES 1', this.evaluacionesPendientes);
 
           alumnosDeMiRelacion = miRelacion.alumnosEvaluadoresIds.slice();
           console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
@@ -246,7 +255,8 @@ export class JuegoEvaluacionPage implements OnInit {
         //   }
           this.sesion.TomaRespuestas(miRelacion.respuestas);
           console.log ('voy a calcular la nota');
-          return this.CalcularNotaFinal(miRelacion.respuestas);
+          this.notaFinal = this.CalcularNotaFinal(miRelacion.respuestas);
+          return this.notaFinal;
       } else if (this.juego.Modo === 'Equipos' && typeof this.equiposJuegoDeEvaluacion !== 'undefined') {
           miRelacion = this.equiposJuegoDeEvaluacion.find(item => item.equipoId === this.miEquipo.id);
           console.log('mi relacion', miRelacion);
@@ -265,11 +275,7 @@ export class JuegoEvaluacionPage implements OnInit {
               if (this.juego.profesorEvalua) {
                 this.evaluacionesARecibir ++;
               }
-              if (this.juego.autoEvaluacion) {
-                this.evaluacionesARecibir ++;
-              }
-              
-              this.evaluacionesPendientes = this.evaluacionesARecibir - this.evaluacionesRecibidas;
+            
               
               alumnosDeMiRelacion = miRelacion.alumnosEvaluadoresIds.slice();
               console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
@@ -280,17 +286,20 @@ export class JuegoEvaluacionPage implements OnInit {
                           alumnosDeMiRelacion.push(id);
                       }
                   });
+                  this.evaluacionesARecibir = this.evaluacionesARecibir + alumnosDeMiEquipoIds.length;
                   console.log('alumnosDeMiRelacion', alumnosDeMiRelacion);
               }
-              if (alumnosDeMiRelacion.sort().join(',') !== alumnosEvaluadores.sort().join(',')) {
-                  console.log('Faltan alumnos por evaluarte');
-                  return null;
-              }
-              console.log('Todos los alumnos te han evaluado');
-              if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
-                  console.log('Profesor falta por evaluar');
-                  return null;
-              }
+              this.evaluacionesPendientes = this.evaluacionesARecibir - this.evaluacionesRecibidas;
+          
+            //   if (alumnosDeMiRelacion.sort().join(',') !== alumnosEvaluadores.sort().join(',')) {
+            //       console.log('Faltan alumnos por evaluarte');
+            //       return null;
+            //   }
+            //   console.log('Todos los alumnos te han evaluado');
+            //   if (this.juego.profesorEvalua && !miRelacion.respuestas.find(item => item.profesorId === this.juego.profesorId)) {
+            //       console.log('Profesor falta por evaluar');
+            //       return null;
+            //   }
               this.sesion.TomaRespuestas(miRelacion.respuestas);
               return this.CalcularNotaFinal(miRelacion.respuestas);
           } else {
@@ -303,7 +312,7 @@ export class JuegoEvaluacionPage implements OnInit {
               }
               
               this.evaluacionesPendientes = this.evaluacionesARecibir - this.evaluacionesRecibidas;
-              
+              console.log ('EVALUACIONES PENDIENTES 2', this.evaluacionesPendientes);
               const equiposEvaluadores = [];
               this.alumnosDeEquipo.forEach((item) => {
                   const alumnosIds = item.alumnos.map(a => a.id);
@@ -329,7 +338,8 @@ export class JuegoEvaluacionPage implements OnInit {
             //       return null;
             //   }
               this.sesion.TomaRespuestas(miRelacion.respuestas);
-              return this.CalcularNotaFinal(miRelacion.respuestas);
+              this.notaFinal = this.CalcularNotaFinal(miRelacion.respuestas);
+              return this.notaFinal;
           }
       }
   }
@@ -362,6 +372,7 @@ export class JuegoEvaluacionPage implements OnInit {
   VerNotaFinal(id: number) {
     console.log ('envio evaluaciones pendientes');
     console.log (this.evaluacionesPendientes);
+    this.sesion.TomaRespuestas (this.respuestas);
     this.sesion.TomaEvaluacionesPendientes (this.evaluacionesPendientes);
     this.sesion.TomaEvaluacionesARecibir (this.evaluacionesARecibir);
     this.navCtrl.navigateForward('/pagina-notafinal/' + id).then();
