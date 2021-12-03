@@ -27,10 +27,11 @@
 </div>
 </ion-content>
 
-<ion-content *ngIf = "juegoSeleccionado.Modo === 'Equipos' && inscripcionEquipoJuegoDeVotacionUnoATodos && inscripcionEquipoJuegoDeVotacionUnoATodos.Votos">
+<ion-content *ngIf = "juegoSeleccionado.Modo === 'Equipos' && inscripcionEquipoJuegoDeVotacionUnoATodos && YaHasVotado()">
   <!-- Ya ha votado -->
   <div>
-   <h2 style="text-align: center;">Esta ha sido vuestra votación</h2>
+   <h2 *ngIf = "juegoSeleccionado.VotanEquipos" style="text-align: center;">Esta ha sido vuestra votación</h2>
+   <h2 *ngIf = "!juegoSeleccionado.VotanEquipos" style="text-align: center;">Esta ha sido tu votación</h2>
    <!-- Solo muestro los equipos que recibieron votos -->
    <ion-list *ngIf = 'equiposVotados'>
        <ion-item *ngFor="let equipo of equiposVotados; let i=index">
@@ -75,7 +76,7 @@
 
 <ion-content *ngIf = "juegoSeleccionado.Modo === 'Equipos' && juegoSeleccionado.ModoReparto !== 'Reparto libre'">
   <!-- Si aun no han votado y el reparto es fijo-->
-  <div *ngIf = 'inscripcionEquipoJuegoDeVotacionUnoATodos && !inscripcionEquipoJuegoDeVotacionUnoATodos.Votos'>
+  <div *ngIf = 'inscripcionEquipoJuegoDeVotacionUnoATodos && !YaHasVotado()'>
     <div style="text-align:center; margin-top: 10%;">  
       <ion-button class="ranking-btn" (click)="Enviar()"> Envía vuestra votación </ion-button>  
     </div> 
@@ -131,9 +132,10 @@
 
 <ion-content *ngIf = "juegoSeleccionado.Modo === 'Equipos' && juegoSeleccionado.ModoReparto === 'Reparto libre'">
   <!-- Si aun no han votado y el reparto es libre-->
- <div *ngIf = 'inscripcionEquipoJuegoDeVotacionUnoATodos && !inscripcionEquipoJuegoDeVotacionUnoATodos.Votos'>
+ <div *ngIf = 'inscripcionEquipoJuegoDeVotacionUnoATodos && !YaHasVotado()'>
    <div *ngIf = 'puntosARepartir === 0' style="text-align:center; margin-top: 10%;">  
-     <ion-button class="ranking-btn" (click)="Enviar()"> Envía vuestra votación </ion-button>  
+     <ion-button *ngIf = "juegoSeleccionado.VotanEquipos" class="ranking-btn" (click)="Enviar()"> Envía vuestra votación </ion-button>  
+     <ion-button *ngIf = "!juegoSeleccionado.VotanEquipos" class="ranking-btn" (click)="Enviar()"> Envía tu votación </ion-button>  
    </div> 
    <br>
    <ion-list style="text-align:center">
