@@ -12,7 +12,7 @@ import {
   MiAlumnoAMostrarJuegoDeGeocaching,
   PuntoGeolocalizable, AlumnoJuegoDeAvatar, FamiliaAvatares, JuegoDeVotacionUnoATodos, AlumnoJuegoDeVotacionUnoATodos,
   Rubrica, JuegoDeVotacionTodosAUno, AlumnoJuegoDeVotacionTodosAUno, JuegoDeCuestionarioSatisfaccion, AlumnoJuegoDeCuestionarioSatisfaccion,
-  CuestionarioSatisfaccion, JuegoDeEncuestaRapida, EquipoJuegoDeVotacionUnoATodos, JuegoDeControlDeTrabajoEnEquipo, AlumnoJuegoDeControlDeTrabajoEnEquipo, EquipoJuegoDeCuestionario, RespuestaEquipoJuegoDeCuestionario, Evento
+  CuestionarioSatisfaccion, JuegoDeEncuestaRapida, EquipoJuegoDeVotacionUnoATodos, JuegoDeControlDeTrabajoEnEquipo, AlumnoJuegoDeControlDeTrabajoEnEquipo, EquipoJuegoDeCuestionario, RespuestaEquipoJuegoDeCuestionario, Evento, AlumnoJuegoDeVotacionAOpciones, JuegoDeVotacionAOpciones
 } from '../clases';
 import { AlumnoJuegoDeCuestionario } from '../clases/AlumnoJuegoDeCuestionario';
 import { Cuestionario } from '../clases/Cuestionario';
@@ -125,6 +125,8 @@ export class PeticionesAPIService {
 
   private APIUrlEventos = this.base + '3000/api/Eventos';
   private APIUrlAlumnoJuegoDeControlDeTrabajoEnEquipo = this.base + '3000/api/alumnosJuegoDeControlDeTrabajoEnEquipo';
+
+  private APIUrlAlumnoJuegoDeVotacionAOpciones = this.base + '3000/api/alumnosJuegoDeVotacionAOpciones';
 
   constructor(
     private http: HttpClient,
@@ -913,6 +915,7 @@ public DameEquiposJuegoDeCompeticionTorneo(juegoDeCompeticionTorneoId: number): 
   return this.http.get<Equipo[]>(this.APIUrlJuegoDeCompeticionTorneo + '/' + juegoDeCompeticionTorneoId + '/equipos');
 }
 public DameJuegoDeCompeticionTorneoEquipo(equipoId: number): Observable<Juego[]> {
+  // return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionLiga');
   return this.http.get<Juego[]>(this.APIUrlEquipos + '/' + equipoId + '/juegosDeCompeticionTorneo');
 }
   // Gestion del juego de competicion formula uno, individual
@@ -1091,7 +1094,8 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   public DameAlumnosJuegoDeVotacionTodosAUno(juegoId: number): Observable<Alumno[]> {
     return this.http.get<Alumno[]>(this.APIUrlJuegoDeVotacionTodosAUno + '/' + juegoId + '/alumnos');
   }
-
+  
+  
   // Modifica la inscripcion (las votaciones) del alumno
   public RegistraVotaciones(alumnoJuegoDeVotacionTodosAUno: AlumnoJuegoDeVotacionTodosAUno): Observable<AlumnoJuegoDeVotacionTodosAUno> {
     // tslint:disable-next-line:max-line-length
@@ -1262,4 +1266,22 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   public BorraEvento(eventoID: number): Observable<Evento> {
     return this.http.delete<Evento>();
   } */
+
+     // tslint:disable-next-line:max-line-length
+  public DameInscripcionAlumnoJuegoDeVotacionAOpciones(juegoId: number, alumnoId: number): Observable<AlumnoJuegoDeVotacionAOpciones[]> {
+    return this.http.get<AlumnoJuegoDeVotacionAOpciones[]>(this.APIUrlAlumnoJuegoDeVotacionAOpciones
+          + '?filter[where][juegoDeVotacionAOpcionesId]=' + juegoId +  '&filter[where][alumnoId]=' + alumnoId);
+  } 
+  
+  public DameJuegosDeVotacionAOpcionesAlumno(alumnoId: number): Observable<JuegoDeVotacionAOpciones[]> {
+    return this.http.get<JuegoDeVotacionAOpciones[]>(this.APIUrlAlumnos + '/' + alumnoId + '/juegoDeVotacionAOpciones');
+  }
+
+    // Modifica la inscripcion (las votaciones) del alumno
+  // tslint:disable-next-line:max-line-length
+  public RegistraVotacionAOpciones(alumnoJuegoDeVotacionAOpciones: AlumnoJuegoDeVotacionAOpciones): Observable<AlumnoJuegoDeVotacionAOpciones> {
+    // tslint:disable-next-line:max-line-length
+    return this.http.put<AlumnoJuegoDeVotacionAOpciones>(this.APIUrlAlumnoJuegoDeVotacionAOpciones + '/' + alumnoJuegoDeVotacionAOpciones.id, alumnoJuegoDeVotacionAOpciones);
+  }
+  
 }

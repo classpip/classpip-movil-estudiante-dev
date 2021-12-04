@@ -8,6 +8,7 @@
 </ion-header>
 <ion-content class="juegocoleccion-content" #content>
 <ion-button *ngIf ="coleccion.DosCaras && coleccionCompleta"  class="ranking-btn" (click)="Voltear()">Dar la vuelta a todos los cromos</ion-button>
+<ion-button [disabled] = "true" *ngIf ="coleccion.DosCaras && !coleccionCompleta"  class="ranking-btn-rojo">Completa la colección para <br>dar la vuelta a todos los cromos</ion-button>
 
     
 <div style = "width: 402px">

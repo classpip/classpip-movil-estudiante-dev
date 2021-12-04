@@ -4,3 +4,34 @@
     left: 0px;
     
 }
+.card-center{
+    width:180%; // adjust width on your ion-card suitable on your screen
+    display:block;
+    margin: 0 auto;
+}
+.card-par{
+    width: 300px;
+    background-color: rgb(235, 221, 221);
+    padding-top: 15px; 
+    padding-bottom: 15px;
+}
+.card-impar{
+    width: 300px;
+    background-color: rgb(192, 222, 223);
+    padding-top: 15px; 
+    padding-bottom: 15px;
+}
+
+.enColumna{
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+  
+    justify-content: left ;
+    flex-direction: column;
+    // align-items: flex-start;
+    border: solid transparent;
+    align-items: center;
+    width: 100%;
+  }
+  

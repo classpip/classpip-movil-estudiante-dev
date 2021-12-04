@@ -132,8 +132,8 @@ export class JuegoCompeticionTorneoPage implements OnInit {
               const alumno2 = this.alumnosDelJuego.filter (alumno => alumno.id === Number(this.enfrentamientosDelJuego[i][j].JugadorDos))[0];
               console.log ('alumno1 encontrado:  ' + alumno.Nombre);
               console.log ('alumno2 encontrado:  ' + alumno2.Nombre);
-              this.enfrentamientosDelJuego[i][j].nombreJugadorUno = alumno.Nombre + alumno.PrimerApellido;
-              this.enfrentamientosDelJuego[i][j].nombreJugadorDos = alumno2.Nombre + alumno2.PrimerApellido;
+              this.enfrentamientosDelJuego[i][j].nombreJugadorUno = alumno.Nombre + ' ' + alumno.PrimerApellido;
+              this.enfrentamientosDelJuego[i][j].nombreJugadorDos = alumno2.Nombre + ' ' + alumno2.PrimerApellido;
             } else {
               const equipo = this.equiposDelJuego.filter (equipo => equipo.id === Number(this.enfrentamientosDelJuego[i][j].JugadorUno))[0];
               const equipo2 = this.equiposDelJuego.filter (equipo => equipo.id === Number(this.enfrentamientosDelJuego[i][j].JugadorDos))[0];
@@ -299,7 +299,15 @@ async EquiposDelJuego() {
     this.sesion.TomaEquipo(this.MiEquipo);
     this.navCtrl.navigateForward('/informacion-jornadas');
   }
-  
+  EsEmparejamientoPar(n: number): boolean {
+    const res = Math.floor (n / 2) % 2;
+    if (res  === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   
 
 }
