@@ -397,145 +397,206 @@ export class CalculosService {
       const JuegosInactivos: any[] = [];
       let lista = [];
       console.log('* voy a por los juegos de puntos del alumno');
-      lista = await this.peticionesAPI.DameJuegoDePuntosAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegoDePuntosAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de puntos');
       }
+
       console.log('* voy a por los juegos de colecciones del alumno');
-      lista = await this.peticionesAPI.DameJuegoDeColeccionesAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegoDeColeccionesAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de coleccion');
       }
+
       console.log('voy a por los juegos de geocaching');
-      lista = await this.peticionesAPI.DameJuegoDeGeocachingAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          lista[i].Tipo = 'Juego De Geocaching';
-          JuegosActivos.push(lista[i]);
-        } else if (lista[i].JuegoTerminado === true) {
-          lista[i].Tipo = 'Juego De Geocaching';
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegoDeGeocachingAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            lista[i].Tipo = 'Juego De Geocaching';
+            JuegosActivos.push(lista[i]);
+          } else if (lista[i].JuegoTerminado === true) {
+            lista[i].Tipo = 'Juego De Geocaching';
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de geocaching');
       }
 
       console.log('voy a por los juegos de F1 del alumno');
-      lista = await this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId).toPromise();
-
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegoDeCompeticionF1Alumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de F1');
       }
 
       console.log('voy a por los juegos de liga del alumno');
-      lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de liga');
       }
 
       console.log('voy a por los juegos de torneo del alumno');
-      lista = await this.peticionesAPI.DameJuegoDeCompeticionTorneoAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
-        }
-      }
-      console.log('voy a por los juegos de cuestionario del alumno');
-      lista = await this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < lista.length; i++) {
-        if (lista[i].JuegoActivo === true) {
-            // Esto lo hago porque la lista que viene de la API es de objetos de tipo JuegoDeCuestionario
-            // que no tienen el campo tipo de juego. Tengo que añadirselo yo.
-            lista[i].Tipo = 'Juego De Cuestionario';
+      try {
+        lista = await this.peticionesAPI.DameJuegoDeCompeticionTorneoAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
             JuegosActivos.push(lista[i]);
-        } else if (lista[i].JuegoTerminado === true) {
-            lista[i].Tipo = 'Juego De Cuestionario';
+          } else {
             JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de torneo');
+      }
+
+
+      console.log('voy a por los juegos de cuestionario del alumno');
+      try {
+        lista = await this.peticionesAPI.DameJuegoDeCuestionarioAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+              // Esto lo hago porque la lista que viene de la API es de objetos de tipo JuegoDeCuestionario
+              // que no tienen el campo tipo de juego. Tengo que añadirselo yo.
+              lista[i].Tipo = 'Juego De Cuestionario';
+              JuegosActivos.push(lista[i]);
+          } else if (lista[i].JuegoTerminado === true) {
+              lista[i].Tipo = 'Juego De Cuestionario';
+              JuegosInactivos.push(lista[i]);
+          }
+        }
+      } catch {
+        console.log ('No hay juegos de cuestionario');
       }
 
       console.log('voy a por los juegos de avatar');
-      lista = await this.peticionesAPI.DameJuegoDeAvatarAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegoDeAvatarAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de avatar');
       }
 
       console.log('voy a por los juegos de votacion uno a todos');
-      lista = await this.peticionesAPI.DameJuegosDeVotacionUnoATodosAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegosDeVotacionUnoATodosAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de votación uno a todos');
       }
 
       console.log('voy a por los juegos de votacion todos a uno');
-      lista = await this.peticionesAPI.DameJuegosDeVotacionTodosAUnoAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegosDeVotacionTodosAUnoAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de votación todos a uno');
       }
 
       console.log('voy a por los juegos de votacion a opciones');
-      lista = await this.peticionesAPI.DameJuegosDeVotacionAOpcionesAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegosDeVotacionAOpcionesAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de votación a opcioness');
       }
-      
+
       console.log('voy a por los juegos de cuestionario de satisfaccion');
-      lista = await this.peticionesAPI.DameJuegosDeCuestiinarioSatisfaccionAlumno(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegosDeCuestiinarioSatisfaccionAlumno(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de cuestionario de satisfaccion');
       }
+
       console.log('voy a por los juegos de evaluacion');
-      lista = await this.peticionesAPI.DameJuegosDeEvaluacion(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegosDeEvaluacion(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de evaluacion');
       }
+
       console.log('voy a por los juegos de control de trabajo en equipo');
-      lista = await this.peticionesAPI.DameJuegosDeControlDeTrabajoEnEquipo(AlumnoId).toPromise();
-      for (let i = 0; i < (lista.length); i++) {
-        if (lista[i].JuegoActivo === true) {
-          JuegosActivos.push(lista[i]);
-        } else {
-          JuegosInactivos.push(lista[i]);
+      try {
+        lista = await this.peticionesAPI.DameJuegosDeControlDeTrabajoEnEquipo(AlumnoId).toPromise();
+        for (let i = 0; i < (lista.length); i++) {
+          if (lista[i].JuegoActivo === true) {
+            JuegosActivos.push(lista[i]);
+          } else {
+            JuegosInactivos.push(lista[i]);
+          }
         }
+      } catch {
+        console.log ('No hay juegos de control de trabajo en equipo');
       }
 
       console.log('vamos a por los equipos');
@@ -543,79 +604,115 @@ export class CalculosService {
       for (let i = 0; i < (this.equipos.length); i++) {
                                                                           // tslint:disable-next-line:max-line-length
         console.log('voy a por los juegos de puntos del equipo ' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDePuntosEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos de puntos en equipo');
         }
+
         console.log('voy a por los juegos de coleccion del equipo ' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDeColeccionEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos de coleccion en equipo');
         }
+
         console.log('voy a por los juegos de F1 del equipo ' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDeCompeticionF1Equipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos F1 en equipo');
         }
 
         console.log('voy a por los juegos de liga del equipo' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDeCompeticionLigaEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos de liga en equipo');
         }
 
         console.log('voy a por los juegos de torneo del equipo' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDeCompeticionTorneoEquipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDeCompeticionTorneoEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos de torneo en equipo');
         }
+
         console.log('voy a por los juegos de votacion uno a todos del equipo' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDeVotacionUnoATodosEquipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDeVotacionUnoATodosEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos de votacion uno a todos en equipo');
         }
 
         console.log('voy a por los juegos de evaluacion del equipo ' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDeEvaluacionEquipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDeEvaluacionEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos de evaluacion en equipo');
         }
+
         console.log('voy a por los juegos de cuestionario del equipo ' + this.equipos[i].id);
-        lista = await this.peticionesAPI.DameJuegoDeCuestionarioEquipo(this.equipos[i].id).toPromise();
-        for (let j = 0; j < (lista.length); j++) {
-          if (lista[j].JuegoActivo === true) {
-              JuegosActivos.push(lista[j]);
-          } else {
-              JuegosInactivos.push(lista[j]);
+        try {
+          lista = await this.peticionesAPI.DameJuegoDeCuestionarioEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
           }
+        } catch {
+          console.log ('No hay juegos de cuestionario en equipo');
         }
       }
       const juegos  = {

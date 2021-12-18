@@ -343,7 +343,6 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
               }
               // Notifico al server que el alumno ha votado
               this.comServer.Emitir('notificarVotacion', { votacion: this.inscripcionEquipoJuegoDeVotacionUnoATodos});
-
               this.peticionesAPI.RegistraVotacionEquipo (this.inscripcionEquipoJuegoDeVotacionUnoATodos)
               .subscribe (async () => {
                 // tslint:disable-next-line:no-shadowed-variable
@@ -396,8 +395,56 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
         }
       ]
     });
-    await confirm.present();
 
+    // En el caso de voto de equipos por equipos, es posible que mientras el alumno está preparando su votación
+    // otro miembro de su mismo equipo vote en nombre del equipo. Si ha ocurrido eso entonces no hay que enviar la
+    // votación, hay que avisar al alumno de que ha ocurrido eso y hay que mostrarle los resultados de la votación del equipo
+    if (this.juegoSeleccionado.VotanEquipos) {
+      // Aqui miro si alguien del equipo ya ha votado
+      // tslint:disable-next-line:max-line-length
+      const inscripcionEquipo = await this.peticionesAPI.DameInscripcionEquipoJuegoDeVotacionUnoATodos(this.juegoSeleccionado.id, this.equipo.id).toPromise();
+      if (inscripcionEquipo[0].Votos) {
+        const confirm2 = await this.alertCtrl.create({
+          header: 'Alguien de tu equipo ya ha votado',
+          buttons: [
+            {
+              text: 'OK',
+              handler: async () => {
+                  // Si alguien del equipo ya ha votado preparlo la lista solo con los equipos a los que han votado
+                  // para mostrar el resultado de su votación
+                  this.equiposVotados = [];
+                  // primero selecciono los votos que tengo que mostrar
+                  const votosAMostrar = inscripcionEquipo[0].Votos;
+                 
+                  // tslint:disable-next-line:prefer-for-of
+                  for (let i = 0; i < votosAMostrar.length; i++) {
+                    // tslint:disable-next-line:max-line-length
+                    const equipo = this.equipos.filter (eq => eq.id === votosAMostrar[i].equipoId)[0];
+                    this.equiposVotados.push ({
+                      eq: equipo,
+                      puntos: votosAMostrar[i].puntos
+                    });
+                  }
+                  // tslint:disable-next-line:only-arrow-functions
+                  this.equiposVotados = this.equiposVotados.sort(function(a, b) {
+                    return b.puntos - a.puntos;
+                  });
+                  // Cambio la inscripción con los datos de la votación del grupo. Esto hará que la función YaHasVotado
+                  // devuelva cierto de manera que se mostrarán los resultados de la votación que ya ha hecho el equipo.
+                  this.inscripcionEquipoJuegoDeVotacionUnoATodos = inscripcionEquipo[0];
+
+              }
+            }
+          ]
+        });
+        await confirm2.present();
+
+      } else {
+        await confirm.present();
+      }
+    } else {
+      await confirm.present();
+    }
   }
 
 }
