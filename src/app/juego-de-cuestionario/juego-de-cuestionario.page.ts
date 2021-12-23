@@ -106,6 +106,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
   respuestasPreparadas = false;
   equipo: Equipo;
   respuestasPorEquipo = [];
+  panelAbierto = false;
 
   @ViewChild(IonSlides, { static: false }) slides: IonSlides;
 
@@ -149,7 +150,8 @@ export class JuegoDeCuestionarioPage implements OnInit {
   ionViewWillEnter () {
     console.log ('empezamos por Enter');
     this.slideActual = 0;
-    // this.ngOnInit();
+
+    this.ngOnInit();
   }
 
   ngOnInit() {
@@ -158,7 +160,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
     // El juego puede ser clásico o kahoot
    
     this.juegoSeleccionado = this.sesion.DameJuego();
-    console.log ('empezamos');
+    console.log ('empezamos ', this.juegoSeleccionado);
 
     this.puntuacionCorrecta = this.juegoSeleccionado.PuntuacionCorrecta;
     this.puntuacionIncorrecta = this.juegoSeleccionado.PuntuacionIncorrecta;
@@ -177,6 +179,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
           this.alumnoJuegoDeCuestionario = res[0];
  
           if (!this.alumnoJuegoDeCuestionario.Contestado) {
+                console.log ('cuestionario NO contestado', this.alumnoJuegoDeCuestionario);
                 // Obtenemos el cuestionario a realizar
                 this.peticionesAPI.DameCuestionario(this.juegoSeleccionado.cuestionarioId)
                 // tslint:disable-next-line:no-shadowed-variable
@@ -195,6 +198,19 @@ export class JuegoDeCuestionarioPage implements OnInit {
                   }
                 });
                 if (this.juegoSeleccionado.Modalidad === 'Kahoot') {
+                  // espero a que se abra el panel del dashboarad
+                  this.comServer.EsperoAperturaPanel ()
+                  .subscribe ( () => {
+                    // Si llega la notificación de apertura del panel entonces puede ser que el alumno le haya dado
+                    // ya al boton de empezar o no. si es que si entonces ya envio su id al dash y este no lo recibió porque
+                    // aun no habia entrado en el papel. En ese caso hay que volver a enviarlo. Si aun no lo ha empezado entonces 
+                    // no hay que hacer nada porque ya lo enviará cuando le de al boton de empezar.
+                    if (this.empezado) {
+                      console.log ('ENVIO ID');
+                      this.comServer.ConfirmarPreparadoParaKahoot (this.alumnoId);
+                    }
+                  });
+
                   // Indico lo que haré cuando reciba los resultados finales del juego en el caso del Kahoot
                   this.comServer.EsperoResultadoFinalKahoot ()
                   .subscribe (resultado => {
@@ -1356,9 +1372,10 @@ export class JuegoDeCuestionarioPage implements OnInit {
                           // Ya no hay más preguntas
                           this.finDelJuego = true;
                           this.preguntaAMostrar = undefined;
+                          //this.alumnoJuegoDeCuestionario.Contestado = true;
                        
                           // tslint:disable-next-line:max-line-length
-                          const registro = new AlumnoJuegoDeCuestionario ( this.puntosTotales, true, this.juegoSeleccionado.id, this.alumnoId, 0);
+                          const registro = new AlumnoJuegoDeCuestionario (this.puntosTotales, true, this.juegoSeleccionado.id, this.alumnoId, 0);
                           console.log ('actualizo el resultado en la base de datos ', registro);
                           // tslint:disable-next-line:max-line-length
                           this.peticionesAPI.PonerNotaAlumnoJuegoDeCuestionario(registro, this.alumnoJuegoDeCuestionario.id)
@@ -1434,6 +1451,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
       console.log ('Ya no hay mas');
       // Ya no hay más preguntas
       this.finDelJuego = true;
+      // this.alumnoJuegoDeCuestionario.Contestado = true;
 
    
       // tslint:disable-next-line:max-line-length
@@ -1446,6 +1464,7 @@ export class JuegoDeCuestionarioPage implements OnInit {
 
     
     this.preguntaAMostrar = undefined;
+   
     this.RespuestasAlumno = [];
   }
 

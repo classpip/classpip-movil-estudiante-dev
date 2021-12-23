@@ -13,6 +13,7 @@
 Esto es lo que se muestra si el juego aun no ha JuegoTerminado
 Depende de si el alumno ha contestado las preguntas ya o aun no -->
 <ion-content *ngIf = "juegoSeleccionado && juegoSeleccionado.Tipo === 'Juego De Cuestionario' && juegoSeleccionado.JuegoActivo && alumnoJuegoDeCuestionario">
+
     <!-- El alumno no ha contestado el cuestionario de tipo Clasico aun -->
     <div *ngIf="!alumnoJuegoDeCuestionario.Contestado && juegoSeleccionado.Modalidad === 'Clásico'; ">
         <ion-list *ngIf ="contar" style="text-align:center; height: 45px;">
@@ -263,13 +264,14 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
           <ion-label   style = "text-align: right; color: red; font-size: xx-large;">{{tiempoRestante}}</ion-label>    
         </ion-list>
         <!-- Aqui indico los botones de navegación que debe tener cada slideActual
-        El slide 0 es el inicial. Se trata de empezar -->
+        El slide 0 es el inicial. Se trata de esperar a que se lancen preguntas-->
+     
         <div *ngIf = "slideActual === 0">
           <button class = "siguiente" mat-raised-button  (click)="ConfirmarPreparado(); next()">Empezar</button>
         </div>
         <!-- En el slide 1 es donde se muestran las preguntas. Solo debe aparecer el boton de ver respuestas cuando ya se han contestado todas -->
         <div *ngIf = "slideActual === 1 && tengoResultadoDelJuego">
-          <button class = "siguiente" mat-raised-button  (click)="next()">Repasa tus respuestas</button>
+          <button class = "siguiente" mat-raised-button  (click)="next()">Repasa tus <br>respuestas</button>
         </div>
         <!-- En el slide 2 se muestran las respuestas -->
         <div *ngIf = "slideActual === 2">
@@ -825,7 +827,6 @@ Depende de si el alumno ha contestado las preguntas ya o aun no -->
             </ion-list>
 
             <ion-list *ngIf ="(juegoSeleccionado.Modo === 'Equipos') && (juegoSeleccionado.Presentacion !== 'Primero')">
-                  aaaaaaa
               <ion-item  lines = "none"*ngFor="let equipo of rankingEquiposPorNota">
                 <ion-item lines = "none" style = "width: 20%">
                   <img  *ngIf = "equipo.imagenPerfil" style = "width:40px; height: 40px;" [src]="equipo.imagenPerfil"> 
