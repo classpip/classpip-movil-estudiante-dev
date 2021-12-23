@@ -128,6 +128,17 @@ export class ComServerService {
         });
     });
   }
+  //Para esperar a que el profe abra el panel
+  public EsperoAperturaPanel(): any {
+      console.log("El profe abre el panel");
+      return Observable.create((observer) => {
+          this.servidor.on('panelAbierto', () => {
+              console.log ('panelAbierto');
+              observer.next();
+          });
+      });
+    }
+
 
   //MÉTODOS NECESARIOS, PARA LA INTERACCIÓN DASHBOARD-SERVER, EN LA MODALIDAD KAHOOT
 

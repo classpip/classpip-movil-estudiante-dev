@@ -598,6 +598,7 @@ replay() {
       }
        
       this.presentLoading();
+      console.log ('PASS ', this.password);
       this.peticionesAPI.DameAlumno(this.username, this.password).subscribe((res) => {
         if (res[0] !== undefined) {
           this.alumno = res[0];
@@ -649,6 +650,11 @@ replay() {
       const re = /\S+@\S+\.\S+/;
       return re.test(email);
     }
+    ValidaPass(pass) {
+      // La contraseña solo puede tener numeros y digitos
+      const re = /[^A-Za-z0-9]+/;
+      return !re.test(pass);
+    }
 
     UsernameUsado(username: string) {
       return this.alumnosEnClasspip.some (alumno => alumno.Username === username);
@@ -657,9 +663,16 @@ replay() {
       console.log ('registro');
       console.log (this.nombre);
       console.log (this.contrasena);
+  
       if (this.UsernameUsado (this.username)) {
         const alert = await this.alertController.create({
           header: 'Ya existe el nombre de usuario en Classpip',
+          buttons: ['OK']
+        });
+        await alert.present();
+      } else if (!this.ValidaPass (this.contrasena)) {
+        const alert = await this.alertController.create({
+          header: 'La contraseña solo puede tener letras y digitos',
           buttons: ['OK']
         });
         await alert.present();
@@ -682,34 +695,35 @@ replay() {
               async profesor => {
                 console.log ('ya tengo el profesoer');
                 console.log (profesor[0]);
-                const nuevoAlumno = new Alumno (
-                  this.nombre,
-                  this.primerApellido,
-                  this.segundoApellido,
-                  this.username,
-                  this.contrasena,
-                  this.email,
-                  profesor[0].id
-                );
-                console.log ('voy a crear al alumno');
-                console.log (nuevoAlumno);
-                this.peticionesAPI.CreaAlumno (nuevoAlumno)
-                .subscribe(async () => {
+                if (profesor[0] !== undefined) {
+                  const nuevoAlumno = new Alumno (
+                    this.nombre,
+                    this.primerApellido,
+                    this.segundoApellido,
+                    this.username,
+                    this.contrasena,
+                    this.email,
+                    profesor[0].id
+                  );
+                  console.log ('voy a crear al alumno');
+                  console.log (nuevoAlumno);
+                  this.peticionesAPI.CreaAlumno (nuevoAlumno)
+                  .subscribe(async () => {
+                    const alert = await this.alertController.create({
+                      header: 'Registro realizado con éxito',
+                      buttons: ['OK']
+                    });
+                    await alert.present();
+                    this.VolverDeRegistro();
+                  });
+                } else {
                   const alert = await this.alertController.create({
-                    header: 'Registro realizado con éxito',
+                    header: 'El ID de profesor es incorrecto',
                     buttons: ['OK']
                   });
                   await alert.present();
-                  this.VolverDeRegistro();
-                });
+                }
               },
-              async error => {
-                const alert = await this.alertController.create({
-                  header: 'El ID de profesor es incorrecto',
-                  buttons: ['OK']
-                });
-                await alert.present();
-              }
           );
       }
     }

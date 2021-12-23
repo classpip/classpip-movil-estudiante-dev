@@ -270,7 +270,7 @@ export class PaginaEvaluarPage implements OnInit {
       const alert = await this.alertController.create({
         backdropDismiss: false,
         header: 'Error',
-        message: 'No se ha enviado el resultado porque ya has votado anteriormente',
+        message: 'No se ha enviado el resultado porque alguien de tu equpo ya ha evaluado',
         buttons: [
           {
             text: 'Volver',

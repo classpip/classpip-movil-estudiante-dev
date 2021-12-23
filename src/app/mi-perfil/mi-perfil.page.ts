@@ -107,6 +107,12 @@ export class MiPerfilPage implements OnInit {
     return re.test(email);
   }
 
+  PassCorrecto(pass) {
+    // La contraseña solo puede tener numeros y digitos
+    const re = /[^A-Za-z0-9]+/;
+    return !re.test(pass);
+  }
+
 
   SeleccionarImagenPerfil($event) {
     const imagen = $event.target.files[0];
@@ -127,7 +133,13 @@ export class MiPerfilPage implements OnInit {
         {
           text: 'SI',
           handler: async () => {
-            if (this.cambioPass && (this.alumno.Password !== this.contrasenaRep)) {
+            if (this.cambioPass && (!this.PassCorrecto (this.alumno.Password))) {
+              const alert = await this.alertController.create({
+                header: 'La contraseña solo puede tener letras y dígitos',
+                buttons: ['OK']
+              });
+              await alert.present();
+            } else if (this.cambioPass && (this.alumno.Password !== this.contrasenaRep)) {
               const alert = await this.alertController.create({
                 header: 'No coincide la contraseña con la contraseña repetida',
                 buttons: ['OK']
