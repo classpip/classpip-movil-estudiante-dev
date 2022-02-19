@@ -53,7 +53,7 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
           this.alumnos = alumnos;
           // Si no está permitida la autovotación quito al alumno que vota
 
-          if (this.juegoSeleccionado.PermitirAutovotacion) {
+          if (!this.juegoSeleccionado.PermitirAutovotacion) {
             this.alumnos = this.alumnos.filter (al => al.id !== this.alumno.id);
           }
         
@@ -101,6 +101,9 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
             this.peticionesAPI.DameEquiposJuegoDeVotacionUnoATodos (this.juegoSeleccionado.id)
             .subscribe (equipos => {
               this.equipos = equipos;
+              if (!this.juegoSeleccionado.PermitirAutovotacion) {
+                this.equipos = this.equipos.filter (eq => eq.id !== this.equipo.id);
+              }
             
               if (this.YaHasVotado()) {
                   // Si han votado preparlo la lista solo con los equipos a los que han votado
@@ -161,54 +164,54 @@ export class JuegoVotacionUnoATodosPage implements OnInit {
 
   }
 
-  async PrepararInfoEquipos () {
-      // averiguo el equipo del alumno
-      const res = await this.peticionesAPI.DameEquipoDeAlumno(this.juegoSeleccionado.grupoId, this.alumno.id).toPromise();
-      this.equipo = res[0];
+  // async PrepararInfoEquipos () {
+  //     // averiguo el equipo del alumno
+  //     const res = await this.peticionesAPI.DameEquipoDeAlumno(this.juegoSeleccionado.grupoId, this.alumno.id).toPromise();
+  //     this.equipo = res[0];
   
-      console.log('Ya tengo equipo ', this.equipo);
-        // Traigo la inscripción del equipo
-      // tslint:disable-next-line:max-line-length
-      const res2 = await this.peticionesAPI.DameInscripcionEquipoJuegoDeVotacionUnoATodos(this.juegoSeleccionado.id, this.equipo.id).toPromise();
+  //     console.log('Ya tengo equipo ', this.equipo);
+  //       // Traigo la inscripción del equipo
+  //     // tslint:disable-next-line:max-line-length
+  //     const res2 = await this.peticionesAPI.DameInscripcionEquipoJuegoDeVotacionUnoATodos(this.juegoSeleccionado.id, this.equipo.id).toPromise();
     
-      console.log ('Ya tengo inscripcion ', res2);
-      this.inscripcionDelVotante = res2[0];
-      console.log ('Ya tengo inscripcion ', this.inscripcionDelVotante);
-      // traigo los equipos del juego
-      this.equipos = await this.peticionesAPI.DameEquiposJuegoDeVotacionUnoATodos (this.juegoSeleccionado.id).toPromise();
-      console.log ('Ya tengo los equipos ', this.equipos);
-      // Si no está permitida la autovotación quito al equipo que vota
-      if (this.juegoSeleccionado.PermitirAutovotacion) {
-        this.equipos = this.equipos.filter (eq => eq.id !== this.equipo.id);
-      }
-      if (this.inscripcionDelVotante.Votos && this.juegoSeleccionado.VotanEquipos) {
-        // Si han votado prepalo la lista solo con los equipos a los que han votado
-        // para mostrar el resultado de su votación
-        this.equiposVotados = [];
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < this.inscripcionDelVotante.Votos.length; i++) {
-          // tslint:disable-next-line:max-line-length
-          const equipo = this.equipos.filter (eq => eq.id === this.inscripcionDelVotante.Votos[i].equipoId)[0];
-          this.equiposVotados.push ({
-            eq: equipo,
-            puntos: this.inscripcionDelVotante.Votos[i].puntos
-          });
-        }
-        // tslint:disable-next-line:only-arrow-functions
-        this.equiposVotados = this.equiposVotados.sort(function(a, b) {
-          return b.puntos - a.puntos;
-        });
-      }
-      if (this.juegoSeleccionado.ModoReparto === 'Reparto libre') {
-        this.equiposConPuntos = [];
-        this.equipos.forEach (equipo =>
-            this.equiposConPuntos.push ({
-                    eq: equipo,
-                    puntos: 0
-            })
-        );
-      }
-  }
+  //     console.log ('Ya tengo inscripcion ', res2);
+  //     this.inscripcionDelVotante = res2[0];
+  //     console.log ('Ya tengo inscripcion ', this.inscripcionDelVotante);
+  //     // traigo los equipos del juego
+  //     this.equipos = await this.peticionesAPI.DameEquiposJuegoDeVotacionUnoATodos (this.juegoSeleccionado.id).toPromise();
+  //     console.log ('Ya tengo los equipos ', this.equipos);
+  //     // Si no está permitida la autovotación quito al equipo que vota
+  //     if (!this.juegoSeleccionado.PermitirAutovotacion) {
+  //       this.equipos = this.equipos.filter (eq => eq.id !== this.equipo.id);
+  //     }
+  //     if (this.inscripcionDelVotante.Votos && this.juegoSeleccionado.VotanEquipos) {
+  //       // Si han votado prepalo la lista solo con los equipos a los que han votado
+  //       // para mostrar el resultado de su votación
+  //       this.equiposVotados = [];
+  //       // tslint:disable-next-line:prefer-for-of
+  //       for (let i = 0; i < this.inscripcionDelVotante.Votos.length; i++) {
+  //         // tslint:disable-next-line:max-line-length
+  //         const equipo = this.equipos.filter (eq => eq.id === this.inscripcionDelVotante.Votos[i].equipoId)[0];
+  //         this.equiposVotados.push ({
+  //           eq: equipo,
+  //           puntos: this.inscripcionDelVotante.Votos[i].puntos
+  //         });
+  //       }
+  //       // tslint:disable-next-line:only-arrow-functions
+  //       this.equiposVotados = this.equiposVotados.sort(function(a, b) {
+  //         return b.puntos - a.puntos;
+  //       });
+  //     }
+  //     if (this.juegoSeleccionado.ModoReparto === 'Reparto libre') {
+  //       this.equiposConPuntos = [];
+  //       this.equipos.forEach (equipo =>
+  //           this.equiposConPuntos.push ({
+  //                   eq: equipo,
+  //                   puntos: 0
+  //           })
+  //       );
+  //     }
+  // }
   // Esta función se ejecuta cuando movemos a los alumnos o equipos de posición en la lista
   reorderItems(event) {
     if (this.juegoSeleccionado.Modo === 'Individual') {
