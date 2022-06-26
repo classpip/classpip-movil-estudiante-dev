@@ -29,6 +29,7 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
   alumnosVotados: Alumno[];
   hideMe = true;
   listaAlumnos: any[];
+  listaEquipos: any[];
   opcionesPicker: PickerOptions;
   pickerAction;
   jsonData;
@@ -75,8 +76,8 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
             this.peticionesAPI.DameEquiposJuegoDeVotacionTodosAUno (this.juegoSeleccionado.id)
             .subscribe (equipos => {
               this.equipos = equipos;
-            
-              if (this.YaHasVotado()) {
+              this.PreparaLista();
+              /*if (this.YaHasVotado()) {
                   // Si han votado preparlo la lista solo con los equipos a los que han votado
                   // para mostrar el resultado de su votación
                   this.equiposVotados = [];
@@ -85,7 +86,7 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
                   if (this.juegoSeleccionado.VotanEquipos) {
                     votosAMostrar = this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos;
                   } else {
-                    votosAMostrar = this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.filter (voto => voto.alumnoId === this.alumno.id);
+                    votosAMostrar = this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.filter (voto => voto.equipoId === this.equipo.id)[0];
                   }
                   // tslint:disable-next-line:prefer-for-of
                   for (let i = 0; i < votosAMostrar.length; i++) {
@@ -93,14 +94,14 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
                     const equipo = this.equipos.filter (eq => eq.id === votosAMostrar[i].equipoId)[0];
                     this.equiposVotados.push ({
                       eq: equipo,
-                      puntos: votosAMostrar[i].puntos
+                      puntos: votosAMostrar[i]
                     });
                   }
                   // tslint:disable-next-line:only-arrow-functions
                   this.equiposVotados = this.equiposVotados.sort(function(a, b) {
                     return b.puntos - a.puntos;
                   });
-              }
+              }*/
             });
     
           });
@@ -110,31 +111,59 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
 
   PreparaLista() {
     this.listaAlumnos = [];
-    this.alumnos.forEach (alumno => {
-      if (alumno.id !== this.alumno.id) {
-            // tslint:disable-next-line:max-line-length
-            const votosRecibidos = this.inscripcionAlumnoJuegoDeVotacionTodosAUno.VotosEmitidos.filter (votos => votos.alumnoId === alumno.id)[0];
-            console.log ('votos recibidos por ' + alumno.Nombre);
-            console.log (votosRecibidos);
-            if (votosRecibidos === undefined) {
-              const item = {
-                al : alumno,
-                votos : undefined,
-                registrado: false
-              };
-              this.listaAlumnos.push (item);
-            } else {
-              const item = {
-                al : alumno,
-                votos : votosRecibidos.votos,
-                registrado: true
-              };
-              this.listaAlumnos.push (item);
-            }
-      }
-    });
-    console.log ('Ya esta preparada la lista de alumnos');
-    console.log (this.listaAlumnos);
+    this.listaEquipos = [];
+    if (this.juegoSeleccionado.Modo === "Individual"){
+      this.alumnos.forEach (alumno => {
+        if (alumno.id !== this.alumno.id) {
+              // tslint:disable-next-line:max-line-length
+              const votosRecibidos = this.inscripcionAlumnoJuegoDeVotacionTodosAUno.VotosEmitidos.filter (votos => votos.alumnoId === alumno.id)[0];
+              console.log ('votos recibidos por ' + alumno.Nombre);
+              console.log (votosRecibidos);
+              if (votosRecibidos === undefined) {
+                const item = {
+                  al : alumno,
+                  votos : undefined,
+                  registrado: false
+                };
+                this.listaAlumnos.push (item);
+              } else {
+                const item = {
+                  al : alumno,
+                  votos : votosRecibidos.votos,
+                  registrado: true
+                };
+                this.listaAlumnos.push (item);
+              }
+        }
+      });
+    }else{
+      this.equipos.forEach (equipo => {
+        if (equipo.id !== this.equipo.id) {
+              // tslint:disable-next-line:max-line-length
+              const votosRecibidos = this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.filter (votos => votos.equipoId === equipo.id)[0];
+              console.log ('votos recibidos por ' + equipo.Nombre);
+              console.log (votosRecibidos);
+              if (votosRecibidos === undefined) {
+                const item = {
+                  eq : equipo,
+                  votos : undefined,
+                  registrado: false
+                };
+                this.listaEquipos.push (item);
+              } else {
+                const item = {
+                  eq: equipo,
+                  votos : votosRecibidos.votos,
+                  registrado: true
+                };
+                this.listaEquipos.push (item);
+              }
+        }
+      });
+
+    }
+    console.log ('Ya esta preparada la lista de equipos');
+    console.log (this.listaEquipos);
   }
 
 
@@ -170,7 +199,11 @@ MuestraWheel(indice: number) {
       for (let i = 0; i < this.juegoSeleccionado.Conceptos.lenght; i++) {
         votos.push(Number(result[i].description));
       }
-      this.listaAlumnos[indice].votos = votos;
+      if(this.juegoSeleccionado.Modo==="Individual"){
+        this.listaAlumnos[indice].votos = votos;
+      }else{
+        this.listaEquipos[indice].votos = votos;
+      }
     },
     err => console.log('Error: ' + JSON.stringify(err))
   );
@@ -234,9 +267,16 @@ MuestraWheel(indice: number) {
           const col = await picker.getColumn (concepto);
           votos.push(col.options[col.selectedIndex].value);
         });
-        this.listaAlumnos[indice].votos = votos;
-        console.log ('lista despues');
-        console.log (this.listaAlumnos);
+        if(this.juegoSeleccionado.Modo==="Individual"){
+          this.listaAlumnos[indice].votos = votos;
+          console.log ('lista despues');
+          console.log (this.listaAlumnos);
+        }else{
+          this.listaEquipos[indice].votos = votos;
+          console.log ('lista despues');
+          console.log (this.listaEquipos);
+        }
+
       }
       this.accordion.closeAll();
 
@@ -260,6 +300,19 @@ MuestraWheel(indice: number) {
         if (item.registrado) {cont++; }
       });
       return (cont === this.listaAlumnos.length);
+    } else {
+      return false;
+    }
+  }
+
+
+  VotacionFinalizadaEquipos(): boolean {
+    if (this.listaEquipos) {
+      let cont = 0;
+      this.listaEquipos.forEach (item => {
+        if (item.registrado) {cont++; }
+      });
+      return (cont === this.listaEquipos.length);
     } else {
       return false;
     }
@@ -292,39 +345,75 @@ MuestraWheel(indice: number) {
         {
           text: 'SI',
           handler: async () => {
-            this.inscripcionAlumnoJuegoDeVotacionTodosAUno.VotosEmitidos = [];
-            this.listaAlumnos.forEach (item => {
-                if (item.votos) {
-                  this.inscripcionAlumnoJuegoDeVotacionTodosAUno.VotosEmitidos.push (
-                    {
-                      alumnoId: item.al.id,
-                      votos: item.votos
-                    });
-                  item.registrado = true;
-                }
-            });
-
-            this.peticionesAPI.RegistraVotaciones (this.inscripcionAlumnoJuegoDeVotacionTodosAUno)
-            .subscribe (async () => {
-              // Notifico al server que un alumno ha votado
-              // No envio ninguna información. El Dash recuperara las inscripciones
-              // de la base de datos y actualizará la tabla.
-              console.log ('emito votaciones');
-              this.comServer.Emitir('notificarVotaciones', {});
-              // tslint:disable-next-line:no-shadowed-variable
-              const confirm = await this.alertCtrl.create({
-                header: 'Votaciones registradas con éxito',
-                buttons: [
-                  {
-                    text: 'OK',
-                    handler: async () => {
-                    }
+            if (this.juegoSeleccionado.Modo === "Individual"){
+              this.inscripcionAlumnoJuegoDeVotacionTodosAUno.VotosEmitidos = [];
+              this.listaAlumnos.forEach (item => {
+                  if (item.votos) {
+                    this.inscripcionAlumnoJuegoDeVotacionTodosAUno.VotosEmitidos.push (
+                      {
+                        alumnoId: item.al.id,
+                        votos: item.votos
+                      });
+                    item.registrado = true;
                   }
-
-                ]
               });
-              await confirm.present();
-            });
+
+              this.peticionesAPI.RegistraVotaciones (this.inscripcionAlumnoJuegoDeVotacionTodosAUno)
+              .subscribe (async () => {
+                // Notifico al server que un alumno ha votado
+                // No envio ninguna información. El Dash recuperara las inscripciones
+                // de la base de datos y actualizará la tabla.
+                console.log ('emito votaciones');
+                this.comServer.Emitir('notificarVotaciones', {});
+                // tslint:disable-next-line:no-shadowed-variable
+                const confirm = await this.alertCtrl.create({
+                  header: 'Votaciones registradas con éxito',
+                  buttons: [
+                    {
+                      text: 'OK',
+                      handler: async () => {
+                      }
+                    }
+
+                  ]
+                });
+                await confirm.present();
+              });
+            }else{
+              this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos = [];
+              this.listaEquipos.forEach (item => {
+                  if (item.votos) {
+                    this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.push (
+                      {
+                        equipoId: item.eq.id,
+                        votos: item.votos
+                      });
+                    item.registrado = true;
+                  }
+              });
+
+              this.peticionesAPI.RegistraVotacionesEquipo (this.inscripcionEquipoJuegoDeVotacionTodosAUno)
+              .subscribe (async () => {
+                // Notifico al server que un alumno ha votado
+                // No envio ninguna información. El Dash recuperara las inscripciones
+                // de la base de datos y actualizará la tabla.
+                console.log ('emito votaciones');
+                this.comServer.Emitir('notificarVotaciones', {});
+                // tslint:disable-next-line:no-shadowed-variable
+                const confirm = await this.alertCtrl.create({
+                  header: 'Votaciones registradas con éxito',
+                  buttons: [
+                    {
+                      text: 'OK',
+                      handler: async () => {
+                      }
+                    }
+
+                  ]
+                });
+                await confirm.present();
+              });
+            }
           }
         }, {
           text: 'NO',
