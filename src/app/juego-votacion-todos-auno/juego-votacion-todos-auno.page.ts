@@ -1,8 +1,9 @@
+import { EquipoJuegoDeVotacionTodosAUno } from './../clases/EquipoJuegoDeVotacionTodosAUno';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PeticionesAPIService, SesionService } from '../servicios/index';
 import { CalculosService, ComServerService } from '../servicios';
 import { NavController, AlertController, PickerController } from '@ionic/angular';
-import { JuegoDeVotacionTodosAUno, Alumno, AlumnoJuegoDeVotacionTodosAUno } from '../clases';
+import { JuegoDeVotacionTodosAUno, Alumno, AlumnoJuegoDeVotacionTodosAUno, Equipo } from '../clases';
 import {PickerOptions} from '@ionic/core';
 import {MatAccordion} from '@angular/material/expansion';
 
@@ -19,8 +20,12 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
 
   juegoSeleccionado: any;
   alumno: Alumno;
+  equipo: Equipo;
   inscripcionAlumnoJuegoDeVotacionTodosAUno: AlumnoJuegoDeVotacionTodosAUno;
+  inscripcionEquipoJuegoDeVotacionTodosAUno: EquipoJuegoDeVotacionTodosAUno;
   alumnos: Alumno[];
+  equipos: Equipo[];
+  equiposVotados: any[];
   alumnosVotados: Alumno[];
   hideMe = true;
   listaAlumnos: any[];
@@ -59,8 +64,48 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
 
       });
      } else {
-       // De momento no hay juego de votación por equipos
-     }
+      this.peticionesAPI.DameEquipoDeAlumno(this.juegoSeleccionado.grupoId, this.alumno.id)
+      .subscribe((equipo: Equipo[]) => {
+          this.equipo = equipo[0];
+          // Traigo la inscripción del equipo
+          this.peticionesAPI.DameInscripcionEquipoJuegoDeVotacionTodosAUno(this.juegoSeleccionado.id, this.equipo.id)
+          .subscribe (inscripcion => {
+            this.inscripcionEquipoJuegoDeVotacionTodosAUno = inscripcion[0];
+            // traigo los equipos del juego
+            this.peticionesAPI.DameEquiposJuegoDeVotacionTodosAUno (this.juegoSeleccionado.id)
+            .subscribe (equipos => {
+              this.equipos = equipos;
+            
+              if (this.YaHasVotado()) {
+                  // Si han votado preparlo la lista solo con los equipos a los que han votado
+                  // para mostrar el resultado de su votación
+                  this.equiposVotados = [];
+                  // primero selecciono los votos que tengo que mostrar
+                  let votosAMostrar;
+                  if (this.juegoSeleccionado.VotanEquipos) {
+                    votosAMostrar = this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos;
+                  } else {
+                    votosAMostrar = this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.filter (voto => voto.alumnoId === this.alumno.id);
+                  }
+                  // tslint:disable-next-line:prefer-for-of
+                  for (let i = 0; i < votosAMostrar.length; i++) {
+                    // tslint:disable-next-line:max-line-length
+                    const equipo = this.equipos.filter (eq => eq.id === votosAMostrar[i].equipoId)[0];
+                    this.equiposVotados.push ({
+                      eq: equipo,
+                      puntos: votosAMostrar[i].puntos
+                    });
+                  }
+                  // tslint:disable-next-line:only-arrow-functions
+                  this.equiposVotados = this.equiposVotados.sort(function(a, b) {
+                    return b.puntos - a.puntos;
+                  });
+              }
+            });
+    
+          });
+      });
+    }
   }
 
   PreparaLista() {
@@ -219,6 +264,25 @@ MuestraWheel(indice: number) {
       return false;
     }
   }
+
+
+  YaHasVotado(): boolean {
+    if (this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos) {
+      // Alguien del equipo ha votado
+      if (this.juegoSeleccionado.VotanEquipos) {
+        // El qequipo ya ha votado
+        return true;
+      } else {
+        // Veamos si ha votado el alumno
+        return this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.some (voto => voto.alumnoId === this.alumno.id);
+      }
+
+    } else {
+      return false;
+    }
+
+  }
+
 
   // función para enviar las votaciones. Es async porque usa una alarma
   async Enviar() {

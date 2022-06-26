@@ -543,6 +543,7 @@ export class CalculosService {
         console.log ('No hay juegos de votación todos a uno');
       }
 
+
       console.log('voy a por los juegos de votacion a opciones');
       try {
         lista = await this.peticionesAPI.DameJuegosDeVotacionAOpcionesAlumno(AlumnoId).toPromise();
