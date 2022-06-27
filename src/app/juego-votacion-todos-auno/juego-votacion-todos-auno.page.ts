@@ -469,7 +469,7 @@ MuestraWheel(indice: number) {
                         votos: votaciones
                       };
                       var index= this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.findIndex(votos => votos.equipoId ===item.eq.id);
-                      this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.splice(index,1,add);
+                      this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.splice(index,0,add);
                     }
                   }
               });
