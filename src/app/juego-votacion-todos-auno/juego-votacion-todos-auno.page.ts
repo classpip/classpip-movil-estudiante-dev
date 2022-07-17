@@ -138,11 +138,13 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
         }
       });
     }else{
-      if(this.YaHasVotado){
+      // let voto= this.YaHasVotado();
+      // console.log(voto);
+      // if(voto){
+        console.log("entre");
         this.equipos.forEach (equipo => {
               // tslint:disable-next-line:max-line-length
 
-              
                 let votosRecibidos;
                 if (this.juegoSeleccionado.VotanEquipos) {
                   votosRecibidos = this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos;
@@ -151,7 +153,8 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
                 }
                 console.log ('votos recibidos por ' + equipo.Nombre);
                 console.log (votosRecibidos);
-                if (votosRecibidos === undefined) {
+                if (votosRecibidos.length == 0) {
+                  console.log("undefined");
                   const item = {
                     eq : equipo,
                     al : this.alumno.id,
@@ -160,6 +163,7 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
                   };
                   this.listaEquipos.push (item);
                 } else {
+                  console.log("no undefined");
                   const item = {
                     eq: equipo,
                     al: this.alumno.id,
@@ -170,7 +174,7 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
                 }
                    
         });
-      }
+      //}
     }
 
     console.log ('Ya esta preparada la lista de equipos');
@@ -307,20 +311,24 @@ MuestraWheel(indice: number) {
   }
 
   YaHasVotado(): boolean {
-    if (this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos) {
+    if (this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.length != 0) {
+      console.log("YaHasvotado");
+      console.log(this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos);
       // Alguien del equipo ha votado
       if (this.juegoSeleccionado.VotanEquipos) {
         // El qequipo ya ha votado
+        console.log("votaneq");
         return true;
       } else {
         // Veamos si ha votado el alumno
+        console.log("Novotaneq");
+        console.log(this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.some (voto => voto.alumnoId === this.alumno.id));
         return this.inscripcionEquipoJuegoDeVotacionTodosAUno.VotosEmitidos.some (voto => voto.alumnoId === this.alumno.id);
       }
-
     } else {
+      console.log("no votos emitidos");
       return false;
     }
-
   }
 
   VotacionFinalizada(): boolean {
@@ -337,13 +345,26 @@ MuestraWheel(indice: number) {
 
 
   VotacionFinalizadaEquipos(): boolean {
-    if (this.listaEquipos) {
-      let cont = 0;
-      this.listaEquipos.forEach (item => {
-        if (item.registrado) {cont++; }
-      });
-      return (cont === this.listaEquipos.length);
-    } else {
+    console.log ("Check votacion finalizada");
+    if(!this.YaHasVotado){
+      console.log(this.listaEquipos);
+      if (this.listaEquipos) {
+        let cont = 0;
+        this.listaEquipos.forEach (item => {
+          if (item.registrado) {
+            cont++; 
+            console.log("item registrado");
+          }else{
+            console.log("item no registrado");
+          }
+        });
+        console.log("contador", cont);
+        console.log(cont === this.listaEquipos.length);
+        return (cont === this.listaEquipos.length);
+      } else {
+        return false;
+      }
+    }else{
       return false;
     }
   }
