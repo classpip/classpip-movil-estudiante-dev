@@ -440,6 +440,7 @@ export class JuegoVotacionTodosAUnoPage implements OnInit {
                             this.peticionesAPI.DameEquiposJuegoDeVotacionTodosAUno (this.juegoSeleccionado.id)
                             .subscribe (equipos => {
                               this.equipos = equipos;
+                              this.equipos =equipos.filter(eq=> eq.id!=this.equipo.id);
                               this.PreparaLista();
                             });
                           });
