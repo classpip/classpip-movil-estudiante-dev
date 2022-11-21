@@ -54,7 +54,8 @@ export class IniciPage implements OnInit {
   async DameJuegosAlumno (id) {
     const listas =  await this.calculos.DameJuegosAlumno(id);
     this.JuegosActivos = listas.activos;
-
+    console.log("lista juegos");
+    console.log(this.JuegosActivos);
   }
 
 

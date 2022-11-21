@@ -8,11 +8,12 @@ export class JuegoDeVotacionTodosAUno {
   JuegoTerminado: boolean;
   Conceptos: string[];
   Pesos: number[];
+  VotanEquipos: boolean; // en los juegos de equipo pueden votar equipos o alumnos
 
 
   constructor(Tipo?: string, Modo?: string, JuegoActivo?: boolean, Conceptos?: string[],
               Pesos?: number[], NombreJuego?: string,
-              JuegoTerminado?: boolean, grupoId?: number) {
+              JuegoTerminado?: boolean, grupoId?: number, VotanEquipos?: boolean) {
 
     this.Tipo = Tipo;
     this.Modo = Modo;
@@ -22,5 +23,6 @@ export class JuegoDeVotacionTodosAUno {
     this.NombreJuego = NombreJuego;
     this.JuegoTerminado = JuegoTerminado;
     this.grupoId = grupoId;
+    this.VotanEquipos = VotanEquipos;
   }
 }

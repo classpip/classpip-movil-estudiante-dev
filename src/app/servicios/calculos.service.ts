@@ -543,6 +543,7 @@ export class CalculosService {
         console.log ('No hay juegos de votación todos a uno');
       }
 
+
       console.log('voy a por los juegos de votacion a opciones');
       try {
         lista = await this.peticionesAPI.DameJuegosDeVotacionAOpcionesAlumno(AlumnoId).toPromise();
@@ -676,6 +677,20 @@ export class CalculosService {
         console.log('voy a por los juegos de votacion uno a todos del equipo' + this.equipos[i].id);
         try {
           lista = await this.peticionesAPI.DameJuegoDeVotacionUnoATodosEquipo(this.equipos[i].id).toPromise();
+          for (let j = 0; j < (lista.length); j++) {
+            if (lista[j].JuegoActivo === true) {
+                JuegosActivos.push(lista[j]);
+            } else {
+                JuegosInactivos.push(lista[j]);
+            }
+          }
+        } catch {
+          console.log ('No hay juegos de votacion uno a todos en equipo');
+        }
+
+        console.log('voy a por los juegos de votacion todos A Uno del equipo' + this.equipos[i].id);
+        try {
+          lista = await this.peticionesAPI.DameJuegosDeVotacionTodosAUnoEquipo(this.equipos[i].id).toPromise();
           for (let j = 0; j < (lista.length); j++) {
             if (lista[j].JuegoActivo === true) {
                 JuegosActivos.push(lista[j]);
